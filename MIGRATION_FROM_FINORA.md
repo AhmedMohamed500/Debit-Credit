@@ -39,6 +39,14 @@ The browser runs `lib/migration/finora-education.ts` once. It copies a recognize
 
 Migration never removes old keys and never reads or writes operational FINORA keys.
 
-## Legacy cleanup and technical debt
+## FINORA cleanup completed
 
-The new repository contains only the education product. Removal from the FINORA source is intentionally performed only after this project passes all gates and is pushed. Compatibility URLs under `/academy` may be removed in a future major version after saved links have aged out. A real multiplayer leaderboard and cloud synchronization remain future backend work; current progress is local only.
+After this project passed lint, typecheck, 115 tests, production build, and manual route checks—and after it was pushed—the source repository was cleaned in commit `5d977c8841871fdde400ef030726776e9f0a864f`.
+
+Removed from FINORA: Academy and training routes, Arena and career routes, Missions, Money Flow, Accounting Detective, learning components, education engines and storage adapters, scenario data, education domain types, tests, Arena assets, educational CSS, sitemap entries, and navigation links. Shared operational accounting primitives and the operational chart of accounts remained because FINORA still uses them. FINORA then passed lint, typecheck, 265 operational tests, and a production build with 65 generated pages.
+
+The source's pre-existing untracked `PROJECT_DOCUMENTATION_AR.md` was preserved and was not included in the cleanup commit.
+
+## Remaining technical debt
+
+Compatibility URLs under `/academy` in Debit & Credit may be removed in a future major version after saved links have aged out. A real multiplayer leaderboard and cloud synchronization remain future backend work; current progress is local only.

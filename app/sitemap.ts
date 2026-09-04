@@ -1,0 +1,5 @@
+import type { MetadataRoute } from "next";
+import { missions } from "@/data/missions";
+import { detectiveCases } from "@/data/detective/cases";
+import { moneyFlowScenarios } from "@/data/money-flow/scenarios";
+export default function sitemap(): MetadataRoute.Sitemap { const base = "https://debit-credit.vercel.app"; const staticRoutes = ["", "/learn", "/account-guide", "/money-flow", "/journal-entry", "/missions", "/detective", "/arena", "/arena/career", "/arena/daily", "/profile", "/leaderboard"]; return (["ar", "en"] as const).flatMap(locale => [...staticRoutes.map(path => ({ url: `${base}/${locale}${path}`, changeFrequency: "weekly" as const, priority: path === "" ? 1 : .8 })), ...moneyFlowScenarios.map(x => ({ url: `${base}/${locale}/money-flow/${x.slug}`, changeFrequency: "monthly" as const, priority: .7 })), ...missions.map(x => ({ url: `${base}/${locale}/missions/${x.slug}`, changeFrequency: "monthly" as const, priority: .7 })), ...detectiveCases.map(x => ({ url: `${base}/${locale}/detective/${x.slug}`, changeFrequency: "monthly" as const, priority: .7 }))]); }

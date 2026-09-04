@@ -1,0 +1,3 @@
+import Link from "next/link";
+import type { Locale } from "@/types";
+export function SiteFooter({locale}:{locale:Locale}) { const ar=locale==='ar'; return <footer className="dc-footer"><div><div className="dc-brand"><span>D<span>&</span>C</span><div><strong>Debit & Credit</strong><small>by Money Coder</small></div></div><p>{ar?'تعلّم المحاسبة بالتطبيق، من طبيعة الحساب إلى بيئة العمل المهنية.':'Learn accounting by doing—from account nature to professional simulation.'}</p><nav><Link href={`/${locale}/learn`}>{ar?'مسار التعلم':'Learning Journey'}</Link><Link href={`/${locale}/arena`}>{ar?'الساحة':'Arena'}</Link><Link href={`/${locale}/profile`}>{ar?'تقدمي':'My progress'}</Link></nav></div></footer>; }

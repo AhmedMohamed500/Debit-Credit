@@ -1,0 +1,2 @@
+import type { MetadataRoute } from "next";
+export default function manifest(): MetadataRoute.Manifest { return { name: "Debit & Credit by Money Coder", short_name: "Debit & Credit", description: "Learn accounting by doing.", start_url: "/ar", display: "standalone", background_color: "#f5f8fa", theme_color: "#0b5f79", icons: [{ src: "/debit-credit-icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" }] }; }

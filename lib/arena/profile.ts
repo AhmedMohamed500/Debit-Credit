@@ -1,5 +1,7 @@
 import { calculateAccuracy, calculateProfessionalScore, calculateSkillRating, deriveAchievements, resolveCareerRank } from "@/lib/arena/engine";
 import type { ArenaAttempt, ArenaProfile, ArenaSkillId, SkillRating } from "@/types/arena";
+import { mapExternalSkills } from "@/lib/game/engine";
+import { recordGameActivity } from "@/lib/game/progress";
 
 export const ARENA_STORAGE_KEY="debit-credit-arena-v1";
 export const skillIds:ArenaSkillId[]=["chart-of-accounts","account-nature","increase-decrease","debit-credit","journal-entries","posting","general-ledger","trial-balance","customers-ar","suppliers-ap","cash","banking","vat","adjustments","closing","financial-statements","error-detection","financial-impact","excel-analysis","recovery"];
@@ -7,6 +9,6 @@ const emptyRating=(id:ArenaSkillId):SkillRating=>({id,score:0,confidence:"low",a
 export const createArenaProfile=(displayName="Debit & Credit Learner"):ArenaProfile=>({schemaVersion:1,displayName,visibility:"private",careerRank:"intern",professionalScore:0,accuracy:0,uniqueCases:0,workShifts:0,bossChallenges:[],monthClosings:0,currentStreak:0,attempts:[],skills:Object.fromEntries(skillIds.map(id=>[id,emptyRating(id)])) as Record<ArenaSkillId,SkillRating>,verifiedSkills:[],achievements:[],companyHealth:{cash:0,receivables:0,payables:0,profitIntegrity:0,accountingAccuracy:0,compliance:0,closingReadiness:0},cfoTrust:{value:0}});
 export function applyAttempt(profile:ArenaProfile,attempt:ArenaAttempt):ArenaProfile { const attempts=[...profile.attempts,attempt], skills=Object.fromEntries(skillIds.map(id=>[id,calculateSkillRating(id,attempts)])) as Record<ArenaSkillId,SkillRating>; let next={...profile,attempts,skills,achievements:deriveAchievements(attempts,profile.achievements),professionalScore:calculateProfessionalScore(attempts),accuracy:calculateAccuracy(attempts),uniqueCases:new Set(attempts.filter(a=>a.ranked).map(a=>a.caseId)).size}; next={...next,careerRank:resolveCareerRank(next)}; return next; }
 export function loadArenaProfile(){if(typeof window==="undefined")return createArenaProfile();try{return {...createArenaProfile(),...JSON.parse(localStorage.getItem(ARENA_STORAGE_KEY)||"")};}catch{return createArenaProfile();}}
-export function saveArenaProfile(profile:ArenaProfile){if(typeof window!=="undefined"){localStorage.setItem(ARENA_STORAGE_KEY,JSON.stringify(profile));window.dispatchEvent(new CustomEvent("debit-credit-arena-updated",{detail:profile}));}return profile;}
+export function saveArenaProfile(profile:ArenaProfile){if(typeof window!=="undefined"){localStorage.setItem(ARENA_STORAGE_KEY,JSON.stringify(profile));window.dispatchEvent(new CustomEvent("debit-credit-arena-updated",{detail:profile}));const attempt=profile.attempts.at(-1);if(attempt)recordGameActivity(attempt.mode==="daily"?"daily":"arena",attempt.caseId,attempt.accuracy,mapExternalSkills(attempt.skills),attempt.completedAt);}return profile;}
 
 

@@ -1,4 +1,5 @@
 import type { MissionResultRecord, MissionsProgress } from "@/types";
+import { recordGameActivity } from "@/lib/game/progress";
 
 export const MISSIONS_STORAGE_KEY = "debit-credit-missions-v1";
 export const MISSIONS_PROGRESS_UPDATED = "debit-credit-missions-updated";
@@ -30,7 +31,9 @@ export function recordMissionResult(result: MissionResultRecord) {
       completions: (previous?.completions || 0) + 1, lastPlayedAt: result.completedAt, lastResult: result,
     } },
   };
-  return saveMissionsProgress(next);
+  const saved=saveMissionsProgress(next);
+  recordGameActivity("mission",result.missionId,result.accuracy,["business-cases","journal-entries","accuracy"],result.completedAt,result.attempts);
+  return saved;
 }
 
 export function subscribeToMissionsProgress(handler: (progress: MissionsProgress) => void) {

@@ -1,4 +1,6 @@
 import type { DetectiveAttemptResult, DetectiveCaseProgress, DetectiveProgress, DetectiveSkill } from "@/types";
+import { mapExternalSkills } from "@/lib/game/engine";
+import { recordGameActivity } from "@/lib/game/progress";
 
 export const DETECTIVE_STORAGE_KEY = "debit-credit-detective-v1";
 export const DETECTIVE_PROGRESS_UPDATED = "debit-credit-detective-updated";
@@ -37,7 +39,9 @@ export function recordDetectiveResult(result: DetectiveAttemptResult, skills: De
     importantEvidence: previous?.importantEvidence || [], excludedEvidence: previous?.excludedEvidence || [],
     evidenceLinks: previous?.evidenceLinks || [], notes: previous?.notes || [], hintsUsed: result.hintsUsed, lastResult: result,
   };
-  return saveDetectiveProgress({ schemaVersion: 1, records: { ...current.records, [result.caseId]: record }, skills: skillProgress, lastPlayedCaseId: result.caseId });
+  const saved=saveDetectiveProgress({ schemaVersion: 1, records: { ...current.records, [result.caseId]: record }, skills: skillProgress, lastPlayedCaseId: result.caseId });
+  recordGameActivity("detective",result.caseId,result.accuracy,Array.from(new Set([...mapExternalSkills(skills),"error-detection","business-cases"])),result.completedAt,result.attempts);
+  return saved;
 }
 
 export function subscribeToDetectiveProgress(handler: (progress: DetectiveProgress) => void) {

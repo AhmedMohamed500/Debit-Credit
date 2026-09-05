@@ -1,4 +1,5 @@
 import type { AcademyProgress } from "@/types";
+import { recordGameActivity } from "@/lib/game/progress";
 
 const KEY = "debit-credit-progress-v1";
 const empty: AcademyProgress = { completedLessonIds: [], quizScores: {} };
@@ -17,6 +18,8 @@ export function completeAcademyLesson(lessonId: string, score?: number) {
   const current = loadAcademyProgress(), completedLessonIds = current.completedLessonIds.includes(lessonId) ? current.completedLessonIds : [...current.completedLessonIds, lessonId];
   const quizScores = score === undefined ? current.quizScores : { ...current.quizScores, [lessonId]: score };
   const next = { completedLessonIds, quizScores, lastLessonId: lessonId };
-  saveAcademyProgress(next); return next;
+  saveAcademyProgress(next);
+  recordGameActivity("lesson", lessonId, score ?? 100, lessonId.includes("journal") ? ["journal-entries"] : lessonId.includes("trial") ? ["trial-balance"] : ["fundamentals"]);
+  return next;
 }
 

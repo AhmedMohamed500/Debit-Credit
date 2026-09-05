@@ -1,4 +1,6 @@
 import type { MoneyFlowAttemptResult, MoneyFlowDifficulty, MoneyFlowProgress, MoneyFlowScenarioProgress, MoneyFlowSkill } from "@/types";
+import { mapExternalSkills } from "@/lib/game/engine";
+import { recordGameActivity } from "@/lib/game/progress";
 
 export const MONEY_FLOW_STORAGE_KEY="debit-credit-money-flow-v1", MONEY_FLOW_PROGRESS_UPDATED="debit-credit-money-flow-updated";
 const empty=(stage:MoneyFlowDifficulty="beginner"):MoneyFlowProgress=>({schemaVersion:1,records:{},skills:{},currentLearningStage:stage});
@@ -13,7 +15,9 @@ export function recordMoneyFlowResult(result:MoneyFlowAttemptResult){
   const current=loadMoneyFlowProgress(),previous=current.records[result.scenarioId],skills={...current.skills};
   result.masteredSkills.forEach((skill:MoneyFlowSkill)=>{skills[skill]=Math.min(100,(skills[skill]||0)+Math.max(10,Math.round(result.score/5)));});
   const record:MoneyFlowScenarioProgress={scenarioId:result.scenarioId,completed:true,bestScore:Math.max(previous?.bestScore||0,result.score),attempts:(previous?.attempts||0)+result.attempts,mistakes:(previous?.mistakes||0)+result.mistakes,hintsUsed:(previous?.hintsUsed||0)+result.hintsUsed,lastCompletedAt:result.completedAt,lastResult:result};
-  return saveMoneyFlowProgress({...current,records:{...current.records,[result.scenarioId]:record},skills,currentLearningStage:result.mode});
+  const saved=saveMoneyFlowProgress({...current,records:{...current.records,[result.scenarioId]:record},skills,currentLearningStage:result.mode});
+  recordGameActivity("money-flow",result.scenarioId,result.score,mapExternalSkills(result.masteredSkills),result.completedAt,result.attempts);
+  return saved;
 }
 export function subscribeToMoneyFlowProgress(handler:(progress:MoneyFlowProgress)=>void){ if(typeof window==="undefined")return()=>undefined; const listener=(event:Event)=>handler((event as CustomEvent<MoneyFlowProgress>).detail||loadMoneyFlowProgress()); window.addEventListener(MONEY_FLOW_PROGRESS_UPDATED,listener); return()=>window.removeEventListener(MONEY_FLOW_PROGRESS_UPDATED,listener); }
 

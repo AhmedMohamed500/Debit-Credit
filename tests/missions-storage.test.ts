@@ -1,16 +1,18 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from "vitest";
 import { loadMissionsProgress, MISSIONS_STORAGE_KEY, recordMissionResult } from "@/lib/storage/missions";
+import { PLAYER_STORAGE_KEY } from "@/lib/game/progress";
 
 const result = (score:number,attempts=1) => ({ missionId:"mission-001",score,accuracy:Math.round(100/attempts),attempts,hintsUsed:0,elapsedSeconds:40,completedAt:"2026-08-29T10:00:00.000Z",viewedSolution:false });
 
 describe("Debit & Credit Missions isolated progress storage", () => {
   beforeEach(() => localStorage.clear());
 
-  it("saves progress under the training-only key", () => {
+  it("saves domain evidence and updates the unified player", () => {
     recordMissionResult(result(80,2));
-    expect(localStorage.length).toBe(1);
-    expect(localStorage.key(0)).toBe(MISSIONS_STORAGE_KEY);
+    expect(localStorage.length).toBe(2);
+    expect(localStorage.getItem(MISSIONS_STORAGE_KEY)).toBeTruthy();
+    expect(localStorage.getItem(PLAYER_STORAGE_KEY)).toBeTruthy();
     expect(loadMissionsProgress().records["mission-001"].bestScore).toBe(80);
   });
 

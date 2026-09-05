@@ -1,7 +1,7 @@
-import { ArenaWorkspace } from "@/components/arena/arena-workspace";
+import { CareerDashboard } from "@/components/game/career-dashboard";
 import type { Locale } from "@/types";
 
 export default async function Page({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
-  return <ArenaWorkspace locale={locale} mode="mission" />;
+  return <CareerDashboard locale={locale} />;
 }

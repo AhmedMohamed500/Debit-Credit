@@ -1,5 +1,7 @@
 # Debit & Credit
 
+> Historical note: this file records the initial FINORA product separation. The later unified game-platform audit and release are documented in `DEBIT-CREDIT-GAME-PLATFORM-REPORT.md`.
+
 ## by Money Coder
 
 ## Final Migration and Deployment Report

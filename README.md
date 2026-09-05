@@ -2,17 +2,18 @@
 
 ### by Money Coder
 
-Debit & Credit is a bilingual, frontend-only accounting learning product. It teaches accounting through guided practice, visual money movement, journal construction, short missions, evidence-based investigations, and a professional work simulation—not through passive video lessons alone.
+Debit & Credit is a bilingual, frontend-only, game-based accounting learning platform. One player journey connects lessons, journal practice, visual money movement, real missions, evidence-based investigations, Arena competition, measurable skills, career readiness, and a clearly labeled demo employer portal.
 
 ## Learning journey
 
-1. Accounting Basics — equation, account types, normal balance, debit and credit rules.
-2. Money Flow — see value move and understand increases and decreases.
-3. Journal Entries — analyze transactions, choose accounts, and validate balance.
-4. Missions — solve short practical accounting situations.
-5. Accounting Detective — investigate evidence, link clues, and propose treatment.
-6. Arena — work through a professional accounting simulation and daily challenges.
-7. Career Progress — review scores, skills, weak areas, readiness, and achievements.
+1. Accounting Foundations — equation, classification, protected Nature of Accounts, and Money Flow.
+2. Journal Entries — analyze transactions, choose accounts, determine sides, and validate balance.
+3. Ledger & Posting — move from journal entries to ledgers and running balances.
+4. Trial Balance — validate balances and detect posting differences.
+5. Adjusting Entries — accruals, prepayments, depreciation, and period-end adjustments.
+6. Financial Statements — income, financial position, and statement relationships.
+7. Real-World Accounting — Missions, Detective, Money Flow, and mixed cases.
+8. Professional Mode — Arena, Career Mode, timed work, and career readiness.
 
 ## Features
 
@@ -22,7 +23,10 @@ Debit & Credit is a bilingual, frontend-only accounting learning product. It tea
 - Missions with hints, retry, feedback, score, and financial impact.
 - Accounting Detective cases with evidence, notes, links, progressive hints, and conclusions.
 - Debit & Credit Arena with career mode, daily challenges, CFO guidance, scoring, and best-attempt progress.
-- Local learner profile, XP signals, streaks, achievements, and skill aggregation.
+- One canonical player model for XP, coins, levels, objectives, streaks, badges, certificates, skills, and career readiness.
+- Command Center, eight-level Learning Map, and persistent global journey status.
+- Skills & Certificates and Career Readiness dashboards based on real recorded activity.
+- Separate employer experience with skill filters, local shortlist actions, and explicitly seeded demo candidates.
 - Local/demo leaderboard behavior clearly separated from online competition.
 - Arabic RTL and English LTR interfaces.
 - Installable PWA metadata with Debit & Credit branding.
@@ -34,16 +38,16 @@ The application is a Next.js App Router project using React, TypeScript, Tailwin
 Key folders:
 
 - `app/` — localized product routes and metadata.
-- `components/` — learning, Arena, Missions, Detective, Money Flow, layout, and progress UI.
+- `components/` — game shell, Command Center, Learning Map, practice, companies, learning modes, layout, and progress UI.
 - `data/` — real extracted courses, cases, missions, scenarios, Arena tasks, and the educational chart of accounts.
-- `lib/` — learning engines, accounting validation, scoring, storage, progress, and migration.
+- `lib/` — the unified game engine, employer filters, learning engines, accounting validation, scoring, storage, progress, and migration.
 - `types/` — education-only domain types.
 - `tests/` — accounting and educational engine tests.
 - `docs/` — technical notes.
 
 ## Local storage
 
-Progress uses namespaced keys such as `debit-credit-arena-v1`, `debit-credit-missions-v1`, `debit-credit-detective-v1`, `debit-credit-money-flow-v1`, and `debit-credit-progress-v1`. A one-time migration copies only recognized FINORA education keys and never deletes or edits operational journals, parties, invoices, or settings.
+The canonical player state uses `debit-credit-player-v1`. Detailed module evidence remains in namespaced stores such as `debit-credit-arena-v1`, `debit-credit-missions-v1`, `debit-credit-detective-v1`, `debit-credit-money-flow-v1`, and `debit-credit-progress-v1`. Existing progress is synchronized once into the unified player without deleting module data. The original FINORA migration remains unchanged and never reads or edits operational journals, parties, invoices, or settings.
 
 ## Development
 
@@ -67,4 +71,8 @@ npm run check
 
 ## Deployment
 
-The project builds as a standard Next.js application and is ready for GitHub/Vercel deployment. No paid service is required.
+Production: <https://debit-credit-nine.vercel.app>
+
+Repository: <https://github.com/AhmedMohamed500/Debit-Credit>
+
+No paid service is required.

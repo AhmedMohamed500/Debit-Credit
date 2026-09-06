@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./game.css";
+import "./world.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://debit-credit-nine.vercel.app"),

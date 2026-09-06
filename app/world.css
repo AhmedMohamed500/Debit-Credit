@@ -1,0 +1,528 @@
+/* The student world is scoped so the classic account guide remains untouched. */
+.student-world {
+  --game-ink:#eaf4ff; --game-muted:#b2c7df; --game-line:#315c88;
+  --game-card:#102d50; --game-soft:#0b2341; --game-blue:#5bbaff;
+  --game-navy:#06182f; --game-green:#39dbac;
+  min-height:100vh; color:#eaf4ff;
+  background:radial-gradient(ellipse at 15% 0,#164573 0,transparent 45%),radial-gradient(ellipse at 90% 50%,#123760 0,transparent 50%),#06172d;
+}
+.student-world :where(a,button,input,select):focus-visible {outline:3px solid #73e5ff;outline-offset:4px}
+.student-world :where(h1,h2,h3,p) {overflow-wrap:anywhere}
+.student-world :where(svg) {flex-shrink:0}
+.student-world .dc-header {background:#06182ff5;border-color:#25476a}
+.student-world .dc-nav {width:min(1600px,calc(100% - 32px));gap:20px;min-height:68px}
+.student-world .dc-brand {flex-shrink:0;color:#fff}
+.student-world .dc-brand small {color:#adc9e6}
+.student-world .dc-brand>span {display:flex;justify-content:center;gap:1px;border:1px solid #48b9ff;background:linear-gradient(145deg,#167af5,#123365);box-shadow:0 0 20px #147cf540}
+.student-world .dc-brand>span span {color:#7eeaff}
+.student-world .dc-nav nav>a {color:#ccdef1;font-size:.78rem;padding:10px 8px;white-space:nowrap}
+.student-world .dc-nav nav>a:hover,.student-world .dc-nav nav>a[aria-current=page] {color:#fff;background:#1453a1}
+.student-world .dc-menu {color:#fff;width:44px;height:44px}
+.student-world .game-status {top:68px;background:#0b2543ed;border-color:#2b5179}
+.student-world .game-status-inner {width:min(1600px,calc(100% - 32px));gap:22px;min-height:46px}
+.student-world .game-level {color:#fff;font-size:.75rem;grid-template-columns:auto 100px auto}
+.student-world .game-level i {background:#294764}
+.student-world .game-stat {font-size:.8rem;color:#f0f7ff}
+.student-world .game-stat svg {color:#ffc752}
+.student-world .game-stat small {color:#b6cae0}
+.student-world .game-objective {color:#eaf4ff}
+.student-world .game-objective small {font-size:.6rem}
+.student-world .game-objective b {font-size:.8rem}
+.student-world .dc-footer {margin-top:28px;padding:22px 20px;background:#051329;border-color:#264868}
+.student-world .dc-footer>div {width:min(1560px,100%)}
+.student-world .dc-footer p,.student-world .dc-footer nav a {color:#adcae5;font-size:.8rem}
+.game-command {width:min(1600px,calc(100% - 32px));margin:auto;padding:22px 0}
+.command-title {display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.world-eyebrow {color:#8bd6ff;font-size:.65rem;letter-spacing:.08em;font-weight:800}
+.command-title h1 {margin:4px 0 0;font-size:clamp(1.4rem,2.2vw,2rem);line-height:1.4}
+.world-rank {display:flex;align-items:center;gap:8px;padding:10px 15px;border:1px solid #568bb9;border-radius:9px;color:#ffdb78;background:linear-gradient(130deg,#193f65,#09223d);font-size:.8rem;font-weight:800;text-decoration:none}
+.world-rank svg {width:22px}
+.command-layout {display:grid;grid-template-columns:minmax(275px,.9fr) minmax(390px,1.45fr) minmax(265px,.85fr);gap:16px;align-items:start;direction:ltr}
+.command-layout>*,.command-core>*,.command-side>* {min-width:0}
+[dir=rtl] .command-layout>* {direction:rtl}
+.world-panel {overflow:hidden;border:1px solid #3975a8;border-radius:14px;background:linear-gradient(145deg,#16385c,#0b2341);box-shadow:inset 0 1px #8cceff25,0 8px 20px #0003}
+.world-panel-title {display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:47px;padding:10px 15px;border-bottom:1px solid #4b97d16b;color:#fff;background:linear-gradient(100deg,#0764cf,#15395f)}
+.world-panel-title>span {display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:800}
+.world-panel-title svg {width:19px;height:19px}
+.world-panel-title a {display:flex;align-items:center;gap:4px;color:#d9f4ff;font-size:.7rem;text-decoration:none}
+.world-panel-title a svg {width:14px}
+.world-panel-title em {padding:4px 7px;border:1px solid #eab95760;border-radius:5px;color:#ffdb85;background:#473d2470;font-size:.7rem;font-style:normal}
+.command-core,.command-side {display:grid;gap:14px}
+.world-map-scene {position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(#0b365b,#07192b)}
+.world-terrain {position:absolute;inset:0;z-index:-1;width:100%;height:100%;opacity:.65}
+.world-map-caption {display:flex;align-items:center;gap:8px;padding:16px;color:#bcddf7;font-size:.65rem}
+.world-map-caption svg {width:17px;color:#ffd268}
+.world-path {display:grid;gap:12px;margin:0;padding:8px 18px 24px;list-style:none}
+.world-path li {position:relative;display:flex;align-items:center;gap:14px;min-height:76px;padding:8px 0}
+.world-path li:nth-child(even) {margin-inline-start:32px}
+.world-path li::after {position:absolute;z-index:-1;content:"";inset-inline-start:24px;top:55px;width:2px;height:51px;background:repeating-linear-gradient(#7399b4 0 4px,transparent 4px 8px);transform:rotate(-33deg);transform-origin:top}
+.world-path li:nth-child(even)::after {transform:rotate(33deg)}
+[dir=rtl] .world-path li::after {transform:rotate(33deg)}
+[dir=rtl] .world-path li:nth-child(even)::after {transform:rotate(-33deg)}
+.world-path li:last-child::after {display:none}
+.world-path li.completed::after {background:#63e9ff;box-shadow:0 0 9px #35cfff}
+.world-node {display:grid;place-items:center;flex:0 0 50px;width:50px;height:50px;border:2px solid #5980a3;border-radius:16px;transform:rotate(-7deg);color:#bad0e0;background:linear-gradient(145deg,#284964,#0c253e);box-shadow:0 5px 0 #031023}
+.world-node svg {width:22px;transform:rotate(7deg)}
+.world-path .current .world-node {color:#fff;border-color:#a3f5ff;background:linear-gradient(145deg,#13c4f4,#1166e2);box-shadow:0 0 0 5px #29cfff20,0 0 27px #25cfff90,0 5px 0 #043275;animation:checkpoint-glow 3s ease-in-out infinite}
+.world-path .completed .world-node {border-color:#77ffcf;color:#fff;background:#117e68;box-shadow:0 0 18px #26dcb950}
+.world-node-copy {display:grid;gap:4px;min-width:0}
+.world-node-copy>small {display:flex;align-items:center;flex-wrap:wrap;gap:6px;color:#a8cbeb;font-size:.6rem;font-weight:800}
+.world-node-copy em {border-radius:4px;padding:2px 5px;color:#051a31;background:#71eaff;font-size:.52rem;font-style:normal}
+.world-node-copy>a,.world-node-copy>b {color:#eef9ff;font-size:.85rem;font-weight:800;text-decoration:none;line-height:1.4}
+.world-node-copy>span {color:#a3bed7;font-size:.65rem}
+.world-path .locked .world-node-copy>b {color:#bdd0e0}
+.map-loot {display:flex;align-items:center;gap:10px;padding:16px;background:#0c2e52;border-top:1px solid #3975a8}
+.map-loot>svg {color:#ffd675;width:28px}
+.map-loot>span {display:grid;gap:4px;color:#a8c4e0;font-size:.6rem}
+.map-loot b {color:#fff;font-size:.8rem}
+.map-loot>strong {margin-inline-start:auto;color:#8cddff;font-size:1.2rem}
+.player-console {padding:19px;background:radial-gradient(ellipse at 100% 0,#18639670,transparent 65%),linear-gradient(135deg,#1b4168,#0c2645)}
+.player-console>header {display:flex;align-items:center;gap:15px}
+.player-console>header>div:last-child {min-width:0}
+.world-avatar {position:relative;display:grid;place-items:center;flex:0 0 65px;width:65px;height:65px;border:2px solid #76cfff;border-radius:20px;color:#fff;background:linear-gradient(135deg,#208af0,#1a3760);font-size:1.8rem;font-weight:900;box-shadow:0 0 20px #199af440}
+.world-avatar>span {position:absolute;bottom:-9px;inset-inline-end:-7px;display:grid;place-items:center;width:27px;height:27px;clip-path:polygon(50% 0,100% 20%,90% 80%,50% 100%,10% 80%,0 20%);color:#142a40;background:#ffcb5d;font-size:.8rem}
+.player-console h2 {margin:5px 0;font-size:clamp(1rem,1.5vw,1.35rem)}
+.player-console p {margin:0;color:#bfd7ee;font-size:.75rem}
+.console-stats {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:22px 0 16px}
+.console-stats>div {display:grid;justify-items:center;gap:3px;padding:9px 4px;border-inline-end:1px solid #47729570}
+.console-stats>div:last-child {border:0}
+.console-stats svg {width:23px;color:#ffd060;filter:drop-shadow(0 0 7px #ffc13a40)}
+.console-stats>div:first-child svg {color:#6bddff}
+.console-stats>div:nth-child(3) svg {color:#ff9e5d}
+.console-stats b {font-size:1.25rem}
+.console-stats small {color:#b4cde5;font-size:.65rem}
+.world-progress>span {display:flex;justify-content:space-between;gap:10px;font-size:.7rem}
+.world-progress strong {color:#82dfff}
+.world-progress i {display:block;overflow:hidden;height:10px;margin:8px 0;border:1px solid #365d7e;border-radius:8px;background:#061a2f}
+.world-progress i b {display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#1678f9,#65edff);box-shadow:0 0 15px #5ae1ff}
+.world-progress>small {color:#afc9e2;font-size:.65rem}
+.active-quest {border-color:#49caff;box-shadow:0 0 0 1px #22a4ff30,0 0 28px #007fe61a}
+.quest-body {display:flex;align-items:center;gap:16px;padding:19px}
+.quest-seal {display:grid;justify-items:center;gap:8px;flex:0 0 70px;color:#9ee4ff}
+.quest-seal svg {width:58px;height:58px;filter:drop-shadow(0 0 12px #35bdff55)}
+.quest-seal small {font-size:.58rem;font-weight:800}
+.quest-body h2 {margin:0 0 8px;font-size:1.3rem}
+.quest-body p {margin:0;font-size:.82rem;color:#c0d4e7;line-height:1.7}
+.quest-rewards {display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:0 19px 16px}
+.quest-rewards>span {display:flex;align-items:center;gap:5px;border:1px solid #65816970;border-radius:6px;padding:5px 8px;color:#ffe18b;background:#2d432f50;font-size:.75rem;font-weight:800}
+.quest-rewards svg {width:16px}
+.quest-rewards>small {margin-inline-start:auto;color:#aec8df;font-size:.7rem}
+.world-button {display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 16px;border:1px solid #6ad9ff;border-radius:8px;color:#fff;background:linear-gradient(#198cff,#0757d6);box-shadow:inset 0 1px #fff4,0 3px 0 #032d6f;font-size:.8rem;font-weight:800;text-decoration:none}
+.world-button svg {width:17px}
+.active-quest>.world-button {margin:0 19px 19px}
+.continue-quest {display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:16px}
+.quest-icon {display:grid;place-items:center;width:40px;height:44px;clip-path:polygon(50% 0,100% 20%,90% 80%,50% 100%,10% 80%,0 20%);color:#8aecff;background:#155795}
+.continue-quest h2 {margin:4px 0;font-size:.9rem}
+.continue-quest>div>span {color:#e7c87d;font-size:.65rem}
+.daily-quests>a {display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid #3c64844d;color:#e9f4ff;text-decoration:none}
+.daily-quests>a:last-child {border:0}
+.daily-quests>a>b {flex:1;font-size:.8rem}
+.daily-quests>a>small {color:#62e6b5;font-size:.65rem;white-space:nowrap}
+.daily-quests>a>svg {width:14px}
+.quest-check {display:grid;place-items:center;flex:0 0 29px;height:29px;border:1px solid #5688af;border-radius:7px;color:#97bedf;background:#0a2038}
+.quest-check.done {color:#fff;background:#138969}
+.quest-check svg {width:17px}
+.reward-vault {text-align:center;background:radial-gradient(circle at 50% 40%,#a96b1c30,transparent 60%),#102c4b}
+.reward-emblem {display:grid;place-items:center;width:90px;height:90px;margin:20px auto 15px;border:1px solid #e7b341;border-radius:24px;transform:rotate(-8deg);color:#ffda6d;background:linear-gradient(145deg,#9c6d24,#3c361e);box-shadow:0 0 30px #ffc42e30,inset 0 0 20px #ffc95020}
+.reward-emblem svg {width:49px;height:49px;transform:rotate(8deg)}
+.reward-vault h2 {margin:8px 15px;font-size:1.1rem}
+.reward-vault p {margin:8px 20px 15px;color:#b8cfe3;font-size:.75rem;line-height:1.7}
+.reward-vault>a,.skill-loadout>a {display:flex;justify-content:center;align-items:center;gap:8px;min-height:44px;padding:10px;border-top:1px solid #3c6585;color:#9be5ff;font-size:.75rem;font-weight:800;text-decoration:none}
+.reward-vault>a svg,.skill-loadout>a svg {width:15px}
+.mode-tile {position:relative;display:block;isolation:isolate;padding:18px;color:#fff;text-decoration:none;background:radial-gradient(ellipse at 100% 0,#4652a260,transparent 80%),#112b4a}
+.mode-tile h2 {position:relative;max-width:80%;margin:12px 0 8px;font-size:1.2rem}
+.mode-tile p {position:relative;max-width:85%;color:#b7d0e8;font-size:.75rem;line-height:1.7}
+.mode-art {position:absolute;z-index:-1;inset-inline-end:-15px;top:26px;color:#65a9e06b;transform:rotate(-15deg)}
+.mode-art>svg {width:120px;height:120px}
+.mode-art>span {position:absolute;top:10px;left:35px;color:#9de6ff;font-size:3rem;font-weight:900}
+.mode-tile footer {display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:10px;border-top:1px solid #49709170;font-size:.7rem}
+.mode-tile footer>span {color:#f6d080}
+.mode-tile footer>b {display:flex;gap:5px;align-items:center;color:#84deff}
+.mode-tile footer svg {width:15px}
+.skill-loadout>div {display:flex;align-items:center;gap:10px;padding:12px 15px;border-bottom:1px solid #385b7850}
+.skill-token {display:grid;place-items:center;flex:0 0 38px;height:43px;clip-path:polygon(50% 0,100% 20%,90% 80%,50% 100%,10% 80%,0 20%);color:#a5c3df;background:linear-gradient(#456986,#1c354d)}
+.skill-token.earned {color:#fff;background:linear-gradient(#1bc5b0,#096762)}
+.skill-token svg {width:22px}
+.skill-loadout>div>span:last-child {display:grid;gap:4px}
+.skill-loadout b {font-size:.8rem}
+.skill-loadout small {color:#aec6df;font-size:.65rem}
+.world-endgame {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+.world-endgame>a {display:flex;align-items:center;gap:12px;min-width:0;min-height:92px;padding:16px;border:1px solid #3575ae;border-radius:12px;color:#f2f8ff;background:linear-gradient(130deg,#164c83,#0c2949);text-decoration:none}
+.world-endgame>a>svg:first-child {width:33px;height:33px;color:#91d9ff;filter:drop-shadow(0 0 10px #6bbaff60)}
+.world-endgame>a:nth-child(3)>svg:first-child {color:#ffd068}
+.world-endgame>a>svg:last-child {width:16px;margin-inline-start:auto}
+.world-endgame span {display:grid;gap:6px}
+.world-endgame small {color:#9cc7ef;font-size:.6rem}
+.world-endgame b {font-size:.8rem}
+@keyframes checkpoint-glow {50%{box-shadow:0 0 0 7px #29cfff15,0 0 34px #25cfff90,0 5px 0 #043275}}
+
+/* Shared mission-room treatment across the actual playable modules. */
+.student-world :is(.map-page,.practice-engine,.profile-page,.skills-page,.career-page) {width:min(1400px,calc(100% - 40px));padding:28px 0 45px}
+.student-world :is(.map-page,.practice-engine,.skills-page,.career-page)>header {max-width:none;margin-bottom:20px;padding:20px 24px;border:1px solid #3a79aa;border-radius:13px;background:linear-gradient(115deg,#164b7e,#0d2846);box-shadow:inset 0 1px #79d1ff25}
+.student-world :is(.map-page,.practice-engine,.skills-page,.career-page)>header h1 {font-size:clamp(1.6rem,3vw,2.5rem);line-height:1.4;letter-spacing:0;margin:8px 0}
+.student-world :is(.map-page,.practice-engine,.skills-page,.career-page)>header p {font-size:.9rem;margin:6px 0}
+.student-world :is(.practice-meta,.practice-workspace>main,.practice-workspace>aside,.map-summary>span,.map-level-card,.profile-stats>article,.skill-matrix,.profile-collection,.skills-board>article,.certificate-road,.career-score,.career-formula,.career-insights>section) {color:#eaf4ff;border-color:#386c98;background:linear-gradient(135deg,#173859,#0c2542);box-shadow:inset 0 1px #75bdf51c,0 7px 20px #0002}
+.student-world .map-summary {margin:16px 0;gap:12px}
+.student-world .map-summary>span {padding:14px 18px}
+.student-world .map-track>article {position:relative;scroll-margin-top:135px;grid-template-columns:62px minmax(0,1fr)}
+.student-world .map-track>article::before {background:#3a6385}
+.student-world .map-level-node {border-color:#0a213b;background:#284967;color:#b7d6ef}
+.student-world .map-track article.current .map-level-node {color:#fff;background:#0f8eee;box-shadow:0 0 24px #36c9ff7a}
+.student-world .map-track article.current .map-level-card {border-color:#5fdbff;box-shadow:0 0 25px #14aaff20}
+.student-world .map-track article.locked .map-level-card {opacity:1;background:linear-gradient(135deg,#132e49,#0b2037);border-color:#2d4d68}
+.student-world .map-level-card>header {padding:18px}
+.student-world .map-level-card h2 {font-size:1.25rem}
+.student-world .map-level-card header p {font-size:.85rem;line-height:1.7}
+.student-world .map-steps {grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));padding:0 18px 18px}
+.student-world .map-steps>div {border-color:#345a7b;background:#081e36}
+.student-world .map-steps b {font-size:.8rem}
+.student-world .map-steps small {font-size:.6rem}
+.student-world .map-steps a {font-size:.75rem;min-height:44px}
+.student-world .map-steps button {font-size:.7rem;min-height:44px}
+.student-world .map-level-card>footer {flex-wrap:wrap;gap:10px;color:#f9d37c;background:#56432155;font-size:.75rem}
+.student-world .map-steps>div>span {color:#9ddfff;background:#174a78}
+.student-world .map-rule {border:1px solid #416686;background:#09233e}
+.campaign-map-layout {display:grid;grid-template-columns:minmax(290px,.75fr) minmax(0,1.5fr);gap:22px;align-items:start}
+.campaign-map-layout>.world-map-scene {position:sticky;top:132px;border:1px solid #4a93c1;border-radius:16px}
+.student-world .transaction-card {border:1px solid #478aba;background:radial-gradient(ellipse at top right,#087dbf60,transparent),#092447}
+.student-world .transaction-card h2 {font-size:1.3rem}
+.student-world .journal-input {border-color:#446b91;overflow:hidden}
+.student-world .journal-input>header,.student-world .journal-input>div {border-color:#345575}
+.student-world .journal-input>header {color:#bad2eb;background:#09213c;font-size:.75rem}
+.student-world .journal-input select,.student-world .journal-input input {height:48px;color:#edf7ff;background:#081c33;border-color:#517aa0;font-size:1rem}
+.student-world .journal-input>footer {flex-wrap:wrap;gap:12px;font-size:.9rem}
+.student-world .practice-actions button,.student-world .practice-workspace>aside button {min-height:46px;color:#c8e6ff;background:#143451;border-color:#4479a1;font-size:.8rem}
+.student-world .practice-actions .primary {background:linear-gradient(#1a8bfd,#0959d4);color:#fff}
+.student-world .practice-workspace>aside {top:136px}
+.student-world .practice-workspace>aside ul {font-size:.85rem}
+.student-world .practice-meta {font-size:.85rem}
+.student-world .profile-hero {border:1px solid #529dd0;background:radial-gradient(ellipse at top left,#0876b96b,transparent),#0c2e54}
+.student-world .profile-avatar {border:1px solid #6cceff;box-shadow:0 0 25px #3ab3ff30}
+.student-world .profile-name-edit input {color:#082447;max-width:100%}
+.student-world .profile-hero>div {min-width:0}
+.student-world .profile-hero h1 {flex-wrap:wrap}
+.student-world .profile-next {border:1px solid #40739d;background:#102e50}
+.student-world .skill-matrix>div {border-color:#2a4d6d}
+.student-world .skill-matrix small,.student-world .profile-collection small {color:#adcae5}
+.student-world .profile-collection>div {border-color:#345c7a;background:#0b2440}
+.student-world .skills-board {grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:26px 0}
+.student-world .skills-board>article {position:relative;padding:20px;border-radius:14px;border-top:3px solid #53718f}
+.student-world .skills-board>article.earned {border-top-color:#4ad7b4;box-shadow:0 0 22px #31dba91a}
+.student-world .skills-board>article::after {position:absolute;bottom:-23px;left:50%;width:2px;height:21px;background:#3a6b96;content:""}
+.student-world .skills-board>article>div>span {width:54px;height:60px;border-radius:0;clip-path:polygon(50% 0,100% 20%,90% 80%,50% 100%,10% 80%,0 20%);color:#c6ddf1;background:linear-gradient(#416788,#183550)}
+.student-world .skills-board>article.earned>div>span {color:#fff;background:linear-gradient(#1ed8b7,#0a6e6e)}
+.student-world .skills-board h2 {font-size:1rem}
+.student-world .skills-board p {color:#b3cce5;font-size:.8rem}
+.student-world .skills-board a {display:flex;align-items:center;min-height:44px;color:#82dcff;font-size:.8rem;text-decoration:none}
+.student-world .certificate-road>article {padding:18px;border-color:#5b7791;background:#0a2039}
+.student-world .certificate-road article>svg {color:#d8b766}
+.student-world .certificate-road article.earned {border-color:#e1b95e;background:linear-gradient(100deg,#6e521e45,#0c2a48)}
+.student-world .certificate-road article small {font-size:.75rem;color:#b8d0e6}
+.student-world .career-ring>span {color:#fff;background:#102e50}
+.student-world .career-ring {box-shadow:0 0 35px #2de6b81c}
+.student-world .career-formula article {border-color:#3a5f7d}
+.student-world .career-insights section>div {font-size:.82rem;border-color:#335a7c}
+.student-world .career-insights section>p {font-size:.82rem}
+.student-world .career-score a,.student-world .career-insights a {color:#fff;background:#086ae0;min-height:44px}
+.student-world :is(.missions-page,.detective-home,.detective-workspace,.mission-workspace,.arena-reference) {background:transparent}
+.student-world :is(.missions-hero,.detective-hero) {padding:28px 0;background:radial-gradient(ellipse at 85% 20%,#196ba85c,transparent),#0a2541;border-bottom:1px solid #386487}
+.student-world :is(.missions-hero-grid,.detective-hero-grid) {gap:28px;min-height:0}
+.student-world :is(.missions-hero,.detective-hero) h1 {font-size:clamp(1.8rem,3vw,3rem);line-height:1.35;color:#f1f8ff}
+.student-world :is(.missions-hero,.detective-hero) p {color:#b9d2e8;font-size:.95rem}
+.student-world :is(.missions-container,.detective-container) {width:min(1400px,calc(100% - 40px))}
+.student-world :is(.mission-hero-case,.detective-desk-card,.mission-card,.detective-case-card,.mission-stats>div,.detective-stats>div,.mission-detective-cta) {color:#e8f4ff;border-color:#3b78a9;background:linear-gradient(145deg,#17466c,#0c2642);box-shadow:inset 0 1px #98dcff25}
+.student-world :is(.mission-card,.detective-case-card) {border-top:3px solid #329bdc}
+.student-world :is(.mission-card,.detective-case-card) h3 {color:#f2f8ff;font-size:1.15rem}
+.student-world :is(.mission-card,.detective-case-card,.mission-hero-case) p {color:#b8d0e5;font-size:.85rem}
+.student-world :is(.mission-meta,.detective-card-meta,.mission-card-foot,.detective-case-card footer) {color:#adc9e0;font-size:.8rem}
+.student-world :is(.mission-section-title,.detective-section-title) h2 {color:#eaf5ff;font-size:1.5rem}
+.student-world :is(.mission-section-title,.detective-section-title) p {color:#a6c2dc}
+.student-world :is(.missions-catalog,.detective-catalog) {padding-top:26px;padding-bottom:30px}
+.student-world .arena-reference {--ref-bg:#081e36;--ref-card:#112f4e;--ref-muted:#9ebddb;--ref-line:#386182;--ref-text:#eaf4ff;color:#eaf4ff}
+.student-world :is(.arena-ref-top,.arena-ref-center,.arena-ref-career,.arena-ref-how,.arena-ref-mission,.arena-ref-readiness,.arena-ref-season,.arena-student-guide) {color:#eaf4ff;border-color:#3b6d97;background:linear-gradient(135deg,#153b62,#0a2440)}
+.student-world .arena-ref-top {display:none}
+.student-world .arena-ref-grid {grid-template-columns:minmax(200px,.7fr) minmax(0,1.9fr) minmax(250px,.85fr)}
+.student-world :is(.arena-ref-mission h2,.arena-operations-title h1,.arena-ref-readiness h2) {color:#eef7ff}
+.student-world .arena-student-guide :is(ol,small) {color:#b5cde4}
+.student-world .arena-student-guide dl>div {background:#102a43;border-color:#456a8a}
+.student-world .arena-student-guide dd {color:#8cddff}
+.student-world .arena-accounting-console {color:#17345d;background:#f0f6fc;border-radius:12px;overflow:hidden}
+.student-world .arena-reference .arena-ref-season b {color:#9ed9ff}
+@media(min-width:1181px) and (max-width:1350px) {.student-world .dc-nav nav {gap:1px}.student-world .dc-nav nav>a {font-size:.68rem;padding-inline:6px}}
+@media(max-width:1180px) {
+  .student-world .dc-nav nav {top:62px;max-height:calc(100dvh - 145px);overflow-y:auto;background:#0b2849;border-color:#447dac}
+  .student-world .dc-nav nav>a {min-height:44px;display:flex;align-items:center}
+  .command-layout {grid-template-columns:minmax(260px,.85fr) minmax(0,1.3fr)}
+  .command-side {grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .world-endgame {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .student-world .arena-ref-grid {grid-template-columns:minmax(0,1fr);grid-template-areas:"center" "right" "left"}
+  .student-world .arena-ref-right,.student-world .arena-ref-left {display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .student-world .arena-ref-career {grid-row:auto}
+  .student-world .practice-workspace {grid-template-columns:minmax(0,1fr) 260px}
+  .student-world .profile-hero {grid-template-columns:auto minmax(0,1fr) auto}
+}
+@media(max-width:800px) {
+  .student-world .game-status-inner {gap:12px;flex-wrap:wrap;padding-block:8px}
+  .student-world .game-level {flex:1;grid-template-columns:auto minmax(40px,90px) auto}
+  .student-world .game-stat {display:flex;font-size:.7rem}
+  .student-world .game-stat small {display:none}
+  .student-world .game-objective {display:none}
+  .command-layout {display:flex;flex-direction:column}
+  .command-layout>* {width:100%}
+  .command-core {order:0;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+  .player-console,.active-quest {height:100%}
+  .continue-quest,.daily-quests {grid-column:1/-1}
+  .command-map {order:1}
+  .command-side {order:2;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .skill-loadout {grid-column:1/-1}
+  .command-map .world-path {grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 26px}
+  .command-map .world-path li:nth-child(even) {margin-inline-start:0}
+  .command-map .world-path li::after {display:none}
+  .campaign-map-layout {grid-template-columns:1fr}
+  .campaign-map-layout>.world-map-scene {position:relative;top:auto}
+  .campaign-map-layout .world-path {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .campaign-map-layout .world-path li:nth-child(even) {margin-inline-start:0}
+  .campaign-map-layout .world-path li::after {display:none}
+  .student-world .practice-workspace {grid-template-columns:minmax(0,1fr)}
+  .student-world .practice-workspace>aside {position:static}
+  .student-world .skills-board {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px) {
+  .student-world {padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+  .dc-shell:has(.student-world) {padding-bottom:0}
+  .student-world .dc-nav {width:calc(100% - 24px);min-height:62px}
+  .student-world .dc-brand>span {width:38px;height:38px}
+  .student-world .dc-brand strong {font-size:.95rem}
+  .student-world .game-status {top:62px}
+  .student-world .game-status-inner {width:calc(100% - 24px);min-height:44px;gap:10px}
+  .student-world .game-level {font-size:.65rem;grid-template-columns:auto minmax(32px,60px) auto;gap:5px}
+  .student-world .game-stat {gap:3px;font-size:.7rem}
+  .student-world .game-stat svg {width:14px}
+  .game-command {width:calc(100% - 24px);padding:16px 0}
+  .command-title {gap:8px;margin-bottom:14px}
+  .command-title h1 {font-size:1.3rem}
+  .command-title .world-eyebrow {font-size:.5rem}
+  .world-rank {padding:8px;font-size:.65rem;white-space:nowrap}
+  .world-rank svg {width:18px}
+  .command-core,.command-side {display:grid;grid-template-columns:minmax(0,1fr)}
+  .command-layout {gap:14px}
+  .command-core {gap:12px}
+  .player-console {padding:17px}
+  .player-console h2 {font-size:1.12rem}
+  .player-console .world-eyebrow {font-size:.6rem}
+  .world-avatar {flex-basis:54px;width:54px;height:54px;font-size:1.5rem}
+  .console-stats {margin:18px 0 12px}
+  .console-stats small {font-size:.65rem}
+  .quest-body {padding:16px;gap:12px}
+  .quest-seal {flex-basis:52px}
+  .quest-seal svg {width:45px;height:45px}
+  .quest-body h2 {font-size:1.15rem}
+  .continue-quest {grid-template-columns:auto minmax(0,1fr)}
+  .continue-quest>.world-button {grid-column:1/-1}
+  .daily-quests>a {gap:8px;padding:13px 12px}
+  .daily-quests>a>b {font-size:.78rem}
+  .daily-quests>a>svg {display:none}
+  .command-map .world-path,.campaign-map-layout .world-path {grid-template-columns:minmax(0,1fr);padding:8px 20px 24px}
+  .command-map .world-path li:nth-child(even),.campaign-map-layout .world-path li:nth-child(even) {margin-inline-start:32px}
+  .command-map .world-path li:not(:last-child)::after,.campaign-map-layout .world-path li:not(:last-child)::after {display:block}
+  .world-path {gap:10px}
+  .world-node-copy>a,.world-node-copy>b {font-size:.88rem}
+  .world-endgame {gap:10px}
+  .world-endgame>a {flex-wrap:wrap;gap:8px;min-height:115px;padding:13px}
+  .world-endgame>a>svg:first-child {width:28px;height:28px}
+  .world-endgame>a>svg:last-child {display:none}
+  .world-endgame>a>span {flex:1 1 100%}
+  .student-world :is(.map-page,.practice-engine,.profile-page,.skills-page,.career-page) {width:calc(100% - 24px);padding:18px 0 30px}
+  .student-world :is(.map-page,.practice-engine,.skills-page,.career-page)>header {padding:16px}
+  .student-world :is(.map-page,.practice-engine,.skills-page,.career-page)>header h1 {font-size:1.6rem}
+  .student-world .map-track>article {grid-template-columns:36px minmax(0,1fr);gap:8px}
+  .student-world .map-level-node {width:36px;height:36px;border-width:3px}
+  .student-world .map-track>article::before {inset-inline-start:17px}
+  .student-world .map-level-card>header {padding:14px}
+  .student-world .map-steps {padding:0 10px 12px}
+  .student-world .map-steps>div {grid-template-columns:24px minmax(0,1fr) auto;gap:6px;padding:9px}
+  .student-world .map-steps>div>span {width:24px;height:24px}
+  .student-world .map-level-card h2 {font-size:1.05rem}
+  .student-world .skills-board {gap:16px}
+  .student-world .skills-board>article {padding:14px}
+  .student-world .skills-board h2 {font-size:.9rem}
+  .student-world .skills-board>article>div>span {width:40px;height:46px}
+  .student-world .skills-board>article>div>strong {font-size:1rem}
+  .student-world .profile-hero {grid-template-columns:auto minmax(0,1fr)}
+  .student-world .profile-readiness {grid-column:1/-1}
+  .student-world .profile-next {flex-wrap:wrap;gap:10px}
+  .student-world .profile-next>div {min-width:0;flex:1}
+  .student-world :is(.missions-container,.detective-container) {width:calc(100% - 24px)}
+  .student-world :is(.missions-hero-grid,.detective-hero-grid) {grid-template-columns:1fr;gap:20px}
+  .student-world :is(.missions-hero,.detective-hero) {padding:20px 0}
+  .student-world :is(.mission-card-grid,.detective-case-grid) {grid-template-columns:1fr}
+  .student-world .arena-ref-right,.student-world .arena-ref-left {grid-template-columns:minmax(0,1fr)}
+  .student-world .arena-ref-season {grid-template-columns:1fr}
+  .student-world .game-mobile-nav {display:grid;bottom:0;inset-inline:0;border-radius:16px 16px 0 0;padding:7px 8px calc(7px + env(safe-area-inset-bottom));border-color:#43789f;background:#071c35f5;box-shadow:0 -8px 24px #0005}
+  .student-world .game-mobile-nav a {min-height:48px;font-size:.62rem;color:#b9d4ec}
+  .student-world .game-mobile-nav a:nth-child(3) {background:transparent;color:#b9d4ec}
+  .student-world .game-mobile-nav a[aria-current=page] {color:#fff;background:linear-gradient(#1685f5,#0a53b7);box-shadow:0 0 14px #148dff40}
+  .student-world .dc-footer {padding:24px 16px}
+}
+.world-reward-notice {position:fixed;z-index:120;inset-inline-end:20px;bottom:24px;display:flex;align-items:center;gap:14px;max-width:calc(100% - 32px);padding:18px;border:1px solid #ffe080;border-radius:14px;color:#fff3bd;background:linear-gradient(120deg,#264c67,#102f4c);box-shadow:0 0 35px #ffce532a,0 15px 40px #0005}
+.world-reward-notice>svg {width:35px;height:35px;color:#ffd966}
+.world-reward-notice>div {display:grid;gap:6px}
+.world-reward-notice b {font-size:.95rem}
+.world-reward-notice span {color:#ffe5a1;font-size:.8rem}
+.world-reward-notice button {display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:8px;color:#cee7fb;background:#ffffff10;cursor:pointer}
+.world-reward-notice button svg {width:18px}
+.student-world .arena-page {--bg:#081e36;--card:#102e4b;--text:#e8f4ff;--muted:#b3cde4;--line:#3d6e98;--primary:#77d0ff;background:transparent;color:#eaf4ff}
+.student-world .arena-nav {display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:10px 16px;background:#0b2542;border-bottom:1px solid #35668e}
+.student-world .arena-nav a {display:flex;gap:6px;align-items:center;min-height:42px;padding:8px 12px;border:1px solid #315878;border-radius:7px;color:#b7d8f1;background:#0c2b49;font-size:.75rem}
+.student-world .arena-nav a span {display:inline}
+.student-world .arena-hero {padding:28px 0;border-bottom:1px solid #4382b1;background:radial-gradient(ellipse at 80% 0,#15559260,transparent),#0c2645}
+.student-world .arena-hero-grid {gap:28px;grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr)}
+.student-world .arena-hero h1 {font-size:clamp(1.8rem,3vw,2.7rem);line-height:1.4;margin:14px 0}
+.student-world .arena-hero p {font-size:.95rem}
+.student-world .arena-actions {margin-top:18px}
+.student-world .arena-desk {padding:22px;border-color:#4093c5;background:linear-gradient(135deg,#194c79,#0b2643);box-shadow:0 0 30px #2a97ef20}
+.student-world .arena-primary,.student-world .arena-hero .arena-primary {min-height:46px;color:#fff;border:1px solid #7adfff;background:linear-gradient(#168cfb,#075acb)}
+.student-world .arena-secondary {min-height:44px;color:#b3e1ff;border-color:#517fa5;background:#0f2f4d}
+.student-world :is(.arena-panel,.arena-health,.arena-metrics>div,.career-map>article,.daily-card,.leaderboard-table>article) {border-color:#3d78a5;background:linear-gradient(135deg,#173c5d,#0b2541);color:#eaf4ff}
+.student-world .career-map>article.active {border-color:#73e1ff;box-shadow:0 0 25px #44b9ff25}
+.student-world .career-map>article>span {color:#acdcff;background:#134a76;border:1px solid #5b9fc9;box-shadow:0 0 18px #3bb5ff25}
+.student-world .career-map>article h3,.student-world .arena-section-head h2 {color:#eaf5ff}
+.student-world .arena-panel p,.student-world .career-map>article p {color:#b1cce2;font-size:.85rem}
+.student-world .account-cards button {min-height:44px;background:#123555;border-color:#5c84a5;color:#e4f2ff}
+.student-world .account-cards button.selected {border-color:#79e8ff;background:#195989}
+.student-world .account-cards button.correct {border-color:#63d6b5;background:#126558}
+.student-world .category-targets button {color:#d9edff;border-color:#5086ac;background:#0e2c49}
+.student-world .category-targets small {color:#7edfef;background:#154570}
+.student-world .journal-block {color:#eaf4ff;border-color:#447493;background:#102e49}
+.student-world .journal-block input {min-width:0;max-width:100%;color:#e8f4ff;background:#071d32;border-color:#537b99;font-size:1rem}
+.student-world .arena-dashboard {padding-top:22px}
+.student-world .arena-career-head h1 {font-size:clamp(1.6rem,3vw,2.5rem)}
+.student-world .arena-career-head p {color:#b6cce2}
+.student-world .arena-health article {background:#102e4b;border-color:#437398}
+.student-world .arena-health article span {color:#bed5ea}
+@media(max-width:900px) {
+  .student-world .detective-tabs {display:flex;flex-wrap:wrap;overflow:visible;gap:6px}
+  .student-world .detective-tabs button {flex:1 1 25%;min-height:44px;justify-content:center}
+}
+@media(max-width:700px) {
+  .student-world .arena-hero-grid {grid-template-columns:minmax(0,1fr)}
+  .student-world .arena-nav {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:10px}
+  .student-world .arena-nav a {min-width:0;flex-direction:column;justify-content:center;padding:6px 3px;font-size:.6rem;text-align:center}
+  .student-world .arena-nav a span {display:block}
+  .student-world .arena-game-grid {grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:560px) {
+  .world-reward-notice {bottom:calc(85px + env(safe-area-inset-bottom));inset-inline:12px;padding:12px}
+  .student-world .arena-desk {padding:18px}
+}
+/* Playable mission and investigation rooms, including feedback and result states. */
+.student-world :is(.mission-play-page,.detective-result-page) {color:#eaf4ff;background:transparent}
+.student-world :is(.mission-play-shell,.detective-workspace-shell,.detective-result-shell) {width:min(1280px,calc(100% - 40px));margin-inline:auto}
+.student-world :is(.mission-stage,.detective-panel,.detective-result-section) {color:#eaf4ff;border:1px solid #3e759f;border-radius:14px;background:linear-gradient(135deg,#153958,#0a2340);box-shadow:inset 0 1px #b0deff20}
+.student-world :is(.mission-play-head,.detective-workspace-head) {padding:15px;border:1px solid #366c99;border-radius:12px;background:#0c2949}
+.student-world :is(.mission-play-head,.detective-workspace-head) a {color:#a8dcff}
+.student-world :is(.mission-play-head,.detective-workspace-head) small {color:#b7cfe5}
+.student-world :is(.mission-scenario,.mission-stage,.case-brief) :is(h1,h2) {color:#f0f8ff;font-size:clamp(1.6rem,3vw,2.5rem);line-height:1.4}
+.student-world :is(.mission-scenario,.mission-explanation,.case-brief)>p {color:#bfd4e9;font-size:1rem}
+.student-world .mission-progress {background:#183d5e;border:1px solid #42749a}
+.student-world .mission-progress i {background:linear-gradient(90deg,#1677fa,#65edff);box-shadow:0 0 15px #3fd1ff}
+.student-world :is(.mission-primary,.detective-primary) {min-height:46px;border:1px solid #7fdcff;color:#fff;background:linear-gradient(#128af7,#075acb);box-shadow:inset 0 1px #fff4,0 3px 0 #033372;font-size:.85rem}
+.student-world :is(.mission-secondary,.detective-secondary,.mission-text-btn) {min-height:44px;color:#9dddff;border-color:#5685ab;background:#102f4b}
+.student-world .mission-choices>button {color:#e8f4ff;border-color:#426c90;background:#0b233d;font-size:.95rem}
+.student-world .mission-choices>button.selected {border-color:#57d9ff;background:#174d76;box-shadow:0 0 15px #23b6f425}
+.student-world .mission-choices>button>span {color:#a9dcff;background:#1a4365}
+.student-world :is(.mission-result-grid>div,.detective-result-metrics>div) {color:#eaf5ff;border-color:#427697;background:#103957}
+.student-world :is(.mission-result-icon,.detective-result-icon) {color:#ffe088;background:radial-gradient(#8c6c26,#342d1b);box-shadow:0 0 30px #ffcc4b33}
+.student-world .mission-result-grid small,.student-world .mission-result-grid span {color:#adcce7}
+.student-world .mission-feedback.success {color:#9ff3d2;border:1px solid #3aa185;background:#0d473f}
+.student-world .mission-feedback.error {color:#ffd3cb;border:1px solid #b36564;background:#582c36}
+.student-world .mission-feedback h2 {color:inherit;font-size:1.15rem}
+.student-world .mission-impact-panel {color:#def0ff;border-color:#437293;background:#0b2a45}
+.student-world .mission-impact-panel article {color:#e8f5ff;border-color:#446c8a;background:#143753}
+.student-world .mission-impact-panel article strong {color:#b8d7ee}
+.student-world .mission-impact-panel article.incorrect {border-color:#ad666a;background:#57323d}
+.student-world .mission-journal {color:#e5f3ff;border-color:#5082a6;background:#0b2943}
+.student-world .mission-journal-head,.student-world .mission-journal footer {color:#c1dcf1;background:#153b59}
+.student-world .mission-journal footer b {color:#e6f7ff}
+.student-world .mission-journal-line {border-color:#406580}
+.student-world .mission-journal-line>span {color:#92d9ff}
+.student-world .mission-journal-line small {color:#a9c7df}
+.student-world .mission-result>p {color:#b6cfe3}
+.student-world .detective-sandbox {color:#b2d8ed;border-color:#3c7594;background:#10364c}
+.student-world .detective-session {color:#aecce5}
+.student-world .detective-sandbox b,.student-world .detective-workspace-head>div:nth-child(2) span {color:#83dfff}
+.student-world .detective-workspace-head>div:nth-child(2) {display:block}
+.student-world .detective-workspace-head h1 {color:#eaf5ff;line-height:1.5}
+.student-world .detective-tabs {border-color:#3d759f;background:#0a2440}
+.student-world .detective-tabs button {min-height:48px;color:#b7d0e5;font-size:.8rem}
+.student-world .detective-tabs button.active {color:#fff;background:#115c9f}
+.student-world .case-brief>span,.student-world .detective-panel-title span {color:#83dcff}
+.student-world .case-brief-task {color:#ffe9a9;border-color:#e1ba57;background:#57472255}
+.student-world .case-brief-task small {color:#e6c678}
+.student-world .case-brief-facts>div {color:#deefff;border-color:#3e6e91;background:#0b2844}
+.student-world .case-brief-facts small {color:#a9c8df}
+.student-world .detective-panel-title h2 {color:#eef7ff;font-size:1.5rem}
+.student-world .detective-panel-title small {color:#a8c3dd}
+.student-world .evidence-card {color:#eaf4ff;border-color:#4e80a8;background:#102b46}
+.student-world .evidence-card.opened {border-color:#49ccdf}
+.student-world .evidence-open {color:#eaf4ff}
+.student-world .evidence-open h3 {color:#eaf4ff}
+.student-world .evidence-type>span {color:#90dcff;background:#1a4d75}
+.student-world :is(.evidence-ref,.evidence-details) {color:#b2cfe7;border-color:#42647f}
+.student-world .evidence-details p {color:#c3d8e9;font-size:.9rem}
+.student-world .evidence-actions button {min-height:44px;border-color:#487395;color:#a9dcff;background:#12314b}
+.student-world .evidence-actions button.active {color:#fff;background:#146398}
+.student-world .note-composer {color:#ecf6ff;border-color:#3c749b;background:#0d2944}
+.student-world .note-composer>button {color:#bdd9ee;border-color:#456e8e;background:#173955}
+.student-world .note-composer textarea {color:#f2f8ff;border-color:#6f93b0;background:#081e33;font-size:1rem}
+.student-world .note-stack article {color:#f9e8b5;border-color:#8b7544;background:#4a3e2460}
+.student-world .note-stack article p {color:#f9e8b5}
+.student-world .detective-timeline {color:#d9eeff;border-color:#416b8c;background:#0c2944}
+.student-world .conclusion-evidence label,.student-world .conclusion-options button {color:#eaf5ff;border-color:#477698;background:#102c47}
+.student-world .conclusion-evidence label.selected,.student-world .conclusion-options button.selected {border-color:#72e6ff;background:#174d72}
+.student-world .detective-result-hero {border:1px solid #48b9b3;background:radial-gradient(ellipse at top,#167c8855,transparent),#0a2a43}
+.student-world .detective-result-hero h1 {color:#e8fff5}
+.student-world .detective-result-hero>p {color:#b0d5e4}
+.student-world .detective-result-section>p,.student-world .detective-result-section>ol {color:#bfd4e8}
+.student-world :is(.academy-page,.lesson-page,.course-page) {--bg:#081f39;--card:#102f4d;--text:#e8f4ff;--muted:#b4cce2;--line:#3c678b;--primary:#73ccff}
+.student-world .academy-hero {padding:32px 0}
+.student-world .academy-hero h1 {font-size:2.4rem}
+[dir=rtl] .student-world .game-command :is(p,.world-node-copy>a,.world-node-copy>b,.daily-quests>a>b,.skill-loadout b) {font-size:.9rem;line-height:1.8}
+[dir=rtl] .student-world .world-eyebrow {letter-spacing:0}
+@media(max-width:560px) {
+  .student-world :is(.mission-play-shell,.detective-workspace-shell,.detective-result-shell) {width:calc(100% - 24px)}
+  .student-world :is(.mission-play-page,.detective-workspace) {padding-top:18px}
+  .student-world :is(.mission-stage,.detective-panel) {padding:18px}
+  .student-world .detective-workspace-head {grid-template-columns:1fr;gap:12px}
+  .student-world .detective-workspace-head>div:nth-child(2) {display:block;text-align:start}
+  .student-world .detective-session {justify-self:start}
+  .student-world .detective-tabs {display:flex;flex-wrap:wrap;overflow:visible;gap:6px;padding:8px}
+  .student-world .detective-tabs button {flex:1 1 42%;min-width:0;justify-content:center;padding:8px;font-size:.72rem}
+  .student-world .detective-tabs button svg {width:16px}
+  .student-world .case-brief {padding:0}
+  .student-world .case-brief-facts {grid-template-columns:1fr}
+  .student-world .mission-play-head {flex-wrap:wrap;gap:10px}
+  .student-world :is(.mission-decision-actions,.conclusion-actions) {flex-wrap:wrap}
+  .student-world :is(.mission-primary,.detective-primary) {width:100%;justify-content:center}
+}
+.student-world .skill-tree {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:26px 0}
+.skill-branch {min-width:0}
+.skill-branch>header {display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #5085af;border-radius:12px;color:#cff0ff;background:linear-gradient(120deg,#20577f,#0e2f4f)}
+.skill-branch>header>svg {width:28px;height:28px;color:#7adaff}
+.skill-branch>header small {color:#92badd;font-size:.6rem}
+.skill-branch>header h2 {font-size:1rem;margin:3px 0}
+.student-world .skill-branch .skills-board {grid-template-columns:minmax(0,1fr);gap:22px;margin:22px 10px}
+.student-world .skill-branch .skills-board>article {padding:16px 18px}
+.student-world .skill-branch .skills-board>article:last-child::after {display:none}
+.student-world .skill-branch:nth-child(2)>header {border-color:#6376ba;background:linear-gradient(120deg,#354476,#182c52)}
+.student-world .skill-branch:nth-child(3)>header {border-color:#ad9256;background:linear-gradient(120deg,#5e4e2f,#17334c)}
+.career-ranks {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.career-ranks>article {position:relative;display:flex;align-items:center;gap:10px;padding:17px;border:1px solid #416382;border-radius:12px;color:#9db5cb;background:#0c2945}
+.career-ranks>article>svg {width:36px;height:40px}
+.career-ranks>article>span {display:grid;gap:5px}
+.career-ranks small {font-size:.65rem}
+.career-ranks b {font-size:.8rem}
+.career-ranks .unlocked {color:#ffe19a;border-color:#c2a157;background:linear-gradient(130deg,#62512570,#14334d);box-shadow:0 0 20px #e9b44618}
+@media(max-width:800px) {.student-world .skill-tree {grid-template-columns:minmax(0,1fr)}.student-world .skill-branch .skills-board {grid-template-columns:repeat(2,minmax(0,1fr));margin-inline:0}.career-ranks {grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px) {.student-world .skill-branch .skills-board {grid-template-columns:minmax(0,1fr);margin-inline:12px}.career-ranks>article {padding:12px;gap:6px}.career-ranks>article>svg {width:26px;height:32px}}
+@media(prefers-reduced-motion:reduce) {.world-path .current .world-node {animation:none}}

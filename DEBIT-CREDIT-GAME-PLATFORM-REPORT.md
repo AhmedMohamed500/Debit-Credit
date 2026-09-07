@@ -442,3 +442,29 @@ Verification after this pass:
 - Protected Nature of Accounts regression: Passed
 - Arabic RTL visual browser review: Passed after fixing physical HUD placement
 - English LTR behavior remains covered by the Chapter 1 UI suite
+
+### First Shift Interaction Polish — September 8, 2026
+
+This pass keeps the approved First Shift desk as the base and makes its objects behave more like one connected point-and-click accounting game:
+
+- The laptop is now a live Mizan OS mission surface. It shows the current 0/3 shift progress, inbox count, the status of every document, and Mr. Kareem's current instruction.
+- Mr. Kareem's instruction is presented as a compact in-world dialogue bubble: choose a document, verify the source, classify it, and record the correct entry.
+- The three documents retain their real accounting interactions while using more natural paper angles, overlap, stacked-sheet depth, and hover lift.
+- A correct submission now communicates the full consequence before leaving the workbench: pending documents and pending journal entries both move from 3 to 2, affected accounts show their before/after values, and +100 XP / +50 coins are recorded once.
+- Returning to the desk removes the completed document from active work, animates a recorded paper toward the physical processed tray, and increments the tray count.
+- The bottom HUD is grouped into skill gain, current mission, and total shift reward, so company state remains secondary to the active work.
+- Shift completion now reports documents completed, accuracy, first-attempt completions, hints used, the exact reward, Mr. Kareem's reaction, and a locked Chapter 2 teaser.
+- The document workbench follows the explicit gameplay sequence: Inspect → Build Entry → Consequence → Return to Desk.
+
+No other chapter or product area was expanded. The internal Nature of Accounts / طبيعة الحسابات module remains unchanged and is referenced only through its existing manual link.
+
+Verification for this polish:
+
+- Targeted Chapter 1 tests: 12 passed
+- Full verification: 178 tests passed across 22 files
+- ESLint, TypeScript, and production build: Passed
+- Protected Nature of Accounts regression: Passed
+- Desktop Arabic visual capture: `artifacts/first-shift-polished-ar.png`
+- Opened document interaction capture: `artifacts/first-shift-document-ar.png`
+- 390px opened-document capture: `artifacts/first-shift-mobile-ar.png`
+- 390px horizontal overflow check: Passed (0px overflow)

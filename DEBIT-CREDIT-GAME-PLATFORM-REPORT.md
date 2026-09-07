@@ -353,3 +353,64 @@ The original `debit-credit-storage-migration-v1` FINORA educational migration re
 ### Final Result
 
 Debit & Credit now presents one accounting game journey: the learner has a current level, objective, mission, reward, measurable skills, competition path, career-readiness explanation, and a demo path for company discovery. Existing educational content remains available inside that journey rather than behaving like disconnected products.
+
+## Chapter 1 — Cinematic Accounting Game Loop
+
+### What was wrong before
+
+The First Day route used a timed sequence over one static image, complete with simulated playback and progress controls. That made a poster look like a video and moved the player forward automatically. After it ended, the composition returned to a conventional dashboard: a wide status header, a large stepper, a mission banner, three persistent cards, and a company panel with similar visual weight to the actual work.
+
+### Implemented game flow
+
+Chapter 1 is now a deliberate, player-controlled sequence:
+
+1. Cinematic entry poster; nothing auto-starts.
+2. `Start Story` reveals the media state.
+3. The repository contains no `.mp4` or `.webm`, so the component honestly displays `المقدمة السينمائية ستتوفر هنا` / `Cinematic introduction will be available here` and identifies the image as a static preview.
+4. `Enter Company` is a separate manual action.
+5. Mr. Kareem delivers the Finance Manager briefing.
+6. `Show Me The Desk` enters the playable office.
+7. The player chooses any remaining physical document, inspects it, builds a debit/credit entry, submits it, and receives immediate accounting and business feedback.
+8. A correctly processed paper leaves the active desk and moves to the processed count, so the desk visibly cleans from 3 → 2 → 1 → 0.
+9. Shift Complete calculates accuracy, attempts, and hints from stored evidence, shows Mr. Kareem's reaction, displays the earned total, and teases the locked Chapter 2: **THE MISSING MONEY**.
+
+The media component is ready for real video sources and includes real play/pause, mute, replay, skip, and ended-state behavior only when an actual source exists. It does not render simulated video controls for the current poster fallback.
+
+### Playable documents and accounting consequences
+
+- Supplier Invoice: Dr Office Equipment / Cr Accounts Payable, EGP 100,000. Equipment and supplier balances each move from their real prior value to the updated value.
+- Customer Receipt: Dr Bank / Cr Accounts Receivable, EGP 75,000. Bank rises and the customer balance falls.
+- Office Expense: Dr Office Supplies Expense / Cr Cash, EGP 2,500. Cash and net profit both fall.
+
+Incorrect entries are not posted to the journal and do not receive rewards. They record evidence and expose the specific business consequence, such as an unreconciled bank amount or an overstated profit. Correct unique submissions persist the journal entry, company state, evidence, reward key, XP, and coins in the existing game store.
+
+Reward model: **+100 XP and +50 coins per unique document**, for an exact shift total of **+300 XP and +150 coins**. Re-submitting an already completed document cannot duplicate the reward.
+
+### Composition and responsive behavior
+
+The accounting desk is now the dominant play surface, while the live company panel is visually secondary. The chapter stepper was reduced to a compact story timeline. Desktop supports the full desk composition, and the existing responsive rules plus the Chapter 1 refinements stack documents and workbench actions at mobile widths down to 390px without horizontal document rows.
+
+Arabic remains RTL-first and English remains LTR. The new entry, briefing, desk, journal interaction, consequences, rewards, completion screen, and teaser are localized in both languages.
+
+### Protected module
+
+The internal Nature of Accounts / طبيعة الحسابات implementation was not modified. Its protected regression test still passes. Chapter 1 only links to it as the existing accounting manual.
+
+### Verification
+
+- `npm run check`: **Passed**
+- ESLint: **Passed with zero warnings**
+- TypeScript: **Passed**
+- Test files: **22 passed**
+- Automated tests: **178 passed**
+- Production build: **Passed**
+- Protected Nature of Accounts regression: **Passed**
+- Manual browser QA: Arabic cinematic entry, honest poster fallback, Finance Manager briefing, desk, and document inspection verified
+- Intro auto-start: **Absent**
+- Fake video controls on poster fallback: **Absent**
+- Chapter 2 implementation: **Not started; teaser only**
+
+### Screenshot-ready route
+
+- Arabic: `/ar`
+- English: `/en`

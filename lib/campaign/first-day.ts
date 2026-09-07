@@ -2,22 +2,23 @@ import { w,type Account,type Attempt,type GameState,type Line,type Words } from 
 
 export type FirstDayDocumentId='supplier-invoice'|'customer-receipt'|'office-expense';
 export type FirstDayDocument={id:FirstDayDocumentId;number:string;title:Words;party:Words;subtitle:Words;date:Words;amount:number;accent:'blue'|'green'|'orange';details:{label:Words;value:Words}[];expected:Line[]};
-export type FirstDayProgress={cinematicSeen:boolean;introVersion:number;opened:FirstDayDocumentId[];completed:FirstDayDocumentId[];selected:FirstDayDocumentId|null;rewarded:boolean;completionSeen:boolean;mistakes:Partial<Record<FirstDayDocumentId,number>>};
+export type FirstDayProgress={cinematicSeen:boolean;deskEntered:boolean;introVersion:number;opened:FirstDayDocumentId[];completed:FirstDayDocumentId[];selected:FirstDayDocumentId|null;rewarded:boolean;completionSeen:boolean;mistakes:Partial<Record<FirstDayDocumentId,number>>};
 export type FirstDayCompanyState={assets:number;liabilities:number;revenue:number;profit:number;cash:number;bank:number;supplierBalance:number;customerBalance:number;pendingDocuments:number;pendingEntries:number;monthEndProgress:number;ledgerErrors:number;unreconciledAmount:number};
 
 export const FIRST_DAY_KEY='first-day';
-export const FIRST_DAY_INTRO_VERSION=3;
-export const DOCUMENT_REWARD={xp:25,coins:10};
-export const MISSION_REWARD={xp:100,coins:50};
+export const FIRST_DAY_INTRO_VERSION=5;
+export const DOCUMENT_REWARD={xp:100,coins:50};
+export const MISSION_REWARD={xp:0,coins:0};
 export const firstDayDocuments:FirstDayDocument[]=[
  {id:'supplier-invoice',number:'INV-1048',title:w('Supplier Invoice','فاتورة مورد'),party:w('Al-Noor Supplies','النور للتوريدات'),subtitle:w('Office furniture received on credit','أثاث مكتبي تم استلامه على الحساب'),date:w('12 Mar 2024','١٢ مارس ٢٠٢٤'),amount:100000,accent:'blue',details:[{label:w('Office desks','مكاتب إدارية'),value:w('3 × EGP 30,000','٣ × ٣٠٬٠٠٠ جنيه')},{label:w('Office chairs','كراسي مكتبية'),value:w('5 × EGP 2,000','٥ × ٢٬٠٠٠ جنيه')},{label:w('Payment','السداد'),value:w('Due in 30 days','آجل خلال ٣٠ يومًا')}],expected:[{account:'equipment',debit:100000,credit:0},{account:'suppliers',debit:0,credit:100000}]},
  {id:'customer-receipt',number:'REC-4587',title:w('Customer Receipt','سند قبض عميل'),party:w('Elite Stores','إيليت ستورز'),subtitle:w('Collection of an existing receivable','تحصيل مديونية عميل قائمة'),date:w('12 Mar 2024','١٢ مارس ٢٠٢٤'),amount:75000,accent:'green',details:[{label:w('Receipt no.','رقم السند'),value:w('4587','٤٥٨٧')},{label:w('Method','الطريقة'),value:w('Bank transfer','تحويل بنكي')},{label:w('Reference','المرجع'),value:w('Old customer invoice','فاتورة عميل سابقة')}],expected:[{account:'bank',debit:75000,credit:0},{account:'customers',debit:0,credit:75000}]},
  {id:'office-expense',number:'PV-2201',title:w('Office Expense','مصروف مكتب'),party:w('QuickMart','كويك مارت'),subtitle:w('Stationery paid immediately','أدوات مكتبية مدفوعة فورًا'),date:w('12 Mar 2024','١٢ مارس ٢٠٢٤'),amount:2500,accent:'orange',details:[{label:w('Items','البيان'),value:w('Stationery & office tools','أدوات كتابية ومكتبية')},{label:w('Method','الطريقة'),value:w('Petty cash','نقدية من الصندوق')},{label:w('Period','الفترة'),value:w('Current month','الشهر الحالي')}],expected:[{account:'officeExpense',debit:2500,credit:0},{account:'cash',debit:0,credit:2500}]},
 ];
 
-export const emptyFirstDay=():FirstDayProgress=>({cinematicSeen:false,introVersion:0,opened:[],completed:[],selected:null,rewarded:false,completionSeen:false,mistakes:{}});
+export const emptyFirstDay=():FirstDayProgress=>({cinematicSeen:false,deskEntered:false,introVersion:0,opened:[],completed:[],selected:null,rewarded:false,completionSeen:false,mistakes:{}});
 export function firstDayProgress(s:GameState):FirstDayProgress{const saved=(s.legacy[FIRST_DAY_KEY] as Partial<FirstDayProgress>|undefined)??{};return {...emptyFirstDay(),...saved,mistakes:{...saved.mistakes}};}
 export function completeFirstDayIntro(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),cinematicSeen:true,introVersion:FIRST_DAY_INTRO_VERSION});}
+export function enterFirstDayDesk(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),deskEntered:true});}
 export function selectFirstDayDocument(s:GameState,id:FirstDayDocumentId):GameState{const p=firstDayProgress(s);return saveProgress(s,{...p,selected:id,opened:[...new Set([...p.opened,id])]});}
 export function closeFirstDayDocument(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),selected:null});}
 export function markFirstDayCompletionSeen(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),completionSeen:true});}

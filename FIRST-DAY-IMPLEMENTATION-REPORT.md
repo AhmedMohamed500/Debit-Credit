@@ -87,6 +87,15 @@ Results:
 - Arabic: `/ar`
 - English: `/en`
 
+## Published review
+
+- GitHub branch: `codex/first-day-cinematic`
+- GitHub pull request: <https://github.com/AhmedMohamed500/Debit-Credit/pull/1>
+- Vercel Arabic preview: <https://debit-credit-git-codex-1cf0d2-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar>
+- Vercel English preview: <https://debit-credit-git-codex-1cf0d2-ahmed-mohameds-projects-c51bc2cc.vercel.app/en>
+
+The Vercel deployment completed successfully through the repository integration and the Arabic route was visually verified after publication.
+
 ## Scope boundary
 
 This release proves the First Day gameplay and visual direction only. No Chapter 2 gameplay or wider platform redesign is included.

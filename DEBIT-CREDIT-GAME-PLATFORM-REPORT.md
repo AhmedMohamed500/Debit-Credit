@@ -2,6 +2,93 @@
 
 ## by Money Coder
 
+## Real Accounting Game Platform — 2026-09-07 release
+
+This section supersedes the historical report below. It documents the implementation actually shipped, not the complete long-term product vision.
+
+### Product Philosophy / Game vs Academy
+
+The player enters Mizan Trading as an accounting trainee. The home screen is an interactive office, not a course catalog. The loop is: receive a manager request → inspect source documents → decide or assemble a journal → receive accounting consequences → correct the draft → update accepted company records → complete the shift → earn a one-time reward → unlock the next responsibility.
+
+### First five minutes
+
+Start the first shift, open CAP-001 / INV-014 / RENT-01, sort the documents, distinguish owner capital from revenue, and assemble a balanced EGP 20,000 cash investment entry. The accepted entry updates cash. Finishing the mission awards 80 XP and 25 coins. The desk-clearance boss unlocks when the preceding mission reaches 70% mastery. Drafts, document inspection, hints, failures and stage position survive navigation and reload.
+
+### Game World / Company State
+
+Interactive desk objects: incoming documents, journal, ledger balances, cash drawer, bank and calculator. Short manager messages introduce cases. The company chart includes cash, bank, inventory, equipment, receivables, payables, capital, revenue, rent, salaries, accruals and depreciation. Some account types are available in the chart but are not transacted in the initial campaign.
+
+Company figures derive from accepted journal lines. Failed drafts are held for correction rather than silently corrupting the accepted books. Replaying an accepted journal does not duplicate its financial effect. INV-014 persists across document inspection, journal entry, posting, supplier verification and later reports.
+
+The full campaign test finishes with cash 18,300; bank 7,600; inventory 6,000; liabilities 6,800; loss 2,700; net assets 34,100; and zero trial-balance difference (EGP).
+
+### Chapters / Missions / Boss Missions
+
+| Chapter | Playable work | Boss |
+| --- | --- | --- |
+| First Day | Three papers; sort; capital effect; first entry | Desk clearance: supplier invoice, rent, cash control |
+| The First Shift | Trace and post INV-014; verify supplier debt | First shift review |
+| The Missing Money | Inspect missing salary voucher; correct cash | Save the drawer |
+| The Messy Ledger | Identify duplicate supplier posting | Ledger sign-off |
+| Month-End Is Coming | Record unpaid salary accrual | Deadline review |
+| The Numbers Don't Match | Investigate a copied balance error | Trial balance rescue |
+| The CFO Wants Reports | Derive loss and financial position | CFO review |
+| The Promotion | Full month-end document and accounting chain | The Month-End File |
+
+There are 15 campaign missions, including eight bosses. The final file has document review, capital and equipment journals, posting, bank reconciliation, trial balance, depreciation, financial statements and final review. Boss assessment scores preserve first-run performance separately from best-run results.
+
+### Mini Games / Daily Play
+
+Ten playable Arena modes: Document Sort, Debit/Credit Rush, Build the Entry, Find the Error, Bank Match, Trial Balance Rescue, Month-End Rush, Account Classification, Memory Match and Accounting Chain. These use tap/select controls, journal assembly, numeric controls and memory reveal/hide interactions. Sessions last 90–180 seconds with accuracy, combos, personal bests and stored responses. Daily rewards require at least 70% accuracy and are awarded once per mode/date. Weekly boss practice selects an unlocked campaign boss; it is not a live multiplayer competition.
+
+### Journey Director / Progression / Rewards
+
+`lib/campaign/model.ts`, `content.ts`, `director.ts`, `arcade.ts` and `store.ts` define the active game. Stable mission/stage IDs identify campaign evidence; Arena has its own explicit activity IDs. The director chooses the next eligible mission, validates stage submissions, saves consequences, calculates mastery and records rewards. Mission completion and 70% mastery gate subsequent missions; XP alone never unlocks chapters. Existing active drafts are retained when a different mission is requested.
+
+Campaign rewards are one-time per mission; Arena rewards are one-time per mode/date. Stars reflect run performance. Coins buy desk lighting and a document organizer; upgrades cannot be purchased twice. Streaks are calculated from active dates and expire. The UI exposes a sound-ready state-change event; no audio files or external sound service were added.
+
+### Skill Evidence / Career Readiness
+
+Each submission stores activityId, missionId, chapterId, skillId, difficulty, accuracy, attempts, hintsUsed, completionTime, independentCompletion, criticalErrors, score, completedAt, mode, response and correctness. Mission results retain firstScore, bestScore, runs and stars. Opening the manual from an active mission counts as assistance without changing the manual itself.
+
+The career card reports seven skill families using first-attempt evidence, independent accuracy, difficulty coverage, mastered bosses and final-file performance. Arcade evidence is practice-only and does not inflate readiness. Readiness is capped below 80 until the final first-run score reaches 70. The in-game ready status requires readiness ≥80 and a qualifying final file. This is a transparent game indicator, not validated employment eligibility or accredited certification.
+
+### Future Real Employer Architecture / Company Challenges
+
+The separate `/companies` preview shows the actual local player's evidence, explicitly labeled local and unverified. Evidence can be exported as JSON. The domain includes company identity, challenge origin, assessment policy, difficulty and required skills for future employer-authored cases. Real accounts, consent-based discovery, server-side validation, anti-cheat controls, recruitment and contact services remain future work; none is simulated as live functionality.
+
+### Nature of Accounts Protection
+
+The internal component, data and route remain unchanged. A regression test verifies normalized SHA-256 fingerprints for all three protected files. An external return link restores the office context. The original internal Return to game route also redirects to the office.
+
+### Arabic / English / Mobile
+
+New game content and controls support Arabic RTL and English LTR. The office uses touch controls, compact active-mission layout, visible focus styles, modal focus handling, and reduced-motion CSS. Prior local UI checks exercised the English first mission, a deliberately incorrect capital decision, document inspection, saved journal draft after manual navigation, and Arabic office at 390px without horizontal overflow. Final production checks are recorded in the publication addendum.
+
+### Storage / Compatibility / Known Limits
+
+- Active gameplay uses `debit-credit-world-v2` with same-tab and cross-tab notifications and a visible storage-failure warning.
+- Existing educational progress is archived without granting unsupported mastery. The allowlisted FINORA educational migration remains; operational/business keys are not accessed.
+- Four primary destinations: Office, Campaign, Arena, Profile. Employer preview is separate.
+- Old course, mission, Money Flow, Detective and practice URLs redirect to Campaign; skills/career redirect to Profile; daily/leaderboard redirect to Arena. Original engine source remains in the repository, but this release replaces their route-level experiences rather than fully embedding every old engine.
+- Legacy `practice?track=...` does not automatically open a track-specific stage; it reaches Campaign. Mapping every legacy deep link to an exact new stage remains future integration work.
+- Campaign content is a finite scripted company case, not a general ERP simulator. Replays retain accepted books and do not create duplicate transactions. Some later controls are numeric puzzles rather than fully editable ledgers or financial statement workpapers.
+- Browser storage and exported evidence can be edited by the user and must not be treated as verified professional assessment data.
+
+### Tests / Build
+
+`npm run check` passed: ESLint (zero warnings), TypeScript, **169 tests across 21 files**, and Next.js production build. New tests cover first-desk UI, canonical IDs, progression, company totals, exact resume, first attempts, hints, mastery gates, rewards, all ten Arena modes, memory inspection, timeouts and employer evidence mapping. Nature of Accounts regression protection passes.
+
+### Publication
+
+Repository: https://github.com/AhmedMohamed500/Debit-Credit — branch `main`.
+Production: https://debit-credit-nine.vercel.app.
+This release is published through the repository's existing Vercel integration. Exact commit and verified deployment outcome are recorded in the publication addendum after the push.
+
+---
+
+## Historical report — previous release (not the current architecture)
+
 ## Game-Based Accounting Learning Platform Final Report
 
 ### Project Audit

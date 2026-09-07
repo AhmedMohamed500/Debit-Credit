@@ -1,2 +1,3 @@
-import { CompaniesLanding } from "@/components/companies/companies-landing";import type { Locale } from "@/types";
-export default async function Page({params}:{params:Promise<{locale:Locale}>}){const{locale}=await params;return <CompaniesLanding locale={locale}/>}
+import { GameApp } from '@/components/campaign/game-app';
+import type { Locale } from '@/types';
+export default async function Page({params}:{params:Promise<{locale:Locale}>}){const {locale}=await params;return <GameApp locale={locale} view="employer"/>;}

@@ -1,4 +1,2 @@
-import { MoneyFlowHome } from "@/components/money-flow/money-flow-home";
-import type { Locale } from "@/types";
-
-export default async function MoneyFlowPage({params}:{params:Promise<{locale:Locale}>}){const {locale}=await params;return <MoneyFlowHome locale={locale}/>;}
+import { redirect } from 'next/navigation';
+export default async function Page({params}:{params:Promise<{locale:string}>}){const {locale}=await params;redirect(`/${locale}/campaign`);}

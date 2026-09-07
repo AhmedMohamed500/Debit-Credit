@@ -1,2 +1,2 @@
-import { TalentDashboard } from "@/components/companies/talent-dashboard";import type { Locale } from "@/types";
-export default async function Page({params}:{params:Promise<{locale:Locale}>}){const{locale}=await params;return <TalentDashboard locale={locale}/>}
+import { redirect } from 'next/navigation';
+export default async function Page({params}:{params:Promise<{locale:string}>}){const {locale}=await params;redirect(`/${locale}/companies`);}

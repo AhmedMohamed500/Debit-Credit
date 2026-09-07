@@ -1,0 +1,10 @@
+import {afterEach,beforeEach,describe,it,expect} from 'vitest';
+import {cleanup,fireEvent,render,screen} from '@testing-library/react';
+import {GameApp} from '@/components/campaign/game-app';
+import {GAME_KEY,readGame} from '@/lib/campaign/store';
+beforeEach(()=>localStorage.clear());afterEach(cleanup);
+describe('playable first desk UI',()=>{
+ it('starts gameplay from an actual shift and cannot claim uninspected evidence',()=>{render(<GameApp locale="en"/>);fireEvent.click(screen.getAllByRole('button',{name:'START SHIFT'})[0]);expect(screen.getByRole('heading',{name:'Open the evidence'})).toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'ACCEPT FILE'}));expect(screen.getByRole('status')).toHaveTextContent('Some evidence is still unopened');expect(readGame().xp).toBe(0);expect(localStorage.getItem(GAME_KEY)).toBeTruthy();});
+ it('opens actual documents and advances only after all are inspected',()=>{render(<GameApp locale="en"/>);fireEvent.click(screen.getAllByRole('button',{name:'START SHIFT'})[0]);for(const name of ['CAP-001 Owner deposit','INV-014 Supplier invoice','RENT-01 Office rent receipt']){fireEvent.click(screen.getByRole('button',{name}));expect(screen.getByRole('dialog')).toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Back to task'}));}fireEvent.click(screen.getByRole('button',{name:'ACCEPT FILE'}));fireEvent.click(screen.getByRole('button',{name:'CONTINUE'}));expect(screen.getByRole('heading',{name:'Route the paperwork'})).toBeInTheDocument();expect(readGame().active?.stage).toBe(1);});
+ it('renders the Arabic touch flow and only four primary navigation choices',()=>{render(<GameApp locale="ar"/>);expect(screen.getByRole('navigation',{name:'تنقل اللعبة'}).querySelectorAll('a')).toHaveLength(4);fireEvent.click(screen.getAllByRole('button',{name:'ابدأ الوردية'})[0]);expect(screen.getByRole('heading',{name:'افتح المستندات'})).toBeInTheDocument();expect(screen.getByRole('link',{name:'دليل الحسابات'})).toHaveAttribute('href','/ar/account-guide');});
+});

@@ -1,0 +1,10 @@
+import {describe,it,expect} from 'vitest';
+import {arcadeActivityIds,arcadeModes,arcadeQuestions,arcadeDraft,hideMemory,revealMemory,startArcadeRound,submitArcade,type ArcadeKind} from '@/lib/campaign/arcade';
+import {candidateEvidence,initialState,resumePoint,safeLoad,startMission} from '@/lib/campaign/director';
+describe('ten real arcade modes',()=>{
+ for(const kind of Object.keys(arcadeModes) as ArcadeKind[])it(`scores actual ${kind} play and preserves canonical evidence`,()=>{let s=startArcadeRound(initialState(),kind,`${kind}:2026-09-07`,1000);const questions=arcadeQuestions(kind);for(const q of questions){if(kind==='memory'){for(let i=0;i<3;i++)s=revealMemory(s,i);s=hideMemory(s);}s=submitArcade(s,q.answer,2000);}expect(s.arcade?.finished).toBe(true);expect(s.arcadeBest[kind]).toBe(100);expect(s.evidence).toHaveLength(questions.length);expect(s.evidence.every(e=>arcadeActivityIds.includes(e.activityId))).toBe(true);expect(candidateEvidence(s).summary.readiness).toBe(0);});
+ it('has no duplicate activity identifiers',()=>{expect(new Set(arcadeActivityIds).size).toBe(arcadeActivityIds.length);});
+ it('resumes a typed arcade journal without replacing the campaign run',()=>{let s=startMission(initialState(),'first-desk');const campaign=resumePoint(s);s=startArcadeRound(s,'entry','entry:day',1000);s=arcadeDraft(s,'[{"account":"cash","debit":3000,"credit":0}]');s=safeLoad(JSON.stringify(s));expect(s.arcade?.draft).toContain('3000');expect(resumePoint(s)).toEqual(campaign);});
+ it('requires memory inspection before accepting a hidden match',()=>{let s=startArcadeRound(initialState(),'memory','memory:day',1000);s=hideMemory(s);expect(s.arcade?.memoryReviewed).toBe(false);s=submitArcade(s,'receivable',2000);expect(s.arcade?.correct).toBe(0);});
+ it('records wrong and timed-out responses instead of fake 100% completion',()=>{let s=startArcadeRound(initialState(),'bank','bank:day',1000);s=submitArcade(s,'wrong',2000);s=submitArcade(s,'timeout',95000);expect(s.arcadeBest.bank).toBe(0);expect(s.coins).toBe(0);expect(s.evidence[0].accuracy).toBe(0);});
+});

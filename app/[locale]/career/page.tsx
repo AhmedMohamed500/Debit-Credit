@@ -1,7 +1,2 @@
-import { CareerDashboard } from "@/components/game/career-dashboard";
-import type { Locale } from "@/types";
-
-export default async function Page({ params }: { params: Promise<{ locale: Locale }> }) {
-  const { locale } = await params;
-  return <CareerDashboard locale={locale} />;
-}
+import { redirect } from 'next/navigation';
+export default async function Page({params}:{params:Promise<{locale:string}>}){const {locale}=await params;redirect(`/${locale}/profile`);}

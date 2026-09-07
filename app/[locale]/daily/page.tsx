@@ -1,2 +1,2 @@
-import { ArenaApp } from "@/components/arena/arena-app"; import type { Locale } from "@/types";
-export default async function Page({params}:{params:Promise<{locale:Locale}>}){const{locale}=await params;return <ArenaApp locale={locale} view="daily"/>}
+import { redirect } from 'next/navigation';
+export default async function Page({params}:{params:Promise<{locale:string}>}){const {locale}=await params;redirect(`/${locale}/arena`);}

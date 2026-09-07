@@ -1,6 +1,2 @@
-import { notFound } from "next/navigation";
-import { DetectiveWorkspace } from "@/components/detective/detective-workspace";
-import { detectiveCases, getDetectiveCase } from "@/data/detective/cases";
-import type { Locale } from "@/types";
-export function generateStaticParams(){return ["ar","en"].flatMap(locale=>detectiveCases.map(item=>({locale,slug:item.slug})));}
-export default async function Page({params}:{params:Promise<{locale:Locale;slug:string}>}){const{locale,slug}=await params,caseDefinition=getDetectiveCase(slug);if(!caseDefinition)notFound();return <DetectiveWorkspace locale={locale} caseDefinition={caseDefinition}/>;}
+import { redirect } from 'next/navigation';
+export default async function Page({params}:{params:Promise<{locale:string}>}){const {locale}=await params;redirect(`/${locale}/campaign`);}

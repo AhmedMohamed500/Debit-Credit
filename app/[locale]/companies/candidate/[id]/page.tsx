@@ -1,2 +1,2 @@
-import { CandidateProfile } from "@/components/companies/candidate-profile";import type { Locale } from "@/types";
-export default async function Page({params}:{params:Promise<{locale:Locale;id:string}>}){const{locale,id}=await params;return <CandidateProfile locale={locale} id={id}/>}
+import { redirect } from 'next/navigation';
+export default async function Page({params}:{params:Promise<{locale:string}>}){const {locale}=await params;redirect(`/${locale}/companies`);}

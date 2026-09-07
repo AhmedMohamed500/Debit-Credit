@@ -1,0 +1,13 @@
+export type Words = { ar: string; en: string };
+export const w = (en: string, ar: string): Words => ({ en, ar });
+export type Skill = 'analysis'|'journal'|'posting'|'reconciliation'|'adjustments'|'statements'|'investigation';
+export type Account = 'cash'|'bank'|'inventory'|'equipment'|'customers'|'suppliers'|'capital'|'revenue'|'rent'|'salary'|'accrual'|'depreciation'|'accumulated';
+export type Line = { account: Account; debit: number; credit: number };
+export type Document = { id: string; title: Words; issuer: Words; detail: Words; amount: number; category: string };
+export type Stage = { id: string; kind: 'inspect'|'sort'|'choice'|'journal'|'number'|'order'; title: Words; prompt: Words; skill: Skill; documentIds?: string[]; options?: { id: string; label: Words }[]; answer?: string; journal?: Line[]; effect?: string; consequence: Words; hint: Words };
+export type Mission = { id: string; chapter: number; title: Words; message: Words; speaker: Words; boss: boolean; difficulty: 1|2|3; stages: Stage[]; requires: string[]; reward: { xp: number; coins: number }; mode: 'practice'|'assessment'; origin: 'mizan'|'employer'; companyId: string };
+export type Attempt = { activityId: string; missionId: string; chapterId: number; skillId: Skill; difficulty: number; accuracy: number; attempts: number; hintsUsed: number; completionTime: number; independentCompletion: boolean; criticalErrors: number; score: number; completedAt: string; mode: 'practice'|'assessment'; response: string; correct: boolean };
+export type Run = { missionId: string; stage: number; draft: string; inspected: string[]; startedAt: number; stageStartedAt: number; hints: number; tries: number; passed: boolean; feedback: 'correct'|'wrong'|null; attempts: Attempt[] };
+export type Result = { firstScore: number; bestScore: number; runs: number; stars: number; independent: boolean; completedAt: string };
+export type ArcadeRun = { kind: import('./arcade').ArcadeKind; key: string; index: number; correct: number; combo: number; bestCombo: number; startedAt: number; answers: { answer: string; correct: boolean; elapsed: number }[]; finished: boolean; draft?:string; memoryOpen?:number[]; memoryReviewed?:boolean };
+export type GameState = { version: 2; name: string; xp: number; coins: number; active: Run|null; completed: Record<string,Result>; evidence: Attempt[]; journal: { id: string; documentIds: string[]; lines: Line[] }[]; posted: string[]; reconciled: string[]; unlocked: string[]; upgrades: string[]; activeDays: string[]; arcade: ArcadeRun|null; arcadeBest: Record<string,number>; rewardKeys: string[]; legacy: Record<string,unknown>; storageWarning?: string };

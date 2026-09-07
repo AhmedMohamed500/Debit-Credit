@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { ArcadePanel } from './arcade-panel';
 import { JournalBuilder } from './journal-builder';
+import { FirstDayScreen } from './first-day-screen';
 import { useEffect, useRef, useState } from 'react';
 import { Archive, BookOpen, Briefcase, Calculator, Check, ChevronRight, Coins, FileText, Flag, Flame, Lock, ShieldCheck, Swords, Trophy, X, Zap } from 'lucide-react';
 import { accounts, categories, chapters, documents, getMission, missions } from '@/lib/campaign/content';
@@ -10,7 +11,8 @@ import { archiveLegacyEducation, useGame } from '@/lib/campaign/store';
 import type { Account, Words } from '@/lib/campaign/model';
 import type { Locale } from '@/types';
 
-export function GameApp({locale,view='office'}:{locale:Locale;view?:'office'|'campaign'|'arena'|'profile'|'employer'}){
+export function GameApp({locale,view='office'}:{locale:Locale;view?:'office'|'campaign'|'arena'|'profile'|'employer'}){return view==='office'?<FirstDayScreen locale={locale}/>:<LegacyGameApp locale={locale} view={view}/>;}
+function LegacyGameApp({locale,view}:{locale:Locale;view:'office'|'campaign'|'arena'|'profile'|'employer'}){
  const {state:s,ready,change}=useGame();const ar=locale==='ar';const t=(v:Words)=>v[locale];const say=(en:string,arText:string)=>ar?arText:en;
  const dialogRef=useRef<HTMLElement>(null);
  const [object,setObject]=useState<string|null>(null);const [calc,setCalc]=useState({a:'',b:'',op:'+'});

@@ -83,7 +83,18 @@ New game content and controls support Arabic RTL and English LTR. The office use
 
 Repository: https://github.com/AhmedMohamed500/Debit-Credit — branch `main`.
 Production: https://debit-credit-nine.vercel.app.
-This release is published through the repository's existing Vercel integration. Exact commit and verified deployment outcome are recorded in the publication addendum after the push.
+This release is published through the repository's existing Vercel integration.
+
+### Publication addendum — verified 2026-09-07
+
+- Implementation commit: `0225188` — `feat: ship Mizan accounting campaign and playable arcade`.
+- GitHub push: successful to `origin/main`.
+- Vercel implementation deployment: **success**, provider status “Deployment has completed”.
+- Deployment record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/7f34hTNVVvpYgdptvd1ezCxJAaB3.
+- Production Arabic homepage visibly displays the new Mizan office and Start Shift controls.
+- Production 390px checks passed on `/ar`, `/en`, `/ar/arena`, `/en/arena`, `/ar/campaign`, `/en/profile`: document width 375px within a 390px viewport; no horizontal overflow.
+- Browser error/warning log for these checks: empty.
+- The documentation-only follow-up commit records this evidence and is also pushed to `main`; it does not change the tested application code.
 
 ---
 

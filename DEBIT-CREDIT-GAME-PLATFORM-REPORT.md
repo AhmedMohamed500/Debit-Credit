@@ -414,3 +414,31 @@ The internal Nature of Accounts / طبيعة الحسابات implementation was
 
 - Arabic: `/ar`
 - English: `/en`
+
+### First Shift Visual Target Pass — September 7, 2026
+
+The First Shift desk was rebuilt around the supplied target composition instead of the earlier two-column dashboard composition.
+
+- Added a dedicated photorealistic environment asset at `public/game/first-shift-desk-v2.png`.
+- The asset was generated as a clean environment layer with no baked interface, documents, branding, people, or fake controls. All papers, buttons, state, and dialogue remain real accessible HTML.
+- The office scene now fills the playable viewport: warm wooden desk, daylight skyline, laptop, books, plants, calculator, coffee, inbox, and processed tray.
+- The three interactive documents sit physically on the central desk and keep their slight paper rotations, clips, stacked sheets, numbered badges, details, and real open actions.
+- Company state is now a compact translucent HUD fixed to the physical left side.
+- The First Shift briefing and Mr. Kareem dialogue are compact overlays fixed to the physical right side in both RTL and LTR.
+- Story progress is a small floating cinematic strip rather than a page section.
+- XP, coins, shift reward, pending work, and skill gain are compact overlays around the scene.
+- Correct completion continues to remove the paper from the live desk and increment the processed tray, preserving the visible 3 → 2 → 1 → 0 game loop.
+- At mobile widths, the environment becomes the opening game scene and the documents stack vertically with touch-sized actions and no horizontal document strip.
+
+Scope remained limited to Chapter 1 First Shift visual composition. Arena, Career, Companies, Skills, other chapters, and the internal Nature of Accounts module were not modified.
+
+Verification after this pass:
+
+- `npm run check`: Passed
+- ESLint: Passed with zero warnings
+- TypeScript: Passed
+- Automated tests: 178 passed across 22 files
+- Production build: Passed
+- Protected Nature of Accounts regression: Passed
+- Arabic RTL visual browser review: Passed after fixing physical HUD placement
+- English LTR behavior remains covered by the Chapter 1 UI suite

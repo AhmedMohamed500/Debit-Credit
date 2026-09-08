@@ -539,3 +539,11 @@ Review captures:
 - Arabic mobile: `artifacts/account-manual-mobile-ar.png`
 
 Browser verification covers Arabic and English rendering, search, six category filters, account selection, 390px mobile tabs, compatibility routes, return context and zero horizontal overflow. Detailed section documentation is in `NATURE-OF-ACCOUNTS-REPORT.md`.
+
+Preview publication:
+
+- Implementation commit: `55dc688bd8735134444fd95cadfc6d37b32cffdf`
+- GitHub review: https://github.com/AhmedMohamed500/Debit-Credit/pull/1
+- Vercel Preview: https://debit-credit-n0zc0sg3a-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Vercel deployment record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/CL7i73SwBoqwccVYBd6dCgv9tJUA
+- GitHub deployment `6335594071` reports success for the exact implementation commit.

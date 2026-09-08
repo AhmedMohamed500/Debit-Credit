@@ -18,7 +18,7 @@ export function AccountGuide({ locale }: { locale: Locale }) {
   const ar=locale==="ar",say=(en:string,arabic:string)=>ar?arabic:en;
   const router=useRouter();
   const [returnContext,setReturnContext]=useState("");
-  useEffect(()=>{setReturnContext(window.location.search);},[]);
+  useEffect(()=>{setReturnContext(window.location.search);window.scrollTo({top:0});},[]);
   const [query,setQuery]=useState(""),[category,setCategory]=useState<AccountGuideCategory>("assets"),[selectedCode,setSelectedCode]=useState(""),[mobilePage,setMobilePage]=useState<"list"|"detail">("list");
   const rows=useMemo(()=>accountLearningGuide.filter(account=>account.category===category&&`${account.nameAr} ${account.nameEn} ${account.categoryAr} ${account.category} ${account.code}`.toLowerCase().includes(query.trim().toLowerCase())),[category,query]);
   const selected=rows.find(account=>account.code===selectedCode)??rows[0]??null;

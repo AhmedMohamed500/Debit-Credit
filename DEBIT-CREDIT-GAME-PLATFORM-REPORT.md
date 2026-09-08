@@ -2,6 +2,8 @@
 
 ## Nature of Accounts — 2026-09-09
 
+Responsive correction: short desktop viewports now fit the complete manual scene into the available browser height. The verified 1850×850 and 1366×768 layouts retain the top navigation, compact the title and selectors, keep the whole book visible, and scroll long content inside its paper pages. Widths from 821px through 1050px use a single-page tablet layout with horizontal category selection. The existing 390px mobile list/detail flow remains intact. Opening the manual also resets stale browser scroll position to the top.
+
 Rebuilt the accounting manual presentation around a realistic open book in a bright office. The book begins directly under six physical category selectors; readable account details and the entry example fit within the 1920×1080 review viewport. Mobile uses one paper page with list/detail navigation.
 
 All 197 accounting records, codes, rules and detailed content remain unchanged. Added visible manual access in the navigation, cinematic entry, desk and document workspace. Opening the manual from First Shift preserves the source tab and its live draft; language switching keeps the return context.

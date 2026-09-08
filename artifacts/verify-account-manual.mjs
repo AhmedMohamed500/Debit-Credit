@@ -33,6 +33,30 @@ try{
   assert.ok(await page.locator(".manual-account-list").evaluate(n=>n.scrollHeight>n.clientHeight),"The long list scrolls within its paper page.");
   await page.screenshot({path:"artifacts/account-manual-desktop-ar.png"});
 
+  for(const [width,height,name] of [[1850,850,"account-manual-laptop-ar.png"],[1366,768,"account-manual-laptop-compact-ar.png"]]){
+    await page.setViewportSize({width,height});
+    await page.goto(`${base}/ar/account-guide`);
+    await page.getByRole("button",{name:/الإيرادات/}).click();
+    await page.locator(".manual-account-list>button").filter({hasText:"4120"}).click();
+    const topbar=await page.locator(".manual-topbar").boundingBox();
+    const compactBook=await page.locator(".manual-book").boundingBox();
+    assert.ok(topbar&&topbar.y===0,`Top navigation is visible at ${width}x${height}.`);
+    assert.ok(compactBook&&compactBook.y+compactBook.height<=height,`The whole book fits at ${width}x${height}.`);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth),0);
+    assert.ok(await page.getByText("مثال على القيد المحاسبي",{exact:true}).isVisible(),"The journal example remains visible.");
+    await page.screenshot({path:`artifacts/${name}`});
+  }
+
+  await page.setViewportSize({width:1024,height:768});
+  await page.goto(`${base}/ar/account-guide`);
+  assert.equal(await page.locator(".manual-list-page").isVisible(),true);
+  assert.equal(await page.locator(".manual-detail-page").isVisible(),false);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth),0);
+  await page.locator(".manual-account-list>button").first().click();
+  assert.equal(await page.locator(".manual-list-page").isVisible(),false);
+  assert.equal(await page.locator(".manual-detail-page").isVisible(),true);
+  await page.screenshot({path:"artifacts/account-manual-tablet-ar.png",fullPage:true});
+
   await page.setViewportSize({width:1920,height:1080});
   await page.goto(`${base}/en/account-guide`);
   await page.getByRole("heading",{name:"Nature of Accounts"}).waitFor();

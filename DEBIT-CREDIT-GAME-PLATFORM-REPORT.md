@@ -468,3 +468,43 @@ Verification for this polish:
 - Opened document interaction capture: `artifacts/first-shift-document-ar.png`
 - 390px opened-document capture: `artifacts/first-shift-mobile-ar.png`
 - 390px horizontal overflow check: Passed (0px overflow)
+
+### First Shift — Playable Desk Rebuild | September 8, 2026
+
+Replaced the First Shift presentation tree with a dedicated scene implementation in `app/first-shift-scene.css`. The previous two-column layout, company sidebar, document-card footers and decorative KPI sections are no longer rendered. The supplied reference guided the desk composition; the existing clean photographic desk asset was reused (no new generated raster asset was required).
+
+- Full viewport accounting desk with source papers, paper clips, stacked edges, natural rotations and subtle inspection indicators.
+- Live Mizan OS content aligned inside the physical laptop screen; compact story strip and manager notification.
+- Company balances and month-end progress remain in a small bottom HUD. The ledger book opens the remaining company balances, pending entries and unresolved errors.
+- Journal book reads the accepted First Shift entries from existing storage. The calculator performs addition, subtraction, multiplication and division, including zero-division handling.
+- Source papers open a focused in-game mission layer over the same desk. Existing inspection, treatment decision, entry construction and consequence logic is preserved.
+- Correct papers leave their original desk position, animate toward Processed, and accumulate visibly in the tray. The final paper transfer runs before the shift result appears.
+- Mobile uses one paper at a time with previous/next buttons, swipe navigation, bottom inspection action, compact status and accessible desk tools.
+- Modal focus is contained; Escape closes the layer; the background scene is inert while a document or tool is open. Reduced-motion preferences are honored.
+- Existing accounting rules, amounts, rewards, company state, localization, storage and routes remain unchanged. No internal Nature of Accounts changes or work on Chapter 2, Arena, Career, Companies or Skills.
+
+Validation:
+
+- 181 tests passed across 22 files, including protected Nature of Accounts regression.
+- ESLint passed with zero warnings; TypeScript and production build passed.
+- Production browser verification: Arabic desktop 1672×941, English desktop 1366×768 and Arabic mobile 390×844.
+- Horizontal overflow: 0px on desktop and mobile, including the mobile document layer.
+- Browser flow checked wrong answer → correction → all three successful entries → final result → reload; final state is 3 journal entries, 300 XP and 150 coins.
+- Processed count verified 0 → 1 → 2 → 3; saved progress verified after first and final documents.
+- Mobile next/previous and swipe navigation, modal focus, Escape, and zero browser page errors checked.
+- Browser verification script: `artifacts/verify-first-shift.mjs` (requires Playwright; optional `PLAYWRIGHT_MODULE` and `FIRST_SHIFT_URL` overrides).
+- Detailed results: `artifacts/first-shift-scene-qa.json`.
+
+Review captures:
+
+- Desktop Arabic: `artifacts/first-shift-scene-desktop-ar.png`
+- Mobile Arabic: `artifacts/first-shift-scene-mobile-ar.png`
+- Open document Arabic: `artifacts/first-shift-scene-document-ar.png`
+- Mobile open document: `artifacts/first-shift-scene-mobile-document-ar.png`
+- Desktop English: `artifacts/first-shift-scene-desktop-en.png`
+- Processed tray after one entry: `artifacts/first-shift-scene-processed-en.png`
+
+Publication authorized by the user's subsequent instruction to publish to GitHub and Vercel. Continue on `codex/first-day-cinematic`; PR #1 remains the review destination and is not merged into main.
+
+GitHub review: https://github.com/AhmedMohamed500/Debit-Credit/pull/1
+Vercel Preview: deployment URL will be recorded after the deployment reports Ready.

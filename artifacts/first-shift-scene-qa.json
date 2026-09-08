@@ -1,0 +1,17 @@
+{
+  "base": "http://localhost:3000",
+  "mobileOverflow": 0,
+  "desktopOverflow": 0,
+  "tests": [
+    "Arabic desktop and open document",
+    "Arabic mobile 390px, next/previous and swipe",
+    "Modal focus remains inside and Escape closes",
+    "English desktop 1366px",
+    "Wrong answer then correction",
+    "Three documents completed through UI",
+    "Processed tray 0 → 1 → 2 → 3",
+    "Reload persistence after first and final entry",
+    "Final 300 XP / 150 coins / 3 journal entries"
+  ],
+  "pageErrors": []
+}

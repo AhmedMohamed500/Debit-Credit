@@ -516,3 +516,26 @@ Vercel Preview (Ready; source commit `6351c106125e6f3a52e3e1e41297a80f799d5a3c`)
 Published through the existing GitHub–Vercel integration. GitHub's deployment record `6332322160` and the exact source commit's Vercel status both report success. A direct CLI attempt returned Not authorized; the configured Git integration completed the deployment successfully.
 
 Live browser verification: the deployment URL redirects unauthenticated visitors to the Vercel login page (deployment protection). The public browser flow therefore could not run against the hosted preview. Full interaction verification and screenshots were completed against the local production build; remote publication is verified by the successful exact-commit GitHub deployment status. Open the Preview while signed into the owning Vercel account. Existing access settings were preserved.
+
+### Nature of Accounts — In-Game Accounting Manual Redesign | September 8, 2026
+
+The intentionally approved redesign replaces the long Academy-style Nature of Accounts presentation with a professional open accounting manual inside the Debit & Credit game world.
+
+- A generated clean office environment supplies the physical desk and blank open book. All account data, labels, search results and controls remain live accessible HTML.
+- The primary desktop view keeps the important reference above the fold: compact navigation and search, title and finance-manager message, six category selectors, then the open book.
+- Categories use the existing Assets, Liabilities, Equity, Revenue, Expenses and Contra groups. They show live counts calculated from `accountLearningGuide` and act as the sole category filter.
+- The physical left page lists real account codes and bilingual account names. The right page updates immediately with the selected account's normal balance, increase and decrease direction/effect, financial-statement location, supporting documents, journal example and expandable document cycle.
+- Search retains Arabic name, English name, code and category matching. Empty results provide an explicit reset action.
+- The current 90+ account dataset, unique codes, accounting rules and lookup behavior remain unchanged. No accounting data file was edited.
+- Existing Arabic, English, Academy compatibility and Arena redirect routes remain available. Return-to-game uses browser history so the source mission and stored draft remain intact.
+- Missing approved English detail fields are not invented. The English frame uses existing English names and normal-balance values while clearly retaining the Arabic source explanation where the data model has only Arabic detail.
+- Mobile becomes a manual with Accounts and Account Behavior tabs, horizontal touch category selection, automatic detail opening after account selection and zero horizontal overflow at 390px.
+- The approved protected baseline now covers the rebuilt component, unchanged accounting data, unchanged primary route and the new manual stylesheet.
+
+Review captures:
+
+- Arabic desktop: `artifacts/account-manual-desktop-ar.png`
+- English desktop: `artifacts/account-manual-desktop-en.png`
+- Arabic mobile: `artifacts/account-manual-mobile-ar.png`
+
+Browser verification covers Arabic and English rendering, search, six category filters, account selection, 390px mobile tabs, compatibility routes, return context and zero horizontal overflow. Detailed section documentation is in `NATURE-OF-ACCOUNTS-REPORT.md`.

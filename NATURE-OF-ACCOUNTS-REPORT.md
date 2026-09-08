@@ -43,6 +43,16 @@
 - التفاصيل التي لا تتوفر لها ترجمة إنجليزية معتمدة تعرض نصها العربي الأصلي مع توضيح في واجهة الإنجليزية.
 - PR #1 يبقى مفتوحًا على فرع المراجعة؛ لا دمج إلى main ولا إعلان عن اعتماد بصري نيابة عن المستخدم.
 
+### نشر هذه النسخة
+
+- Commit التنفيذ: `50437eafab34cd47487440db10b8582a8b860f42`.
+- [GitHub PR #1](https://github.com/AhmedMohamed500/Debit-Credit/pull/1) — مفتوح.
+- [Vercel العربية](https://debit-credit-79xpe3yjx-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar/account-guide).
+- [Vercel الإنجليزية](https://debit-credit-79xpe3yjx-ahmed-mohameds-projects-c51bc2cc.vercel.app/en/account-guide).
+- [تنزيل المرجع MD](https://debit-credit-79xpe3yjx-ahmed-mohameds-projects-c51bc2cc.vercel.app/docs/nature-of-accounts.md).
+- Deployment `6338264780`: **success**، وVercel check ناجح.
+- هذا نشر Preview على فرع المراجعة. رابط Production لم يتغير.
+
 ## 1. الهدف من القسم
 
 قسم «طبيعة الحسابات» هو المرجع المحاسبي الداخلي للمشروع. يساعد اللاعب على فهم الحساب قبل تكوين القيد، ويشرح العلاقة بين:

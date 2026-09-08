@@ -12,6 +12,8 @@ Validation: 182 tests across 23 files, ESLint, TypeScript and production build p
 
 Publication remains on `codex/first-day-cinematic` through PR #1 and Vercel Preview. No merge into main or user visual approval is implied.
 
+Published implementation: `50437eafab34cd47487440db10b8582a8b860f42`. Vercel deployment `6338264780` succeeded: [Arabic manual](https://debit-credit-79xpe3yjx-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar/account-guide), [English manual](https://debit-credit-79xpe3yjx-ahmed-mohameds-projects-c51bc2cc.vercel.app/en/account-guide), [MD download](https://debit-credit-79xpe3yjx-ahmed-mohameds-projects-c51bc2cc.vercel.app/docs/nature-of-accounts.md).
+
 ## by Money Coder
 
 ## Real Accounting Game Platform — 2026-09-07 release

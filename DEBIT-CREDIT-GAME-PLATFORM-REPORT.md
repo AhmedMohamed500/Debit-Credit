@@ -507,4 +507,12 @@ Review captures:
 Publication authorized by the user's subsequent instruction to publish to GitHub and Vercel. Continue on `codex/first-day-cinematic`; PR #1 remains the review destination and is not merged into main.
 
 GitHub review: https://github.com/AhmedMohamed500/Debit-Credit/pull/1
-Vercel Preview: deployment URL will be recorded after the deployment reports Ready.
+Vercel Preview (Ready; source commit `6351c106125e6f3a52e3e1e41297a80f799d5a3c`):
+
+- Arabic: https://debit-credit-5rvac1ch4-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar
+- English: https://debit-credit-5rvac1ch4-ahmed-mohameds-projects-c51bc2cc.vercel.app/en
+- Deployment: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/CVPTcBsk9DgezaMn6PkjQZ8XdWzM
+
+Published through the existing GitHub–Vercel integration. GitHub's deployment record `6332322160` and the exact source commit's Vercel status both report success. A direct CLI attempt returned Not authorized; the configured Git integration completed the deployment successfully.
+
+Live browser verification: the deployment URL redirects unauthenticated visitors to the Vercel login page (deployment protection). The public browser flow therefore could not run against the hosted preview. Full interaction verification and screenshots were completed against the local production build; remote publication is verified by the successful exact-commit GitHub deployment status. Open the Preview while signed into the owning Vercel account. Existing access settings were preserved.

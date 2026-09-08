@@ -1,5 +1,17 @@
 # Debit & Credit
 
+## Nature of Accounts — 2026-09-09
+
+Rebuilt the accounting manual presentation around a realistic open book in a bright office. The book begins directly under six physical category selectors; readable account details and the entry example fit within the 1920×1080 review viewport. Mobile uses one paper page with list/detail navigation.
+
+All 197 accounting records, codes, rules and detailed content remain unchanged. Added visible manual access in the navigation, cinematic entry, desk and document workspace. Opening the manual from First Shift preserves the source tab and its live draft; language switching keeps the return context.
+
+The full accounting reference is downloadable from `/docs/nature-of-accounts.md`, generated from the same data as the UI. A repository copy is [NATURE-OF-ACCOUNTS.md](NATURE-OF-ACCOUNTS.md); implementation details and screenshots are in [NATURE-OF-ACCOUNTS-REPORT.md](NATURE-OF-ACCOUNTS-REPORT.md).
+
+Validation: 182 tests across 23 files, ESLint, TypeScript and production build passed. Browser checks cover AR/EN at 1920×1080, 390px with zero horizontal overflow, search/filter/selection, compatibility routes, MD content, and an actual unsent journal draft preserved across a manual visit and language change. No game rewards, accounting data, chapter progression or balances were modified.
+
+Publication remains on `codex/first-day-cinematic` through PR #1 and Vercel Preview. No merge into main or user visual approval is implied.
+
 ## by Money Coder
 
 ## Real Accounting Game Platform — 2026-09-07 release

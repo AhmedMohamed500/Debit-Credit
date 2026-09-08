@@ -1,7 +1,6 @@
 "use client";
 
 import "@/app/accounting-manual.css";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -18,29 +17,31 @@ const categoryStyle: Record<AccountGuideCategory,{className:string;icon:typeof B
 export function AccountGuide({ locale }: { locale: Locale }) {
   const ar=locale==="ar",say=(en:string,arabic:string)=>ar?arabic:en;
   const router=useRouter();
+  const [returnContext,setReturnContext]=useState("");
+  useEffect(()=>{setReturnContext(window.location.search);},[]);
   const [query,setQuery]=useState(""),[category,setCategory]=useState<AccountGuideCategory>("assets"),[selectedCode,setSelectedCode]=useState(""),[mobilePage,setMobilePage]=useState<"list"|"detail">("list");
   const rows=useMemo(()=>accountLearningGuide.filter(account=>account.category===category&&`${account.nameAr} ${account.nameEn} ${account.categoryAr} ${account.category} ${account.code}`.toLowerCase().includes(query.trim().toLowerCase())),[category,query]);
   const selected=rows.find(account=>account.code===selectedCode)??rows[0]??null;
   useEffect(()=>{if(selected&&!rows.some(account=>account.code===selectedCode))setSelectedCode(selected.code);},[rows,selected,selectedCode]);
   const chooseCategory=(id:AccountGuideCategory)=>{setCategory(id);setQuery("");setSelectedCode("");setMobilePage("list");};
   const chooseAccount=(code:string)=>{setSelectedCode(code);setMobilePage("detail");};
-  const back=()=>{if(window.history.length>1)router.back();else router.push(`/${locale}`);};
+  const back=()=>{if(new URLSearchParams(window.location.search).get("return")==="first-day"){window.close();router.push(`/${locale}`);}else if(window.history.length>1)router.back();else router.push(`/${locale}`);};
 
   return <main className="account-manual" dir={ar?"rtl":"ltr"}>
     <header className="manual-topbar">
       <Link className="manual-brand" href={`/${locale}`}><span aria-hidden="true"><i/><i/><i/></span><b>Debit & Credit<small>by Money Coder</small></b></Link>
-      <nav aria-label={say("Manual navigation","تنقل الدليل")}><Link href={`/${locale}`}>{say("Home","الرئيسية")}</Link><button onClick={back}>{ar?<ArrowRight/>:<ArrowLeft/>}{say("Return to game","العودة للعبة")}</button><strong><BookOpenCheck/>{say("Accounting Manual","دليل الحسابات")}</strong></nav>
-      <div className="manual-top-actions"><label><Search/><input aria-label={say("Search accounts","ابحث في الحسابات")} value={query} onChange={event=>setQuery(event.target.value)} placeholder={say("Search name, code, or category…","ابحث بالاسم أو الكود أو التصنيف…")}/>{query&&<button aria-label={say("Clear search","مسح البحث")} onClick={()=>setQuery("")}><X/></button>}</label><Link href={`/${ar?"en":"ar"}/account-guide`} aria-label={say("Switch to Arabic","التبديل للإنجليزية")}><Languages/>{ar?"EN":"AR"}</Link></div>
+      <nav aria-label={say("Manual navigation","تنقل الدليل")}><button onClick={back}>{ar?<ArrowRight/>:<ArrowLeft/>}{say("Back to desk","العودة للعبة")}</button><Link href={`/${locale}/account-guide`} aria-current="page"><BookOpenCheck/>{say("Nature of Accounts","طبيعة الحسابات")}</Link><a href="/docs/nature-of-accounts.md" download><FileText/>{say("Download MD","تحميل MD")}</a></nav>
+      <div className="manual-top-actions"><label><Search/><input aria-label={say("Search accounts","ابحث في الحسابات")} value={query} onChange={event=>setQuery(event.target.value)} placeholder={say("Search name, code, or category…","ابحث بالاسم أو الكود أو التصنيف…")}/>{query&&<button aria-label={say("Clear search","مسح البحث")} onClick={()=>setQuery("")}><X/></button>}</label><Link href={`/${ar?"en":"ar"}/account-guide${returnContext}`} onClick={event=>{event.preventDefault();router.push(`/${ar?"en":"ar"}/account-guide${window.location.search}`);}} aria-label={say("Switch to Arabic","التبديل للإنجليزية")}><Languages/>{ar?"EN":"AR"}</Link></div>
     </header>
 
     <section className="manual-world">
       <div className="manual-context">
-        <div><small>{say("MIZAN TRADING · PROFESSIONAL REFERENCE","ميزان للتجارة · المرجع المهني")}</small><h1>{say("Nature of Accounts","طبيعة الحسابات")}</h1><p>{say("Choose an account. Understand its behavior. Return to the entry.","اختار الحساب، افهم حركته، وارجع للقيد.")}</p></div>
-        <aside><div><Image src="/arena/cfo-mentor.png" alt="" fill sizes="56px"/></div><p><b>{say("Mr. Kareem · Finance Manager","أ/ كريم · المدير المالي")}</b><span>{say("Understand the account before recording the entry.","افهم طبيعة الحساب قبل ما تسجل القيد.")}</span></p></aside>
+        <div className="manual-sign"><BookOpenCheck aria-hidden="true"/><div><h1>{say("Nature of Accounts","طبيعة الحسابات")}</h1><strong lang={ar?"en":"ar"}>{ar?"Nature of Accounts":"طبيعة الحسابات"}</strong><p>{say("Understand the account before recording the entry.","افهم الحساب قبل ما تسجل القيد.")}</p></div></div>
+        <aside><b>{say("Kareem · Finance Manager","أ/ كريم · المدير المالي")}</b><p>{say("Choose an account. Follow its movement.","اختار الحساب وشوف طبيعته وحركته.")}</p></aside>
       </div>
 
       <div className="manual-categories" aria-label={say("Account categories","مجموعات الحسابات")}>
-        {accountGuideCategories.map(item=>{const meta=categoryStyle[item.id],Icon=meta.icon,count=accountLearningGuide.filter(account=>account.category===item.id).length,active=category===item.id;return <button className={`${meta.className} ${active?"active":""}`} aria-pressed={active} onClick={()=>chooseCategory(item.id)} key={item.id}><Icon/><span><b>{ar?item.ar:item.en}</b><small>{count} {say("accounts","حساب")}</small></span>{active&&<Check/>}</button>;})}
+        {accountGuideCategories.map(item=>{const meta=categoryStyle[item.id],Icon=meta.icon,count=accountLearningGuide.filter(account=>account.category===item.id).length,active=category===item.id;return <button className={`${meta.className} ${active?"active":""}`} aria-pressed={active} onClick={()=>chooseCategory(item.id)} key={item.id}><Icon/><span><b>{ar?item.ar:item.en}</b><em>{ar?item.en:item.ar}</em><small>{count} {say("accounts","حساب")}</small></span>{active&&<Check/>}</button>;})}
       </div>
 
       <div className="manual-mobile-tabs" role="tablist" aria-label={say("Manual pages","صفحات الدليل")}><button role="tab" aria-selected={mobilePage==="list"} onClick={()=>setMobilePage("list")}><LibraryBig/>{say("Accounts","الحسابات")}<b>{rows.length}</b></button><button role="tab" aria-selected={mobilePage==="detail"} onClick={()=>setMobilePage("detail")} disabled={!selected}><FileText/>{say("Account behavior","سلوك الحساب")}</button></div>

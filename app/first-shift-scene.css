@@ -41,3 +41,6 @@
 @media(prefers-reduced-motion:reduce){.shift-scene *{animation-duration:.01ms!important;transition:none!important}}
 
 .dc-shell:has(.shift-scene){padding-bottom:0}
+.scene-player .scene-manual-link{display:flex;align-items:center;gap:6px;border:0;padding:0;color:#0758aa;text-decoration:none;font-size:13px}
+.fd-workbench-manual{display:flex;align-items:center;gap:7px;width:fit-content;margin:4px 0 18px;padding:8px 12px;border:1px solid #bad6f2;border-radius:7px;background:#eff7ff;color:#0659af;text-decoration:none;font-size:14px;font-weight:700}.fd-workbench-manual svg{width:19px}
+@media(max-width:760px){.scene-player .scene-manual-link{position:absolute;top:108px;right:12px;padding:7px 10px;background:#f4fafff0;border:1px solid #bad6f2;border-radius:8px;font-size:12px}.fd-cinema-hud .fd-cinema-manual{position:absolute;top:78px;inset-inline-end:15px;font-size:13px;padding:8px 10px}}

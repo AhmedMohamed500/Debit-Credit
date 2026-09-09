@@ -1,0 +1,8 @@
+.career-documents{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:16px;padding:22px 27px;border:1px solid #d9e5ee;border-radius:17px;background:#fff}
+.career-documents small{color:#1787a1;font-size:11px;font-weight:900;letter-spacing:.09em}
+.career-documents h2{margin:4px 0 0;color:#102d55;font-size:19px}
+.career-actions{display:flex;gap:9px}
+.assessment-panel .empty-assessment{padding:15px;border-inline-start:4px solid #b98219;background:#fffbef}
+.assessment-panel .empty-assessment>svg{color:#b98219}
+.assessment-panel .empty-assessment p{margin:4px 0 0;color:#667d91;font-size:13px}
+@media(max-width:600px){.career-documents{display:grid;padding:19px 16px}.career-actions{display:grid}.career-actions a{width:100%}}

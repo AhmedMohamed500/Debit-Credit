@@ -565,3 +565,41 @@ Preview publication:
 - Vercel Preview: https://debit-credit-n0zc0sg3a-ahmed-mohameds-projects-c51bc2cc.vercel.app
 - Vercel deployment record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/CL7i73SwBoqwccVYBd6dCgv9tJUA
 - GitHub deployment `6335594071` reports success for the exact implementation commit.
+
+## Career Profile & Skill Passport Foundation — September 10, 2026
+
+The project now includes a separate professional identity layer that connects real accounting activity to an evidence-backed profile and CV while keeping game progression isolated.
+
+- Added a five-step bilingual Career Profile with stable local candidate identity, education/experience, target role, work preferences, privacy and resume-later browser persistence.
+- Added the Accounting Skill Passport with 19 accounting skills and the explicit states Unassessed, Practiced, Demonstrated and future-only Verified.
+- Added a versioned Skill Evidence Engine. First Shift supplier invoice, customer receipt and office expense attempts are projected into exact related skills; incorrect attempts remain practice evidence and current gameplay never becomes Verified.
+- Added deterministic skill scoring with difficulty, accuracy, activity score, independence, first attempt, hints, critical errors and evidence diversity. One activity never displays a percentage.
+- Added evidence-thresholded Accounting DNA and separate weighted readiness definitions for nine accounting roles. Readiness stays “Not Enough Evidence” until role coverage is credible.
+- Added a role-based Auto CV that changes emphasis from real skills/evidence, supports A4 Print/Save PDF and JSON export, and excludes XP, coins, streaks and game badges.
+- Added a local/demo public talent profile, candidate-controlled privacy and an employer preview that uses the same real profile data. No live company discovery, authentication or server verification is claimed.
+- Added browser repository abstractions and separate versioned keys for career profile, skill evidence, CV preferences and `localCandidateId`; `debit-credit-world-v2` remains intact.
+- Added future-only assessment and hiring relationship interfaces without implementing Chapter 2, Verified Career Mode or company hiring infrastructure.
+- Renamed the old player view to Game Profile in navigation and copy, and linked it to Career Profile. First Shift completion now provides a compact “Professional Evidence Added” transition to the Skill Passport.
+
+Routes:
+
+- `/[locale]/career-profile`
+- `/[locale]/career-profile/edit`
+- `/[locale]/career-profile/skills`
+- `/[locale]/career-profile/skills/[skillId]`
+- `/[locale]/career-profile/cv`
+- `/[locale]/career-profile/employer-preview`
+- `/[locale]/talent/[slug]`
+
+Validation added in `tests/career-profile.test.ts`, `tests/career-ui.test.tsx` and `artifacts/verify-career-profile.mjs`. Browser verification passed Arabic RTL, English LTR, skill drill-down, CV print media, employer preview, link privacy, zero page errors and 390px with zero horizontal overflow. Full technical check and publication details are recorded after the final build and deployment. Detailed design and model documentation: `CAREER-PROFILE-SKILL-PASSPORT.md`.
+
+Final local verification for this phase:
+
+- `npm run check`: passed through the system npm CLI (the user's roaming npm shim is incomplete).
+- ESLint: passed with zero warnings.
+- TypeScript: passed.
+- Vitest: 198 tests passed across 25 files.
+- Next.js production build: passed; all new routes were collected successfully.
+- Career browser QA: Arabic RTL, English LTR, dashboard, skill drill-down, CV, print media, employer preview, local share privacy and 390px passed with zero page errors and zero horizontal overflow.
+- First Shift browser regression: both locales, mobile, entries, processed tray, persistence, focus and rewards passed.
+- Nature of Accounts browser regression: Arabic/English desktop, 390px, search, categories, selection, compatibility routes and return context passed.

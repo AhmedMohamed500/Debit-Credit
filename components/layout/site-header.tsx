@@ -8,7 +8,7 @@ import type { Locale } from "@/types";
 const links = [
   ["", "الرئيسية", "Home"], ["account-guide", "طبيعة الحسابات", "Nature of Accounts"], ["learning-map", "خريطة التعلم", "Learning Map"], ["missions", "المهام", "Missions"],
   ["practice", "التدريب", "Practice"], ["detective", "المحقق", "Detective"], ["arena", "الساحة", "Arena"],
-  ["skills", "المهارات", "Skills"], ["career", "المسار المهني", "Career"], ["profile", "الملف", "Profile"],
+  ["skills", "المهارات", "Skills"], ["career-profile", "الملف المهني", "Career Profile"], ["profile", "ملف اللعبة", "Game Profile"],
 ] as const;
 
 export function SiteHeader({ locale }: { locale: Locale }) {

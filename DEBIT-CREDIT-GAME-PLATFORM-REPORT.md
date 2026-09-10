@@ -603,3 +603,17 @@ Final local verification for this phase:
 - Career browser QA: Arabic RTL, English LTR, dashboard, skill drill-down, CV, print media, employer preview, local share privacy and 390px passed with zero page errors and zero horizontal overflow.
 - First Shift browser regression: both locales, mobile, entries, processed tray, persistence, focus and rewards passed.
 - Nature of Accounts browser regression: Arabic/English desktop, 390px, search, categories, selection, compatibility routes and return context passed.
+
+Publication for the Career Profile foundation:
+
+- Implementation commit: `d48cd2e19b9238a94d7723f315e35d3e677309bd`
+- Branch: `codex/first-day-cinematic`
+- PR #1 remains open: https://github.com/AhmedMohamed500/Debit-Credit/pull/1
+- Push: successful to `origin/codex/first-day-cinematic`
+- Vercel Preview: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Arabic: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar/career-profile
+- English: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app/en/career-profile
+- GitHub deployment `6373295410`: success for the exact implementation commit.
+- Vercel record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/F3dXHi7Qntavhg5rAAU3BvMhotrS
+
+The Preview is protected by the existing Vercel SSO setting, so anonymous page requests redirect to the Vercel login page. The GitHub/Vercel records verify successful publication; the complete interactive route matrix was verified against the same production build locally.

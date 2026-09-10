@@ -34,6 +34,12 @@
 
 التحقق النهائي المحلي: 198 اختبارًا ناجحًا في 25 ملفًا، ESLint وTypeScript وproduction build ناجحة، واختبارات المتصفح للعربية والإنجليزية وRTL/LTR والطباعة و390px نجحت دون أخطاء أو overflow. التفاصيل الكاملة في `CAREER-PROFILE-SKILL-PASSPORT.md`.
 
+تم رفع التنفيذ في commit `d48cd2e19b9238a94d7723f315e35d3e677309bd` إلى فرع `codex/first-day-cinematic` وتحديث PR #1. نجح Vercel Preview للـcommit نفسه على:
+
+https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app
+
+الـPreview محمي بإعداد Vercel SSO الحالي، لذلك الزائر غير المسجل ينتقل إلى صفحة تسجيل الدخول. لم يتم دمج PR في `main` ولم يتغير رابط Production.
+
 المنتج الحالي مبني ليشعر اللاعب أنه يعمل داخل شركة حقيقية ويتخذ قرارات محاسبية تؤثر في دفاترها. الواجهة لا تعتمد على شكل LMS أو Dashboard تقليدي، ولا تمنح أرقام XP لمجرد فتح معلومات تعليمية.
 
 حلقة اللعب الأساسية:

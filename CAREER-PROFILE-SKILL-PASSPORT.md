@@ -183,3 +183,19 @@ Automated tests cover profile persistence, stable local ID, repository separatio
 Browser QA covers dashboard, skill drill-down, role-based CV, print styles, employer preview, local public profile privacy, Arabic RTL and 390px with zero horizontal overflow. Captures and the executable QA record are stored under `artifacts/career-profile-*`.
 
 Final verification: ESLint and TypeScript passed, 198 Vitest tests passed across 25 files, and the Next.js production build completed successfully. Existing First Shift and Nature of Accounts browser regression flows also passed after the integration.
+
+## GitHub and Vercel Preview
+
+- Implementation commit: `d48cd2e19b9238a94d7723f315e35d3e677309bd`
+- Review branch: `codex/first-day-cinematic`
+- Open review: https://github.com/AhmedMohamed500/Debit-Credit/pull/1
+- Vercel Preview: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Arabic Career Profile: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar/career-profile
+- English Career Profile: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app/en/career-profile
+- Skill Passport: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app/en/career-profile/skills
+- Auto CV: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app/en/career-profile/cv
+- Employer Preview: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app/en/career-profile/employer-preview
+- GitHub deployment record: `6373295410`, successful for the exact implementation commit.
+- Vercel deployment: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/F3dXHi7Qntavhg5rAAU3BvMhotrS
+
+The hosted Preview is protected by the project's existing Vercel SSO setting. Anonymous requests redirect to `vercel.com/sso-api`; use an account authorized for the project. The publication record is successful, while all page interactions were verified against the same code in the local production build.

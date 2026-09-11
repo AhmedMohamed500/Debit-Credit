@@ -126,3 +126,16 @@ Final local quality gate: ESLint passed with zero warnings, TypeScript passed, V
 - Chapter 2 is architecture-ready metadata only and remains locked.
 
 The recommended next milestone is a focused First Shift playtest and tuning pass using actual player behavior: observe where players miss evidence, misuse Hold/Request actions, or misunderstand company impact. Stabilize scoring thresholds and case copy from those findings before implementing any full Chapter 2 content.
+
+## Review and preview
+
+- Branch: `codex/gameplay-phase-b`
+- Architecture commit: `43bc76f`
+- Skill evidence commit: `751ecc0`
+- First Shift experience commit: `1f69465`
+- QA/documentation commit: `7d8a659`
+- Pull Request: <https://github.com/AhmedMohamed500/Debit-Credit/pull/2>
+- Stable Vercel branch preview: <https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app>
+- Verified implementation deployment: <https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app>
+- Vercel deployment record: <https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/FdrKruSqWCZvd91kng4xS7LZ6hr5>
+- GitHub/Vercel deployment ID: `6400969250`, ready for exact commit `7d8a6593d5958e813ec64c9a1831cbf9185744f7`.

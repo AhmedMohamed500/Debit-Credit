@@ -51,6 +51,8 @@ First Shift is now a reusable accounting work simulation. The player receives th
 
 Architecture, migration, scoring, evidence rules, QA, artifacts, limitations, and the next recommendation are documented in [`docs/GAMEPLAY-PHASE-B.md`](docs/GAMEPLAY-PHASE-B.md).
 
+Review: <https://github.com/AhmedMohamed500/Debit-Credit/pull/2> · Preview: <https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app>
+
 ## Local storage
 
 The canonical player state uses `debit-credit-player-v1`. Detailed module evidence remains in namespaced stores such as `debit-credit-arena-v1`, `debit-credit-missions-v1`, `debit-credit-detective-v1`, `debit-credit-money-flow-v1`, and `debit-credit-progress-v1`. Existing progress is synchronized once into the unified player without deleting module data. The original FINORA migration remains unchanged and never reads or edits operational journals, parties, invoices, or settings.

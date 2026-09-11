@@ -642,4 +642,14 @@ Phase B review captures:
 - `artifacts/gameplay-phase-b-posting-result-en.png`
 - `artifacts/gameplay-phase-b-shift-complete-en.png`
 
-Publication details are recorded after the final checks and Vercel deployment.
+Publication for Gameplay Phase B:
+
+- Branch: `codex/gameplay-phase-b`
+- Commits: `43bc76f`, `751ecc0`, `1f69465`, `7d8a659`
+- Pull Request #2: https://github.com/AhmedMohamed500/Debit-Credit/pull/2
+- Stable Vercel branch preview: https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Verified deployment: https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Arabic: https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar
+- English: https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app/en
+- Vercel record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/FdrKruSqWCZvd91kng4xS7LZ6hr5
+- Deployment `6400969250` was ready for exact implementation commit `7d8a6593d5958e813ec64c9a1831cbf9185744f7`.

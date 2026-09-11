@@ -7,12 +7,16 @@ import {
   BrowserSkillEvidenceRepository,
   CAREER_PROFILE_KEY,
   LOCAL_CANDIDATE_KEY,
+  migrateSkillEvidence,
   SKILL_EVIDENCE_KEY,
   createDefaultProfile,
   getOrCreateLocalCandidateId,
 } from "@/lib/career/repository";
 import type { Attempt, GameState } from "@/lib/campaign/model";
 import type { SkillEvidence, SkillId } from "@/lib/career/model";
+import { initialState } from "@/lib/campaign/director";
+import { firstDayDocuments,selectFirstDayDocument,submitFirstDayDocument } from "@/lib/campaign/first-day";
+import { inspectCaseDocument,selectCaseAction } from "@/lib/cases/engine";
 
 const attempt = (document: string, overrides: Partial<Attempt> = {}): Attempt => ({
   activityId: `first-day/${document}`,
@@ -91,6 +95,8 @@ describe("career identity repositories", () => {
     expect(repository.merge([item])).toHaveLength(1);
     expect(localStorage.getItem(SKILL_EVIDENCE_KEY)).toContain("journal-entries");
   });
+
+  it("migrates historical evidence without inventing first-attempt facts",()=>{const old={...evidenceRecord("journal-entries","first-day/supplier-invoice"),firstAttemptCorrect:undefined,projectionVersion:undefined};const [migrated]=migrateSkillEvidence([old]);expect(migrated).toMatchObject({projectionVersion:1,firstAttemptCorrect:null,caseId:"supplier-invoice",attemptId:null});});
 });
 
 describe("First Shift professional evidence", () => {
@@ -112,6 +118,18 @@ describe("First Shift professional evidence", () => {
     ]), "candidate");
     expect(record.assessmentIntegrity).toBe("practice");
     expect(record.firstAttemptCorrect).toBe(false);
+  });
+
+  it("projects one explainable resolution record per skill from case events", () => {
+    let state=selectFirstDayDocument(initialState(),"supplier-invoice",1000);
+    state=inspectCaseDocument(state,"supplier-invoice","po-771",1100);
+    state=inspectCaseDocument(state,"supplier-invoice","grn-771",1200);
+    state=selectCaseAction(state,"supplier-invoice","post",1300).state;
+    state=submitFirstDayDocument(state,"supplier-invoice",JSON.stringify(firstDayDocuments[0].expected),1400).state;
+    const records=firstShiftSkillEvidence(state,"candidate"),journal=records.find(item=>item.skillId==="journal-entries")!;
+    expect(journal).toMatchObject({projectionVersion:2,activityType:"case",attemptId:"first-shift/supplier-invoice/attempt-1",attempts:1,hintsUsed:0,firstAttemptCorrect:true,assessmentIntegrity:"demonstrated"});
+    expect(journal.inspectedEvidence).toEqual(["po-771","grn-771"]);
+    expect(journal.rationaleEn).toMatch(/2 supporting document/);
   });
 });
 

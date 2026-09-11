@@ -51,12 +51,15 @@ try{
   await page.locator('.fd-account-tokens button').filter({hasText:doc[1]}).click();
   await page.getByRole('button',{name:'DEBIT',exact:true}).click();
   await page.getByRole('spinbutton',{name:'Amount line 1'}).fill(doc[3]);
+  if(index===0){await page.reload();await page.getByRole('spinbutton',{name:'Amount line 1'}).waitFor();assert.equal(await page.getByRole('spinbutton',{name:'Amount line 1'}).inputValue(),doc[3]);}
   await page.getByRole('button',{name:'Add second line'}).click();
   await page.locator('.fd-account-tokens button').filter({hasText:doc[2]}).click();
   await page.getByRole('button',{name:'CREDIT',exact:true}).nth(1).click();
   await page.getByRole('spinbutton',{name:'Amount line 2'}).fill(doc[3]);
-  await page.getByRole('button',{name:'Submit entry',exact:true}).click();
+  if(index===0)await page.getByRole('button',{name:'Submit entry',exact:true}).evaluate(button=>{button.click();button.click();});
+  else await page.getByRole('button',{name:'Submit entry',exact:true}).click();
   await page.getByRole('heading',{name:doc[0]+' recorded successfully'}).waitFor();
+  if(index===0){const afterDoubleSubmit=await page.evaluate(()=>JSON.parse(localStorage.getItem('debit-credit-world-v2')));assert.equal(afterDoubleSubmit.evidence.filter(item=>item.missionId==='first-day'&&item.correct).length,1);assert.equal(afterDoubleSubmit.journal.length,1);assert.equal(afterDoubleSubmit.xp,100);assert.equal(afterDoubleSubmit.coins,50);}
   await page.getByRole('button',{name:'Return to Desk',exact:true}).click();
   assert.equal(await page.locator('.scene-processed>b').textContent(),String(index+1));
   if(index===0){await page.waitForTimeout(1400);await page.screenshot({path:'artifacts/first-shift-scene-processed-en.png'});await page.reload();await page.locator('.scene-paper').first().waitFor();assert.equal(await page.locator('.scene-paper').count(),2);}
@@ -70,7 +73,7 @@ try{
  assert.equal(await page.locator('.scene-processed>b').textContent(),'3');
  const desktopOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
  assert.equal(desktopOverflow,0);assert.deepEqual(errors,[]);
- await writeFile('artifacts/first-shift-scene-qa.json',JSON.stringify({base,mobileOverflow,desktopOverflow,tests:['Arabic desktop and open document','Arabic mobile 390px, next/previous and swipe','Modal focus remains inside and Escape closes','English desktop 1366px','Wrong answer then correction','Three documents completed through UI','Processed tray 0 → 1 → 2 → 3','Reload persistence after first and final entry','Final 300 XP / 150 coins / 3 journal entries'],pageErrors:errors},null,2));
+ await writeFile('artifacts/first-shift-scene-qa.json',JSON.stringify({base,mobileOverflow,desktopOverflow,tests:['Arabic desktop and open document','Arabic mobile 390px, next/previous and swipe','Modal focus remains inside and Escape closes','English desktop 1366px','Wrong answer then correction','Draft survives a browser refresh','Double submit creates one accepted attempt, journal entry and reward','Three documents completed through UI','Processed tray 0 → 1 → 2 → 3','Reload persistence after first and final entry','Final 300 XP / 150 coins / 3 journal entries'],pageErrors:errors},null,2));
  console.log('PASS: both locales, mobile, all entries, tray, persistence, focus and rewards.');
 }finally{await browser.close();}
 

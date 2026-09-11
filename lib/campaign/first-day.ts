@@ -2,7 +2,7 @@ import { w,type Account,type Attempt,type GameState,type Line,type Words } from 
 
 export type FirstDayDocumentId='supplier-invoice'|'customer-receipt'|'office-expense';
 export type FirstDayDocument={id:FirstDayDocumentId;number:string;title:Words;party:Words;subtitle:Words;date:Words;amount:number;accent:'blue'|'green'|'orange';details:{label:Words;value:Words}[];expected:Line[]};
-export type FirstDayProgress={cinematicSeen:boolean;deskEntered:boolean;introVersion:number;opened:FirstDayDocumentId[];completed:FirstDayDocumentId[];selected:FirstDayDocumentId|null;rewarded:boolean;completionSeen:boolean;mistakes:Partial<Record<FirstDayDocumentId,number>>};
+export type FirstDayProgress={cinematicSeen:boolean;deskEntered:boolean;introVersion:number;opened:FirstDayDocumentId[];completed:FirstDayDocumentId[];selected:FirstDayDocumentId|null;rewarded:boolean;completionSeen:boolean;mistakes:Partial<Record<FirstDayDocumentId,number>>;drafts:Partial<Record<FirstDayDocumentId,string>>;draftHints:Partial<Record<FirstDayDocumentId,boolean>>};
 export type FirstDayCompanyState={assets:number;liabilities:number;revenue:number;profit:number;cash:number;bank:number;supplierBalance:number;customerBalance:number;pendingDocuments:number;pendingEntries:number;monthEndProgress:number;ledgerErrors:number;unreconciledAmount:number};
 
 export const FIRST_DAY_KEY='first-day';
@@ -15,25 +15,27 @@ export const firstDayDocuments:FirstDayDocument[]=[
  {id:'office-expense',number:'PV-2201',title:w('Office Expense','مصروف مكتب'),party:w('QuickMart','كويك مارت'),subtitle:w('Stationery paid immediately','أدوات مكتبية مدفوعة فورًا'),date:w('12 Mar 2024','١٢ مارس ٢٠٢٤'),amount:2500,accent:'orange',details:[{label:w('Items','البيان'),value:w('Stationery & office tools','أدوات كتابية ومكتبية')},{label:w('Method','الطريقة'),value:w('Petty cash','نقدية من الصندوق')},{label:w('Period','الفترة'),value:w('Current month','الشهر الحالي')}],expected:[{account:'officeExpense',debit:2500,credit:0},{account:'cash',debit:0,credit:2500}]},
 ];
 
-export const emptyFirstDay=():FirstDayProgress=>({cinematicSeen:false,deskEntered:false,introVersion:0,opened:[],completed:[],selected:null,rewarded:false,completionSeen:false,mistakes:{}});
-export function firstDayProgress(s:GameState):FirstDayProgress{const saved=(s.legacy[FIRST_DAY_KEY] as Partial<FirstDayProgress>|undefined)??{};return {...emptyFirstDay(),...saved,mistakes:{...saved.mistakes}};}
+export const emptyFirstDay=():FirstDayProgress=>({cinematicSeen:false,deskEntered:false,introVersion:0,opened:[],completed:[],selected:null,rewarded:false,completionSeen:false,mistakes:{},drafts:{},draftHints:{}});
+export function firstDayProgress(s:GameState):FirstDayProgress{const saved=(s.legacy[FIRST_DAY_KEY] as Partial<FirstDayProgress>|undefined)??{};return {...emptyFirstDay(),...saved,mistakes:{...saved.mistakes},drafts:{...saved.drafts},draftHints:{...saved.draftHints}};}
 export function completeFirstDayIntro(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),cinematicSeen:true,introVersion:FIRST_DAY_INTRO_VERSION});}
 export function enterFirstDayDesk(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),deskEntered:true});}
 export function selectFirstDayDocument(s:GameState,id:FirstDayDocumentId):GameState{const p=firstDayProgress(s);return saveProgress(s,{...p,selected:id,opened:[...new Set([...p.opened,id])]});}
 export function closeFirstDayDocument(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),selected:null});}
+export function saveFirstDayDraft(s:GameState,id:FirstDayDocumentId,draft:string,hintUsed=false):GameState{const p=firstDayProgress(s);if(p.completed.includes(id))return s;return saveProgress(s,{...p,drafts:{...p.drafts,[id]:draft},draftHints:{...p.draftHints,[id]:p.draftHints[id]||hintUsed}});}
 export function markFirstDayCompletionSeen(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),completionSeen:true});}
 
 const normalize=(lines:Line[])=>lines.filter(line=>line.debit||line.credit).map(line=>`${line.account}:${line.debit}:${line.credit}`).sort().join('|');
 export function submitFirstDayDocument(s:GameState,id:FirstDayDocumentId,draft:string,now=Date.now(),hintsUsed=0){
  const doc=firstDayDocuments.find(item=>item.id===id);if(!doc)return {state:s,correct:false};let lines:Line[]=[];try{lines=JSON.parse(draft);}catch{}
- const correct=Array.isArray(lines)&&normalize(lines)===normalize(doc.expected),p=firstDayProgress(s),prior=s.evidence.filter(item=>item.activityId===`first-day/${id}`).length;
+ const correct=Array.isArray(lines)&&normalize(lines)===normalize(doc.expected),p=firstDayProgress(s);if(correct&&p.completed.includes(id))return {state:s,correct:true};const prior=s.evidence.filter(item=>item.activityId===`first-day/${id}`).length;
  const evidence:Attempt={activityId:`first-day/${id}`,missionId:'first-day',chapterId:1,skillId:'journal',difficulty:1,accuracy:correct?100:0,attempts:prior+1,hintsUsed,completionTime:0,independentCompletion:correct&&prior===0&&hintsUsed===0,criticalErrors:correct?0:1,score:correct?Math.max(70,100-prior*10-hintsUsed*5):0,completedAt:new Date(now).toISOString(),mode:'practice',response:draft,correct};
  let next={...s,evidence:[...s.evidence,evidence]};
  if(!correct){const mistakes={...p.mistakes,[id]:(p.mistakes[id]??0)+1};return {state:saveProgress(next,{...p,mistakes,selected:id}),correct};}
  const alreadyComplete=p.completed.includes(id),completed=[...new Set([...p.completed,id])],missionComplete=completed.length===firstDayDocuments.length,documentReward=!alreadyComplete,missionReward=missionComplete&&!p.rewarded;
  if(!next.journal.some(item=>item.id===`first-day/${id}`))next={...next,journal:[...next.journal,{id:`first-day/${id}`,documentIds:[doc.number],lines:doc.expected}]};
  next={...next,xp:next.xp+(documentReward?DOCUMENT_REWARD.xp:0)+(missionReward?MISSION_REWARD.xp:0),coins:next.coins+(documentReward?DOCUMENT_REWARD.coins:0)+(missionReward?MISSION_REWARD.coins:0),rewardKeys:[...new Set([...next.rewardKeys,...(documentReward?[`first-day-document/${id}`]:[]),...(missionReward?['first-day-complete']:[])])]};
- return {state:saveProgress(next,{...p,completed,selected:id,rewarded:p.rewarded||missionComplete,completionSeen:missionReward?false:p.completionSeen}),correct};
+ const drafts={...p.drafts},draftHints={...p.draftHints};delete drafts[id];delete draftHints[id];
+ return {state:saveProgress(next,{...p,completed,selected:id,rewarded:p.rewarded||missionComplete,completionSeen:missionReward?false:p.completionSeen,drafts,draftHints}),correct};
 }
 
 function saveProgress(s:GameState,p:FirstDayProgress):GameState{return {...s,legacy:{...s.legacy,[FIRST_DAY_KEY]:p}};}

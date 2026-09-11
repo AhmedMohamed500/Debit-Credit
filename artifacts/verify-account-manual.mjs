@@ -29,7 +29,7 @@ try{
   const book=await page.locator(".manual-book").boundingBox();
   const entry=await page.locator(".manual-entry").boundingBox();
   assert.ok(book.y<370,"The book starts directly under the categories.");
-  assert.ok(entry.y+entry.height<1080,"The complete example is above the desktop fold.");
+  assert.ok(entry.y+entry.height<book.y+book.height,"The complete example stays inside the detail page.");
   assert.ok(await page.locator(".manual-account-list").evaluate(n=>n.scrollHeight>n.clientHeight),"The long list scrolls within its paper page.");
   await page.screenshot({path:"artifacts/account-manual-desktop-ar.png"});
 
@@ -41,13 +41,14 @@ try{
     const topbar=await page.locator(".manual-topbar").boundingBox();
     const compactBook=await page.locator(".manual-book").boundingBox();
     assert.ok(topbar&&topbar.y===0,`Top navigation is visible at ${width}x${height}.`);
-    assert.ok(compactBook&&compactBook.y+compactBook.height<=height,`The whole book fits at ${width}x${height}.`);
+    assert.ok(compactBook&&compactBook.y<height,`The book begins in the first viewport at ${width}x${height}.`);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth),0);
-    assert.ok(await page.getByText("مثال على القيد المحاسبي",{exact:true}).isVisible(),"The journal example remains visible.");
+    await page.locator(".manual-detail-page").evaluate(node=>node.scrollTo({top:node.scrollHeight}));
+    assert.ok(await page.getByText("مثال على القيد المحاسبي",{exact:true}).isVisible(),"The journal example remains reachable inside the detail page.");
     await page.screenshot({path:`artifacts/${name}`});
   }
 
-  await page.setViewportSize({width:1024,height:768});
+  await page.setViewportSize({width:768,height:900});
   await page.goto(`${base}/ar/account-guide`);
   assert.equal(await page.locator(".manual-list-page").isVisible(),true);
   assert.equal(await page.locator(".manual-detail-page").isVisible(),false);

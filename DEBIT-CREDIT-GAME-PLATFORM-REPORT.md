@@ -1,5 +1,23 @@
 # Debit & Credit
 
+> التقرير العربي الموحد لأعمال First Shift وطبيعة الحسابات والربط والـResponsive والنشر: [DEBIT-CREDIT-COMPLETE-WORK-REPORT.md](DEBIT-CREDIT-COMPLETE-WORK-REPORT.md)
+
+## Nature of Accounts — 2026-09-09
+
+Responsive correction: short desktop viewports now fit the complete manual scene into the available browser height. The verified 1850×850 and 1366×768 layouts retain the top navigation, compact the title and selectors, keep the whole book visible, and scroll long content inside its paper pages. Widths from 821px through 1050px use a single-page tablet layout with horizontal category selection. The existing 390px mobile list/detail flow remains intact. Opening the manual also resets stale browser scroll position to the top.
+
+Rebuilt the accounting manual presentation around a realistic open book in a bright office. The book begins directly under six physical category selectors; readable account details and the entry example fit within the 1920×1080 review viewport. Mobile uses one paper page with list/detail navigation.
+
+All 197 accounting records, codes, rules and detailed content remain unchanged. Added visible manual access in the navigation, cinematic entry, desk and document workspace. Opening the manual from First Shift preserves the source tab and its live draft; language switching keeps the return context.
+
+The full accounting reference is downloadable from `/docs/nature-of-accounts.md`, generated from the same data as the UI. A repository copy is [NATURE-OF-ACCOUNTS.md](NATURE-OF-ACCOUNTS.md); implementation details and screenshots are in [NATURE-OF-ACCOUNTS-REPORT.md](NATURE-OF-ACCOUNTS-REPORT.md).
+
+Validation: 182 tests across 23 files, ESLint, TypeScript and production build passed. Browser checks cover AR/EN at 1920×1080, 390px with zero horizontal overflow, search/filter/selection, compatibility routes, MD content, and an actual unsent journal draft preserved across a manual visit and language change. No game rewards, accounting data, chapter progression or balances were modified.
+
+Publication remains on `codex/first-day-cinematic` through PR #1 and Vercel Preview. No merge into main or user visual approval is implied.
+
+Published implementation: `50437eafab34cd47487440db10b8582a8b860f42`. Vercel deployment `6338264780` succeeded: [Arabic manual](https://debit-credit-79xpe3yjx-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar/account-guide), [English manual](https://debit-credit-79xpe3yjx-ahmed-mohameds-projects-c51bc2cc.vercel.app/en/account-guide), [MD download](https://debit-credit-79xpe3yjx-ahmed-mohameds-projects-c51bc2cc.vercel.app/docs/nature-of-accounts.md).
+
 ## by Money Coder
 
 ## Real Accounting Game Platform — 2026-09-07 release
@@ -353,3 +371,249 @@ The original `debit-credit-storage-migration-v1` FINORA educational migration re
 ### Final Result
 
 Debit & Credit now presents one accounting game journey: the learner has a current level, objective, mission, reward, measurable skills, competition path, career-readiness explanation, and a demo path for company discovery. Existing educational content remains available inside that journey rather than behaving like disconnected products.
+
+## Chapter 1 — Cinematic Accounting Game Loop
+
+### What was wrong before
+
+The First Day route used a timed sequence over one static image, complete with simulated playback and progress controls. That made a poster look like a video and moved the player forward automatically. After it ended, the composition returned to a conventional dashboard: a wide status header, a large stepper, a mission banner, three persistent cards, and a company panel with similar visual weight to the actual work.
+
+### Implemented game flow
+
+Chapter 1 is now a deliberate, player-controlled sequence:
+
+1. Cinematic entry poster; nothing auto-starts.
+2. `Start Story` reveals the media state.
+3. The repository contains no `.mp4` or `.webm`, so the component honestly displays `المقدمة السينمائية ستتوفر هنا` / `Cinematic introduction will be available here` and identifies the image as a static preview.
+4. `Enter Company` is a separate manual action.
+5. Mr. Kareem delivers the Finance Manager briefing.
+6. `Show Me The Desk` enters the playable office.
+7. The player chooses any remaining physical document, inspects it, builds a debit/credit entry, submits it, and receives immediate accounting and business feedback.
+8. A correctly processed paper leaves the active desk and moves to the processed count, so the desk visibly cleans from 3 → 2 → 1 → 0.
+9. Shift Complete calculates accuracy, attempts, and hints from stored evidence, shows Mr. Kareem's reaction, displays the earned total, and teases the locked Chapter 2: **THE MISSING MONEY**.
+
+The media component is ready for real video sources and includes real play/pause, mute, replay, skip, and ended-state behavior only when an actual source exists. It does not render simulated video controls for the current poster fallback.
+
+### Playable documents and accounting consequences
+
+- Supplier Invoice: Dr Office Equipment / Cr Accounts Payable, EGP 100,000. Equipment and supplier balances each move from their real prior value to the updated value.
+- Customer Receipt: Dr Bank / Cr Accounts Receivable, EGP 75,000. Bank rises and the customer balance falls.
+- Office Expense: Dr Office Supplies Expense / Cr Cash, EGP 2,500. Cash and net profit both fall.
+
+Incorrect entries are not posted to the journal and do not receive rewards. They record evidence and expose the specific business consequence, such as an unreconciled bank amount or an overstated profit. Correct unique submissions persist the journal entry, company state, evidence, reward key, XP, and coins in the existing game store.
+
+Reward model: **+100 XP and +50 coins per unique document**, for an exact shift total of **+300 XP and +150 coins**. Re-submitting an already completed document cannot duplicate the reward.
+
+### Composition and responsive behavior
+
+The accounting desk is now the dominant play surface, while the live company panel is visually secondary. The chapter stepper was reduced to a compact story timeline. Desktop supports the full desk composition, and the existing responsive rules plus the Chapter 1 refinements stack documents and workbench actions at mobile widths down to 390px without horizontal document rows.
+
+Arabic remains RTL-first and English remains LTR. The new entry, briefing, desk, journal interaction, consequences, rewards, completion screen, and teaser are localized in both languages.
+
+### Protected module
+
+The internal Nature of Accounts / طبيعة الحسابات implementation was not modified. Its protected regression test still passes. Chapter 1 only links to it as the existing accounting manual.
+
+### Verification
+
+- `npm run check`: **Passed**
+- ESLint: **Passed with zero warnings**
+- TypeScript: **Passed**
+- Test files: **22 passed**
+- Automated tests: **178 passed**
+- Production build: **Passed**
+- Protected Nature of Accounts regression: **Passed**
+- Manual browser QA: Arabic cinematic entry, honest poster fallback, Finance Manager briefing, desk, and document inspection verified
+- Intro auto-start: **Absent**
+- Fake video controls on poster fallback: **Absent**
+- Chapter 2 implementation: **Not started; teaser only**
+
+### Screenshot-ready route
+
+- Arabic: `/ar`
+- English: `/en`
+
+### First Shift Visual Target Pass — September 7, 2026
+
+The First Shift desk was rebuilt around the supplied target composition instead of the earlier two-column dashboard composition.
+
+- Added a dedicated photorealistic environment asset at `public/game/first-shift-desk-v2.png`.
+- The asset was generated as a clean environment layer with no baked interface, documents, branding, people, or fake controls. All papers, buttons, state, and dialogue remain real accessible HTML.
+- The office scene now fills the playable viewport: warm wooden desk, daylight skyline, laptop, books, plants, calculator, coffee, inbox, and processed tray.
+- The three interactive documents sit physically on the central desk and keep their slight paper rotations, clips, stacked sheets, numbered badges, details, and real open actions.
+- Company state is now a compact translucent HUD fixed to the physical left side.
+- The First Shift briefing and Mr. Kareem dialogue are compact overlays fixed to the physical right side in both RTL and LTR.
+- Story progress is a small floating cinematic strip rather than a page section.
+- XP, coins, shift reward, pending work, and skill gain are compact overlays around the scene.
+- Correct completion continues to remove the paper from the live desk and increment the processed tray, preserving the visible 3 → 2 → 1 → 0 game loop.
+- At mobile widths, the environment becomes the opening game scene and the documents stack vertically with touch-sized actions and no horizontal document strip.
+
+Scope remained limited to Chapter 1 First Shift visual composition. Arena, Career, Companies, Skills, other chapters, and the internal Nature of Accounts module were not modified.
+
+Verification after this pass:
+
+- `npm run check`: Passed
+- ESLint: Passed with zero warnings
+- TypeScript: Passed
+- Automated tests: 178 passed across 22 files
+- Production build: Passed
+- Protected Nature of Accounts regression: Passed
+- Arabic RTL visual browser review: Passed after fixing physical HUD placement
+- English LTR behavior remains covered by the Chapter 1 UI suite
+
+### First Shift Interaction Polish — September 8, 2026
+
+This pass keeps the approved First Shift desk as the base and makes its objects behave more like one connected point-and-click accounting game:
+
+- The laptop is now a live Mizan OS mission surface. It shows the current 0/3 shift progress, inbox count, the status of every document, and Mr. Kareem's current instruction.
+- Mr. Kareem's instruction is presented as a compact in-world dialogue bubble: choose a document, verify the source, classify it, and record the correct entry.
+- The three documents retain their real accounting interactions while using more natural paper angles, overlap, stacked-sheet depth, and hover lift.
+- A correct submission now communicates the full consequence before leaving the workbench: pending documents and pending journal entries both move from 3 to 2, affected accounts show their before/after values, and +100 XP / +50 coins are recorded once.
+- Returning to the desk removes the completed document from active work, animates a recorded paper toward the physical processed tray, and increments the tray count.
+- The bottom HUD is grouped into skill gain, current mission, and total shift reward, so company state remains secondary to the active work.
+- Shift completion now reports documents completed, accuracy, first-attempt completions, hints used, the exact reward, Mr. Kareem's reaction, and a locked Chapter 2 teaser.
+- The document workbench follows the explicit gameplay sequence: Inspect → Build Entry → Consequence → Return to Desk.
+
+No other chapter or product area was expanded. The internal Nature of Accounts / طبيعة الحسابات module remains unchanged and is referenced only through its existing manual link.
+
+Verification for this polish:
+
+- Targeted Chapter 1 tests: 12 passed
+- Full verification: 178 tests passed across 22 files
+- ESLint, TypeScript, and production build: Passed
+- Protected Nature of Accounts regression: Passed
+- Desktop Arabic visual capture: `artifacts/first-shift-polished-ar.png`
+- Opened document interaction capture: `artifacts/first-shift-document-ar.png`
+- 390px opened-document capture: `artifacts/first-shift-mobile-ar.png`
+- 390px horizontal overflow check: Passed (0px overflow)
+
+### First Shift — Playable Desk Rebuild | September 8, 2026
+
+Replaced the First Shift presentation tree with a dedicated scene implementation in `app/first-shift-scene.css`. The previous two-column layout, company sidebar, document-card footers and decorative KPI sections are no longer rendered. The supplied reference guided the desk composition; the existing clean photographic desk asset was reused (no new generated raster asset was required).
+
+- Full viewport accounting desk with source papers, paper clips, stacked edges, natural rotations and subtle inspection indicators.
+- Live Mizan OS content aligned inside the physical laptop screen; compact story strip and manager notification.
+- Company balances and month-end progress remain in a small bottom HUD. The ledger book opens the remaining company balances, pending entries and unresolved errors.
+- Journal book reads the accepted First Shift entries from existing storage. The calculator performs addition, subtraction, multiplication and division, including zero-division handling.
+- Source papers open a focused in-game mission layer over the same desk. Existing inspection, treatment decision, entry construction and consequence logic is preserved.
+- Correct papers leave their original desk position, animate toward Processed, and accumulate visibly in the tray. The final paper transfer runs before the shift result appears.
+- Mobile uses one paper at a time with previous/next buttons, swipe navigation, bottom inspection action, compact status and accessible desk tools.
+- Modal focus is contained; Escape closes the layer; the background scene is inert while a document or tool is open. Reduced-motion preferences are honored.
+- Existing accounting rules, amounts, rewards, company state, localization, storage and routes remain unchanged. No internal Nature of Accounts changes or work on Chapter 2, Arena, Career, Companies or Skills.
+
+Validation:
+
+- 181 tests passed across 22 files, including protected Nature of Accounts regression.
+- ESLint passed with zero warnings; TypeScript and production build passed.
+- Production browser verification: Arabic desktop 1672×941, English desktop 1366×768 and Arabic mobile 390×844.
+- Horizontal overflow: 0px on desktop and mobile, including the mobile document layer.
+- Browser flow checked wrong answer → correction → all three successful entries → final result → reload; final state is 3 journal entries, 300 XP and 150 coins.
+- Processed count verified 0 → 1 → 2 → 3; saved progress verified after first and final documents.
+- Mobile next/previous and swipe navigation, modal focus, Escape, and zero browser page errors checked.
+- Browser verification script: `artifacts/verify-first-shift.mjs` (requires Playwright; optional `PLAYWRIGHT_MODULE` and `FIRST_SHIFT_URL` overrides).
+- Detailed results: `artifacts/first-shift-scene-qa.json`.
+
+Review captures:
+
+- Desktop Arabic: `artifacts/first-shift-scene-desktop-ar.png`
+- Mobile Arabic: `artifacts/first-shift-scene-mobile-ar.png`
+- Open document Arabic: `artifacts/first-shift-scene-document-ar.png`
+- Mobile open document: `artifacts/first-shift-scene-mobile-document-ar.png`
+- Desktop English: `artifacts/first-shift-scene-desktop-en.png`
+- Processed tray after one entry: `artifacts/first-shift-scene-processed-en.png`
+
+Publication authorized by the user's subsequent instruction to publish to GitHub and Vercel. Continue on `codex/first-day-cinematic`; PR #1 remains the review destination and is not merged into main.
+
+GitHub review: https://github.com/AhmedMohamed500/Debit-Credit/pull/1
+Vercel Preview (Ready; source commit `6351c106125e6f3a52e3e1e41297a80f799d5a3c`):
+
+- Arabic: https://debit-credit-5rvac1ch4-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar
+- English: https://debit-credit-5rvac1ch4-ahmed-mohameds-projects-c51bc2cc.vercel.app/en
+- Deployment: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/CVPTcBsk9DgezaMn6PkjQZ8XdWzM
+
+Published through the existing GitHub–Vercel integration. GitHub's deployment record `6332322160` and the exact source commit's Vercel status both report success. A direct CLI attempt returned Not authorized; the configured Git integration completed the deployment successfully.
+
+Live browser verification: the deployment URL redirects unauthenticated visitors to the Vercel login page (deployment protection). The public browser flow therefore could not run against the hosted preview. Full interaction verification and screenshots were completed against the local production build; remote publication is verified by the successful exact-commit GitHub deployment status. Open the Preview while signed into the owning Vercel account. Existing access settings were preserved.
+
+### Nature of Accounts — In-Game Accounting Manual Redesign | September 8, 2026
+
+The intentionally approved redesign replaces the long Academy-style Nature of Accounts presentation with a professional open accounting manual inside the Debit & Credit game world.
+
+- A generated clean office environment supplies the physical desk and blank open book. All account data, labels, search results and controls remain live accessible HTML.
+- The primary desktop view keeps the important reference above the fold: compact navigation and search, title and finance-manager message, six category selectors, then the open book.
+- Categories use the existing Assets, Liabilities, Equity, Revenue, Expenses and Contra groups. They show live counts calculated from `accountLearningGuide` and act as the sole category filter.
+- The physical left page lists real account codes and bilingual account names. The right page updates immediately with the selected account's normal balance, increase and decrease direction/effect, financial-statement location, supporting documents, journal example and expandable document cycle.
+- Search retains Arabic name, English name, code and category matching. Empty results provide an explicit reset action.
+- The current 90+ account dataset, unique codes, accounting rules and lookup behavior remain unchanged. No accounting data file was edited.
+- Existing Arabic, English, Academy compatibility and Arena redirect routes remain available. Return-to-game uses browser history so the source mission and stored draft remain intact.
+- Missing approved English detail fields are not invented. The English frame uses existing English names and normal-balance values while clearly retaining the Arabic source explanation where the data model has only Arabic detail.
+- Mobile becomes a manual with Accounts and Account Behavior tabs, horizontal touch category selection, automatic detail opening after account selection and zero horizontal overflow at 390px.
+- The approved protected baseline now covers the rebuilt component, unchanged accounting data, unchanged primary route and the new manual stylesheet.
+
+Review captures:
+
+- Arabic desktop: `artifacts/account-manual-desktop-ar.png`
+- English desktop: `artifacts/account-manual-desktop-en.png`
+- Arabic mobile: `artifacts/account-manual-mobile-ar.png`
+
+Browser verification covers Arabic and English rendering, search, six category filters, account selection, 390px mobile tabs, compatibility routes, return context and zero horizontal overflow. Detailed section documentation is in `NATURE-OF-ACCOUNTS-REPORT.md`.
+
+Preview publication:
+
+- Implementation commit: `55dc688bd8735134444fd95cadfc6d37b32cffdf`
+- GitHub review: https://github.com/AhmedMohamed500/Debit-Credit/pull/1
+- Vercel Preview: https://debit-credit-n0zc0sg3a-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Vercel deployment record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/CL7i73SwBoqwccVYBd6dCgv9tJUA
+- GitHub deployment `6335594071` reports success for the exact implementation commit.
+
+## Career Profile & Skill Passport Foundation — September 10, 2026
+
+The project now includes a separate professional identity layer that connects real accounting activity to an evidence-backed profile and CV while keeping game progression isolated.
+
+- Added a five-step bilingual Career Profile with stable local candidate identity, education/experience, target role, work preferences, privacy and resume-later browser persistence.
+- Added the Accounting Skill Passport with 19 accounting skills and the explicit states Unassessed, Practiced, Demonstrated and future-only Verified.
+- Added a versioned Skill Evidence Engine. First Shift supplier invoice, customer receipt and office expense attempts are projected into exact related skills; incorrect attempts remain practice evidence and current gameplay never becomes Verified.
+- Added deterministic skill scoring with difficulty, accuracy, activity score, independence, first attempt, hints, critical errors and evidence diversity. One activity never displays a percentage.
+- Added evidence-thresholded Accounting DNA and separate weighted readiness definitions for nine accounting roles. Readiness stays “Not Enough Evidence” until role coverage is credible.
+- Added a role-based Auto CV that changes emphasis from real skills/evidence, supports A4 Print/Save PDF and JSON export, and excludes XP, coins, streaks and game badges.
+- Added a local/demo public talent profile, candidate-controlled privacy and an employer preview that uses the same real profile data. No live company discovery, authentication or server verification is claimed.
+- Added browser repository abstractions and separate versioned keys for career profile, skill evidence, CV preferences and `localCandidateId`; `debit-credit-world-v2` remains intact.
+- Added future-only assessment and hiring relationship interfaces without implementing Chapter 2, Verified Career Mode or company hiring infrastructure.
+- Renamed the old player view to Game Profile in navigation and copy, and linked it to Career Profile. First Shift completion now provides a compact “Professional Evidence Added” transition to the Skill Passport.
+
+Routes:
+
+- `/[locale]/career-profile`
+- `/[locale]/career-profile/edit`
+- `/[locale]/career-profile/skills`
+- `/[locale]/career-profile/skills/[skillId]`
+- `/[locale]/career-profile/cv`
+- `/[locale]/career-profile/employer-preview`
+- `/[locale]/talent/[slug]`
+
+Validation added in `tests/career-profile.test.ts`, `tests/career-ui.test.tsx` and `artifacts/verify-career-profile.mjs`. Browser verification passed Arabic RTL, English LTR, skill drill-down, CV print media, employer preview, link privacy, zero page errors and 390px with zero horizontal overflow. Full technical check and publication details are recorded after the final build and deployment. Detailed design and model documentation: `CAREER-PROFILE-SKILL-PASSPORT.md`.
+
+Final local verification for this phase:
+
+- `npm run check`: passed through the system npm CLI (the user's roaming npm shim is incomplete).
+- ESLint: passed with zero warnings.
+- TypeScript: passed.
+- Vitest: 198 tests passed across 25 files.
+- Next.js production build: passed; all new routes were collected successfully.
+- Career browser QA: Arabic RTL, English LTR, dashboard, skill drill-down, CV, print media, employer preview, local share privacy and 390px passed with zero page errors and zero horizontal overflow.
+- First Shift browser regression: both locales, mobile, entries, processed tray, persistence, focus and rewards passed.
+- Nature of Accounts browser regression: Arabic/English desktop, 390px, search, categories, selection, compatibility routes and return context passed.
+
+Publication for the Career Profile foundation:
+
+- Implementation commit: `d48cd2e19b9238a94d7723f315e35d3e677309bd`
+- Branch: `codex/first-day-cinematic`
+- PR #1 remains open: https://github.com/AhmedMohamed500/Debit-Credit/pull/1
+- Push: successful to `origin/codex/first-day-cinematic`
+- Vercel Preview: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Arabic: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar/career-profile
+- English: https://debit-credit-bp7p2tful-ahmed-mohameds-projects-c51bc2cc.vercel.app/en/career-profile
+- GitHub deployment `6373295410`: success for the exact implementation commit.
+- Vercel record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/F3dXHi7Qntavhg5rAAU3BvMhotrS
+
+The Preview is protected by the existing Vercel SSO setting, so anonymous page requests redirect to the Vercel login page. The GitHub/Vercel records verify successful publication; the complete interactive route matrix was verified against the same production build locally.

@@ -1,0 +1,155 @@
+{
+  "mode": "after",
+  "routes": {
+    "nature-ar-1906x890": {
+      "width": 1906,
+      "height": 890,
+      "overflow": 0,
+      "rings": {
+        "x": 888.59375,
+        "y": 323.234375,
+        "width": 128.8125,
+        "height": 599.890625
+      },
+      "listPage": {
+        "x": 237.359375,
+        "y": 323.234375,
+        "width": 651.234375,
+        "height": 599.890625
+      },
+      "detailPage": {
+        "x": 1017.40625,
+        "y": 323.234375,
+        "width": 651.234375,
+        "height": 599.890625
+      }
+    },
+    "first-day-intro-ar-1877x953": {
+      "width": 1877,
+      "height": 953,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "intro-ar-360": {
+      "width": 360,
+      "height": 844,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-360": {
+      "width": 360,
+      "height": 844,
+      "overflow": 0,
+      "rings": null,
+      "listPage": {
+        "x": 28,
+        "y": 517.03125,
+        "width": 304,
+        "height": 550
+      },
+      "detailPage": null
+    },
+    "intro-ar-390": {
+      "width": 390,
+      "height": 844,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-390": {
+      "width": 390,
+      "height": 844,
+      "overflow": 0,
+      "rings": null,
+      "listPage": {
+        "x": 28,
+        "y": 517.03125,
+        "width": 334,
+        "height": 550
+      },
+      "detailPage": null
+    },
+    "intro-ar-768": {
+      "width": 768,
+      "height": 900,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-768": {
+      "width": 768,
+      "height": 900,
+      "overflow": 0,
+      "rings": null,
+      "listPage": {
+        "x": 39,
+        "y": 485.671875,
+        "width": 690,
+        "height": 550
+      },
+      "detailPage": null
+    },
+    "intro-ar-1280": {
+      "width": 1280,
+      "height": 900,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-1280": {
+      "width": 1280,
+      "height": 900,
+      "overflow": 0,
+      "rings": {
+        "x": 592.765625,
+        "y": 333.375,
+        "width": 94.453125,
+        "height": 599.890625
+      },
+      "listPage": {
+        "x": 115.203125,
+        "y": 333.375,
+        "width": 477.5625,
+        "height": 599.890625
+      },
+      "detailPage": {
+        "x": 687.21875,
+        "y": 333.375,
+        "width": 477.578125,
+        "height": 599.890625
+      }
+    },
+    "intro-ar-1440": {
+      "width": 1440,
+      "height": 900,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-1440": {
+      "width": 1440,
+      "height": 900,
+      "overflow": 0,
+      "rings": {
+        "x": 666.859375,
+        "y": 316.71875,
+        "width": 106.265625,
+        "height": 599.890625
+      },
+      "listPage": {
+        "x": 129.59375,
+        "y": 316.71875,
+        "width": 537.265625,
+        "height": 599.890625
+      },
+      "detailPage": {
+        "x": 773.125,
+        "y": 316.71875,
+        "width": 537.28125,
+        "height": 599.890625
+      }
+    },
+    "desk-ar-390": {
+      "width": 390,
+      "height": 844,
+      "overflow": 0
+    }
+  },
+  "errors": []
+}

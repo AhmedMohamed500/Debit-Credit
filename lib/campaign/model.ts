@@ -1,7 +1,7 @@
 export type Words = { ar: string; en: string };
 export const w = (en: string, ar: string): Words => ({ en, ar });
 export type Skill = 'analysis'|'journal'|'posting'|'reconciliation'|'adjustments'|'statements'|'investigation';
-export type Account = 'cash'|'bank'|'inventory'|'equipment'|'customers'|'suppliers'|'capital'|'revenue'|'rent'|'salary'|'accrual'|'depreciation'|'accumulated';
+export type Account = 'cash'|'bank'|'inventory'|'equipment'|'customers'|'suppliers'|'capital'|'revenue'|'rent'|'officeExpense'|'salary'|'accrual'|'depreciation'|'accumulated';
 export type Line = { account: Account; debit: number; credit: number };
 export type Document = { id: string; title: Words; issuer: Words; detail: Words; amount: number; category: string };
 export type Stage = { id: string; kind: 'inspect'|'sort'|'choice'|'journal'|'number'|'order'; title: Words; prompt: Words; skill: Skill; documentIds?: string[]; options?: { id: string; label: Words }[]; answer?: string; journal?: Line[]; effect?: string; consequence: Words; hint: Words };

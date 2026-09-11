@@ -67,6 +67,15 @@ Detailed visual evidence is in [UI-AUDIT.md](./UI-AUDIT.md). The two exact-size 
 - The original screenshot files named by the plan were unavailable in this run. Matching runtime baseline captures were made at the exact routes, languages and viewport dimensions; the audit does not claim direct reinspection of the missing files.
 - Physical-device virtual-keyboard behavior and 200% text zoom were not validated in this environment.
 
+## GitHub and preview delivery
+
+- Pull request: [PR #1 — codex/first-day-cinematic](https://github.com/AhmedMohamed500/Debit-Credit/pull/1)
+- GitHub head verified after the Phase A push: `aef3f9459971d2346feada04d0532a6d02e1694a`
+- Vercel deployment: [Phase A Preview](https://debit-credit-9ng53mhv5-ahmed-mohameds-projects-c51bc2cc.vercel.app)
+- GitHub deployment ID `6398764627` reported `success` with the description `Deployment has completed`.
+
+The Preview is protected by Vercel Authentication. An unsigned headless request receives a `302` redirect to Vercel SSO, so the deployed UI could not be independently exercised without the project session. Deployment success is verified from the Vercel GitHub status; all route and visual journeys listed above were executed against the same production build locally. This limitation is stated here instead of claiming a public runtime inspection.
+
 ## Next-phase boundary
 
 No Chapter 2, backend, paid service, framework migration, Career expansion, readiness score or VERIFIED evidence was added. Phase B may begin only from the current source and this release record, and must keep these layout, persistence and accounting guarantees intact.

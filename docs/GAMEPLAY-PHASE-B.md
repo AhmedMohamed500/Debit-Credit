@@ -134,8 +134,7 @@ The recommended next milestone is a focused First Shift playtest and tuning pass
 - Skill evidence commit: `751ecc0`
 - First Shift experience commit: `1f69465`
 - QA/documentation commit: `7d8a659`
+- Risk and Skill Passport calibration commit: `74b6bcc`
 - Pull Request: <https://github.com/AhmedMohamed500/Debit-Credit/pull/2>
 - Stable Vercel branch preview: <https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app>
-- Verified implementation deployment: <https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app>
-- Vercel deployment record: <https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/FdrKruSqWCZvd91kng4xS7LZ6hr5>
-- GitHub/Vercel deployment ID: `6400969250`, ready for exact commit `7d8a6593d5958e813ec64c9a1831cbf9185744f7`.
+- Exact deployment status is verified against the current PR head through the Vercel commit check; the stable branch URL above follows that head.

@@ -70,6 +70,17 @@ const evidenceRecord = (skillId: SkillId, activityId: string, overrides: Partial
   ...overrides,
 });
 
+const introductoryCaseEvidence = (activityId: string, overrides: Partial<SkillEvidence> = {}): SkillEvidence => evidenceRecord("journal-entries", activityId, {
+  projectionVersion: 2,
+  difficulty: 1,
+  accuracy: 100,
+  attempts: 1,
+  hintsUsed: 0,
+  criticalErrors: 0,
+  performance: { accuracy: 100, independence: 100, investigation: 100, riskAwareness: 100, documentation: 100, accountingJudgment: 100 },
+  ...overrides,
+});
+
 describe("career identity repositories", () => {
   beforeEach(() => localStorage.clear());
 
@@ -147,6 +158,35 @@ describe("skill scoring and readiness integrity", () => {
     expect(calculateSkill("journal-entries", [evidenceRecord("journal-entries", "case-1"), evidenceRecord("journal-entries", "case-2")]).status).toBe("demonstrated");
   });
 
+  it("keeps one or two qualifying introductory Phase B cases at Practiced", () => {
+    const one = introductoryCaseEvidence("first-day/supplier-invoice");
+    const two = introductoryCaseEvidence("first-day/customer-receipt");
+    expect(calculateSkill("journal-entries", [one])).toMatchObject({ status: "practiced", score: null, successfulActivities: 1 });
+    expect(calculateSkill("journal-entries", [one, two])).toMatchObject({ status: "practiced", successfulActivities: 2 });
+  });
+
+  it("requires three distinct qualifying introductory cases for Demonstrated", () => {
+    const records = ["supplier-invoice", "customer-receipt", "office-expense"].map(document => introductoryCaseEvidence(`first-day/${document}`));
+    expect(calculateSkill("journal-entries", records)).toMatchObject({ status: "demonstrated", successfulActivities: 3 });
+  });
+
+  it("keeps guided, repeated, or under-investigated introductory evidence at Practiced", () => {
+    const records = [
+      introductoryCaseEvidence("first-day/supplier-invoice", { attempts: 2, firstAttemptCorrect: false, criticalErrors: 1 }),
+      introductoryCaseEvidence("first-day/customer-receipt", { hintsUsed: 2, independentCompletion: false }),
+      introductoryCaseEvidence("first-day/office-expense", { performance: { accuracy: 100, independence: 100, investigation: 50, riskAwareness: 50, documentation: 100, accountingJudgment: 100 } }),
+    ];
+    expect(calculateSkill("journal-entries", records)).toMatchObject({ status: "practiced", successfulActivities: 0 });
+  });
+
+  it("keeps historical projection rules readable without destructive downgrades", () => {
+    const historical = [
+      evidenceRecord("journal-entries", "historical-1", { projectionVersion: 1 }),
+      evidenceRecord("journal-entries", "historical-2", { projectionVersion: 1 }),
+    ];
+    expect(calculateSkill("journal-entries", historical).status).toBe("demonstrated");
+  });
+
   it("reserves Verified for an explicit verified assessment source", () => {
     const ordinary = [evidenceRecord("debit-credit", "case-1"), evidenceRecord("debit-credit", "case-2")];
     expect(calculateSkill("debit-credit", ordinary).status).toBe("demonstrated");
@@ -154,6 +194,12 @@ describe("skill scoring and readiness integrity", () => {
       source: "verified_assessment", assessmentIntegrity: "verified_local_beta",
     });
     expect(calculateSkill("debit-credit", [...ordinary, verified]).status).toBe("verified");
+  });
+
+  it("never marks local First Shift evidence as Verified", () => {
+    const records = ["supplier-invoice", "customer-receipt", "office-expense"].map(document => introductoryCaseEvidence(`first-day/${document}`));
+    expect(calculateSkill("journal-entries", records).status).toBe("demonstrated");
+    expect(calculateSkill("journal-entries", records).status).not.toBe("verified");
   });
 
   it("withholds role readiness until coverage is credible", () => {

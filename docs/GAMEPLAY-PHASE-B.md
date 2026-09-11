@@ -1,6 +1,6 @@
 # Gameplay Phase B — Accounting Work Simulation
 
-Status: **implemented and tested locally** on branch `codex/gameplay-phase-b`. The experience is frontend-only and local-only. Chapter 2 remains planned and locked. Current gameplay evidence is **Demonstrated**, never Verified.
+Status: **implemented and tested locally** on branch `codex/gameplay-phase-b`. The experience is frontend-only and local-only. Chapter 2 remains planned and locked. Current gameplay can produce conservatively calibrated **Practiced** or **Demonstrated** skill states, never Verified.
 
 ## Gameplay philosophy
 
@@ -46,7 +46,7 @@ One stable attempt currently represents one First Shift case: `first-shift/{case
 - Independence: manager assistance requests.
 - Investigation: required supporting evidence reviewed before the first Post decision.
 - Documentation: supporting evidence reviewed during the case.
-- Risk awareness: premature blocked Post decisions.
+- Risk awareness: required evidence inspected before the first Post decision, limited credit for a professionally appropriate protective action while evidence is missing, and a penalty for every recorded blocked Post decision. Unsafe attempts never add credit, and repeats cannot improve the score.
 - Accounting judgment: accepted resolution with penalties for premature or alternate actions.
 - Overall: 30% accuracy, 25% judgment, 20% investigation, 10% documentation, 10% risk awareness, and 5% independence.
 
@@ -58,7 +58,7 @@ Resolved Phase B cases create one stable resolution evidence record per related 
 
 The Career Profile detail view displays that rationale and reviewed evidence. New case projection replaces the earlier per-submit evidence for the same candidate/activity/skill. Historical records remain readable; missing historical first-attempt data migrates to `Unknown` rather than being misreported as failure. Legacy saves without Phase B events continue through the original attempt projection.
 
-All First Shift evidence remains local **Demonstrated** evidence. `Verified` remains reserved for future trusted assessment sources.
+The introductory First Shift is calibrated conservatively. One or two successful guided cases remain **Practiced**. **Demonstrated** requires three distinct qualifying introductory cases for the same skill, each completed correctly on the first attempt with at most one manager-assistance request and at least 80% investigation and accounting judgment. Multiple attempts, significant help, or insufficient pre-decision investigation keep that evidence at Practiced. Existing projection-version-1 evidence keeps its historical calculation, so saved evidence is not destructively downgraded. `Verified` remains impossible for local-only gameplay and reserved for future trusted assessment sources.
 
 ## Storage and migration
 
@@ -102,7 +102,7 @@ Chapter 2 has no playable route, fabricated tasks, unlock action, or claimed com
 
 ## Verification and artifacts
 
-Automated coverage is in `tests/casework.test.ts`, `tests/campaign-ui.test.tsx`, `tests/career-profile.test.ts`, and the existing accounting regression suites. Browser automation is recorded in `artifacts/verify-first-shift.mjs` and `artifacts/gameplay-phase-b-qa.json`.
+Automated coverage is in `tests/casework.test.ts`, `tests/campaign-ui.test.tsx`, `tests/career-profile.test.ts`, `tests/career-ui.test.tsx`, and the existing accounting regression suites. Focused regressions compare careful and rushed posting behavior, cover conservative Practiced/Demonstrated thresholds and historical evidence compatibility, and verify that the Skill Passport explains attempts, manager assistance, inspected evidence, and the classification reason without game economy values. Browser automation is recorded in `artifacts/verify-first-shift.mjs` and `artifacts/gameplay-phase-b-qa.json`.
 
 Screenshots:
 
@@ -115,7 +115,7 @@ Screenshots:
 
 Browser QA passed at 1672×941, 1366×768, 1440×900, and 390×844 with zero page errors and zero page-wide horizontal overflow.
 
-Final local quality gate: ESLint passed with zero warnings, TypeScript passed, Vitest passed **211 tests across 26 files**, and the Next.js 16.3.4 production build completed successfully.
+Final local quality gate: ESLint passed with zero warnings, TypeScript passed, Vitest passed **218 tests across 26 files**, and the Next.js 16.3.4 production build completed successfully.
 
 ## Known limitations and next recommendation
 

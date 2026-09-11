@@ -45,6 +45,12 @@ Key folders:
 - `tests/` — accounting and educational engine tests.
 - `docs/` — technical notes.
 
+## Gameplay Phase B
+
+First Shift is now a reusable accounting work simulation. The player receives three Mizan Trading case files, reviews source and supporting documents, chooses a professional action, posts through the protected accounting engine when appropriate, and receives an event-derived performance review. Versioned case events also project explainable local evidence into the Skill Passport. Chapter 2 remains explicitly locked and non-routable.
+
+Architecture, migration, scoring, evidence rules, QA, artifacts, limitations, and the next recommendation are documented in [`docs/GAMEPLAY-PHASE-B.md`](docs/GAMEPLAY-PHASE-B.md).
+
 ## Local storage
 
 The canonical player state uses `debit-credit-player-v1`. Detailed module evidence remains in namespaced stores such as `debit-credit-arena-v1`, `debit-credit-missions-v1`, `debit-credit-detective-v1`, `debit-credit-money-flow-v1`, and `debit-credit-progress-v1`. Existing progress is synchronized once into the unified player without deleting module data. The original FINORA migration remains unchanged and never reads or edits operational journals, parties, invoices, or settings.

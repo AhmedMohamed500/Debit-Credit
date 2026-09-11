@@ -51,6 +51,8 @@ First Shift is now a reusable accounting work simulation. The player receives th
 
 Architecture, migration, scoring, evidence rules, QA, artifacts, limitations, and the next recommendation are documented in [`docs/GAMEPLAY-PHASE-B.md`](docs/GAMEPLAY-PHASE-B.md).
 
+Arabic delivery report: [`GAMEPLAY-PHASE-B-REPORT-AR.md`](GAMEPLAY-PHASE-B-REPORT-AR.md).
+
 Review: <https://github.com/AhmedMohamed500/Debit-Credit/pull/2> · Preview: <https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app>
 
 ## Local storage

@@ -633,6 +633,8 @@ First Shift now runs on a reusable Accounting Case and append-only gameplay-even
 
 Full architecture and QA details: [`docs/GAMEPLAY-PHASE-B.md`](docs/GAMEPLAY-PHASE-B.md).
 
+Arabic implementation report: [`GAMEPLAY-PHASE-B-REPORT-AR.md`](GAMEPLAY-PHASE-B-REPORT-AR.md).
+
 Phase B review captures:
 
 - `artifacts/gameplay-phase-b-desk-ar.png`

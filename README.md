@@ -2,7 +2,9 @@
 
 ### by Money Coder
 
-Debit & Credit is a bilingual, frontend-only, game-based accounting learning platform. One player journey connects lessons, journal practice, visual money movement, real missions, evidence-based investigations, Arena competition, measurable skills, career readiness, and a clearly labeled demo employer portal.
+Debit & Credit is a bilingual, frontend-only Gamified Accounting Academy and Mizan Trading career simulation. One player journey connects foundations, journal practice, professional cases, quality-based demo competition, explainable Skill Passport evidence, role readiness, an evidence-driven CV, and a clearly labeled employer preview.
+
+The public landing page starts at `/ar` or `/en`. The current unified player routes are `/[locale]/onboarding`, `/game`, `/academy`, `/challenges`, `/leaderboard`, and `/career`; employer demo routes begin at `/[locale]/employers`.
 
 ## Learning journey
 
@@ -52,6 +54,8 @@ First Shift is now a reusable accounting work simulation. The player receives th
 Architecture, migration, scoring, evidence rules, QA, artifacts, limitations, and the next recommendation are documented in [`docs/GAMEPLAY-PHASE-B.md`](docs/GAMEPLAY-PHASE-B.md).
 
 Arabic delivery report: [`GAMEPLAY-PHASE-B-REPORT-AR.md`](GAMEPLAY-PHASE-B-REPORT-AR.md).
+
+Gamified Academy architecture and delivery: [`docs/GAMIFIED-ACADEMY-PLATFORM.md`](docs/GAMIFIED-ACADEMY-PLATFORM.md), [`docs/ACADEMY-LEARNING-PATH.md`](docs/ACADEMY-LEARNING-PATH.md), [`docs/SKILLS-CAREER-CV-MAPPING.md`](docs/SKILLS-CAREER-CV-MAPPING.md), and [`GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md`](GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md).
 
 Review: <https://github.com/AhmedMohamed500/Debit-Credit/pull/2> · Preview: <https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app>
 

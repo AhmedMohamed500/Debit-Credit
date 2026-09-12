@@ -1,5 +1,17 @@
 # Debit & Credit
 
+## Gamified Academy Platform — 2026-09-12
+
+The new review branch adds a bilingual public marketing layer, onboarding, Light/Dark/System themes, a responsive Mizan Trading Game Hub, Academy Phase 0–6 progression, challenges, deterministic local demo leagues, Career Hub role mapping, evidence-driven Auto CV behavior, and a clearly labeled employer comparison/evidence demo. It builds on Gameplay Phase B and leaves the accounting engine, Case Engine, 197-account Nature of Accounts source, saves, First Shift, and Chapter 2 lock intact.
+
+Routes: `/[locale]`, `/onboarding`, `/game`, `/game/first-shift`, `/academy`, `/challenges`, `/leaderboard`, `/career`, `/career-profile/skills`, `/career-profile/cv`, `/employers`, `/employers/talent`, and `/employers/candidate/[id]`.
+
+Integrity: XP remains game progression; competition remains a Demo/Local Preview; professional rank/readiness use Skill Passport coverage; Practiced and Demonstrated have separate CV treatment; generated bullets require structured evidence; local evidence remains non-Verified; Mizan Trading remains labeled Simulation.
+
+Browser QA covers Arabic/English, Light/Dark, refresh persistence, console errors, and 390–1920px layouts with no page-wide overflow. Fifteen captures are stored under `artifacts/gamified-academy-platform/`. Detailed documentation is in [docs/GAMIFIED-ACADEMY-PLATFORM.md](docs/GAMIFIED-ACADEMY-PLATFORM.md), [docs/ACADEMY-LEARNING-PATH.md](docs/ACADEMY-LEARNING-PATH.md), [docs/SKILLS-CAREER-CV-MAPPING.md](docs/SKILLS-CAREER-CV-MAPPING.md), and [GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md](GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md).
+
+Publication details will be recorded in the implementation report after the final commit, PR, and exact Vercel deployment are verified.
+
 > التقرير العربي الموحد لأعمال First Shift وطبيعة الحسابات والربط والـResponsive والنشر: [DEBIT-CREDIT-COMPLETE-WORK-REPORT.md](DEBIT-CREDIT-COMPLETE-WORK-REPORT.md)
 
 ## Nature of Accounts — 2026-09-09

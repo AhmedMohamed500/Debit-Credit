@@ -4,6 +4,8 @@ import "./game.css";
 import "./world.css";
 import "./office.css";
 import "./first-day.css";
+import "./platform.css";
+import { ThemeProvider } from "@/components/platform/theme-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://debit-credit-nine.vercel.app"),
@@ -20,8 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: "#0b5f79", colorScheme: "light", viewportFit: "cover" };
+export const viewport: Viewport = { themeColor: "#0b5f79", colorScheme: "light dark", viewportFit: "cover" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html suppressHydrationWarning><body className="min-h-screen bg-daftar-bg text-daftar-text antialiased">{children}</body></html>;
+  return <html suppressHydrationWarning><body className="min-h-screen bg-daftar-bg text-daftar-text antialiased"><ThemeProvider>{children}</ThemeProvider></body></html>;
 }

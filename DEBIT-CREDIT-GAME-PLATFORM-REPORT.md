@@ -8,6 +8,8 @@ The surrounding command center now shows the real First Shift work queue, saved 
 
 New asset: `public/platform/mizan-trading-world.png`. Updated captures: `artifacts/gamified-academy-platform/game-hub-light.png`, `game-hub-dark.png`, and `game-hub-mobile.png`. Validation: 236 tests across 28 files, ESLint, TypeScript, and production build passed.
 
+Published correction: commit `8311d967cff586b631db576a8e182deb3cd3378d`, PR #3, Vercel Preview https://debit-credit-h7gicg65j-ahmed-mohameds-projects-c51bc2cc.vercel.app.
+
 ## Gamified Academy Platform — 2026-09-12
 
 The new review branch adds a bilingual public marketing layer, onboarding, Light/Dark/System themes, a responsive Mizan Trading Game Hub, Academy Phase 0–6 progression, challenges, deterministic local demo leagues, Career Hub role mapping, evidence-driven Auto CV behavior, and a clearly labeled employer comparison/evidence demo. It builds on Gameplay Phase B and leaves the accounting engine, Case Engine, 197-account Nature of Accounts source, saves, First Shift, and Chapter 2 lock intact.

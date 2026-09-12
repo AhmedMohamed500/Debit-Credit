@@ -13,8 +13,9 @@ Validation after the correction: focused platform UI 8/8, full Vitest 236/236 ac
 - Branch: `codex/gamified-academy-platform`
 - Base: verified Gameplay Phase B commit `eab32a95645096bb7427ad994566f5a3ca958465`
 - Pull Request: https://github.com/AhmedMohamed500/Debit-Credit/pull/3
-- Vercel Preview: https://debit-credit-git-codex-540b1c-ahmed-mohameds-projects-c51bc2cc.vercel.app
-- Implementation commit verified on Vercel: `1ba1cb1080e8019705d8bb7409e02f8577322fd5`
+- Stable Vercel branch Preview: https://debit-credit-git-codex-540b1c-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Corrected Game Hub deployment: https://debit-credit-h7gicg65j-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Corrected Game Hub commit verified on Vercel: `8311d967cff586b631db576a8e182deb3cd3378d`
 
 ## Delivered
 

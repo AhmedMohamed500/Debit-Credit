@@ -1,5 +1,13 @@
 # Gamified Academy Platform — Implementation Report
 
+## Game Hub visual correction — 2026-09-13
+
+The earlier abstract card map was replaced with the requested full company-world play surface. A new original Mizan Trading port-campus image is stored at `public/platform/mizan-trading-world.png`; it contains no baked UI or text. React overlays provide the actual Suppliers, Customers, Bank, Logistics, and locked Month End interactions.
+
+The screen now combines a game navigation rail, interactive company map, real First Shift work queue, Chapter 1 progress, state-derived company impact, player dossier, Skill Passport performance, hiring-readiness explanation, and a clearly labeled employer demo. Existing accounting logic, Phase B events, persistence, bilingual behavior, and Chapter 2 lock are unchanged.
+
+Validation after the correction: focused platform UI 8/8, full Vitest 236/236 across 28 files, ESLint clean, TypeScript clean, and production build clean. Updated desktop Light/Dark and mobile captures are stored under `artifacts/gamified-academy-platform/`.
+
 ## Release
 
 - Branch: `codex/gamified-academy-platform`
@@ -10,7 +18,7 @@
 
 ## Delivered
 
-**Implemented:** bilingual public landing, onboarding, Light/Dark/System theme, responsive Game Hub, functional Mizan Trading zones, Academy Phase 0–6 map, challenge catalog, deterministic competition score, leagues, Career Hub, professional ranks, Skill Passport role grouping, missing-skill recommendation, evidence-driven CV sections/bullets, employer demo talent comparison, and candidate evidence drilldown.
+**Implemented:** bilingual public landing, onboarding, Light/Dark/System theme, interactive company-world Game Hub, functional Mizan Trading zones, Academy Phase 0–6 map, challenge catalog, deterministic competition score, leagues, Career Hub, professional ranks, Skill Passport role grouping, missing-skill recommendation, evidence-driven CV sections/bullets, employer demo talent comparison, and candidate evidence drilldown.
 
 **Demo:** leaderboard competitors, talent candidates, candidate comparison, and employer portal. All demo records are labeled. They are deterministic and do not represent real people/accounts.
 

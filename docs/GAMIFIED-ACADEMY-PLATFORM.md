@@ -6,12 +6,20 @@ Debit & Credit connects accounting learning, professional simulation, quality-ba
 
 The integrity rules remain strict: XP controls game progression only; league rank is not employability; Mizan Trading is simulation rather than employment; local evidence never becomes `Verified`.
 
+## Interactive company-world correction
+
+The Game Hub now follows the intended management-game composition. Its center is a new original Mizan Trading port campus with clickable operational zones for Suppliers, Customers, Bank, and Logistics. Month End remains visibly locked. The visual is an environment layer only; labels, status, links, locks, progress, and accessibility remain live React controls.
+
+A persistent game rail opens the real inbox, First Shift, journal, ledger reference, Money Flow, Skill Passport, and Career Hub. The surrounding operations deck reads the three real First Shift documents and their saved completion state. Company impact uses processed cases, projected accuracy, handled document value, and ledger issues from the existing game state. The player dossier and Skill Passport use existing local projections and keep Game Level separate from professional rank.
+
+Desktop uses the full command-center layout. Tablet collapses the dossier beneath the world, and mobile turns the rail into a horizontal game menu, keeps the map touch targets inside the viewport, and stacks the operations and evidence panels. Chapter 2 was not implemented or unlocked.
+
 ## Implemented platform layer
 
 - Premium bilingual public landing page with product journey, Mizan Trading preview, career path, competition preview, and employer demo entry.
 - Local onboarding for experience and goal, with foundations kept mandatory.
 - Light, Dark, and System themes using semantic CSS tokens and local persistence. An early boot script prevents a saved theme from flashing incorrectly.
-- Game Hub with state-derived level, professional rank, league, XP, company impact, First Shift mission, career summary, and challenges.
+- Game Hub with a large interactive Mizan Trading company world, state-derived player dossier, company impact, First Shift work queue, and professional evidence panels.
 - Functional Mizan Trading zones: Suppliers and Customers open First Shift, Bank opens Money Flow, Logistics opens the account reference, and Month End remains visibly locked.
 - Academy overview for Phases 0–6 and the Learn → Practice → Simulate → Compete model.
 - Daily, weekly, and locked boss challenge samples that reuse existing mechanics.

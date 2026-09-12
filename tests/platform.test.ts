@@ -1,0 +1,18 @@
+import{beforeEach,describe,expect,it}from'vitest';
+import{academyPhases,competitionScore,DemoLeaderboardRepository,leagueForScore,placementRecommendation,professionalRank,recommendMission,resolveTheme}from'@/lib/platform';
+import{createPlatformState,derivePlatformBadges,migratePlatformState,recordPlatformActivity}from'@/lib/platform/repository';
+import{calculatePassport}from'@/lib/career/evidence';
+import type{SkillResult}from'@/lib/career/model';
+
+describe('platform progression and integrity',()=>{
+ beforeEach(()=>localStorage.clear());
+ it('resolves Light, Dark and System theme deterministically',()=>{expect(resolveTheme('light',true)).toBe('light');expect(resolveTheme('dark',false)).toBe('dark');expect(resolveTheme('system',true)).toBe('dark')});
+ it('keeps foundations available and Closing locked',()=>{expect(academyPhases.find(x=>x.id===1)?.state).toBe('available');expect(academyPhases.find(x=>x.id===4)?.state).toBe('locked');expect(academyPhases.find(x=>x.id===5)?.state).toBe('planned')});
+ it('uses deterministic professional scoring instead of XP',()=>{const careful=competitionScore({accuracy:90,accountingJudgment:90,investigation:95,riskAwareness:95,firstAttemptRate:90,difficulty:2}),rushed=competitionScore({accuracy:90,accountingJudgment:75,investigation:25,riskAwareness:20,firstAttemptRate:20,difficulty:2});expect(careful).toBe(911);expect(careful).toBeGreaterThan(rushed);expect(competitionScore({riskAwareness:50})).toBe(100)});
+ it('orders deterministic demo leaderboard rows',()=>{const repository=new DemoLeaderboardRepository(),first=repository.list('weekly'),second=repository.list('weekly');expect(second).toEqual(first);expect(first.every((row,i)=>i===0||first[i-1].score>=row.score)).toBe(true);expect(first.every(row=>row.demo)).toBe(true)});
+ it('maps league and placement thresholds predictably',()=>{expect(leagueForScore(0)).toBe('Bronze');expect(leagueForScore(900)).toBe('Elite');expect(placementRecommendation(20)).toBe(0);expect(placementRecommendation(80)).toBe(2)});
+ it('keeps professional rank separate from game level',()=>{const practiced:SkillResult={skillId:'journal-entries',status:'practiced',score:null,confidence:'insufficient',evidenceCount:1,uniqueActivities:1,successfulActivities:1};expect(professionalRank(calculatePassport([]))).toBe('Accounting Explorer');expect(professionalRank([practiced])).toBe('Accounting Trainee')});
+ it('recommends missing career skill work without unlocking Closing',()=>{const result=recommendMission('treasury-accountant',calculatePassport([]));expect(result.skillId).toBeTruthy();if(result.skillId==='bank-reconciliation')expect(result.locked).toBe(true)});
+ it('migrates old platform state and keeps streak and badges idempotent',()=>{const migrated=migratePlatformState({activeDates:['2026-09-10','2026-09-10'],badges:['first-journal','first-journal']});expect(migrated.version).toBe(1);expect(migrated.activeDates).toEqual(['2026-09-10']);let state=recordPlatformActivity(createPlatformState(),'2026-09-10',['first-journal']);state=recordPlatformActivity(state,'2026-09-10',['first-journal']);expect(state.currentStreak).toBe(1);expect(state.badges).toEqual(['first-journal']);state=recordPlatformActivity(state,'2026-09-11');expect(state).toMatchObject({currentStreak:2,bestStreak:2})});
+ it('derives game badges once from real inputs',()=>{expect(derivePlatformBadges({resolvedCases:3,firstAttempts:3,inspectedEvidence:6,riskAwareness:95,accuracy:100})).toEqual(['first-journal','clean-first-attempt','evidence-hunter','document-detective','risk-spotter','perfect-shift'])});
+});

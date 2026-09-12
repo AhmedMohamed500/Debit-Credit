@@ -1,0 +1,18 @@
+{
+  "base": "http://localhost:3106",
+  "desktopOverflow": 0,
+  "mobileOverflow": 0,
+  "tests": [
+    "Arabic desktop and 390px desk",
+    "Case file desktop and mobile",
+    "Required evidence before posting",
+    "Wrong balanced/empty entry rejected without ledger mutation",
+    "Draft survives browser refresh",
+    "Double submit remains idempotent",
+    "Three cases completed through UI",
+    "Event stream resolves each case once",
+    "Professional shift result",
+    "Nature of Accounts reachable in desktop and mobile game UI"
+  ],
+  "pageErrors": []
+}

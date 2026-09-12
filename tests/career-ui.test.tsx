@@ -3,9 +3,10 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { CareerProfileApp } from "@/components/career/career-profile-app";
 import { GameApp } from "@/components/campaign/game-app";
 import { initialState } from "@/lib/campaign/director";
-import { closeFirstDayDocument, completeFirstDayIntro, enterFirstDayDesk, firstDayDocuments, submitFirstDayDocument } from "@/lib/campaign/first-day";
+import { closeFirstDayDocument, completeFirstDayIntro, enterFirstDayDesk, firstDayDocuments, selectFirstDayDocument, submitFirstDayDocument } from "@/lib/campaign/first-day";
 import { GAME_KEY } from "@/lib/campaign/store";
 import { BrowserCareerProfileRepository, createDefaultProfile } from "@/lib/career/repository";
+import { inspectCaseDocument, selectCaseAction } from "@/lib/cases/engine";
 
 function completedFirstShift() {
   let state = enterFirstDayDesk(completeFirstDayIntro(initialState()));
@@ -61,6 +62,25 @@ describe("Career Profile UI", () => {
     expect(screen.getByText("Journal Entries")).toBeInTheDocument();
     expect(screen.getAllByText("Demonstrated").length).toBeGreaterThan(0);
     expect(screen.queryByText("Verified", { selector: ".passport-row em" })).toBeNull();
+  });
+
+  it("explains a Skill Passport record with its case, attempts, assistance, and reviewed evidence", async () => {
+    seedCareer();
+    let state = selectFirstDayDocument(enterFirstDayDesk(completeFirstDayIntro(initialState())), "supplier-invoice", 1000);
+    state = inspectCaseDocument(state, "supplier-invoice", "po-771", 1100);
+    state = inspectCaseDocument(state, "supplier-invoice", "grn-771", 1200);
+    state = selectCaseAction(state, "supplier-invoice", "post", 1300).state;
+    state = submitFirstDayDocument(state, "supplier-invoice", JSON.stringify(firstDayDocuments[0].expected), 1400).state;
+    localStorage.setItem(GAME_KEY, JSON.stringify(state));
+
+    render(<CareerProfileApp locale="en" view="skill" skillId="journal-entries" />);
+    await screen.findByRole("heading", { name: "Journal Entries" });
+    expect(screen.getByText(/Supplier Invoice — First Shift/)).toBeInTheDocument();
+    expect(screen.getByText("Attempts")).toBeInTheDocument();
+    expect(screen.getByText("Manager assistance")).toBeInTheDocument();
+    expect(screen.getByText(/three distinct qualifying introductory cases/)).toBeInTheDocument();
+    expect(screen.getByText(/Evidence reviewed: po-771 · grn-771/)).toBeInTheDocument();
+    expect(screen.queryByText(/\bXP\b|\bCoins?\b/)).toBeNull();
   });
 
   it("applies the same profile and privacy controls to employer preview", async () => {

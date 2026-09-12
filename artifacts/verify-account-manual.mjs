@@ -98,12 +98,15 @@ try{
   assert.equal(await page.locator(".scene-hud .scene-manual-link").isVisible(),true);
   await page.screenshot({path:"artifacts/account-manual-game-access.png"});
   await page.setViewportSize({width:390,height:844});
-  assert.equal(await page.locator(".scene-manual-link").isVisible(),true);
+  assert.equal(await page.locator(".scene-mobile-tools").getByRole("link",{name:"Accounts guide"}).isVisible(),true);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth),0);
   await page.screenshot({path:"artifacts/account-manual-game-mobile.png"});
   await page.setViewportSize({width:1920,height:1080});
   await page.locator(".scene-paper").first().click();
-  await page.getByRole("button",{name:"Record transaction",exact:true}).click();
+  await page.getByRole("button",{name:"Purchase Order PO-771"}).click();
+  await page.getByRole("button",{name:"Goods Receipt GRN-771"}).click();
+  await page.getByRole("button",{name:"Choose case action",exact:true}).click();
+  await page.getByRole("button",{name:/Post the liability/}).click();
   await page.locator(".fd-account-tokens button").filter({hasText:"Office equipment"}).click();
   await page.getByRole("button",{name:"DEBIT",exact:true}).click();
   await page.getByRole("spinbutton",{name:"Amount line 1"}).fill("12345");

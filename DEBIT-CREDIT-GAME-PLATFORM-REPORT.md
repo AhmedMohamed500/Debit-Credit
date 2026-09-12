@@ -10,7 +10,7 @@ Integrity: XP remains game progression; competition remains a Demo/Local Preview
 
 Browser QA covers Arabic/English, Light/Dark, refresh persistence, console errors, and 390–1920px layouts with no page-wide overflow. Fifteen captures are stored under `artifacts/gamified-academy-platform/`. Detailed documentation is in [docs/GAMIFIED-ACADEMY-PLATFORM.md](docs/GAMIFIED-ACADEMY-PLATFORM.md), [docs/ACADEMY-LEARNING-PATH.md](docs/ACADEMY-LEARNING-PATH.md), [docs/SKILLS-CAREER-CV-MAPPING.md](docs/SKILLS-CAREER-CV-MAPPING.md), and [GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md](GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md).
 
-Publication details will be recorded in the implementation report after the final commit, PR, and exact Vercel deployment are verified.
+Review: https://github.com/AhmedMohamed500/Debit-Credit/pull/3. Preview: https://debit-credit-git-codex-540b1c-ahmed-mohameds-projects-c51bc2cc.vercel.app. The implementation build was verified on Vercel at commit `1ba1cb1080e8019705d8bb7409e02f8577322fd5`; later metadata-only delivery commits are reported in the final PR status.
 
 > التقرير العربي الموحد لأعمال First Shift وطبيعة الحسابات والربط والـResponsive والنشر: [DEBIT-CREDIT-COMPLETE-WORK-REPORT.md](DEBIT-CREDIT-COMPLETE-WORK-REPORT.md)
 

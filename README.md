@@ -57,6 +57,8 @@ Arabic delivery report: [`GAMEPLAY-PHASE-B-REPORT-AR.md`](GAMEPLAY-PHASE-B-REPOR
 
 Gamified Academy architecture and delivery: [`docs/GAMIFIED-ACADEMY-PLATFORM.md`](docs/GAMIFIED-ACADEMY-PLATFORM.md), [`docs/ACADEMY-LEARNING-PATH.md`](docs/ACADEMY-LEARNING-PATH.md), [`docs/SKILLS-CAREER-CV-MAPPING.md`](docs/SKILLS-CAREER-CV-MAPPING.md), and [`GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md`](GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md).
 
+Platform review: <https://github.com/AhmedMohamed500/Debit-Credit/pull/3> · Preview: <https://debit-credit-git-codex-540b1c-ahmed-mohameds-projects-c51bc2cc.vercel.app>
+
 Review: <https://github.com/AhmedMohamed500/Debit-Credit/pull/2> · Preview: <https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app>
 
 ## Local storage

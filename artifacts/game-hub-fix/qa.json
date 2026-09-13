@@ -1,0 +1,191 @@
+{
+  "base": "http://localhost:3109",
+  "desktop": [
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "overflowX": 0,
+      "scrollHeight": 1080,
+      "game": {
+        "top": 0,
+        "bottom": 1080,
+        "height": 1080
+      },
+      "shell": {
+        "top": 72,
+        "bottom": 1080,
+        "height": 1008
+      },
+      "nav": {
+        "top": 0,
+        "bottom": 72,
+        "height": 72
+      },
+      "headerCount": 1,
+      "direction": "rtl"
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 900
+      },
+      "overflowX": 0,
+      "scrollHeight": 900,
+      "game": {
+        "top": 0,
+        "bottom": 900,
+        "height": 900
+      },
+      "shell": {
+        "top": 72,
+        "bottom": 900,
+        "height": 828
+      },
+      "nav": {
+        "top": 0,
+        "bottom": 72,
+        "height": 72
+      },
+      "headerCount": 1,
+      "direction": "rtl"
+    },
+    {
+      "viewport": {
+        "width": 1672,
+        "height": 941
+      },
+      "overflowX": 0,
+      "scrollHeight": 941,
+      "game": {
+        "top": 0,
+        "bottom": 941,
+        "height": 941
+      },
+      "shell": {
+        "top": 72,
+        "bottom": 941,
+        "height": 869
+      },
+      "nav": {
+        "top": 0,
+        "bottom": 72,
+        "height": 72
+      },
+      "headerCount": 1,
+      "direction": "rtl"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflowX": 0,
+      "scrollHeight": 900,
+      "game": {
+        "top": 0,
+        "bottom": 900,
+        "height": 900
+      },
+      "shell": {
+        "top": 72,
+        "bottom": 900,
+        "height": 828
+      },
+      "nav": {
+        "top": 0,
+        "bottom": 72,
+        "height": 72
+      },
+      "headerCount": 1,
+      "direction": "rtl"
+    },
+    {
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "overflowX": 0,
+      "scrollHeight": 768,
+      "game": {
+        "top": 0,
+        "bottom": 768,
+        "height": 768
+      },
+      "shell": {
+        "top": 72,
+        "bottom": 768,
+        "height": 696
+      },
+      "nav": {
+        "top": 0,
+        "bottom": 72,
+        "height": 72
+      },
+      "headerCount": 1,
+      "direction": "rtl"
+    }
+  ],
+  "routes": {
+    "ledger": "http://localhost:3109/ar/ledger",
+    "bank": "http://localhost:3109/ar/game/bank",
+    "suppliers": "http://localhost:3109/ar/game/suppliers",
+    "customers": "http://localhost:3109/ar/game/customers",
+    "logistics": "http://localhost:3109/ar/game/logistics",
+    "month-end": "http://localhost:3109/ar/game/month-end"
+  },
+  "mobile": {
+    "430x932": {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "overflowX": 0,
+      "scrollHeight": 2039,
+      "game": {
+        "top": 0,
+        "bottom": 1973,
+        "height": 1973
+      },
+      "shell": {
+        "top": 72,
+        "bottom": 1973,
+        "height": 1901
+      },
+      "nav": {
+        "top": 0,
+        "bottom": 72,
+        "height": 72
+      },
+      "headerCount": 1,
+      "direction": "rtl"
+    },
+    "390x844": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "overflowX": 0,
+      "scrollHeight": 2039,
+      "game": {
+        "top": 0,
+        "bottom": 1973,
+        "height": 1973
+      },
+      "shell": {
+        "top": 72,
+        "bottom": 1973,
+        "height": 1901
+      },
+      "nav": {
+        "top": 0,
+        "bottom": 72,
+        "height": 72
+      },
+      "headerCount": 1,
+      "direction": "rtl"
+    }
+  },
+  "errors": []
+}

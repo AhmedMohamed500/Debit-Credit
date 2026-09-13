@@ -677,3 +677,15 @@ Publication for Gameplay Phase B:
 - English: https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app/en
 - Vercel record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/FdrKruSqWCZvd91kng4xS7LZ6hr5
 - Deployment `6400969250` was ready for exact implementation commit `7d8a6593d5958e813ec64c9a1831cbf9185744f7`.
+
+## Game Hub Full-Screen and Routing Correction — September 13, 2026
+
+The Mizan Trading Game Hub now occupies the full desktop viewport directly below its single primary header. The centered page container, outer vertical margins, and non-flexible viewport sizing that produced unused bands were replaced with a dedicated `100dvh` game shell. Tablet and mobile return to natural page scrolling, with zero horizontal overflow verified at 430px and 390px.
+
+Accounting and company navigation now use one canonical map. Ledger has a dedicated `/[locale]/ledger` experience backed only by accepted journal entries; Journal and Trial Balance also read accepted accounting state, while Nature of Accounts remains the separate `/[locale]/account-guide` reference. Financial Statements disclose the available accepted-entry snapshot and keep the unimplemented Closing Week reporting package locked.
+
+Mizan Trading markers now open dedicated Suppliers, Customers, Bank, Logistics, and Month End zones. The first three expose only relevant existing First Shift work, Logistics is an honest locked zone, and Month End remains a locked Closing Week preview. No Chapter 2 gameplay was added.
+
+Validation completed with ESLint, TypeScript, 240 passing Vitest tests across 29 files, and a successful production build. Real browser QA covered five desktop viewports, 430×932 and 390×844 mobile, Arabic RTL, English LTR, Light Mode, Dark Mode, route clicks, breadcrumbs, one-header rendering, exact viewport fill, and zero horizontal overflow.
+
+Detailed correction record and screenshots: [`docs/GAME-HUB-LAYOUT-ROUTING-FIX.md`](docs/GAME-HUB-LAYOUT-ROUTING-FIX.md).

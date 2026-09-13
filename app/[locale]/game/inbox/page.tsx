@@ -1,0 +1,1 @@
+import{InboxScreen}from'@/components/platform/mizan-zone';import type{Locale}from'@/types';export default async function Page({params}:{params:Promise<{locale:Locale}>}){const{locale}=await params;return <InboxScreen locale={locale}/>}

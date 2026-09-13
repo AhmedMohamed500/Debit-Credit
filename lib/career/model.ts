@@ -16,6 +16,7 @@ export interface SkillEvidence{version:1;projectionVersion?:1|2;evidenceId:strin
 export interface SkillResult{skillId:SkillId;status:SkillStatus;score:number|null;confidence:'insufficient'|'developing'|'strong'|'extensive';evidenceCount:number;uniqueActivities:number;successfulActivities:number}
 export interface RoleReadiness{roleId:RoleId;score:number|null;coverage:number;status:'not_enough_evidence'|'developing'|'ready';evaluatedSkills:number}
 export interface CvPreferences{version:1;targetRoleId:RoleId;accent:'navy'|'blue'|'green';includeScores:boolean;updatedAt:string}
-export interface CvDocument{targetRoleId:RoleId;headline:string;summary:string;skills:SkillResult[];evidence:SkillEvidence[];sections:string[]}
+export interface CvBullet{text:string;textAr:string;evidenceId:string}
+export interface CvDocument{targetRoleId:RoleId;headline:string;summary:string;skills:SkillResult[];coreSkills:SkillResult[];practiceSkills:SkillResult[];simulationBullets:CvBullet[];evidence:SkillEvidence[];sections:string[]}
 export interface FutureAssessmentReference{assessmentId:string;attemptId:string;assessmentVersion:string;verifiedAccountingScore:number|null;criticalErrors:number;independentAccuracy:number|null;timeUsedSeconds:number|null;integrity:'verified_local_beta'|'verified_server'}
 export interface FutureHiringReference{candidateId:string;companyId:string;jobId:string;applicationId:string;challengeId:string;assessmentId:string;shortlistStatus:string;interviewStatus:string}

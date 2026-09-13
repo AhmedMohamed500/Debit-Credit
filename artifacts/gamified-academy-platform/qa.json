@@ -1,0 +1,125 @@
+{
+  "base": "http://localhost:3108",
+  "captures": [
+    {
+      "name": "landing-light-desktop",
+      "path": "/en",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/landing-light-desktop.png"
+    },
+    {
+      "name": "landing-dark-desktop",
+      "path": "/en",
+      "width": 1440,
+      "height": 900,
+      "theme": "dark",
+      "file": "artifacts/gamified-academy-platform/landing-dark-desktop.png"
+    },
+    {
+      "name": "landing-mobile",
+      "path": "/ar",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/landing-mobile.png"
+    },
+    {
+      "name": "game-hub-light",
+      "path": "/en/game",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/game-hub-light.png"
+    },
+    {
+      "name": "game-hub-dark",
+      "path": "/en/game",
+      "width": 1440,
+      "height": 900,
+      "theme": "dark",
+      "file": "artifacts/gamified-academy-platform/game-hub-dark.png"
+    },
+    {
+      "name": "game-hub-mobile",
+      "path": "/ar/game",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/game-hub-mobile.png"
+    },
+    {
+      "name": "academy-map",
+      "path": "/en/academy",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/academy-map.png"
+    },
+    {
+      "name": "learning-mission",
+      "path": "/en/academy/accounting-foundations/accounting-equation",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/learning-mission.png"
+    },
+    {
+      "name": "leaderboard-desktop",
+      "path": "/en/leaderboard",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/leaderboard-desktop.png"
+    },
+    {
+      "name": "leaderboard-mobile",
+      "path": "/ar/leaderboard",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/leaderboard-mobile.png"
+    },
+    {
+      "name": "career-hub",
+      "path": "/en/career",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/career-hub.png"
+    },
+    {
+      "name": "skill-passport-role-mapping",
+      "path": "/en/career-profile/skills",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/skill-passport-role-mapping.png"
+    },
+    {
+      "name": "auto-cv",
+      "path": "/en/career-profile/cv",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/auto-cv.png"
+    },
+    {
+      "name": "employer-talent",
+      "path": "/en/employers/talent",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/employer-talent.png"
+    },
+    {
+      "name": "employer-candidate-evidence",
+      "path": "/en/employers/candidate/ahmed-salem",
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "file": "artifacts/gamified-academy-platform/employer-candidate-evidence.png"
+    }
+  ]
+}

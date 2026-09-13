@@ -247,4 +247,6 @@ describe("role-based Auto CV", () => {
     expect(exportCareerData(profile, cv, records).toLowerCase()).not.toMatch(/\bxp\b|\bcoins?\b|\bstreak\b/);
     expect(cv.sections).toContain("simulations");
   });
+
+  it("separates Practiced from Demonstrated and generates only evidence-backed simulation bullets",()=>{const profile=createDefaultProfile("Ahmed"),supplier=evidenceRecord("accounts-payable","first-day/supplier-invoice",{caseId:"supplier-invoice",inspectedEvidence:["po-771","grn-771"],roleRelevance:["ap-accountant"]}),journal2=evidenceRecord("journal-entries","journal-2",{roleRelevance:["ap-accountant"]}),journal3=evidenceRecord("journal-entries","journal-3",{roleRelevance:["ap-accountant"]}),records=[supplier,journal2,journal3],cv=buildCv(profile,calculatePassport(records),records,"ap-accountant");expect(cv.practiceSkills.some(skill=>skill.skillId==="accounts-payable")).toBe(true);expect(cv.coreSkills.some(skill=>skill.skillId==="journal-entries")).toBe(true);expect(cv.simulationBullets).toEqual([expect.objectContaining({evidenceId:supplier.evidenceId,text:expect.stringMatching(/purchase order/),textAr:expect.stringMatching(/أمر الشراء/)})]);expect(cv.simulationBullets.every(item=>item.text.toLowerCase().includes("simulation")===false)).toBe(true)});
 });

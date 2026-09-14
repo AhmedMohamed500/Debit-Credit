@@ -1,260 +1,218 @@
 # Debit & Credit — Career League Landing Page
 
-## Overview
+## Product position
 
-The public landing page presents Debit & Credit as an accounting career game built around realistic company work and professional progression.
-
-**Primary message:**
+The public landing page presents **Debit & Credit — Career League** as a professional accounting career game. Its promise is direct:
 
 > Your accounting career starts before the job offer.
 
-**Arabic message:**
-
 > مسارك المحاسبي يبدأ قبل عرض العمل.
 
-The page positions the product around a clear promise:
+The page shows how the player moves from realistic accounting work to evidence, a Skill Passport, an evidence-based Auto CV, career readiness, and simulated promotion. It avoids presenting the product as an LMS, certification provider, employer, or job-placement service.
 
-**Start small. Do the work. Build the evidence. Move up.**
+## Page architecture
 
-It avoids presenting the product as an LMS, video course, certification site, or traditional accounting dashboard.
+### 1. Career hero
 
-## Product story
+The first screen combines the product promise with a real Game Hub screenshot from Mizan Trading. Layered mission, current-level, readiness, and target-role panels make the product feel playable while remaining clearly labeled as a career simulation.
 
-The landing page explains the complete Career League journey:
+Primary routes:
 
-```text
-Current Level
-→ Target Job
-→ Missing Skills
-→ Career Missions
-→ Realistic Company Work
-→ Professional Evidence
-→ Skill Passport
-→ Auto CV
-→ Promotion
-→ Next Company
-```
+- `/{locale}/onboarding`
+- `#how`
 
-The experience uses screenshots from the implemented product instead of decorative mockups.
+### 2. Company world
 
-## Hero section
+Five fictional company simulations show how work becomes broader and more demanding:
 
-The first screen contains:
+1. Mizan Trading
+2. Delta Commerce
+3. Horizon Industries
+4. Orbit Regional Group
+5. Atlas Global Simulation
 
-- Career League identity.
-- A direct career-focused headline.
-- A short explanation of company simulations and professional evidence.
-- Primary CTA: **Start building my career**.
-- Secondary CTA: **See the game**.
-- Mizan Trading Game Hub screenshot.
-- Current League and Career Evidence overlays.
-- Trust points for realistic workflows, evidence-based progress, and Arabic/English support.
+Each card communicates a different accounting environment and work mix. The page does not claim that any company is a real employer.
 
-## Audience paths
+### 3. Persona paths
 
-The page offers three explicit starting points.
+The visitor can start as:
 
-### Accounting Student
+- **Accounting Student:** Foundations → First Shift → Job Readiness
+- **Fresh Graduate:** Placement → Company Work → Career Evidence
+- **Working Accountant:** Career Gap → Advanced Missions → Promotion
 
-**Message:** Understand accounting before your first job.
+The three CTAs preserve locale and pass the selected persona to onboarding.
+
+### 4. Connected career journey
+
+The landing page visualizes one eight-step system:
 
 ```text
-Foundations → First Shift → Job Readiness
+Choose Your Target
+→ Find Your Gaps
+→ Complete Missions
+→ Work in Companies
+→ Earn Evidence
+→ Build Your Skills
+→ Generate Your CV
+→ Get Promoted
 ```
 
-The CTA opens:
+### 5. Real accounting practice
 
-```text
-/{locale}/onboarding?persona=student
-```
-
-### Fresh Graduate
-
-**Message:** Turn what you studied into real accounting work.
-
-```text
-Placement → Company Work → Career Evidence
-```
-
-The CTA opens:
-
-```text
-/{locale}/onboarding?persona=graduate
-```
-
-### Working Accountant
-
-**Message:** Prepare for the company you want to move to.
-
-```text
-Career Gap → Corporate Bridge → Promotion
-```
-
-The CTA opens:
-
-```text
-/{locale}/onboarding?persona=working-accountant
-```
-
-## Gameplay showcase
-
-The gameplay section uses a real First Shift screenshot and communicates the core work loop:
+The gameplay section uses the implemented First Shift screenshot. It explains the real work loop:
 
 - Inspect source documents.
-- Identify missing evidence.
+- Find missing evidence.
 - Apply accounting judgment.
 - Build the journal entry.
 - Observe the business consequence.
 
-The section links directly to:
+The playable CTA opens `/{locale}/game/first-shift`.
+
+### 6. Professional evidence
+
+The page explains the shared evidence pipeline:
 
 ```text
-/{locale}/game/first-shift
+GAMEPLAY → EVIDENCE → SKILL PASSPORT → AUTO CV → CAREER READINESS
 ```
 
-## Evidence and Auto CV showcase
+The Skill Passport and Career Gap panels are explicitly labeled as sample views. Local gameplay does not create `Verified` professional evidence by default. XP and Coins are not presented as professional evidence.
 
-The page visually explains the automatic evidence pipeline:
+Related routes:
+
+- `/{locale}/career-profile/skills`
+- `/{locale}/career-league/gap`
+- `/{locale}/career-profile/cv`
+
+### 7. Auto CV
+
+The CV preview uses the real implemented Auto CV interface. It explains that supported skills can be ordered for the selected accounting role and that Mizan Trading appears as an **Accounting Career Simulation**, never as employment.
+
+### 8. Simulated career ladder
+
+The final progression scene shows six levels:
 
 ```text
-GAMEPLAY → EVIDENCE → SKILL PASSPORT → AUTO CV
+Accounting Student
+→ Junior Accountant
+→ General Accountant
+→ Senior Accountant
+→ Chief Accountant
+→ Finance Manager
 ```
 
-The Auto CV section uses a real product screenshot and explains that:
+The section is labeled as simulated career progression and ends with a localized onboarding CTA.
 
-- Skills require qualifying gameplay evidence.
-- Career Profile and role readiness update from the same evidence.
-- The CV adapts to the selected target role.
-- Mizan Trading remains clearly labeled as an Accounting Career Simulation.
-- Simulation experience is never presented as real employment.
-- Local gameplay cannot create Verified professional evidence.
+## Navigation
 
-The CV CTA opens:
+The marketing navigation contains:
 
-```text
-/{locale}/career-profile/cv
-```
+- Home
+- Career Paths
+- Companies
+- How It Works
+- About
+- Theme control
+- Language control
+- Start Now
 
-## Career progression section
+No fake sign-in action is shown. Internal product navigation remains unchanged outside marketing mode.
 
-The career loop banner shows five progression steps:
+## Visual system
 
-1. Target Job
-2. Missing Skills
-3. Career Missions
-4. Promotion Assessment
-5. Next Company
-
-The section links to the fictional Career Simulation Job Market:
-
-```text
-/{locale}/career-league/jobs
-```
-
-## Visual direction
-
-The visual system uses:
-
-- White and soft blue surfaces in Light Mode.
-- Deep navy and controlled blue surfaces in Dark Mode.
-- Bright blue for primary career actions.
-- Cyan for simulation and workflow highlights.
-- Green for valid evidence and professional progress.
-- Gold for league and promotion moments.
+- White and soft-blue surfaces in Light Mode.
+- Deep navy and controlled cyan accents in Dark Mode.
+- Bright blue for the primary journey.
+- Green for supported professional progress.
+- Gold for promotion milestones.
 - Large career-focused typography.
-- Real product screenshots inside desktop-style frames.
-- Floating evidence and league indicators.
-- Restrained shadows, gradients, and motion-ready hover states.
+- Real product screenshots in layered game frames.
+- CSS-built company scenes to avoid fake product screenshots.
+- Restrained shadows and gradients.
+- Reduced-motion behavior when requested by the operating system.
 
-The visual direction remains professional and avoids a cyberpunk, LMS, or generic SaaS appearance.
+## Responsive and localization behavior
 
-## Responsive behavior
+Desktop uses wide visual compositions. Mobile changes to a deliberate single-column journey with horizontal company and career-ladder exploration where appropriate.
 
-Desktop layouts use split compositions and large product previews. Mobile layouts become native-feeling single-column flows with:
+Verified viewports:
 
-- Full-width CTAs.
-- Compact trust indicators.
-- Stacked audience paths.
-- Responsive gameplay and CV previews.
-- Horizontally scrollable evidence pipeline where needed.
-- Compact career progression cards.
+- 1920×1080 English Light
+- 1440×900 Arabic Dark
+- 390×844 English Dark
+- 430×932 Arabic Light
 
-Verified viewport coverage:
+Results:
 
-- 1920×1080
-- 1440×900
-- 390×844
-- 430×932
+- Horizontal overflow: `0px` on every tested viewport.
+- English shell: `ltr`.
+- Arabic shell: `rtl`.
+- Company cards rendered: `5`.
+- Career journey steps rendered: `8`.
+- Career ladder roles rendered: `6`.
+- Browser console errors: `0`.
+- All three production images loaded at their natural dimensions.
 
-The verified horizontal overflow is `0px` on all tested sizes.
+## Accessibility
 
-## Accessibility and localization
+- Real screenshots have localized descriptive alt text.
+- CTA labels describe their action.
+- Journey steps include visible numbers and text, rather than relying on color.
+- Light and Dark themes preserve readable contrast.
+- Locale remains present in every product destination.
+- The layout respects `prefers-reduced-motion`.
 
-- All marketing images have descriptive alternative text.
-- Links use descriptive action labels.
-- Arabic uses the existing RTL shell.
-- English uses LTR.
-- Both Light and Dark themes remain supported.
-- Content remains readable without relying on color alone.
-- CTA destinations preserve the selected locale.
-
-## Image assets
-
-Production assets:
+## Production assets
 
 - `public/marketing/career-league-game-hub.png`
 - `public/marketing/first-shift-work.png`
 - `public/marketing/auto-cv.png`
 
-Review screenshots:
+## Review screenshots
 
-- `artifacts/career-league/landing-professional-en.png`
-- `artifacts/career-league/landing-professional-ar-dark.png`
-- `artifacts/career-league/landing-professional-mobile-en.png`
-- `artifacts/career-league/landing-professional-mobile-ar.png`
+- `artifacts/career-league/landing-career-league-en-1920.png`
+- `artifacts/career-league/landing-career-league-ar-1440.png`
+- `artifacts/career-league/landing-career-league-en-mobile-390.png`
+- `artifacts/career-league/landing-career-league-ar-mobile-430.png`
 
-## Files changed
+## Implementation files
 
 - `components/platform/marketing-landing.tsx`
+- `components/platform/landing-sections.tsx`
+- `components/platform/platform-nav.tsx`
 - `app/landing-v2.css`
+- `app/landing-v3.css`
 - `app/layout.tsx`
 - `tests/platform-ui.test.tsx`
 - `artifacts/verify-landing-v2.mjs`
-- `public/marketing/*`
 
-## Automated verification
+## Verification
 
-The final quality gate completed successfully:
+`npm run check` passed:
 
-- ESLint: Passed
-- TypeScript: Passed
-- Vitest: 251 tests passed across 30 test files
-- Production Build: Passed
-- Browser console errors: 0
-- Horizontal overflow: 0px
-- Arabic RTL: Passed
-- English LTR: Passed
-- Light Mode: Passed
-- Dark Mode: Passed
-- Three production screenshots loaded successfully at their natural dimensions
+- ESLint: passed with zero warnings.
+- TypeScript: passed.
+- Vitest: **252 tests passed across 30 test files**.
+- Production build: passed.
+- Focused landing UI tests: **9 passed**.
+- Browser QA: passed across four desktop/mobile, Arabic/English, Light/Dark combinations.
 
-## GitHub and deployment
+## GitHub and preview
 
 - Branch: `codex/career-league`
-- Pull Request: https://github.com/AhmedMohamed500/Debit-Credit/pull/4
-- Landing implementation commit: `c10339cb8a70f89516fcc1ade9a97f321d18c909`
-- Arabic Preview: https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar
-- English Preview: https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app/en
+- Pull Request: <https://github.com/AhmedMohamed500/Debit-Credit/pull/4>
+- English branch preview: <https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app/en>
+- Arabic branch preview: <https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar>
 
-## Honest product claims
+## Claim boundaries
 
 The landing page does not claim:
 
-- Real employment at Mizan Trading.
-- Real online competitors.
-- Real hiring partnerships.
-- Verified professional certification from local gameplay.
+- Employment at Mizan Trading or any simulated company.
+- Real hiring partners or employer discovery.
 - Real job vacancies.
-- Salary or placement outcomes.
-
-All companies, job opportunities, league competitors, and employer discovery experiences remain clearly identified as simulation or demo experiences where appropriate.
+- Professional certification from local gameplay.
+- Guaranteed salaries, promotions, interviews, or placement outcomes.
+- Verified evidence without an external verification source.

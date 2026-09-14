@@ -7,6 +7,7 @@ import "./office.css";
 import "./first-day.css";
 import "./platform.css";
 import "./landing-v2.css";
+import "./landing-v3.css";
 import { ThemeProvider } from "@/components/platform/theme-provider";
 
 export const metadata: Metadata = {

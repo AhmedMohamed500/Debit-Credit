@@ -714,6 +714,8 @@ Detailed correction record and screenshots: [`docs/GAME-HUB-LAYOUT-ROUTING-FIX.m
 ## Quality and artifacts
 
 - Career League domain/UI tests, TypeScript and ESLint pass in focused verification.
+- Pull Request: https://github.com/AhmedMohamed500/Debit-Credit/pull/4
+- Vercel Preview: https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app
 - Browser QA covers English/Arabic, RTL/LTR, required desktop/mobile viewports, overflow, and console errors.
 - Screenshots: `artifacts/career-league/`.
 - Detailed documents: `docs/CAREER-LEAGUE-PRODUCT.md`, `docs/PLAYER-PERSONAS-AND-PROGRESSION.md`, `docs/CORPORATE-BRIDGE-TRACK.md`, `docs/CAREER-LEAGUE-CURRICULUM.md`, and `CAREER-LEAGUE-IMPLEMENTATION-REPORT.md`.

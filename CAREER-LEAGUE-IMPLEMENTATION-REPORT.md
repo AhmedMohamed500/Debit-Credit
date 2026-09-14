@@ -4,6 +4,8 @@
 
 - **Branch:** `codex/career-league`
 - **Base:** `febd04b` (latest verified Game Hub routing/layout correction)
+- **Pull Request:** https://github.com/AhmedMohamed500/Debit-Credit/pull/4
+- **Vercel branch preview:** https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app
 - **Status:** polished Career League foundation and vertical slice; Chapter 2 was not implemented.
 
 ## Implemented

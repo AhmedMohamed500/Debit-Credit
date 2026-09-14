@@ -689,3 +689,31 @@ Mizan Trading markers now open dedicated Suppliers, Customers, Bank, Logistics, 
 Validation completed with ESLint, TypeScript, 240 passing Vitest tests across 29 files, and a successful production build. Real browser QA covered five desktop viewports, 430×932 and 390×844 mobile, Arabic RTL, English LTR, Light Mode, Dark Mode, route clicks, breadcrumbs, one-header rendering, exact viewport fill, and zero horizontal overflow.
 
 Detailed correction record and screenshots: [`docs/GAME-HUB-LAYOUT-ROUTING-FIX.md`](docs/GAME-HUB-LAYOUT-ROUTING-FIX.md).
+# Career League Phase — 2026-09-14
+
+## IMPLEMENTED
+
+- Career League identity: **Start small. Prove your skills. Move up.**
+- Persona onboarding for Accounting Student, Fresh Graduate, and Working Accountant, including current environment and career goal.
+- Placement path, fictional Job Market, Train For This Job, Career Gap Report, five-tier Company Career Ladder, Promotion Assessment foundation, Corporate Bridge vertical slice, Career Reputation, and role-quality League scoring.
+- Game Hub now surfaces career target and next company while preserving the canonical Ledger, Bank, and reference-only Nature of Accounts routes.
+- Career target flows into Career Profile and Auto CV; gameplay evidence remains the only source of Skill Passport competence.
+- Centralized Free/Pro access metadata with no payment integration.
+
+## DEMO / LOCAL-ONLY
+
+- Career Simulation Job Market, fictional opportunities and companies.
+- League competitors, ranking, seasons, sample Supplier Crisis event, employer discovery surfaces, and placement result.
+- Placement never creates Verified evidence; local gameplay remains subject to the existing conservative evidence rules.
+
+## PLANNED
+
+- Full 90 Days in Corporate Accounting, connected multi-case Promotion Assessments, additional company cases and delayed consequence stories.
+- Cross-device competition, verified identity, employer accounts, live opportunities and payments require future backend infrastructure.
+
+## Quality and artifacts
+
+- Career League domain/UI tests, TypeScript and ESLint pass in focused verification.
+- Browser QA covers English/Arabic, RTL/LTR, required desktop/mobile viewports, overflow, and console errors.
+- Screenshots: `artifacts/career-league/`.
+- Detailed documents: `docs/CAREER-LEAGUE-PRODUCT.md`, `docs/PLAYER-PERSONAS-AND-PROGRESSION.md`, `docs/CORPORATE-BRIDGE-TRACK.md`, `docs/CAREER-LEAGUE-CURRICULUM.md`, and `CAREER-LEAGUE-IMPLEMENTATION-REPORT.md`.

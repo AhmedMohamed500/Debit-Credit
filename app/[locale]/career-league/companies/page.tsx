@@ -1,0 +1,1 @@
+import {CompanyProgressionScreen} from '@/components/platform/career-league';import type{Locale}from'@/types';export default async function Page({params}:{params:Promise<{locale:Locale}>}){return <CompanyProgressionScreen locale={(await params).locale}/>}

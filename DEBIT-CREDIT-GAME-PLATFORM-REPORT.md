@@ -691,6 +691,10 @@ Validation completed with ESLint, TypeScript, 240 passing Vitest tests across 29
 Detailed correction record and screenshots: [`docs/GAME-HUB-LAYOUT-ROUTING-FIX.md`](docs/GAME-HUB-LAYOUT-ROUTING-FIX.md).
 # Career League Phase — 2026-09-14
 
+## Landing experience update — 2026-09-15
+
+The public landing page now presents Career League as a professional accounting career game. It uses real screenshots from the Game Hub, First Shift, and Auto CV; explains the evidence pipeline; separates the three audience journeys; and drives each visitor into the matching onboarding route. The bilingual responsive implementation has no horizontal overflow at the verified desktop and mobile sizes.
+
 ## IMPLEMENTED
 
 - Career League identity: **Start small. Prove your skills. Move up.**

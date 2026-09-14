@@ -39,3 +39,14 @@ Local demo competitors and seasons use a deterministic professional-quality scor
 ## Limitations and next phase
 
 The Job Market, leagues, seasons and employer surface are demo/local-only. The complete Corporate Bridge, connected Promotion Assessment cases, delayed consequence stories, real backend league, identity, employers and payments are planned. The recommended next phase is one high-quality connected Promotion Assessment plus the first complete structured-company reconciliation case.
+
+## Professional landing page refresh — 2026-09-15
+
+- Reframed the first screen around the career outcome and a clear primary CTA.
+- Added real product visuals for the Mizan Trading Game Hub, First Shift accounting desk, and evidence-based Auto CV.
+- Added a visual Gameplay → Evidence → Skill Passport → Auto CV story.
+- Strengthened the Student, Fresh Graduate, and Working Accountant entry paths.
+- Added career metrics, workflow proof points, the target-job loop, and a focused final CTA.
+- Updated SEO title, description, and Open Graph copy for Career League positioning.
+- Verified Arabic/English, light/dark, 1920×1080, 1440×900, 430×932, and 390×844 with zero horizontal overflow and no console/page errors.
+- Review artifacts: `artifacts/career-league/landing-professional-en.png`, `landing-professional-ar-dark.png`, `landing-professional-mobile-en.png`, and `landing-professional-mobile-ar.png`.

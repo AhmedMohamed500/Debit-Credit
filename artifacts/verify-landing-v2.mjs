@@ -1,0 +1,11 @@
+import fs from 'node:fs/promises';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE);
+await fs.mkdir('artifacts/career-league',{recursive:true});
+const browser=await chromium.launch({headless:true}),errors=[],results=[];
+for(const item of [
+  {locale:'en',theme:'light',width:1920,height:1080,file:'landing-professional-en.png',hero:'Your accounting career starts before the job offer.'},
+  {locale:'ar',theme:'dark',width:1440,height:900,file:'landing-professional-ar-dark.png',hero:'مسارك المحاسبي يبدأ قبل عرض العمل.'},
+  {locale:'en',theme:'dark',width:390,height:844,file:'landing-professional-mobile-en.png',hero:'Your accounting career starts before the job offer.'},
+  {locale:'ar',theme:'light',width:430,height:932,file:'landing-professional-mobile-ar.png',hero:'مسارك المحاسبي يبدأ قبل عرض العمل.'},
+]){const page=await browser.newPage({viewport:{width:item.width,height:item.height},colorScheme:item.theme});page.on('console',m=>{if(m.type()==='error'&&!m.text().includes('/_next/hmr'))errors.push(m.text())});page.on('pageerror',e=>errors.push(e.message));await page.goto(`http://127.0.0.1:3109/${item.locale}?theme=${item.theme}`,{waitUntil:'networkidle'});await page.locator('#experience').scrollIntoViewIfNeeded();await page.waitForTimeout(250);await page.locator('.cv-showcase').scrollIntoViewIfNeeded();await page.waitForTimeout(250);await page.locator('.career-hero').scrollIntoViewIfNeeded();await page.waitForTimeout(150);const body=await page.locator('body').innerText(),overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth),dir=await page.locator('.dc-shell').getAttribute('dir'),loaded=await page.locator('.career-landing img').evaluateAll(images=>images.map(image=>({src:image.currentSrc||image.src,width:image.naturalWidth})));await page.screenshot({path:`artifacts/career-league/${item.file}`,fullPage:true});results.push({...item,hero:body.includes(item.hero),images:loaded.length,loaded,overflow,dir});await page.close()}
+await browser.close();console.log(JSON.stringify({results,errors},null,2));if(errors.length||results.some(x=>!x.hero||x.images<3||x.overflow!==0||(x.locale==='ar'&&x.dir!=='rtl')))process.exitCode=1;

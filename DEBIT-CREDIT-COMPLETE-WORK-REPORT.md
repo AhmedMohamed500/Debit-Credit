@@ -1,502 +1,303 @@
-# التقرير الشامل للمشروع — Debit & Credit
+# التقرير الشامل لمشروع Debit & Credit
 
-**العلامة:** Debit & Credit — by Money Coder
-**عالم اللعبة الأساسي:** Mizan Trading
-**المستودع:** [AhmedMohamed500/Debit-Credit](https://github.com/AhmedMohamed500/Debit-Credit)
-**فرع العمل الحالي:** `codex/gameplay-phase-b`
-**Pull Request الحالي:** [PR #2 — Gameplay Phase B](https://github.com/AhmedMohamed500/Debit-Credit/pull/2)
-**الفرع الأساسي للمراجعة:** `codex/first-day-cinematic` عبر [PR #1](https://github.com/AhmedMohamed500/Debit-Credit/pull/1)
-**آخر commit وظيفي لمعايرة المخاطر والأدلة:** `74b6bccb125cc64d8cc1d0e0cb00c296b5808cae`
-**حالة النشر وقت إعداد التقرير:** PR #2 مفتوح و`CLEAN`، وVercel ناجح على رأس الفرع
-**آخر تحديث:** 12 سبتمبر 2026
+| البند | الحالة عند المراجعة |
+| --- | --- |
+| آخر مراجعة | 18 سبتمبر 2026 |
+| المنتج وعالمه | Debit & Credit — by Money Coder؛ Mizan Trading |
+| المستودع | [AhmedMohamed500/Debit-Credit](https://github.com/AhmedMohamed500/Debit-Credit) |
+| فرع التطوير | `codex/career-league` |
+| آخر commit وظيفي تمت مراجعته | `77c7408c7bd30b4f68a5b7b2e0ae71cb00fddf2a` |
+| PR الحالي | [#4 — Career League](https://github.com/AhmedMohamed500/Debit-Credit/pull/4) — مفتوح و`CLEAN`، وفحص Vercel للـcommit الوظيفي ناجح |
 
----
+هذا الملف هو نقطة الدخول الواحدة لفهم **ما نُفّذ فعلاً**، وكيف تبدو التجربة، وما بقي محاكاة محلية أو خطة مستقبلية. تقارير المراحل التفصيلية وروابط الصور في آخر الملف. الأرقام القديمة للاختبارات والجوائز داخل التقارير التاريخية تصف لحظة صدورها؛ مرجع الحالة الحالية هو الكود ونتيجة التحقق في هذا التقرير.
 
-## 1. الملخص التنفيذي
+## المحتويات
 
-Debit & Credit منصة محاسبة ثنائية اللغة تُقدّم التعلم من خلال محاكاة عمل محاسب داخل شركة افتراضية، وليست مجرد مجموعة أسئلة داخل واجهة ألعاب. اللاعب يعمل داخل **Mizan Trading**، يستقبل حالة عمل من المدير المالي أ/ كريم، يفحص المستندات، يختار قرارًا مهنيًا، يبني القيد عند الحاجة، ثم يرى أثر القرار على دفاتر الشركة وعلى سجله المهني المحلي.
+1. [المنتج وحدوده](#1-المنتج-وحدوده)
+2. [تاريخ التطوير](#2-تاريخ-التطوير)
+3. [رحلة اللاعب الحالية](#3-رحلة-اللاعب-الحالية)
+4. [المحاسبة وFirst Shift](#4-المحاسبة-وfirst-shift)
+5. [طبيعة الحسابات](#5-طبيعة-الحسابات)
+6. [الأدلة المهنية وCareer Profile](#6-الأدلة-المهنية-وcareer-profile)
+7. [Academy وGame Hub](#7-academy-وgame-hub)
+8. [Career League](#8-career-league)
+9. [اللاندينج والهوية البصرية](#9-اللاندينج-والهوية-البصرية)
+10. [التقنية والتخزين](#10-التقنية-والتخزين)
+11. [المسارات الرئيسية](#11-المسارات-الرئيسية)
+12. [الجودة والنشر](#12-الجودة-والنشر)
+13. [ما لم يُنفّذ بعد](#13-ما-لم-ينفّذ-بعد)
+14. [دليل الملفات والتقارير](#14-دليل-الملفات-والتقارير)
 
-الوعد الحالي للمنتج:
+## 1. المنتج وحدوده
 
-> اعمل كمحاسب داخل شركة افتراضية، افحص الأدلة، اتخذ قرارًا مهنيًا، وشاهد أثره المحاسبي مع سجل يشرح المهارات التي مارستها.
-
-أهم ما هو منفذ حاليًا:
-
-- Chapter 1 — First Day / First Shift كتجربة مكتب محاسبي سينمائية.
-- ثلاث حالات محاسبية فعلية مترابطة مع مستندات مؤيدة وقيود وأثر على الشركة.
-- Gameplay Phase B كأساس معماري للحالات والأحداث ومحاولة العمل والأداء المهني.
-- Nature of Accounts كمرجع كامل يضم 197 حسابًا ويعمل داخل الموقع ومن داخل اللعبة.
-- Career Profile وSkill Passport وAuto CV وEmployer Preview محليًا.
-- دعم العربية RTL والإنجليزية LTR والشاشات الصغيرة حتى 390px.
-- حفظ محلي متوافق مع البيانات السابقة مع حماية من تكرار القيود والمكافآت.
-- بوابة جودة كاملة نجحت في 218 اختبارًا عبر 26 ملفًا، إضافة إلى ESLint وTypeScript وProduction Build.
-
-المشروع حاليًا Frontend ومحلي التخزين. لا توجد هوية خادمية أو قاعدة بيانات مركزية أو تحقق مهني معياري. لذلك لا يجوز اعتبار الأدلة المحلية `Verified` أو استخدامها وحدها كإثبات توظيف رسمي.
-
-## 2. اتجاه المنتج الحالي
-
-التجربة الأساسية تستهدف الإحساس التالي:
-
-> أنا أعمل كمحاسب في Mizan Trading.
-
-حلقة اللعب المهنية هي:
+**Debit & Credit لعبة مسار مهني محاسبي مبنية على محاكاة شغل الشركات.** يبدأ اللاعب كمحاسب داخل Mizan Trading، يستلم مستندات وطلبات من المدير المالي أ/ كريم، يفحص الأدلة، يختار إجراءً مهنيًا، يسجل القيد عندما يكون مؤيدًا، ويرى أثر قراره على دفاتر الشركة. الأداء المؤهل ينتقل إلى Skill Passport وCareer Profile وAuto CV.
 
 ```text
-Case received
-→ inspect source and supporting evidence
-→ identify uncertainty or discrepancy
-→ choose a defensible business action
-→ build and submit the journal entry when appropriate
-→ see the accounting and business consequence
-→ generate explainable professional evidence
+موقف عمل → مستندات وتحقيق → قرار مهني → قيد محمي → أثر على الشركة
+         → أحداث أداء → دليل مهارة → فجوة وظيفية → CV ومسار ترقٍّ
 ```
 
-وبالعربية:
+المنتج **Frontend-only** في الحالة الحالية: Next.js مع حفظ المتصفح المحلي. الشركات والوظائف والمنافسون المعروضون داخل Career League أمثلة/محاكاة خيالية، وليست جهات توظيف حقيقية. لا يوجد Backend للحسابات، أو حسابات مستخدمين، أو مزامنة بين الأجهزة، أو توثيق مستقل للمهارات. لا يحوّل اللعب المحلي أي مهارة إلى `Verified`.
+
+**قاعدة الصدق الأساسية:** XP وCoins والمستوى والدوري عناصر لعبة؛ لا تُعد دليلاً على كفاءة مهنية ولا تُستخدم في CV أو جاهزية الدور. خبرة المستخدم الحقيقية تبقى منفصلة عن محاكاة Mizan Trading.
+
+## 2. تاريخ التطوير
+
+| الفترة | ما حدث | مراجع التنفيذ |
+| --- | --- | --- |
+| 5 سبتمبر | فصل منتج التعليم المحاسبي عن FINORA مع ترحيل تعليمي محدود؛ بقيت بيانات ERP التشغيلية خارج المشروع. | `f1516a9`, [تقرير الفصل](MIGRATION_FROM_FINORA.md) |
+| 6–7 سبتمبر | توحيد رحلة اللعبة، بناء عالم الطالب، حملة Mizan Trading، والمقدمة السينمائية لـFirst Day. | `23dbc8d`, `7308402`, `0225188`, `244b3c5` |
+| 7–8 سبتمبر | تحويل أول وردية إلى مكتب Point-and-Click ومستندات محاسبية قابلة للعب. | `8df295c`, `fd83195`, `6351c10` |
+| 8–9 سبتمبر | إعادة تصميم طبيعة الحسابات ككتاب داخل عالم اللعبة، توسيعها إلى 197 حسابًا، وإصلاح laptop/tablet/mobile. | `55dc688`, `50437ea`, `4260e5e` |
+| 10 سبتمبر | تأسيس Career Profile وSkill Passport وAuto CV مع فصل واضح بين المحاكاة والعمل الحقيقي. | `d48cd2e` |
+| 11–12 سبتمبر | Gameplay Phase B: حالات محاسبية قابلة لإعادة الاستخدام، أحداث ومحاولات، أداء مهني، أدلة، ثم معايرة Risk Awareness وPracticed/Demonstrated. | `43bc76f`, `751ecc0`, `1f69465`, `74b6bcc` |
+| 12–13 سبتمبر | منصة Academy وGame Hub والتيمات والمنافسة التجريبية، ثم تعديل مركز اللعب إلى عالم شركة Mizan المصوّر والتفاعلي. | `3e0883b`, `05eb612`, `46b518b`, `8311d96`, `febd04b` |
+| 14 سبتمبر | أساس Career League: شخصيات البداية، سلم الشركات، فجوة المهارات، الوظائف الخيالية، التأهيل، الترقية، وCorporate Bridge المحدود. | `6dcdb89`, `0d5fa0e`, `1d7d167` |
+| 15 سبتمبر | اللاندينج المهنية الجديدة: صور فعلية للعبة وFirst Shift وCV، عالم الشركات، رحلة الثماني خطوات، ودعم الهاتف واللغتين. | `c10339c`, `77c7408` |
+
+التطوير متسلسل عبر أربع مراجعات مفتوحة: [PR #1](https://github.com/AhmedMohamed500/Debit-Credit/pull/1) من `main` إلى First Day، ثم [PR #2](https://github.com/AhmedMohamed500/Debit-Credit/pull/2) إلى Gameplay Phase B، ثم [PR #3](https://github.com/AhmedMohamed500/Debit-Credit/pull/3) إلى Academy/Game Hub، ثم [PR #4](https://github.com/AhmedMohamed500/Debit-Credit/pull/4) إلى Career League. **لم يُدمج أي منها تلقائيًا في `main` وقت هذه المراجعة.**
+
+## 3. رحلة اللاعب الحالية
+
+| المرحلة | تجربة اللاعب | الحالة |
+| --- | --- | --- |
+| اللاندينج | يفهم أن المنتج محاكاة مسار محاسبي، ويرى صور اللعب وCV ويختار نقطة البداية. | منفّذة |
+| Onboarding | يختار طالب/خريج/محاسب يعمل، والهدف والبيئة المناسبة؛ الاختيار وحده لا يمنح مهارة. | منفّذة محليًا |
+| Game Hub | يدخل شركة Mizan المصوّرة، يتنقل بين الأقسام ويرى الوارد وتقدم First Shift وأثر الشركة. | منفّذ |
+| Academy | ينتقل عبر أساسيات المحاسبة والتدريب والمحاكاة والتحديات. | أساس منفّذ؛ مراحل الإقفال مقفولة |
+| First Shift | يفحص ثلاث حالات، يختار تصرفًا مهنيًا، ثم يبني القيد ويشاهد أثره. | قابل للعب |
+| Skill Passport | يرى ما مارسه أو أثبته، ومصدر الحالة والمحاولات والمساعدة والأدلة المفحوصة. | منفّذ محليًا |
+| Career League | يحدد وظيفة مستهدفة، يشاهد الفجوة وخطة التدريب وسلّم الشركات وشروط الترقية. | أساس وvertical slice؛ بعض المسارات مخططة أو مقفولة |
+| Auto CV | يولّد عرضًا مهنيًا من بياناته وأدلته، مع طباعة/حفظ PDF من المتصفح وتصدير JSON. | منفّذ محليًا |
+| Employer/Leaderboard | يرى عرضًا تجريبيًا بمرشحين ومنافسين محددين مسبقًا. | **Demo**؛ لا أصحاب عمل أو لاعبين أونلاين |
+
+توجد أيضًا أنظمة تاريخية ما زالت في المستودع مثل Missions وMoney Flow وAccounting Detective وArena وJournal/Ledger/Trial Balance. دمجها مع الرحلة الجديدة متفاوت؛ وجود مسار أو بيانات لا يعني أن كل محتوى Career League اللاحق قابل للعب.
+
+## 4. المحاسبة وFirst Shift
+
+### العمل داخل Mizan Trading
+
+تجربة Chapter 1 تعرض أ/ كريم، مكتبًا محاسبيًا، Laptop يعمل كنظام Mizan OS، الوارد، المستندات، اليومية، أرصدة الشركة وProcessed Tray. حلقة الحالة الحالية هي:
 
 ```text
-استلام الحالة
-→ فحص المستند والأدلة المؤيدة
-→ اكتشاف النقص أو التعارض
-→ اتخاذ قرار مهني قابل للدفاع
-→ إعداد القيد عند ملاءمة الترحيل
-→ مشاهدة الأثر على الشركة
-→ إنشاء دليل مهني قابل للتفسير
+استلام الملف → فتح المستند الأصلي والمستندات المؤيدة → التحقيق
+→ اختيار Post أو Hold أو Request Information عند ملاءمته
+→ بناء القيد → التحقق المحاسبي → نتيجة على دفاتر الشركة → العودة للمكتب
 ```
 
-XP وCoins ما زالا جزءًا من اقتصاد اللعبة والتوافق مع الحفظ الحالي، لكنهما ليسا دليلًا مهنيًا ولا يظهران في Skill Passport أو السيرة الذاتية كإثبات كفاءة.
+| الحالة | أهم الأدلة | القيد المقبول |
+| --- | --- | --- |
+| Supplier Invoice `INV-1048` | أمر شراء `PO-771` وإذن استلام `GRN-771` | Dr Office Equipment / Cr Accounts Payable — EGP 100,000 |
+| Customer Receipt `REC-4587` | إشعار بنك `BA-312` وفاتورة مبيعات `SI-2041` | Dr Bank / Cr Accounts Receivable — EGP 75,000 |
+| Office Expense `PV-2201` | سند نقدية ومذكرة سياسة المصروفات | Dr Office Supplies Expense / Cr Cash — EGP 2,500 |
 
-## 3. حدود الإصدار الحالي
+**ضمانات المحاسبة:** القيد المقبول يمر عبر محرك التحقق الحالي. تساوي المدين والدائن وحده لا يكفي؛ الحسابان والمعنى يجب أن يطابقا الحالة. المحاولة الخاطئة لا تعدّل اليومية المقبولة أو الأرصدة. الترحيل غير المؤيد يُمنع، وإعادة الإرسال لا تكرر القيد أو الأثر أو المكافأة. الأرصدة وعدّادات Pending والدرج المعالج مشتقة من الحالة المقبولة، لا من عناصر واجهة زخرفية.
 
-- Chapter 1 هو الفصل الجاري تنفيذه ومراجعته.
-- Chapter 2 غير منفذ كلعبة، ولا يوجد له مسار قابل للدخول أو زر فتح.
-- تعريف Chapter 2 الموجود في `lib/cases/chapter-two.ts` هو seam معماري مقفول فقط، وحالته `locked` ومساره `null`.
-- لا يوجد Backend للحسابات أو الشركات أو التوظيف أو التحقق.
-- PR #2 لم يُدمج تلقائيًا في الفرع الأساسي.
-- Academy وArena وMoney Flow وDetective وCompanies موجودة وتعمل ضمن تاريخ المشروع، لكنها ليست نطاق التوسع الحالي.
-- طبيعة الحسابات محمية من التعديل الداخلي باختبار انحدار مخصص.
+### Gameplay Phase B
 
-## 4. Chapter 1 — First Day / First Shift
+`lib/cases/` يضم تعريف الحالة، runtime، المحرك، المستودع، تقييم الأداء والعواقب. سجل الأحداث `GameState.casework.events` تزايدي ومُرقّم بالإصدار، مع معرفات ثابتة تمنع التكرار. تشمل الأحداث فتح الحالة، فحص المستندات، القرار، إرسال القيد، طلب مساعدة المدير، الترحيل المقبول، النتيجة، وإكمال الوردية. تسمح البنية بربط حالات وعواقب مؤجلة مستقبلًا، لكن First Shift لا تختلق خطأ مؤجلًا لم يحدث.
 
-### 4.1 المدخل السينمائي
+الأداء المهني حتمي ويقيس: **Accuracy 30%، Accounting Judgment 25%، Investigation 20%، Documentation 10%، Risk Awareness 10%، Independence 5%**. فحص الأدلة قبل الترحيل والتصرف الوقائي المناسب يدعمان Risk Awareness؛ محاولة Post مبكرة أو غير مؤيدة تخصم ولا تكافئ اللاعب، وتكرارها لا يرفع الدرجة. نتيجة الوردية ورد المدير مشتقان من أحداث اللعب نفسها.
 
-يبدأ الفصل بمشهد First Day يضع اللاعب داخل عالم Mizan Trading ويعرّفه على أ/ كريم ودوره في الوردية. النصوص الأساسية عناصر DOM حقيقية قابلة للقراءة والتكبير وليست نصوصًا مطبوعة داخل صورة.
+> **حد الفصل:** Chapter 2 / Closing Week موجود كتعريف معماري مقفول وغير قابل للعب؛ لا يوجد إعلان بأنه اكتمل.
 
-المشهد يدعم العربية والإنجليزية، وRTL/LTR، وزر بداية واضح داخل أول viewport، وتخطيطًا مخصصًا للهاتف، و`prefers-reduced-motion`، وبديلًا صريحًا عند عدم توفر الوسيط البصري.
+## 5. طبيعة الحسابات
 
-### 4.2 المكتب المحاسبي
+دليل [طبيعة الحسابات](NATURE-OF-ACCOUNTS.md) مرجع محاسبي داخل اللعبة وعلى الويب، وليس مجرد صورة. يعرض كتابًا مفتوحًا على مكتب Mizan مع صفحات HTML تفاعلية، بحث بالكود والاسم، ست فئات، طبيعة الحساب، جهة الزيادة والنقص، موضعه في القوائم، المستندات المؤيدة، مسار الدورة المستندية، ومثال القيد.
 
-بعد المقدمة يدخل اللاعب مكتبًا تفاعليًا يملأ الشاشة، ويشمل:
-
-- أ/ كريم بصفته المدير المالي والشخصية المتكررة.
-- Laptop يعمل كنظام `Mizan OS` ويعرض الوارد والتقدم وحالة الحالات.
-- Inbox وProcessed Tray يتغيران حسب حالة المستندات الفعلية.
-- دفتر يومية ودفتر أستاذ وآلة حاسبة ومرجع طبيعة الحسابات.
-- أرصدة الشركة وحالة الدفاتر وتقدم الوردية.
-- أدوات تنقل ولمس مناسبة للهاتف.
-
-### 4.3 حالات First Shift
-
-| الحالة | المستند الأساسي | القيد الصحيح | المبلغ |
-|---|---|---|---:|
-| Supplier Invoice | فاتورة مورد `INV-1048` | Dr Office Equipment / Cr Accounts Payable | EGP 100,000 |
-| Customer Receipt | سند قبض `REC-4587` | Dr Bank / Cr Accounts Receivable | EGP 75,000 |
-| Office Expense | سند مصروف `PV-2201` | Dr Office Supplies Expense / Cr Cash | EGP 2,500 |
-
-كل حالة تحتوي على سياق عمل وطلب من المدير، ومستند مصدر، ومستندات مؤيدة مطلوبة، واختيارات مهنية مثل Post وHold وRequest Information، وقيد يومية عند ملاءمة الترحيل، ونتيجة تؤثر على بيانات الشركة.
-
-### 4.4 المستندات المؤيدة
-
-فاتورة المورد تعتمد على أمر الشراء `PO-771` وإذن الاستلام `GRN-771`. تحصيل العميل يعتمد على إشعار البنك `BA-312` وفاتورة المبيعات `SI-2041`. مصروف المكتب يعتمد على سند الصندوق `PC-2201` ومذكرة سياسة المصروفات `POL-OFFICE-01`.
-
-لا يكفي أن يكون القيد متوازنًا رقميًا؛ يجب أن يطابق المعنى المحاسبي للحالة والمستندات.
-
-### 4.5 أثر القيد والمكافآت
-
-- القيد الخاطئ يُسجل كمحاولة ويعرض feedback، ولا يغير الدفاتر المقبولة.
-- القيد الصحيح يُضاف إلى اليومية ويحدّث أرصدة الشركة وينقل المستند إلى Processed Tray.
-- كل مستند صحيح يمنح `+100 XP` و`+50 Coins` مرة واحدة.
-- إكمال الوردية يمنح إجمالي `+300 XP` و`+150 Coins`.
-- إعادة الإرسال أو callback مكرر لا يكرر القيد أو الأثر أو المكافأة أو الدليل الناجح.
-- شاشة Shift Complete تعرض المستندات والدقة والنجاح من أول محاولة والمساعدة ورد المدير وteaser الفصل التالي المقفول.
-
-## 5. Gameplay Phase B
-
-Gameplay Phase B يحول First Shift من سلسلة تفاعلات واجهة إلى بنية حالات عمل قابلة للتتبع والتفسير.
-
-### 5.1 Accounting Case Architecture
-
-البنية القابلة لإعادة الاستخدام موجودة في:
-
-- `lib/cases/model.ts`
-- `lib/cases/first-shift-cases.ts`
-- `lib/cases/engine.ts`
-- `lib/cases/repository.ts`
-- `lib/cases/performance.ts`
-- `lib/cases/consequences.ts`
-
-تعريف الحالة يشمل الفصل، إصدار السيناريو، سياق العمل، طلب المدير، المستندات، خطوات التحقيق، الأفعال المتاحة، المرجع المحاسبي والنتائج المتصلة.
-
-```text
-new → opened → investigating → waiting/ready → resolved/escalated
-```
-
-### 5.2 Event-based Attempt Tracking
-
-كل حالة تستخدم محاولة ثابتة حاليًا: `first-shift/{caseId}/attempt-1`.
-
-الأحداث المسجلة تشمل:
-
-- `shift_started` و`case_received` و`case_opened`.
-- `document_inspected` و`supporting_document_inspected`.
-- `case_action_selected` و`entry_submitted` و`manager_help_requested`.
-- `case_posted` و`case_resolved` و`case_escalated`.
-- `consequence_scheduled` و`consequence_revealed` و`shift_completed`.
-
-الأحداث append-only ولها IDs مستقرة وإصدارات للسيناريو والـrubric. تكرار الحدث نفسه لا يضيف نسخة جديدة، ما يمنع تضخم الأداء والأدلة بسبب النقر أو callback المكرر.
-
-### 5.3 الأداء المهني
-
-| البعد | مصدر القياس |
-|---|---|
-| Accuracy | صحة الترحيل وعدد محاولات الإرسال |
-| Independence | عدد طلبات مساعدة المدير |
-| Investigation | الأدلة المطلوبة التي فُحصت قبل أول Post |
-| Documentation | الأدلة المؤيدة التي فُحصت خلال الحالة |
-| Risk Awareness | التحقيق الاستباقي والقرار الوقائي وعقوبة الترحيل غير الآمن |
-| Accounting Judgment | النتيجة الصحيحة وعقوبات القرارات المبكرة أو البديلة |
-
-الوزن الكلي: 30% Accuracy، و25% Accounting Judgment، و20% Investigation، و10% Documentation، و10% Risk Awareness، و5% Independence.
-
-### 5.4 تصحيح Risk Awareness
-
-القاعدة الحالية حتمية وقابلة للتفسير:
-
-- فحص الأدلة المطلوبة قبل أول محاولة Post يبني الدرجة الأساسية.
-- Hold أو Request Information أو قرار وقائي مناسب أثناء نقص الأدلة يمنح رصيدًا محدودًا.
-- محاولة Post غير مدعومة تخصم ولا تمنح رصيدًا إيجابيًا.
-- تكرار المحاولة غير الآمنة لا يستطيع تحسين الدرجة.
-- اللاعب الحذر يحصل على نتيجة مساوية أو أعلى من المتسرع، وعادة أعلى إذا حاول المتسرع الترحيل مبكرًا.
-
-```text
-Risk Awareness
-= percentage of required evidence inspected before first Post
-+ up to 15 points for a protective action while evidence is missing
-- 25 points per recorded blocked Post
-```
-
-ثم تُحصر النتيجة بين 0 و100.
-
-## 6. Nature of Accounts — طبيعة الحسابات
-
-### 6.1 المحتوى المحاسبي
-
-المرجع يحتوي على **197 حسابًا** من مصدر بيانات واحد:
-
-| الفئة | العدد | الطبيعة العامة |
-|---|---:|---|
+| الفئة | الحسابات | الطبيعة العامة |
+| --- | ---: | --- |
 | الأصول | 62 | مدينة |
 | الالتزامات | 40 | دائنة |
 | حقوق الملكية | 10 | دائنة |
 | الإيرادات | 23 | دائنة |
 | المصروفات والتكاليف | 54 | مدينة |
-| الحسابات المقابلة | 8 | حسب الحساب الأصلي |
+| الحسابات المقابلة | 8 | بحسب الحساب الأصلي |
+| **الإجمالي** | **197** | — |
 
-كل حساب يعرض الكود والاسم بالعربية والإنجليزية، والطبيعة المعتادة، وحركة الزيادة والنقص، وموضعه في القوائم، والمستندات المؤيدة، ومثال قيد، ومساره المستندي.
+يظهر المرجع في الشريط العلوي، وفي First Day وFirst Shift وأثناء بناء القيد. فتحه من اللعبة يبقي مسودة القيد الأصلية محفوظة. يوجد تنزيل مباشر في `/docs/nature-of-accounts.md`. الملف الداخلي ومصدر البيانات والمسار وCSS الأساسي محميون باختبار fingerprint لمنع التغيير العرضي. التفاصيل في [تقرير طبيعة الحسابات](NATURE-OF-ACCOUNTS-REPORT.md).
 
-### 6.2 تجربة الاستخدام
+## 6. الأدلة المهنية وCareer Profile
 
-- كتاب محاسبي مفتوح داخل مكتب Mizan.
-- ست فئات وبحث بالاسم والكود والمفهوم.
-- قائمة حسابات وصفحة تفاصيل على سطح المكتب.
-- صفحة واحدة وتبديل List/Detail على الهاتف والتابلت.
-- تمرير داخلي للمحتوى الطويل دون قص الصفحة.
-- دعم كامل للعربية RTL والإنجليزية LTR.
-- تخطيط متجاوب عند 390px وعروض التابلت واللابتوب والشاشات الكبيرة.
+### سجل مهارات قابل للتفسير
 
-### 6.3 الوصول والملف القابل للتنزيل
-
-المرجع ظاهر في الشريط العلوي للموقع، ومدخل First Day، ومكتب First Shift، ومساحة فحص الحالة وبناء القيد. فتحه أثناء العمل يحافظ على المسودة وسياق الرجوع.
-
-- مرجع المستودع: [NATURE-OF-ACCOUNTS.md](NATURE-OF-ACCOUNTS.md)
-- مسار الويب: `/docs/nature-of-accounts.md`
-- تقرير التنفيذ: [NATURE-OF-ACCOUNTS-REPORT.md](NATURE-OF-ACCOUNTS-REPORT.md)
-- الملفات الداخلية محمية باختبار fingerprint لمنع التعديل العرضي.
-
-## 7. Career Profile وSkill Passport
-
-### 7.1 الملف المهني
-
-الملف المهني منفصل عن Game Profile ويشمل الاسم والعنوان المهني والدور المستهدف، والموقع وبيانات التواصل الاختيارية، والتعليم والخبرة واللغات وتفضيلات العمل، وضوابط الخصوصية. الكتالوج يحتوي على تسعة أدوار محاسبية مستهدفة و19 مهارة.
-
-### 7.2 حالات المهارة
+يوجد **19 مهارة** و**9 أدوار محاسبية مستهدفة**. حالات المهارة هي:
 
 ```text
 Unassessed → Practiced → Demonstrated → Verified
 ```
 
-`Verified` محجوز لمصدر تقييم موثوق، ولا يمكن الوصول إليه عبر اللعب المحلي وحده.
+`Verified` يتطلب مصدر تقييم موثوقًا مستقبليًا ولا ينتج من اللعب المحلي. First Shift حالة تمهيدية: حالة ناجحة واحدة أو اثنتان تبقيان عادةً `Practiced`. الانتقال إلى `Demonstrated` يتطلب ثلاث حالات تمهيدية مختلفة ومؤهلة للمهارة نفسها، مع صحة من أول محاولة، مساعدة محدودة، وتحقيق وحكم محاسبي كافيين. الأدلة التاريخية تبقى مقروءة ولا تُخفض تدميريًا عند إعادة الحساب.
 
-### 7.3 معايرة Practiced وDemonstrated
+تفسير كل مهارة يعرض الحالة المصدرية، المحاولات، مساعدة أ/ كريم، الأدلة المفحوصة، الأداء، وسبب التصنيف. لا تُعرض XP أو Coins كدليل مهني. الدور المستهدف يغيّر ترتيب المهارات والتوصيات وCV، لكنه لا يمنح مهارة جديدة.
 
-- حالة تمهيدية ناجحة واحدة تبقى `Practiced`.
-- حالتان تمهيديتان مؤهلتان تبقيان `Practiced`.
-- `Demonstrated` يتطلب ثلاث حالات تمهيدية مؤهلة ومختلفة للمهارة نفسها.
-- الحالة المؤهلة تتطلب دقة 90% أو أكثر، ونجاحًا من أول محاولة، وعدم وجود أخطاء حرجة، ومساعدة مدير لا تزيد على مرة، وتحقيقًا وحكمًا محاسبيًا لا يقلان عن 80%.
-- تعدد المحاولات أو المساعدة الكبيرة أو ضعف التحقيق يبقي الدليل في نطاق الممارسة.
-- الأدلة التاريخية ذات `projectionVersion: 1` تحتفظ بحسابها السابق ولا تُخفض بصورة هدامة.
+### الملف المهني والـCV
 
-### 7.4 شرح الدليل
+Career Profile يخزن هوية محلية، الدور، التعليم والخبرة التي يدخلها المستخدم، اللغات والتفضيلات والخصوصية. Auto CV يبني الملخص والمهارات والبنود فقط من بيانات المستخدم والأدلة المؤهلة، ويفصل بوضوح **Mizan Trading — Accounting Career Simulation** عن الخبرة الوظيفية الحقيقية. Employer Preview وTalent Profile يعرضان محاكاة محلية وفق إعدادات الخصوصية؛ لا توجد مشاركة عامة أو توظيف حي. [التوثيق التفصيلي](CAREER-PROFILE-SKILL-PASSPORT.md).
 
-صفحة تفاصيل المهارة تعرض الحالة المصدرية، ووقت الإكمال، ومصدر السجل، وعدد المحاولات، وحالة المحاولة الأولى، ومساعدة المدير، والمستندات المفحوصة، وأبعاد الأداء، وسبب التصنيف. XP وCoins وStreak لا تُستخدم كدليل مهني.
+## 7. Academy وGame Hub
 
-### 7.5 Auto CV وEmployer Preview
+الـGame Hub الحالي هو **عالم شركة**: صورة بيئة Mizan Trading الحقيقية في الوسط، وفوقها مناطق React قابلة للنقر للموردين والعملاء والبنك واللوجستيات، مع Month End مقفول. حول العالم تظهر قائمة عمل First Shift وحالة المستندات وأثرها، ملف اللاعب، المستوى المهني، Skill Passport، وتفسير الجاهزية. الصورة طبقة بيئية فقط؛ النصوص والأزرار والتقدم عناصر واجهة حية.
 
-- Auto CV يرتب المهارات والأدلة الحقيقية حسب الدور المستهدف.
-- يدعم Print / Save PDF وتصدير JSON.
-- يفصل خبرة المستخدم عن محاكاة Mizan Trading.
-- Employer Preview وTalent Profile يعرضان البيانات المحلية وفق الخصوصية.
-- العرض المحلي لا يدّعي اكتشاف شركات أو تحققًا خادميًا.
+Academy تستخدم دورة **Learn → Practice → Simulate → Compete**. الأساسيات ومرجع الحسابات والقيود وFirst Shift متصلة؛ الإقفال وMonth-End Crisis ومهام Chapter 2 ليست لعبة مكتملة. التحديات والدوري المحلي يستخدمان درجة جودة حتمية، لا يمنحان جاهزية توظيف بسبب السرعة أو XP. المرشحون والمنافسون بيانات Demo ظاهرة بهذا الوصف. [توثيق المنصة](docs/GAMIFIED-ACADEMY-PLATFORM.md) و[خريطة المراحل](docs/ACADEMY-LEARNING-PATH.md).
 
-المسارات الأساسية:
+## 8. Career League
 
-- `/[locale]/career-profile`
-- `/[locale]/career-profile/edit`
-- `/[locale]/career-profile/skills`
-- `/[locale]/career-profile/skills/[skillId]`
-- `/[locale]/career-profile/cv`
-- `/[locale]/career-profile/employer-preview`
-- `/[locale]/talent/[slug]`
+Career League تبني طبقة المسار المهني فوق الأدلة الموجودة، دون تغيير المحاسبة أو فتح Chapter 2. البدايات الثلاث: **طالب محاسبة، خريج جديد، محاسب يعمل**. تشمل النسخة الحالية تحديد الهدف، Placement محلي، فجوة المهارات، خطة «Train For This Job»، فرصًا خيالية، سلم خمس شركات، metadata لصلاحيات Free/Pro، أساس تقييم ترقية، وCorporate Bridge Week 1 المحدود.
 
-التقرير التفصيلي: [CAREER-PROFILE-SKILL-PASSPORT.md](CAREER-PROFILE-SKILL-PASSPORT.md)
+| المستوى | الشركة الافتراضية | طبيعة المحاكاة |
+| ---: | --- | --- |
+| 1 | Mizan Trading | معاملات ومستندات وموردون/عملاء أساسية |
+| 2 | Delta Commerce | دورات AP/AR منظمة ومطابقة مستندات |
+| 3 | Horizon Industries | ضوابط وتسويات وإقفال مؤسسي |
+| 4 | Orbit Regional Group | مستندات إنجليزية ومراجعة وتقارير إقليمية |
+| 5 | Atlas Global Simulation | إجراءات شبيهة بـERP ومحاكاة متعددة الجنسيات |
 
-## 8. الحالة المحاسبية وضمانات الصحة
+فتح الشركة التالية يحتاج مهمات ومهارات ونتيجة تقييم مناسبة؛ **XP وحده لا يفتحها**. الوظائف فرص داخل محاكاة معلنة، والدوري/المواسم والمنافسون محليون أو Demo. منطق الترقية يقيس صحة العمل والتحقيق والحكم والمخاطر؛ توفر rubric أو صفحة تقييم لا يعني وجود كل حالات التقييم المتقدمة القابلة للعب. لا يوجد تحصيل مدفوع رغم وجود تعريفات Free/Pro. [تقرير التنفيذ](CAREER-LEAGUE-IMPLEMENTATION-REPORT.md) و[وثيقة المنتج](docs/CAREER-LEAGUE-PRODUCT.md).
 
-- القيود المقبولة تمر عبر محرك المحاسبة الحالي.
-- الدفاتر والأرصدة مشتقة من القيود المقبولة فقط.
-- القيد المتوازن وغير الصحيح دلاليًا يُرفض.
-- المحاولة الفاشلة لا تغير الرصيد المعتمد.
-- إعادة callback ناجح لا تكرر الأثر.
-- Pending Documents وPending Entries ينتقلان من 3 إلى 0 حسب الإنجاز.
-- Processed Tray مشتق من المستندات المكتملة.
-- Nature of Accounts الداخلي لم يتغير بسبب Gameplay Phase B.
+## 9. اللاندينج والهوية البصرية
 
-## 9. التخزين والتوافق
+### القصة المرئية الحالية
 
-| المفتاح | الاستخدام |
-|---|---|
-| `debit-credit-world-v2` | العالم وFirst Shift والقيود والمسودات والأحداث والمكافآت |
-| `debit-credit-career-profile-v1` | بيانات الملف المهني |
-| `debit-credit-skill-evidence-v1` | أدلة Skill Passport المحلية |
-| `debit-credit-cv-preferences-v1` | تفضيلات CV والدور |
-| `debit-credit-local-candidate-id-v1` | هوية محلية ثابتة |
-| `debit-credit-player-v1` | تقدم اللاعب في البنية الأقدم |
+الرسالة الرئيسية: **«مسارك المحاسبي يبدأ قبل عرض العمل»** / “Your accounting career starts before the job offer.” تستخدم الصفحة صورًا حقيقية من Game Hub وFirst Shift وAuto CV، لا صور واجهة مختلقة. بناؤها الحالي:
+
+1. Hero مهني مع Screenshot ولوحات المهمة والمستوى والجاهزية والدور المستهدف.
+2. خمس شركات محاكاة واضحة.
+3. ثلاث بدايات تناسب الطالب والخريج والمحاسب العامل.
+4. ثماني خطوات مترابطة من الهدف والفجوة إلى العمل والدليل والـCV والترقية.
+5. صورة First Shift وحلقة العمل المحاسبي.
+6. مثالان معلنان بوضوح لـSkill Passport وCareer Gap.
+7. Auto CV مؤسس على الأدلة.
+8. سلم ستة أدوار من Accounting Student حتى Finance Manager، موضح أنه **تقدم داخل المحاكاة**.
+
+![الصفحة الإنجليزية على سطح المكتب](artifacts/career-league/landing-career-league-en-1920.png)
+
+### نظام الألوان والتنسيقات
+
+| الاستخدام | Light | Dark | المعنى |
+| --- | --- | --- | --- |
+| الخلفية | `#f3f8fd` | `#071526` | مساحة اللعب والقراءة |
+| السطح | `#ffffff` | `#0d2239` | لوحات المعلومات والأدلة |
+| النص الرئيسي | `#08284b` | `#edf7ff` | العناوين والمحتوى |
+| الأزرق الأساسي | `#0869e8` | `#3d9cff` | الإجراءات والمسار |
+| السماوي | `#00a9d6` | `#2bd2e5` | التفاعل والإشارات |
+| الأخضر | `#0a9a6a` | `#31d4a2` | صحة الدليل/التقدم |
+| الذهبي | `#d29a20` | `#f2c45f` | الدوري والترقية |
+| التحذير/الخطأ | `#d69214` / `#d64755` | `#f1bf55` / `#ff7180` | النقص والقرارات الخاطئة |
+
+القيم تأتي من CSS tokens في `app/platform.css`. الخط الأساسي Arial مع fallback لـNoto Sans Arabic. اتجاه العربية `rtl` والإنجليزية `ltr`، مع خصائص CSS منطقية للتموضع. في الهاتف تتحول التراكيب الكبيرة إلى عمود واحد، وتستخدم الشركات وسلّم الأدوار تمريرًا أفقيًا **داخليًا** بدل تمديد الصفحة. Focus مرئي، أسماء واضحة للروابط، نصوص Alt للصور، ودعم `prefers-reduced-motion`. توجد ثيمات Light/Dark/System، مع تطبيق التفضيل قبل رسم الصفحة لتجنب الوميض.
+
+لقطات المراجعة: [إنجليزي 1920](artifacts/career-league/landing-career-league-en-1920.png)، [عربي 1440](artifacts/career-league/landing-career-league-ar-1440.png)، [إنجليزي 390](artifacts/career-league/landing-career-league-en-mobile-390.png)، [عربي 430](artifacts/career-league/landing-career-league-ar-mobile-430.png). [تقرير اللاندينج التفصيلي](docs/CAREER-LEAGUE-LANDING-PAGE.md).
+
+## 10. التقنية والتخزين
+
+| الطبقة | التنفيذ الحالي |
+| --- | --- |
+| التطبيق | Next.js 16.3.4 App Router، React 19.1، TypeScript 5.9 |
+| العرض | CSS مخصص مع Tailwind toolchain وLucide icons |
+| الاختبارات | Vitest 3.2 وTesting Library، مع browser QA قابل لإعادة التشغيل |
+| المحتوى | بيانات TypeScript محلية للحسابات والحالات والدروس والتحديات |
+| الحفظ | `localStorage` بمستودعات وإصدارات وفحوص ترحيل غير هدامة |
+| النشر | GitHub PRs وVercel Preview؛ Production منفصل عن فروع المراجعة |
+
+```text
+app/          المسارات وملفات CSS والـmetadata
+components/   واجهات اللعبة والمحاسبة والمنصة والملف المهني
+lib/          محركات الحسابات والحالات والأدلة والمسار والتخزين
+data/         الحسابات والسيناريوهات والمناهج
+public/       صور البيئة واللاندينج والأيقونات
+artifacts/    صور QA ونصوص التحقق
+tests/        الاختبارات والانحدار المحاسبي
+docs/         وثائق المراحل والتصميم
+```
+
+### مفاتيح الحفظ الأساسية
+
+| المفتاح | المحتوى |
+| --- | --- |
+| `debit-credit-world-v2` | حالة Mizan وFirst Shift والقيود والأحداث |
+| `debit-credit-player-v1` | تقدم اللاعب الأقدم |
 | `debit-credit-progress-v1` | تقدم Academy |
-| `debit-credit-money-flow-v1` | تقدم Money Flow |
-| `debit-credit-missions-v1` | تقدم Missions |
-| `debit-credit-detective-v1` | تقدم Detective |
-| `debit-credit-arena-v1` | نتائج Arena المحلية |
+| `debit-credit-money-flow-v1` / `debit-credit-missions-v1` / `debit-credit-detective-v1` / `debit-credit-arena-v1` | تقدم الأنظمة التعليمية المستقلة |
+| `debit-credit-career-profile-v1` / `debit-credit-skill-evidence-v1` | الملف المهني والأدلة |
+| `debit-credit-cv-preferences-v1` / `debit-credit-local-candidate-id-v1` | تفضيلات CV ومعرف المرشح المحلي |
+| `debit-credit-platform-v1` / `debit-credit-theme-v1` | Onboarding والـstreak/الشارات وتفضيل المظهر |
+| `debit-credit-career-league-v1` | الشخصية المهنية والهدف والـPlacement ونتائج التقييم المحلية |
 
-التوافق يشمل إضافة `casework` دون كسر الحفظ القديم، وإعادة بناء runtime للحالات المكتملة تاريخيًا دون تغيير اليومية أو الأرصدة أو المكافآت، وبقاء الأدلة القديمة قابلة للقراءة، وعرض `Unknown` عند غياب حقيقة First Attempt بدل اختراعها، والتعامل الآمن مع JSON التالف أو فشل Local Storage.
+ترحيل FINORA القديم يقرأ قائمة تعليمية محددة فقط، ولا يستورد سجلات التشغيل والفواتير والعملاء والموردين من المنتج الآخر. مفاتيح التخزين السابقة لم تُحذف؛ حالة Casework أُضيفت بصورة توافقية، والدليل التاريخي يبقى مقروءًا. تخزين المتصفح قابل للتعديل من المستخدم، وبالتالي لا يصلح وحده كشهادة مستقلة.
 
-## 10. الأنظمة الأخرى الموجودة
+## 11. المسارات الرئيسية
 
-| النظام | حالته ووظيفته |
-|---|---|
-| Academy | دروس ودورات وتدريب محاسبي ثنائي اللغة |
-| Journal Practice | بناء قيود والتحقق من الحساب والطرف والمبلغ |
-| Money Flow | سيناريوهات بصرية لحركة الحسابات |
-| Missions | حالات ومحاولات وتلميحات ونتائج محفوظة |
-| Accounting Detective | أدلة وملاحظات واستنتاجات لمعالجة الأخطاء |
-| Arena | عشرة أنماط لعب قصيرة بنتائج شخصية محلية |
-| Learning Map | خريطة تقدم للبنية السابقة |
-| Companies | واجهات Demo وليست خدمة توظيف حية |
-| Offline/PWA | Manifest وصفحة Offline وهوية تثبيت |
+كل المسارات أدناه تبدأ بـ`/ar` أو `/en`:
 
-هذه الأنظمة لم تُحذف، لكنها ليست محور Gameplay Phase B وليست متصلة بخادم.
+| المسار | الاستخدام |
+| --- | --- |
+| `/` | لاندينج Career League |
+| `/onboarding` | اختيار البداية والهدف |
+| `/game` / `/game/first-shift` | عالم Mizan وأول وردية |
+| `/account-guide` | كتاب طبيعة الحسابات |
+| `/academy` / `/challenges` | التعلم والتحديات |
+| `/journal` / `/ledger` / `/trial-balance` | اليومية والأستاذ وميزان المراجعة |
+| `/money-flow` / `/missions` / `/detective` / `/arena` | أنظمة التعلم واللعب الأخرى |
+| `/career` | Career Hub |
+| `/career-profile` / `/career-profile/skills` / `/career-profile/cv` | الهوية المهنية والأدلة والـCV |
+| `/career-league/jobs` / `/career-league/gap` / `/career-league/companies` | فرص المحاكاة والفجوة وسلم الشركات |
+| `/career-league/placement` / `/career-league/promotion` / `/career-league/corporate-bridge` | التقييم الأولي والترقية والمسار المؤسسي المحدود |
+| `/leaderboard` / `/employers` | دوري وواجهة أصحاب عمل **Demo** |
 
-## 11. البنية التقنية
+بعض المسارات القديمة تُبقي روابط الحفظ السابقة عاملة عبر redirect أو compatibility route. وجود Route للإقفال لا يعني أن Chapter 2 متاح؛ القفل يظهر صراحة في الواجهة.
 
-| الجزء | التقنية |
-|---|---|
-| Framework | Next.js 16.3.4 App Router |
-| UI | React 19.1 وTypeScript 5.9 |
-| Styling | CSS مخصص مع Tailwind toolchain |
-| Icons | Lucide React |
-| Tests | Vitest 3.2 وTesting Library |
-| Hosting | GitHub وVercel Preview |
-| Persistence | Browser Local Storage وrepositories محلية |
+## 12. الجودة والنشر
 
-المجلدات الرئيسية: `app/` للمسارات والأنماط، و`components/` للواجهات، و`data/` للمحتوى، و`lib/` للمنطق، و`tests/` للاختبارات، و`artifacts/` للقطات وQA، و`docs/` للتوثيق.
+آخر تشغيل شامل مسجل بعد اللاندينج على commit `77c7408`:
 
-## 12. العربية والإنجليزية والـResponsive والوصول
-
-- العربية RTL والإنجليزية LTR.
-- الأكواد والمبالغ تحافظ على اتجاه واضح.
-- First Shift على الهاتف يتبع المستند ثم القيد ثم النتيجة.
-- دليل الحسابات يستخدم List/Detail منفصلين على الهاتف.
-- الحوارات تدعم Escape وإدارة التركيز.
-- الحركة تحترم reduced motion.
-- عناصر التحكم الأساسية مناسبة للمس.
-- اختبارات الواجهة تغطي العربية والإنجليزية.
-- قياس 390px سجل صفر overflow أفقي في جولات QA الحالية.
-
-## 13. الاختبارات والجودة
-
-آخر تشغيل كامل لـ`npm run check` نجح:
-
-- ESLint: ناجح دون warnings.
+- `npm run check`: **ناجح**.
+- ESLint: بلا warnings.
 - TypeScript: ناجح.
-- Vitest: **218 اختبارًا ناجحًا عبر 26 ملفًا**.
+- Vitest: **252 اختبارًا ناجحًا في 30 ملفًا**.
 - Next.js Production Build: ناجح.
+- فحص المتصفح للاندينج: English Light 1920×1080، Arabic Dark 1440×900، English Dark 390×844، Arabic Light 430×932؛ الصور الثلاث حُمّلت، و5 شركات و8 خطوات و6 أدوار ظهرت، دون Console errors أو page-wide horizontal overflow.
+- First Shift وNature of Accounts واللعب المحاسبي لها مجموعات اختبارات وانحدار مستقلة؛ رقم 252 هو حصيلة النسخة الحالية، وليس مجموع أرقام التقارير المرحلية.
 
-التغطية تشمل صحة القيود، ومسار First Shift، وحفظ المسودة، ومنع تكرار القيد والمكافآت والأحداث، وحماية Nature of Accounts، واللغات، والتخزين والترحيل، وأحداث الحالات، ومقارنة اللاعب الحذر بالمتسرع، ومنع السلوك غير الآمن من رفع Risk Awareness، ومعايرة Practiced/Demonstrated، والتوافق التاريخي، واستحالة Verified محليًا، وشرح الأدلة دون XP أو Coins.
+| البيئة | الرابط والحالة |
+| --- | --- |
+| GitHub | [المستودع](https://github.com/AhmedMohamed500/Debit-Credit) |
+| مراجعة Career League | [PR #4](https://github.com/AhmedMohamed500/Debit-Credit/pull/4) — مفتوح؛ رأسه الوظيفي `77c7408` وقت مراجعة هذا التقرير |
+| Vercel Preview للـcommit الوظيفي | [English](https://debit-credit-a0j936rjo-ahmed-mohameds-projects-c51bc2cc.vercel.app/en) · [العربية](https://debit-credit-a0j936rjo-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar) — Deployment ناجح |
+| Production المسجل في README | [debit-credit-nine.vercel.app](https://debit-credit-nine.vercel.app) — لا يُفترض أنه يحتوي عمل PRs غير المدمجة |
 
-## 14. الصور والتقارير التفصيلية
+**ملاحظة الوصول:** إعدادات مشروع Vercel تحمي الـPreview بتسجيل دخول؛ نجاح Deployment لا يعني أن الرابط متاح مجهول الهوية. آخر تحقق خارجي بدون حساب أعاد صفحة Login – Vercel. الصور وQA المحلي تعرضان الصفحات من نفس الكود.
 
-### Gameplay Phase B
+## 13. ما لم يُنفّذ بعد
 
-- [التوثيق الفني](docs/GAMEPLAY-PHASE-B.md)
-- [التقرير العربي](GAMEPLAY-PHASE-B-REPORT-AR.md)
-- `artifacts/gameplay-phase-b-desk-ar.png`
-- `artifacts/gameplay-phase-b-case-ar.png`
-- `artifacts/gameplay-phase-b-mobile-desk-ar.png`
-- `artifacts/gameplay-phase-b-mobile-case-ar.png`
-- `artifacts/gameplay-phase-b-posting-result-en.png`
-- `artifacts/gameplay-phase-b-shift-complete-en.png`
+- Chapter 2 / Closing Week وMonth-End Crisis وحالات الإقفال الكاملة ما زالت مقفولة.
+- Corporate Bridge الكامل و90 Days in Corporate Accounting، والحالات المتصلة والعواقب المؤجلة الإنتاجية، ما زالت توسعًا لاحقًا؛ Week 1 أساس محدود.
+- Promotion Assessment المتقدم ليس سلسلة حالات محاسبية كاملة بعد؛ الموجود قواعد أهلية/تقييم وعرض أولي.
+- الوظائف الحقيقية والتوظيف والشركات الشريكة واكتشاف المرشحين والتحقق المستقل غير متاحة.
+- Backend وهوية مستخدم ومزامنة بين الأجهزة ومنافسة أونلاين ودفع اشتراكات غير موجودة.
+- أي ادعاء بأن رتبة اللعبة أو Auto CV أو أمثلة اللاندينج تعني ضمان وظيفة أو اعتمادًا مهنيًا سيكون غير صحيح.
 
-### Phase A وFirst Shift
+أقرب توسع موثق هو **حالة مهنية متصلة واحدة عالية الجودة** للتقييم/الانتقال إلى شركة أكثر تنظيمًا، مع أدلة وتحقيق وعاقبة ومراجعة، قبل توسيع Chapter 2 أو البنية الخادمية. هذا توصية، لا عمل منفّذ.
 
-- [تقرير Phase A](docs/PHASE-A-RELEASE.md)
-- [تدقيق الواجهة](docs/UI-AUDIT.md)
-- [تقرير First Day](FIRST-DAY-IMPLEMENTATION-REPORT.md)
-- `artifacts/first-shift-scene-desktop-ar.png`
-- `artifacts/first-shift-scene-desktop-en.png`
-- `artifacts/first-shift-scene-mobile-ar.png`
+## 14. دليل الملفات والتقارير
 
-### Nature of Accounts
+| الموضوع | المرجع |
+| --- | --- |
+| تشغيل المشروع وبنية عامة | [README.md](README.md) |
+| فصل FINORA | [MIGRATION_FROM_FINORA.md](MIGRATION_FROM_FINORA.md) |
+| First Day وFirst Shift | [FIRST-DAY-IMPLEMENTATION-REPORT.md](FIRST-DAY-IMPLEMENTATION-REPORT.md)، [docs/GAMEPLAY-PHASE-B.md](docs/GAMEPLAY-PHASE-B.md) |
+| طبيعة الحسابات | [NATURE-OF-ACCOUNTS.md](NATURE-OF-ACCOUNTS.md)، [NATURE-OF-ACCOUNTS-REPORT.md](NATURE-OF-ACCOUNTS-REPORT.md) |
+| Career Profile وSkill Passport | [CAREER-PROFILE-SKILL-PASSPORT.md](CAREER-PROFILE-SKILL-PASSPORT.md) |
+| Academy وGame Hub | [docs/GAMIFIED-ACADEMY-PLATFORM.md](docs/GAMIFIED-ACADEMY-PLATFORM.md)، [GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md](GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md) |
+| Career League | [CAREER-LEAGUE-IMPLEMENTATION-REPORT.md](CAREER-LEAGUE-IMPLEMENTATION-REPORT.md)، [docs/CAREER-LEAGUE-PRODUCT.md](docs/CAREER-LEAGUE-PRODUCT.md) |
+| اللاندينج والتنسيقات | [docs/CAREER-LEAGUE-LANDING-PAGE.md](docs/CAREER-LEAGUE-LANDING-PAGE.md) |
+| المهارات وربط الـCV | [docs/SKILLS-CAREER-CV-MAPPING.md](docs/SKILLS-CAREER-CV-MAPPING.md) |
 
-- [مرجع الحسابات](NATURE-OF-ACCOUNTS.md)
-- [تقرير طبيعة الحسابات](NATURE-OF-ACCOUNTS-REPORT.md)
-- `artifacts/account-manual-desktop-ar.png`
-- `artifacts/account-manual-desktop-en.png`
-- `artifacts/account-manual-laptop-compact-ar.png`
-- `artifacts/account-manual-tablet-ar.png`
-- `artifacts/account-manual-mobile-list-ar.png`
-- `artifacts/account-manual-mobile-ar.png`
-
-## 15. أهم الملفات حسب الوظيفة
-
-### First Shift والقصّة
-
-- `components/campaign/cinematic-chapter-intro.tsx`
-- `components/campaign/first-day-screen.tsx`
-- `components/campaign/first-day-case-workbench.tsx`
-- `components/campaign/journal-builder.tsx`
-- `lib/campaign/first-day.ts`
-- `lib/campaign/first-day-story.ts`
-- `lib/campaign/director.ts`
-- `lib/campaign/store.ts`
-
-### Gameplay Phase B
-
-- `lib/cases/model.ts`
-- `lib/cases/first-shift-cases.ts`
-- `lib/cases/engine.ts`
-- `lib/cases/performance.ts`
-- `lib/cases/consequences.ts`
-- `lib/cases/repository.ts`
-
-### Nature of Accounts
-
-- `components/academy/account-guide.tsx`
-- `data/account-learning-guide.ts`
-- `lib/account-manual-markdown.ts`
-- `app/docs/nature-of-accounts.md/route.ts`
-- `app/accounting-manual.css`
-
-### Career Profile وSkill Passport
-
-- `components/career/career-profile-app.tsx`
-- `lib/career/model.ts`
-- `lib/career/catalog.ts`
-- `lib/career/evidence.ts`
-- `lib/career/cv.ts`
-- `lib/career/repository.ts`
-- `app/career-profile.css`
-- `app/career-profile-documents.css`
-
-### الاختبارات المحورية
-
-- `tests/accounting-core.test.ts`
-- `tests/first-day.test.ts`
-- `tests/campaign-ui.test.tsx`
-- `tests/casework.test.ts`
-- `tests/career-profile.test.ts`
-- `tests/career-ui.test.tsx`
-- `tests/protected-account-nature.test.ts`
-- `tests/storage-migration.test.ts`
-
-## 16. التشغيل المحلي
+للتشغيل المحلي:
 
 ```bash
 npm install
 npm run dev
+# افتح /ar أو /en على المنفذ المحلي الظاهر في الطرفية
+npm run check
 ```
-
-المسارات الأساسية:
-
-- `http://localhost:3000/ar`
-- `http://localhost:3000/en`
-- `http://localhost:3000/ar/account-guide`
-- `http://localhost:3000/ar/career-profile`
-
-بوابة الجودة الكاملة: `npm run check`.
-
-## 17. GitHub وVercel
-
-- المستودع: [github.com/AhmedMohamed500/Debit-Credit](https://github.com/AhmedMohamed500/Debit-Credit)
-- فرع Gameplay Phase B: `codex/gameplay-phase-b`
-- PR الحالي: [PR #2](https://github.com/AhmedMohamed500/Debit-Credit/pull/2)
-- حالة PR وقت التقرير: `OPEN` و`CLEAN`
-- Vercel: [Gameplay Phase B Preview](https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app)
-- العربية: [فتح اللعبة](https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar)
-- الإنجليزية: [Open game](https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app/en)
-- طبيعة الحسابات: [فتح المرجع](https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar/account-guide)
-- Career Profile: [فتح الملف](https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar/career-profile)
-- MD الحسابات: [تنزيل المرجع](https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app/docs/nature-of-accounts.md)
-
-يُتحقق من كل نشر عبر Vercel commit status داخل PR #2. رابط الفرع الثابت ينتقل إلى أحدث commit ناجح بعد كل push، لذلك لا يعتمد التقرير على رابط deployment مؤقت.
-
-## 18. تاريخ التنفيذ الرئيسي
-
-| Commit | العمل |
-|---|---|
-| `f9b0fd2` | تحسين تفاعلات First Shift الأولى |
-| `fd83195` | تحويل First Shift إلى مشهد مكتب سينمائي |
-| `6351c10` | بناء المكتب المحاسبي القابل للعب |
-| `55dc688` | بناء Nature of Accounts داخل اللعبة |
-| `50437ea` | تحويل المرجع إلى كتاب مادي داخل المكتب |
-| `d48cd2e` | بناء Career Profile وSkill Passport foundation |
-| `b8bd853` | تثبيت Phase A والتخزين والمسودات وidempotency |
-| `1f69465` | تحويل First Shift إلى accounting casework |
-| `7d8a659` | توثيق واختبار Gameplay Phase B |
-| `7c08f2e` | إضافة التقرير العربي لـGameplay Phase B |
-| `74b6bcc` | معايرة Risk Awareness وPracticed/Demonstrated |
-| `ab1d6d6` | تحديث سجل إصدار ونشر Phase B |
-
-## 19. القيود والمخاطر المعروفة
-
-- Local Storage يمكن حذفه أو تعديله ولا يثبت الهوية أو النزاهة المهنية.
-- لا توجد مزامنة بين الأجهزة أو قاعدة بيانات أو صلاحيات خادمية.
-- Employer Preview محلي ولا يمثل اكتشافًا فعليًا من الشركات.
-- Companies وLeaderboard في الأنظمة القديمة يحتويان بيانات Demo.
-- طباعة CV تعتمد على Print / Save PDF في المتصفح.
-- الأدلة المحلية يمكن أن تكون Practiced أو Demonstrated، لكنها ليست Verified.
-- الحالات الثلاث تمهيدية ولا تمثل تغطية كاملة لمهنة المحاسبة.
-- قواعد التقييم حتمية ومفسرة، لكنها تحتاج playtesting قبل اعتمادها معيارًا واسعًا.
-
-## 20. الحالة النهائية والخطوة التالية
-
-Chapter 1 أصبح محاكاة عمل محاسبي قائمة على حالات وأحداث وأدلة وقرارات ونتائج. Risk Awareness لا يكافئ السلوك الخطر، وSkill Passport لا يبالغ في تحويل حالة تمهيدية واحدة إلى ادعاء كفاءة قوي. Nature of Accounts متاح كمرجع كامل من الموقع واللعبة، والحفظ والمحاسبة والتوافق واللغات والـResponsive محمية بالاختبارات الحالية.
-
-الحالة الحالية جاهزة لمراجعة مستقلة وplaytest لـChapter 1 وGameplay Phase B داخل PR #2. الخطوة التالية هي مراجعة واعتماد هذا الفصل وضبطه بناءً على سلوك لاعبين فعليين. **Chapter 2 يظل مقفولًا ولا يجب بدء تنفيذه قبل اعتماد Chapter 1.**

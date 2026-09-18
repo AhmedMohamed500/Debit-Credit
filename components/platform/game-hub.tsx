@@ -14,13 +14,15 @@ import type {Locale} from '@/types';
 import {PlatformNav} from './platform-nav';
 import {BrowserCareerLeagueRepository} from '@/lib/career-league/repository';
 import {careerOpportunities,companyTiers} from '@/lib/career-league/catalog';
+import {createCareerLeagueState} from '@/lib/career-league/engine';
 import type {CareerLeagueState} from '@/lib/career-league/model';
+import {BeginnerCareerWorld} from './beginner-career-world';
 
 type IconType=typeof Gamepad2;
 
 export function GameHub({locale}:{locale:Locale}){
  const ar=locale==='ar',say=(en:string,a:string)=>ar?a:en,Arrow=ar?ArrowLeft:ArrowRight;
- const {state}=useGame(),player=usePlayer(),progress=firstDayProgress(state),company=firstDayCompany(state),performance=projectShiftPerformance(state),evidence=firstShiftSkillEvidence(state,'local-player'),passport=calculatePassport(evidence),readiness=calculateRoleReadiness('junior-accountant',passport),careerRank=professionalRank(passport),done=progress.completed.length,[careerState,setCareerState]=useState<CareerLeagueState>(()=>new BrowserCareerLeagueRepository().get());
+ const {state}=useGame(),player=usePlayer(),progress=firstDayProgress(state),company=firstDayCompany(state),performance=projectShiftPerformance(state),evidence=firstShiftSkillEvidence(state,'local-player'),passport=calculatePassport(evidence),readiness=calculateRoleReadiness('junior-accountant',passport),careerRank=professionalRank(passport),done=progress.completed.length,[careerState,setCareerState]=useState<CareerLeagueState>(()=>createCareerLeagueState());
  useEffect(()=>setCareerState(new BrowserCareerLeagueRepository().get()),[]);
  const target=careerOpportunities.find(item=>item.id===careerState.targetOpportunityId),nextCompany=companyTiers[1];
  const handledValue=firstDayDocuments.filter(document=>progress.completed.includes(document.id)).reduce((total,document)=>total+document.amount,0);
@@ -28,6 +30,7 @@ export function GameHub({locale}:{locale:Locale}){
  const railIcons:Record<GameDestinationId,IconType>={'game-hub':Gamepad2,inbox:Inbox,missions:ClipboardCheck,journal:BookMarked,ledger:BookOpen,'trial-balance':BarChart3,'financial-statements':FileBarChart,'nature-of-accounts':FileText,'skill-passport':ShieldCheck,career:BriefcaseBusiness,leaderboard:Star,academy:BookOpen};
  const zoneIcons:Record<MizanZoneId,IconType>={suppliers:WalletCards,customers:Users,bank:Landmark,logistics:Truck,'month-end':ClipboardCheck};
  const skills=[[say('Investigation & Analysis','التحقيق والتحليل'),performance.investigation],[say('Accounting Judgment','الحكم المحاسبي'),performance.accountingJudgment],[say('Risk Awareness','الوعي بالمخاطر'),performance.riskAwareness],[say('Documentation','التوثيق'),performance.documentation]] as const;
+ if(careerState.persona==='student'&&careerState.placementRecommendation===1)return <BeginnerCareerWorld locale={locale} careerState={careerState} gameState={state} player={player}/>;
  return <main className="platform-page command-game"><PlatformNav locale={locale}/><section className="command-shell">
   <aside className="command-rail" aria-label={say('Game navigation','تنقل اللعبة')}><div className="command-rail-company"><Building2/><span><b>Mizan Trading</b><small>{say('Accounting simulation','محاكاة محاسبية')}</small></span></div><nav>{railIds.map((id,index)=>{const item=destination(id),Icon=railIcons[id];return <Link className={index===0?'active':''} href={localizedPath(locale,item.path)} key={id}><Icon/><span>{item.label[locale]}</span>{id==='inbox'&&company.pendingDocuments>0?<em>{company.pendingDocuments}</em>:null}</Link>})}</nav><Link className="command-rail-settings" href={`/${locale}/profile`}><Settings/>{say('Settings','الإعدادات')}</Link><blockquote>“{say('Better accountants build brighter companies.','محاسبون أفضل يبنون شركات أقوى.')}”</blockquote></aside>
   <div className="command-main"><header className="command-heading"><div><span>{say('CAREER LEAGUE · LIVE COMPANY SIMULATION','CAREER LEAGUE · محاكاة شركة حية')}</span><h1>Mizan Trading</h1><p>{say('Start small. Prove your skills. Move up.','ابدأ من مستواك الحقيقي... واثبت إنك جاهز للشركة الأكبر.')}</p></div><Link className="hub-career-snapshot" href={`/${locale}/career`}><Target/><span><small>{say('TARGET ROLE','الدور المستهدف')}</small><b>{target?target.title[locale]:say('Choose a career goal','اختر هدفك المهني')}</b><em>{say(`Next company: ${nextCompany.name.en}`,`الشركة التالية: ${nextCompany.name.ar}`)}</em></span><Arrow/></Link></header>

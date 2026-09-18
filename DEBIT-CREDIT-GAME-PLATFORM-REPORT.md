@@ -1,5 +1,9 @@
 # Debit & Credit
 
+## Beginner Career World — 2026-09-18
+
+Student/beginner players now enter a cinematic five-company career world on `/[locale]/game`; graduate and working-accountant players keep their existing home. The world combines an eight-stage roadmap, current Mizan mission, real company unlock conditions, Skill Passport evidence states, accounting tools, and a clearly labeled local Demo League. A new owner-capital investigation records only game practice and does not grant professional evidence. See [docs/BEGINNER-CAREER-WORLD.md](docs/BEGINNER-CAREER-WORLD.md) and the four review images under `artifacts/career-league/beginner-game-home-*.png`. Nature of Accounts content, the accounting engine, save formats, and Chapter 2 remain unchanged.
+
 ## Mizan Trading Interactive Game Hub — 2026-09-13
 
 The Game Hub was corrected to match the requested way of playing: a full professional company simulation centered on a realistic Mizan Trading campus and port. Suppliers, Customers, Bank, and Logistics are live HTML routes over the world artwork; Month End and Chapter 2 remain locked. The previous abstract zone-card composition is no longer rendered.

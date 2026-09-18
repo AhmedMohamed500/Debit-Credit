@@ -1,5 +1,12 @@
 # Career League Implementation Report
 
+## Beginner Career World — 2026-09-18
+
+The saved Accounting Student + beginner path now uses a new full-screen game home on `/[locale]/game`, matching the supplied dark waterfront career reference. It uses the five existing company tiers and their real unlock rules, an eight-stage honest roadmap, Kareem guidance, a playable owner-capital investigation, real Skill Passport statuses, working accounting tool destinations, and the local Demo League. Other personas retain the prior Game Hub. No Chapter 2 or accounting-engine change was made.
+
+Implementation and constraints: [docs/BEGINNER-CAREER-WORLD.md](docs/BEGINNER-CAREER-WORLD.md). Visual review: `artifacts/career-league/beginner-game-home-ar-dark-1920.png`, `beginner-game-home-en-dark-1920.png`, `beginner-game-home-ar-light-1440.png`, and `beginner-game-home-mobile-ar-390.png`.
+Verification: `npm run check` passed (ESLint, TypeScript, 256 tests/31 files, production build); browser captures had no page errors or horizontal overflow.
+
 ## Delivery
 
 - **Branch:** `codex/career-league`

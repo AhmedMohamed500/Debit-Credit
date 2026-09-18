@@ -693,6 +693,10 @@ Mizan Trading markers now open dedicated Suppliers, Customers, Bank, Logistics, 
 Validation completed with ESLint, TypeScript, 240 passing Vitest tests across 29 files, and a successful production build. Real browser QA covered five desktop viewports, 430×932 and 390×844 mobile, Arabic RTL, English LTR, Light Mode, Dark Mode, route clicks, breadcrumbs, one-header rendering, exact viewport fill, and zero horizontal overflow.
 
 Detailed correction record and screenshots: [`docs/GAME-HUB-LAYOUT-ROUTING-FIX.md`](docs/GAME-HUB-LAYOUT-ROUTING-FIX.md).
+# Beginner Career World follow-up — 2026-09-18
+
+The student/beginner `/[locale]/game` now uses saved company unlocks for its five-destination map line and current/completed markers. Company previews name the missing mission and promotion review, and distinguish a met unlock from a playable company case that remains planned. The owner-capital receipt opens the introductory case; wrong choices lower its local practice accuracy without creating professional Skill Passport evidence. Escape dismisses open overlays. Arabic desktop and 390px/430px phone, English desktop, and light mode were captured with no page errors or horizontal overflow. `npm run check` passed: ESLint, TypeScript, 260 tests across 31 files, production build. Details and screenshots: [`docs/BEGINNER-CAREER-WORLD.md`](docs/BEGINNER-CAREER-WORLD.md).
+
 # Career League Phase — 2026-09-14
 
 ## Landing experience update — 2026-09-15

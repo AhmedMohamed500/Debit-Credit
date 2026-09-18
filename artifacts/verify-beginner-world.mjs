@@ -6,6 +6,7 @@ for(const spec of [
  {locale:'en',theme:'dark',width:1920,height:1080,file:'beginner-game-home-en-dark-1920.png'},
  {locale:'ar',theme:'light',width:1440,height:900,file:'beginner-game-home-ar-light-1440.png'},
  {locale:'ar',theme:'dark',width:390,height:844,file:'beginner-game-home-mobile-ar-390.png'},
+ {locale:'ar',theme:'dark',width:430,height:932,file:'beginner-game-home-mobile-ar-430.png'},
 ]){
  const page=await browser.newPage({viewport:{width:spec.width,height:spec.height},deviceScaleFactor:1});
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
@@ -14,7 +15,8 @@ for(const spec of [
  await page.locator('.beginner-world').waitFor();
  await page.screenshot({path:`artifacts/career-league/${spec.file}`,fullPage:true});
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
- result.push({...spec,overflow,errors,companyButtons:await page.locator('.bcw-company').count(),roadmapNodes:await page.locator('.bcw-roadmap-node').count(),theme:await page.evaluate(()=>document.documentElement.dataset.theme)});
+ const surface=await page.evaluate(()=>({bodyBackground:getComputedStyle(document.body).backgroundColor,htmlBackground:getComputedStyle(document.documentElement).backgroundColor,bodyHeight:document.body.scrollHeight,mainBottom:Math.round(document.querySelector('.beginner-world').getBoundingClientRect().bottom+window.scrollY)}));
+ result.push({...spec,overflow,errors,companyButtons:await page.locator('.bcw-company').count(),roadmapNodes:await page.locator('.bcw-roadmap-node').count(),theme:await page.evaluate(()=>document.documentElement.dataset.theme),surface});
  await page.close();
 }
 console.log(JSON.stringify(result,null,2));await browser.close();

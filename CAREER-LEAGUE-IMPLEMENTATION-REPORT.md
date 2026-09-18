@@ -4,8 +4,8 @@
 
 The saved Accounting Student + beginner path now uses a new full-screen game home on `/[locale]/game`, matching the supplied dark waterfront career reference. It uses the five existing company tiers and their real unlock rules, an eight-stage honest roadmap, Kareem guidance, a playable owner-capital investigation, real Skill Passport statuses, working accounting tool destinations, and the local Demo League. Other personas retain the prior Game Hub. No Chapter 2 or accounting-engine change was made.
 
-Implementation and constraints: [docs/BEGINNER-CAREER-WORLD.md](docs/BEGINNER-CAREER-WORLD.md). Visual review: `artifacts/career-league/beginner-game-home-ar-dark-1920.png`, `beginner-game-home-en-dark-1920.png`, `beginner-game-home-ar-light-1440.png`, and `beginner-game-home-mobile-ar-390.png`.
-Verification: `npm run check` passed (ESLint, TypeScript, 257 tests/31 files, production build); browser captures had no page errors or horizontal overflow.
+Implementation and constraints: [docs/BEGINNER-CAREER-WORLD.md](docs/BEGINNER-CAREER-WORLD.md). Visual review: `artifacts/career-league/beginner-game-home-ar-dark-1920.png`, `beginner-game-home-en-dark-1920.png`, `beginner-game-home-ar-light-1440.png`, `beginner-game-home-mobile-ar-390.png`, and `beginner-game-home-mobile-ar-430.png`.
+The follow-up aligned map progress and company previews with saved unlocks, made the source receipt interactive, recorded wrong answers in local practice accuracy, and removed the mobile background gap. Verification: `npm run check` passed (ESLint, TypeScript, 260 tests/31 files, production build); five browser captures had no page errors or horizontal overflow.
 
 ## Delivery
 

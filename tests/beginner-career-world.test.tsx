@@ -4,6 +4,8 @@ import {GameHub} from '@/components/platform/game-hub';
 import {createCareerLeagueState} from '@/lib/career-league/engine';
 import {CAREER_LEAGUE_KEY} from '@/lib/career-league/repository';
 import {PLAYER_STORAGE_KEY} from '@/lib/game/progress';
+import {SKILL_EVIDENCE_KEY} from '@/lib/career/repository';
+import type {SkillEvidence} from '@/lib/career/model';
 import {ThemeProvider} from '@/components/platform/theme-provider';
 
 const push=vi.fn();
@@ -51,6 +53,13 @@ describe('beginner career world',()=>{
   const saved=JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY)??'{}');
   expect(saved.activities['practice:beginner-owner-capital']).toMatchObject({bestScore:100,kind:'practice'});
   expect(localStorage.getItem('debit-credit-skill-evidence-v1')).toBeNull();
+ });
+ it('does not count evidence stored for a different local candidate',async()=>{
+  const foreign:SkillEvidence={version:1,evidenceId:'foreign-proof',localCandidateId:'someone-else',activityId:'foreign-case',activityType:'case',chapterId:1,missionId:'other',skillId:'account-classification',roleRelevance:['junior-accountant'],difficulty:1,score:100,accuracy:100,firstAttemptCorrect:true,attempts:1,hintsUsed:0,independentCompletion:true,criticalErrors:0,completedAt:'2026-09-18T00:00:00.000Z',source:'mission',assessmentIntegrity:'demonstrated',titleAr:'دليل آخر',titleEn:'Other evidence'};
+  localStorage.setItem(SKILL_EVIDENCE_KEY,JSON.stringify([foreign]));
+  await show();
+  const skills=document.querySelector('.bcw-skills')!;
+  expect(within(skills as HTMLElement).getAllByText('Unassessed')).toHaveLength(5);
  });
  it('keeps graduate on the existing Game Hub',async()=>{
   localStorage.setItem(CAREER_LEAGUE_KEY,JSON.stringify({...createCareerLeagueState(),persona:'graduate',placementRecommendation:1}));

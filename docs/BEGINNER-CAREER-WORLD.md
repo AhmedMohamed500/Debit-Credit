@@ -36,4 +36,4 @@ The long-term beginner curriculum can expand from business/accounting basics thr
 
 ## Validation and review
 
-Focused UI tests cover persona routing, honest roadmap and Skill Passport states, company unlock preview, Mizan navigation, tool routes, bilingual direction, demo labeling, and practice persistence. The full `npm run check` gate passed: ESLint, TypeScript, 256 Vitest tests across 31 files, and production build. Four captures are stored under `artifacts/career-league/beginner-game-home-*.png` for Arabic/English dark desktop, Arabic light desktop, and Arabic 390px phone.
+Focused UI tests cover persona routing, honest roadmap and Skill Passport states, company unlock preview, Mizan navigation, tool routes, bilingual direction, demo labeling, practice persistence, and isolation of another local candidate’s evidence. The full `npm run check` gate passed: ESLint, TypeScript, 257 Vitest tests across 31 files, and production build. Four captures are stored under `artifacts/career-league/beginner-game-home-*.png` for Arabic/English dark desktop, Arabic light desktop, and Arabic 390px phone.

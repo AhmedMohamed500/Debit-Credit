@@ -57,7 +57,7 @@ export function BeginnerCareerWorld({locale,careerState,gameState,player}:Props)
  const [stored,setStored]=useState<SkillEvidence[]>([]),[candidateId,setCandidateId]=useState('local-preview'),[selected,setSelected]=useState<VirtualCompany|null>(null),[missionStep,setMissionStep]=useState(-1),[missionError,setMissionError]=useState(false),[searchOpen,setSearchOpen]=useState(false),[search,setSearch]=useState(''),[noticeOpen,setNoticeOpen]=useState(false),[calculatorOpen,setCalculatorOpen]=useState(false),[expression,setExpression]=useState(''),[calcResult,setCalcResult]=useState(''),[roadmapNotice,setRoadmapNotice]=useState<number|null>(null);
  useEffect(()=>{setStored(new BrowserSkillEvidenceRepository().getAll());setCandidateId(getOrCreateLocalCandidateId())},[]);
  const projected=firstShiftSkillEvidence(gameState,candidateId);
- const deduped=new globalThis.Map([...stored,...projected].map(row=>[row.evidenceId,row]));
+ const deduped=new globalThis.Map([...stored.filter(row=>row.localCandidateId===candidateId),...projected].map(row=>[row.evidenceId,row]));
  const passport=calculatePassport([...deduped.values()]);
  const completedMissionIds=done===3?['first-shift']:[];
  const unlocked=companyTiers.map(company=>companyUnlocked(company.id,passport,completedMissionIds,careerState.assessmentResults));

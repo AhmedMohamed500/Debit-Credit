@@ -86,6 +86,19 @@ Related routes:
 - `/{locale}/career-league/gap`
 - `/{locale}/career-profile/cv`
 
+### Career League competition preview
+
+The approved `public/landing/career-league-competition.png` artwork is presented as the visual centerpiece of a real HTML marketing section between the accounting-work explanation and the evidence/career area. The surrounding bilingual copy deliberately labels the current competition as a **Demo Preview**. It does not claim live multiplayer, real students online, employer hiring, or real job offers. A visible caption also explains that the image is conceptual artwork.
+
+The section includes four real HTML proof points:
+
+- Realistic Accounting Cases
+- Skill-Based Competition
+- Career Progression
+- Evidence-Based Skill Passport
+
+The CTA preserves locale and opens `/{locale}/leaderboard`, which already identifies the league as local/demo. On mobile, the section follows the required order: headline, supporting copy, demo label, CTA, artwork, then proof points. The image uses `next/image`, preserves its 1536×1024 source, keeps both competitors and the central VS visible, and never acts as a CSS background.
+
 ### 7. Auto CV
 
 The CV preview uses the real implemented Auto CV interface. It explains that supported skills can be ordered for the selected accounting role and that Mizan Trading appears as an **Accounting Career Simulation**, never as employment.
@@ -169,6 +182,7 @@ Results:
 - `public/marketing/career-league-game-hub.png`
 - `public/marketing/first-shift-work.png`
 - `public/marketing/auto-cv.png`
+- `public/landing/career-league-competition.png`
 
 ## Review screenshots
 
@@ -176,6 +190,9 @@ Results:
 - `artifacts/career-league/landing-career-league-ar-1440.png`
 - `artifacts/career-league/landing-career-league-en-mobile-390.png`
 - `artifacts/career-league/landing-career-league-ar-mobile-430.png`
+- `artifacts/career-league/landing-competition-ar-1920.png`
+- `artifacts/career-league/landing-competition-en-1920.png`
+- `artifacts/career-league/landing-competition-mobile-ar-390.png`
 
 ## Implementation files
 
@@ -187,6 +204,7 @@ Results:
 - `app/layout.tsx`
 - `tests/platform-ui.test.tsx`
 - `artifacts/verify-landing-v2.mjs`
+- `artifacts/verify-career-league-competition.mjs`
 
 ## Verification
 
@@ -194,9 +212,9 @@ Results:
 
 - ESLint: passed with zero warnings.
 - TypeScript: passed.
-- Vitest: **252 tests passed across 30 test files**.
+- Vitest: **271 tests passed across 32 test files**.
 - Production build: passed.
-- Focused landing UI tests: **9 passed**.
+- Focused landing UI tests: **10 passed**.
 - Browser QA: passed across four desktop/mobile, Arabic/English, Light/Dark combinations.
 
 ## GitHub and preview

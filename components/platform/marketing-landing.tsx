@@ -1,6 +1,6 @@
 import type {Locale} from '@/types';
 import {PlatformNav} from './platform-nav';
-import {AccountingPractice,CareerEvidence,CareerJourney,CareerProgression,CompanyWorld,LandingFinalCTA,LandingHero,PersonaSelector} from './landing-sections';
+import {AccountingPractice,CareerEvidence,CareerJourney,CareerLeagueCompetition,CareerProgression,CompanyWorld,LandingFinalCTA,LandingHero,PersonaSelector} from './landing-sections';
 
 export function MarketingLanding({locale}:{locale:Locale}) {
   return <main className="platform-page marketing-page career-landing">
@@ -10,6 +10,7 @@ export function MarketingLanding({locale}:{locale:Locale}) {
     <PersonaSelector locale={locale}/>
     <CareerJourney locale={locale}/>
     <AccountingPractice locale={locale}/>
+    <CareerLeagueCompetition locale={locale}/>
     <CareerEvidence locale={locale}/>
     <CareerProgression locale={locale}/>
     <LandingFinalCTA locale={locale}/>

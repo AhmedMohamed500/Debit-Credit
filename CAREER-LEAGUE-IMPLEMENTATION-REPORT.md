@@ -1,5 +1,9 @@
 # Career League Implementation Report
 
+## Account City — 2026-09-19
+
+The existing `/{locale}/account-guide` entry now opens Account City instead of the open-book UI. Six districts and 197 unchanged accounting records feed discoverable building locations, a seven-step Account Inspector, bilingual search, a local collection, three transaction quests, the Six Families quest, account mini missions, and an equipment-on-credit beginner boss. First Shift opens the relevant account without modifying its saved case or draft. City exploration creates no professional evidence; quest/mini-mission completion uses the existing game activity engine for XP-only practice. Arabic dark/light and English dark desktop plus 390px/430px phone captures are stored in `artifacts/account-city/`. Browser QA reported zero page errors and zero horizontal overflow. `npm run check` passed: ESLint with zero warnings, TypeScript, 270 tests in 32 files, and the production build. See [docs/ACCOUNT-CITY.md](docs/ACCOUNT-CITY.md) and [NATURE-OF-ACCOUNTS-REPORT.md](NATURE-OF-ACCOUNTS-REPORT.md).
+
 ## Beginner Career World — 2026-09-18
 
 The saved Accounting Student + beginner path now uses a new full-screen game home on `/[locale]/game`, matching the supplied dark waterfront career reference. It uses the five existing company tiers and their real unlock rules, an eight-stage honest roadmap, Kareem guidance, a playable owner-capital investigation, real Skill Passport statuses, working accounting tool destinations, and the local Demo League. Other personas retain the prior Game Hub. No Chapter 2 or accounting-engine change was made.

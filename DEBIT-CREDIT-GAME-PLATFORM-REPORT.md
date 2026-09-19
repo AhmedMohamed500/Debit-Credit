@@ -1,5 +1,9 @@
 # Debit & Credit
 
+## Account City — 2026-09-19
+
+The former open-book Nature of Accounts route was intentionally transformed into a playable full-screen Account City. Six districts connect the unchanged 197-account source to discovery, searchable account locations, an interactive behavior inspector, documents, transaction stories, local XP-only practice, and a beginner boss. First Shift now passes the selected account while retaining its case/draft state. The new city writes no professional Skill Passport evidence and does not change accepted accounting entries. Browser QA passed in Arabic and English, light and dark modes, and 390px/430px mobile with no page errors or horizontal overflow. `npm run check` passed with zero ESLint warnings, clean TypeScript, 270 tests in 32 files, and the production build. Review [docs/ACCOUNT-CITY.md](docs/ACCOUNT-CITY.md), [NATURE-OF-ACCOUNTS-REPORT.md](NATURE-OF-ACCOUNTS-REPORT.md), and `artifacts/account-city/`.
+
 ## Beginner Career World — 2026-09-18
 
 Student/beginner players now enter a cinematic five-company career world on `/[locale]/game`; graduate and working-accountant players keep their existing home. The world combines an eight-stage roadmap, current Mizan mission, real company unlock conditions, Skill Passport evidence states, accounting tools, and a clearly labeled local Demo League. A new owner-capital investigation records only game practice and does not grant professional evidence. See [docs/BEGINNER-CAREER-WORLD.md](docs/BEGINNER-CAREER-WORLD.md) and the four review images under `artifacts/career-league/beginner-game-home-*.png`. Nature of Accounts content, the accounting engine, save formats, and Chapter 2 remain unchanged.

@@ -1,5 +1,9 @@
 # Debit & Credit
 
+## Complete accounting career game foundation — 2026-09-19
+
+The current Career League review branch extends the playable beginner journey into a governed accounting-career architecture. It adds Bootcamp, three-persona placement, professional responsibility levels 0–8, connected Mizan work, local/offline multi-profile competition contracts, evidence-driven profile/CV automation, Corporate Bridge and Month-End foundations, progressive company tiers, and guarded standards/certification roadmaps. It remains frontend-only and makes no live multiplayer, employer, job-offer, accreditation or Verified-evidence claim. See [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md) and [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).
+
 ## Career League competition landing section — 2026-09-19
 
 The public landing page now includes the approved Career League competition artwork as a large, responsive centerpiece supported by bilingual HTML copy, a demo-state label, four product proof points, and a canonical localized leaderboard CTA. The artwork remains a marketing concept: the page explicitly avoids claims of live players, real online competition, employer offers, or real student counts. Arabic/English, Light/Dark, desktop, and 390px/430px QA passed with no console errors or horizontal overflow. `npm run check` passed with zero ESLint warnings, clean TypeScript, 271 tests in 32 files, and a successful production build. Full details are recorded in [docs/CAREER-LEAGUE-LANDING-PAGE.md](docs/CAREER-LEAGUE-LANDING-PAGE.md).

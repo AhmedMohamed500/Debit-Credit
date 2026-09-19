@@ -1,0 +1,15 @@
+import type{LocalizedText}from'@/lib/career/model';
+export type BridgeWeekStatus='approved'|'planned';
+export interface BridgeWeek{id:string;week:number;title:LocalizedText;workProducts:LocalizedText[];responsibilities:LocalizedText[];status:BridgeWeekStatus;prerequisiteIds:string[]}
+const t=(en:string,ar:string)=>({en,ar});
+export const corporateBridgeWeeks:BridgeWeek[]=[
+ {id:'week-1-structured-ap',week:1,title:t('Structured AP Intake','استلام موردين منظم'),workProducts:[t('Invoice intake log','سجل استلام الفواتير'),t('Three-way match file','ملف المطابقة الثلاثية')],responsibilities:[t('Validate vendor, PO, GRN and approval before posting.','تحقق من المورد وأمر الشراء والاستلام والاعتماد قبل الترحيل.')],status:'approved',prerequisiteIds:[]},
+ {id:'week-2-reconciliations',week:2,title:t('Supplier and Customer Reconciliations','تسويات الموردين والعملاء'),workProducts:[t('Supplier statement reconciliation','تسوية كشف المورد'),t('Customer unapplied-cash list','قائمة تحصيلات العملاء غير المخصصة')],responsibilities:[t('Investigate differences and document ownership.','حقق في الفروق ووثّق المسؤولية.')],status:'approved',prerequisiteIds:['week-1-structured-ap']},
+ {id:'week-3-adjustments',week:3,title:t('Accruals, Prepayments and Fixed Assets','الاستحقاقات والمقدمات والأصول الثابتة'),workProducts:[t('Adjustment schedules','جداول التسويات')],responsibilities:[t('Prepare supported period-end entries.','أعد قيود نهاية فترة مؤيدة.')],status:'planned',prerequisiteIds:['week-2-reconciliations']},
+ {id:'week-4-close-controls',week:4,title:t('Cut-Off and Close Controls','القطع ورقابة الإقفال'),workProducts:[t('Close checklist','قائمة الإقفال')],responsibilities:[t('Track blockers and evidence sign-off.','تابع المعوقات واعتماد الأدلة.')],status:'planned',prerequisiteIds:['week-3-adjustments']},
+ {id:'week-5-reporting',week:5,title:t('Reporting, Audit and ERP Workflow','التقارير والمراجعة ودورة ERP'),workProducts:[t('Audit request board','لوحة طلبات المراجعة')],responsibilities:[t('Coordinate review and communicate status.','نسق المراجعة وتواصل بالحالة.')],status:'planned',prerequisiteIds:['week-4-close-controls']},
+];
+export interface CorporateBridgeState{version:1;completedWeekIds:string[];currentWeekId:string;updatedAt:string}
+export const createCorporateBridgeState=():CorporateBridgeState=>({version:1,completedWeekIds:[],currentWeekId:'week-1-structured-ap',updatedAt:new Date(0).toISOString()});
+export const bridgeWeekPlayable=(state:CorporateBridgeState,id:string)=>{const week=corporateBridgeWeeks.find(item=>item.id===id);return Boolean(week&&week.status==='approved'&&week.prerequisiteIds.every(req=>state.completedWeekIds.includes(req)))};
+export function completeBridgeWeek(state:CorporateBridgeState,id:string,at:string){if(!bridgeWeekPlayable(state,id)||state.completedWeekIds.includes(id))return state;const completed=[...state.completedWeekIds,id],next=corporateBridgeWeeks.find(item=>item.status==='approved'&&!completed.includes(item.id)&&item.prerequisiteIds.every(req=>completed.includes(req)));return{...state,completedWeekIds:completed,currentWeekId:next?.id??id,updatedAt:at}}

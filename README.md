@@ -4,6 +4,8 @@
 
 Debit & Credit is a bilingual, frontend-only Gamified Accounting Academy and Mizan Trading career simulation. One player journey connects foundations, journal practice, professional cases, quality-based demo competition, explainable Skill Passport evidence, role readiness, an evidence-driven CV, and a clearly labeled employer preview.
 
+The current Career League work is documented in [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md). Its governed level 0–8 curriculum and the delivery state of every accounting/finance module are defined in [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).
+
 The public landing page starts at `/ar` or `/en`. The current unified player routes are `/[locale]/onboarding`, `/game`, `/academy`, `/challenges`, `/leaderboard`, and `/career`; employer demo routes begin at `/[locale]/employers`.
 
 ## Learning journey

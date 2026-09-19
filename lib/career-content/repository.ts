@@ -1,0 +1,3 @@
+import{createCareerContentState,migrateCareerContentState}from'./engine';import type{CareerContentState}from'./model';
+export const CAREER_CONTENT_KEY='debit-credit-career-content-v1';
+export class BrowserCareerContentRepository{get(){if(typeof window==='undefined')return createCareerContentState();try{return migrateCareerContentState(JSON.parse(localStorage.getItem(CAREER_CONTENT_KEY)??'null'))}catch{return createCareerContentState()}}save(state:CareerContentState){const next=migrateCareerContentState(state);if(typeof window!=='undefined')localStorage.setItem(CAREER_CONTENT_KEY,JSON.stringify(next));return next}}

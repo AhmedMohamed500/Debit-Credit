@@ -21,3 +21,16 @@ Progress uses mission completion and professional outcomes rather than XP. Compl
 ## Storage compatibility
 
 `BrowserCompanyProgressionRepository` owns `debit-credit-company-progression-v1`. The migration can project the existing `first-shift` completion into the new company path without changing the original game save, journal, ledger, Account City, Skill Passport or Career League records.
+
+## Connected consequences
+
+The connected-mission graph carries approved outcomes forward:
+
+- a resolved supplier payment becomes an expected Bank Control movement;
+- a held supplier exception remains a close blocker;
+- resolved customer cash becomes an expected deposit;
+- held customer cash enters the unapplied-cash investigation queue;
+- a held bank difference blocks close;
+- a resolved bank reconciliation clears that blocker.
+
+These are deterministic projections from saved mission outcomes. They do not invent entries and do not duplicate the existing journal or case-event stores.

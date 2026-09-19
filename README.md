@@ -6,6 +6,8 @@ Debit & Credit is a bilingual, frontend-only Gamified Accounting Academy and Miz
 
 The current Career League work is documented in [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md). Its governed level 0–8 curriculum and the delivery state of every accounting/finance module are defined in [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).
 
+The complete Arabic project map, including the exact First Shift files, routes, architecture, storage, gameplay systems, delivery states and current limitations, is available in [DEBIT-CREDIT-COMPLETE-PROJECT-REPORT.md](DEBIT-CREDIT-COMPLETE-PROJECT-REPORT.md).
+
 The public landing page starts at `/ar` or `/en`. The current unified player routes are `/[locale]/onboarding`, `/game`, `/academy`, `/challenges`, `/leaderboard`, and `/career`; employer demo routes begin at `/[locale]/employers`.
 
 ## Learning journey

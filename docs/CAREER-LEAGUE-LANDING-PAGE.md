@@ -1,5 +1,17 @@
 # Debit & Credit — Career League Landing Page
 
+## Current delivery snapshot
+
+| Item | Value |
+| --- | --- |
+| Repository | `AhmedMohamed500/Debit-Credit` |
+| Branch | `codex/career-league` |
+| Pull Request | [PR #4 — Career League](https://github.com/AhmedMohamed500/Debit-Credit/pull/4) |
+| Arabic Preview | [Open Arabic landing](https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar) |
+| English Preview | [Open English landing](https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app/en) |
+| Vercel access | Ready; Deployment Protection may require project login |
+| Current quality gate | 330 tests in 47 files, ESLint, TypeScript and production build passed |
+
 ## Product position
 
 The public landing page presents **Debit & Credit — Career League** as a professional accounting career game. Its promise is direct:
@@ -9,6 +21,18 @@ The public landing page presents **Debit & Credit — Career League** as a profe
 > مسارك المحاسبي يبدأ قبل عرض العمل.
 
 The page shows how the player moves from realistic accounting work to evidence, a Skill Passport, an evidence-based Auto CV, career readiness, and simulated promotion. It avoids presenting the product as an LMS, certification provider, employer, or job-placement service.
+
+## Role inside the complete career game
+
+The landing page is the public explanation of the product loop:
+
+```text
+LEARN → WORK → COMPETE → PROVE → BUILD PROFILE → BUILD CV → PREPARE FOR NEXT ROLE
+```
+
+It introduces the complete product without presenting roadmap foundations as finished gameplay. Accounting Bootcamp, Account City, First Shift, Placement, Career Profile, Skill Passport and Auto CV have playable routes. Corporate Bridge, Month-End, advanced companies, standards and certification preparation retain their current Foundation, Locked, Review Required or Planned labels inside the product documentation.
+
+The strongest promise is evidence-based career progress. The page does not use XP, Coins, a self-selected persona or placement answers as proof of professional competence.
 
 ## Page architecture
 
@@ -133,6 +157,24 @@ The marketing navigation contains:
 
 No fake sign-in action is shown. Internal product navigation remains unchanged outside marketing mode.
 
+## CTA and route map
+
+| Landing action | Destination | Purpose |
+| --- | --- | --- |
+| Start Your Journey / ابدأ رحلتك الآن | `/{locale}/onboarding` | Start persona and entry-path selection |
+| See How It Works / شاهد كيف يعمل | `#how` | Move to the connected career journey |
+| Explore the company ladder | `/{locale}/career-league/companies` | Explain tier requirements and simulated companies |
+| Student path | `/{locale}/onboarding?persona=student` | Recommend Bootcamp or placement without granting skill |
+| Graduate path | `/{locale}/onboarding?persona=graduate` | Start practical placement |
+| Working Accountant path | `/{locale}/onboarding?persona=working-accountant` | Start Career Diagnostic |
+| Try the First Shift | `/{locale}/game/first-shift` | Open the real accounting work simulation |
+| Explore Career League | `/{locale}/leaderboard` | Open the clearly labeled local/demo league |
+| Open Skill Passport | `/{locale}/career-profile/skills` | Show explainable professional evidence |
+| See my Career Gap | `/{locale}/career-league/gap` | Compare evidence with the target role |
+| Preview Auto CV | `/{locale}/career-profile/cv` | Show the evidence-driven role-targeted CV |
+
+Every route retains the active locale.
+
 ## Visual system
 
 - White and soft-blue surfaces in Light Mode.
@@ -177,6 +219,17 @@ Results:
 - Locale remains present in every product destination.
 - The layout respects `prefers-reduced-motion`.
 
+## SEO and sharing metadata
+
+The root metadata presents the product as a career simulation rather than an Academy or course catalog:
+
+- Title: `Debit & Credit Career League | Build Your Accounting Career`
+- Description: realistic simulated company work, professional evidence and preparation for the next accounting role.
+- Open Graph title and description follow the same positioning.
+- `metadataBase` remains the existing production domain.
+
+The metadata avoids claims of employment, accreditation, live multiplayer or guaranteed career outcomes.
+
 ## Production assets
 
 - `public/marketing/career-league-game-hub.png`
@@ -208,14 +261,15 @@ Results:
 
 ## Verification
 
-`npm run check` passed:
+The latest full `npm run check` passed:
 
 - ESLint: passed with zero warnings.
 - TypeScript: passed.
-- Vitest: **271 tests passed across 32 test files**.
+- Vitest: **330 tests passed across 47 test files**.
 - Production build: passed.
 - Focused landing UI tests: **10 passed**.
-- Browser QA: passed across four desktop/mobile, Arabic/English, Light/Dark combinations.
+- Historical landing QA passed at 1920×1080, 1440×900, 430×932 and 390×844 across Arabic/English and Light/Dark combinations.
+- Latest delivery smoke check passed at 1440×900 and 390×844 with zero page-wide overflow.
 
 ## GitHub and preview
 
@@ -234,3 +288,11 @@ The landing page does not claim:
 - Professional certification from local gameplay.
 - Guaranteed salaries, promotions, interviews, or placement outcomes.
 - Verified evidence without an external verification source.
+
+The Career Readiness and Skill Passport numbers in the marketing composition are visibly sample interface content rather than an assessment of the current visitor. The competition artwork is identified as product concept artwork and does not imply a live player population.
+
+## Relationship to the project reports
+
+- The complete implementation boundary is recorded in [`COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md`](../COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md).
+- The level 0–8 curriculum is recorded in [`docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md`](COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).
+- Career League implementation history is recorded in [`CAREER-LEAGUE-IMPLEMENTATION-REPORT.md`](../CAREER-LEAGUE-IMPLEMENTATION-REPORT.md).

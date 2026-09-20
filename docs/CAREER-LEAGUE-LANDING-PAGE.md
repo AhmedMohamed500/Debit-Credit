@@ -1,5 +1,13 @@
 # Debit & Credit — Career League Landing Page
 
+## Landing Page V2 cinematic rebuild — 2026-09-20
+
+The current public Arabic/English landing page is the complete Career League V2 composition documented in [`LANDING-PAGE-V2.md`](LANDING-PAGE-V2.md). It combines a real HTML two-player hero, five linked career islands, local competition, evidence-based CV and skill worlds, explicitly illustrative player journeys, and a final professional city path. The navigation now contains only the six requested product anchors plus language, theme, demo access, and start actions.
+
+The implementation preserves all existing gameplay and evidence behavior. Month-End remains a locked preview, Finance Leadership remains a career target, competition remains local/demo, and the page makes no claim of live players, real employers, certification, job offers, or guaranteed outcomes.
+
+Final browser QA passed Arabic and English at 1920×1080, 1600×900, 1440×900, 1366×768, 430×932, and 390×844 with zero horizontal overflow, zero broken images, and zero console/page errors. `npm run check` passed: ESLint, TypeScript, 330 tests across 47 files, and the production build. The eight review captures are stored in `artifacts/landing-v2/`.
+
 ## Current delivery snapshot
 
 | Item | Value |

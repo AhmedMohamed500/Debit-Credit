@@ -1,5 +1,18 @@
 # Debit & Credit
 
+## Career League Landing Page V2 — 2026-09-20
+
+- Rebuilt the public landing as one continuous career-game experience based on the approved four visual references.
+- Added a two-player mission hero, five-stage career-island map, three product worlds, disclosed illustrative journeys, and a city-scale career CTA.
+- Linked actions to the existing localized Bootcamp, Mizan Trading, company ladder, Month-End preview, Promotion target, leaderboard, Auto CV, and Skill Passport routes.
+- Reduced navigation to the requested product anchors while preserving language, theme, demo access, and start actions.
+- Kept competition local/demo, journeys fictional, Month-End locked, Finance Leadership a target, and future skills visibly labeled by state.
+- Preserved the accounting engine, First Shift, persistence, rewards, evidence rules, and save compatibility.
+- Verified Arabic/English at 1920×1080, 1600×900, 1440×900, 1366×768, 430×932, and 390×844 with `0px` horizontal overflow and no broken images or browser errors.
+- Full `npm run check`: ESLint passed, TypeScript passed, 330 tests in 47 files passed, and the production build passed.
+- Detailed report: [`docs/LANDING-PAGE-V2.md`](docs/LANDING-PAGE-V2.md).
+- Review artifacts: `artifacts/landing-v2/`.
+
 ## Cinematic Career League landing page — 2026-09-20
 
 The public `/ar` and `/en` entry routes now open a cinematic two-player Career League landing page based on the approved visual direction. The page is built from responsive components and real HTML controls around a clean generated hero scene. It includes a premium marketing header, local-demo competition hero, truthful metrics, a five-stage game-world journey, competition/Auto CV/skills pillars, disclosed illustrative journey voices, and a final career-progression CTA. All implemented CTAs preserve locale and route to existing onboarding, company, leaderboard, CV, and Skill Passport experiences. No accounting engine, saved evidence, or internal game screen was changed.

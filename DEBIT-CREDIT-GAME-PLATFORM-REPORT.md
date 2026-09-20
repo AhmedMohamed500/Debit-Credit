@@ -8,6 +8,8 @@ Automated browser QA passed Arabic and English at 1920×1080 plus Arabic at 390�
 
 The full release quality gate passed: ESLint with zero warnings, TypeScript, 330 Vitest tests across 47 files, and the production build.
 
+The landing implementation was published in commit `16f40acf51d5a8077920a4d10e9f2f2438b06162` to open/clean [PR #4](https://github.com/AhmedMohamed500/Debit-Credit/pull/4). Vercel completed the exact-commit deployment successfully at <https://debit-credit-b93frf2l6-ahmed-mohameds-projects-c51bc2cc.vercel.app>; the existing project Deployment Protection remains enabled.
+
 ## Complete accounting career game foundation — 2026-09-19
 
 The current Career League review branch extends the playable beginner journey into a governed accounting-career architecture. It adds Bootcamp, three-persona placement, professional responsibility levels 0–8, connected Mizan work, local/offline multi-profile competition contracts, evidence-driven profile/CV automation, Corporate Bridge and Month-End foundations, progressive company tiers, and guarded standards/certification roadmaps. It remains frontend-only and makes no live multiplayer, employer, job-offer, accreditation or Verified-evidence claim. See [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md) and [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).

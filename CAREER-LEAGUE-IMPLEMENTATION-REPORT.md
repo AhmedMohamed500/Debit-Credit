@@ -8,6 +8,8 @@ Desktop Arabic/English at 1920×1080 and Arabic mobile at 390×844 passed automa
 
 The complete `npm run check` passed with zero ESLint warnings, clean TypeScript, 330 passing tests across 47 files, and a successful production build.
 
+Release: implementation commit `16f40acf51d5a8077920a4d10e9f2f2438b06162` is on open/clean [PR #4](https://github.com/AhmedMohamed500/Debit-Credit/pull/4). Vercel reported success for that exact commit at <https://debit-credit-b93frf2l6-ahmed-mohameds-projects-c51bc2cc.vercel.app>. The project's existing Deployment Protection redirects anonymous preview visits to Vercel login.
+
 ## Complete Career Game foundation — 2026-09-19
 
 The Career League branch now includes the 13 requested foundations in sequence: playable Accounting Bootcamp; persona placement and Working Accountant diagnostic; responsibility-based levels 0–8; Mizan progression and connected cases; local multi-profile/offline competition; professional Player Profile projection; evidence-driven ATS CV and revisions; Corporate Bridge and Month-End orchestration; five-tier company evolution; and guarded standards/certification roadmaps. The master curriculum covers 53 accounting and finance modules. Later-level engines are documented as foundations where a full visual case library does not yet exist. Remote competition, employers, Verified evidence, reviewed IFRS assessment and certification content remain unavailable. Full status, boundaries, tests and commits are in [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md) and [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).

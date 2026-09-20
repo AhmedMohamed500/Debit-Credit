@@ -10,7 +10,7 @@
 | Pull Request | [PR #4](https://github.com/AhmedMohamed500/Debit-Credit/pull/4) |
 | Arabic route | `/ar` |
 | English route | `/en` |
-| Status | Implemented and visually verified locally; deployment details are recorded after publication |
+| Status | Implemented, verified, committed, and published to the PR preview |
 
 ## Product direction
 
@@ -152,4 +152,14 @@ The full `npm run check` passed on 2026-09-20:
 - Vitest: **330 tests passed across 47 test files**.
 - Production build: passed.
 
-Git commit, GitHub push, PR status, and the exact Vercel deployment commit are added during release finalization.
+## Release record
+
+- Implementation commit: `16f40acf51d5a8077920a4d10e9f2f2438b06162`
+- GitHub branch: `codex/career-league`
+- Pull Request: [#4 — Career League](https://github.com/AhmedMohamed500/Debit-Credit/pull/4) — Open and clean
+- Vercel status: successful for the exact implementation commit
+- Exact deployment: <https://debit-credit-b93frf2l6-ahmed-mohameds-projects-c51bc2cc.vercel.app>
+- Arabic: <https://debit-credit-b93frf2l6-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar>
+- English: <https://debit-credit-b93frf2l6-ahmed-mohameds-projects-c51bc2cc.vercel.app/en>
+- Stable branch preview: <https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app>
+- Deployment Protection: enabled by the existing Vercel project setting; anonymous visits redirect to Vercel login.

@@ -1,5 +1,13 @@
 # Debit & Credit
 
+## Cinematic Career League landing page — 2026-09-20
+
+The public `/ar` and `/en` entry routes now open a cinematic two-player Career League landing page based on the approved visual direction. The page is built from responsive components and real HTML controls around a clean generated hero scene. It includes a premium marketing header, local-demo competition hero, truthful metrics, a five-stage game-world journey, competition/Auto CV/skills pillars, disclosed illustrative journey voices, and a final career-progression CTA. All implemented CTAs preserve locale and route to existing onboarding, company, leaderboard, CV, and Skill Passport experiences. No accounting engine, saved evidence, or internal game screen was changed.
+
+Automated browser QA passed Arabic and English at 1920×1080 plus Arabic at 390×844 with zero horizontal overflow, correct RTL/LTR direction, loaded hero imagery, and no browser errors. Review files are in `artifacts/landing/`; the complete specification and claim boundaries are in [`docs/LANDING-PAGE-REDESIGN.md`](docs/LANDING-PAGE-REDESIGN.md).
+
+The full release quality gate passed: ESLint with zero warnings, TypeScript, 330 Vitest tests across 47 files, and the production build.
+
 ## Complete accounting career game foundation — 2026-09-19
 
 The current Career League review branch extends the playable beginner journey into a governed accounting-career architecture. It adds Bootcamp, three-persona placement, professional responsibility levels 0–8, connected Mizan work, local/offline multi-profile competition contracts, evidence-driven profile/CV automation, Corporate Bridge and Month-End foundations, progressive company tiers, and guarded standards/certification roadmaps. It remains frontend-only and makes no live multiplayer, employer, job-offer, accreditation or Verified-evidence claim. See [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md) and [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).

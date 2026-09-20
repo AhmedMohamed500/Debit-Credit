@@ -1,5 +1,13 @@
 # Career League Implementation Report
 
+## Cinematic public landing redesign — 2026-09-20
+
+The public Arabic/English landing experience was rebuilt around the approved two-player Career League direction. A clean cinematic hero image now supports real HTML mission panels, a central VS moment, a five-step company path, truthful product metrics, a game-like career journey, three routed product pillars, clearly disclosed illustrative journey voices, and a final simulated career ladder. The current competition remains labeled as a local demo; the page makes no claim of live players, employer partners, job offers, or guaranteed outcomes. Internal gameplay and accounting behavior were not changed.
+
+Desktop Arabic/English at 1920×1080 and Arabic mobile at 390×844 passed automated browser checks with correct RTL/LTR direction, loaded imagery, zero console/page errors, and zero horizontal overflow. Screenshots are stored in `artifacts/landing/`. Full design, routes, claim boundaries, and QA are recorded in [docs/LANDING-PAGE-REDESIGN.md](docs/LANDING-PAGE-REDESIGN.md).
+
+The complete `npm run check` passed with zero ESLint warnings, clean TypeScript, 330 passing tests across 47 files, and a successful production build.
+
 ## Complete Career Game foundation — 2026-09-19
 
 The Career League branch now includes the 13 requested foundations in sequence: playable Accounting Bootcamp; persona placement and Working Accountant diagnostic; responsibility-based levels 0–8; Mizan progression and connected cases; local multi-profile/offline competition; professional Player Profile projection; evidence-driven ATS CV and revisions; Corporate Bridge and Month-End orchestration; five-tier company evolution; and guarded standards/certification roadmaps. The master curriculum covers 53 accounting and finance modules. Later-level engines are documented as foundations where a full visual case library does not yet exist. Remote competition, employers, Verified evidence, reviewed IFRS assessment and certification content remain unavailable. Full status, boundaries, tests and commits are in [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md) and [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).

@@ -5,7 +5,7 @@ import {
   ArrowLeft, ArrowRight, BadgeCheck, BarChart3, BookOpenCheck,
   BriefcaseBusiness, Building2, Check, FileCheck2, Gamepad2,
   GraduationCap, Landmark, LineChart, LockKeyhole, MapPin, Play,
-  Rocket, Route, ShieldCheck, Sparkles, Target, Trophy, UserRound,
+  Rocket, Route, ShieldCheck, Sparkles, Target, Trophy,
   Users, type LucideIcon,
 } from 'lucide-react';
 import type {Locale} from '@/types';
@@ -40,7 +40,7 @@ const copy={
     skills:{title:'اكتسب مهارات مطلوبة',text:'تعلّم من خلال تحديات عملية، واتبع خريطة مهارات مالية ومهنية واضحة.',cta:'استكشف المهارات',state:'قدرات وخريطة تطوير'},
     cvSignals:['إضافة المهارة','إضافة الدليل','تحديث السيرة'],
     skillStates:[['Excel','متاح'],['Financial Analysis','قيد التطوير'],['IFRS','خريطة مستقبلية'],['Power BI','خريطة مستقبلية'],['ERP','خريطة مستقبلية'],['Risk & Controls','قيد التطوير']],
-    storiesKicker:'نماذج توضيحية — ليست تقييمات منشورة',storiesTitle:'نماذج من تجربة اللاعبين',storiesText:'ثلاث رحلات افتراضية توضّح كيف تخدم التجربة احتياجات مهنية مختلفة.',
+    storiesKicker:'شخصيات توضيحية — ليست تقييمات منشورة',storiesTitle:'ماذا يقول اللاعبون؟',storiesText:'ثلاث شخصيات افتراضية توضّح كيف تخدم التجربة احتياجات مهنية مختلفة.',
     stories:[['طالب محاسبة','كنت بحفظ المدين والدائن. دلوقتي بقيت أفهم العملية الأول.'],['خريج جديد','كنت فاهم النظرية، لكن ماكنتش فاهم شغل المستندات والحالات.'],['محاسب بشركة صغيرة','اكتشفت المهارات اللي ناقصاني علشان أجهز نفسي لشركة أكبر.']],sample:'مثال توضيحي',
     finalKicker:'محاكاة مهنية حقيقية',finalTitle:['مستقبلك المهني','يبدأ الآن'],finalText:'ابدأ من مستواك الحالي. اشتغل على مهاراتك. وابنِ الطريق للدور اللي تستهدفه.',finalPrimary:'ابدأ رحلتك المهنية',finalSecondary:'اكتشف المسارات',
     roles:['محاسب','محاسب أول','رئيس حسابات','مدير مالي'],trust:['نسخة محلية تجريبية','عربي وإنجليزي','تقدم محفوظ على جهازك'],
@@ -71,7 +71,7 @@ const copy={
     skills:{title:'Build in-demand skills',text:'Learn through practical challenges and follow a clear financial and professional skill map.',cta:'Explore skills',state:'Capabilities and roadmap'},
     cvSignals:['Skill added','Evidence added','CV updated'],
     skillStates:[['Excel','Available'],['Financial Analysis','In development'],['IFRS','Roadmap'],['Power BI','Roadmap'],['ERP','Roadmap'],['Risk & Controls','In development']],
-    storiesKicker:'Illustrative examples — not published reviews',storiesTitle:'Example player journeys',storiesText:'Three fictional journeys show how the experience can support different professional needs.',
+    storiesKicker:'Illustrative characters — not published reviews',storiesTitle:'What do players say?',storiesText:'Three fictional characters show how the experience can support different professional needs.',
     stories:[['Accounting student','I used to memorize debit and credit. Now I start by understanding the transaction.'],['Fresh graduate','I knew the theory, but I did not understand document and case workflows.'],['Small-company accountant','I discovered the skills I need to prepare for a larger company.']],sample:'Illustrative example',
     finalKicker:'A real professional simulation',finalTitle:['Your professional future','starts now'],finalText:'Start at your current level. Work on your skills. Build the path toward the role you are targeting.',finalPrimary:'Start your career journey',finalSecondary:'Explore career paths',
     roles:['Accountant','Senior Accountant','Chief Accountant','Finance Manager'],trust:['Local demo preview','Arabic and English','Progress saved on this device'],
@@ -91,7 +91,7 @@ function CareerLeagueHero({locale}:LandingProps){
 }
 
 function PlayerMissionCard({side,player,mission}:{side:'a'|'b';player:{readonly name:string;readonly level:string;readonly xp:string;readonly tier:string;readonly tasks:readonly string[]};mission:string}){
-  return <aside className={`cl4-player cl4-player-${side}`}><header><i><UserRound/></i><span><b>{player.name}</b><small>{player.level} · {player.tier}</small></span><em>{player.xp}</em></header><div><strong>{mission}</strong>{player.tasks.map((task,index)=><span key={task}><i>{index<2?<Check/>:index+1}</i>{task}</span>)}</div></aside>;
+  return <aside className={`cl4-player cl4-player-${side}`}><header><i className="cl4-player-photo"><Image src="/landing/player-journeys-v2.png" alt="" fill sizes="48px" className={side==='a'?'portrait-0':'portrait-1'}/></i><span><b>{player.name}</b><small>{player.level} · {player.tier}</small></span><em>{player.xp}</em></header><div><strong>{mission}</strong>{player.tasks.map((task,index)=><span key={task}><i>{index<2?<Check/>:index+1}</i>{task}</span>)}</div></aside>;
 }
 
 function CareerJourneyWorld({locale}:LandingProps){
@@ -106,14 +106,16 @@ function CareerStageIsland({locale,stage,index}:{locale:Locale;stage:Stage;index
 
 function LandingFeatureWorlds({locale}:LandingProps){
   const ar=locale==='ar',t=copy[locale];
-  return <section className="cl4-features" id="competition" aria-labelledby="cl4-features-title"><header><span><Sparkles/>{t.featureKicker}</span><h2 id="cl4-features-title">{t.featureTitle}</h2><p>{t.featureText}</p></header><div className="cl4-feature-grid"><article className="cl4-feature competition"><FeatureArt src="/landing/competition-world-v2.webp" alt={ar?'لاعبان في تحدٍ محاسبي تجريبي':'Two learners in a demo accounting challenge'}/><span><Gamepad2/>{t.competition.state}</span><h3>{t.competition.title}</h3><p>{t.competition.text}</p><div className="cl4-rank-signal"><Trophy/><b>VS</b><LineChart/></div><Link href={localize(locale,'/leaderboard')}>{t.competition.cta}<Arrow ar={ar}/></Link></article><article className="cl4-feature cv"><FeatureArt src="/marketing/auto-cv.png" alt={ar?'معاينة السيرة الذاتية المبنية من دليل اللعب':'Preview of the evidence-based ATS CV'}/><span><FileCheck2/>{t.cv.state}</span><h3>{t.cv.title}</h3><p>{t.cv.text}</p><div className="cl4-cv-signals">{t.cvSignals.map(signal=><i key={signal}><Check/>{signal}</i>)}</div><Link href={localize(locale,'/career-profile/cv')}>{t.cv.cta}<Arrow ar={ar}/></Link></article><article className="cl4-feature skills" id="tools"><FeatureArt src="/landing/skills-world-v2.webp" alt={ar?'عالم مهارات مالية ومهنية ثلاثي الأبعاد':'Three-dimensional financial and professional skill world'}/><span><BarChart3/>{t.skills.state}</span><h3>{t.skills.title}</h3><p>{t.skills.text}</p><div className="cl4-skill-states">{t.skillStates.map(([skill,state])=><i key={skill}><b>{skill}</b><small>{state}</small></i>)}</div><Link href={localize(locale,'/career-profile/skills')}>{t.skills.cta}<Arrow ar={ar}/></Link></article></div></section>;
+  return <section className="cl4-features" id="competition" aria-labelledby="cl4-features-title"><header><span><Sparkles/>{t.featureKicker}</span><h2 id="cl4-features-title">{t.featureTitle}</h2><p>{t.featureText}</p></header><div className="cl4-feature-grid"><article className="cl4-feature competition"><FeatureArt src="/landing/competition-world-v2.webp" alt={ar?'لاعبان في تحدٍ محاسبي تجريبي':'Two learners in a demo accounting challenge'}/><span><Gamepad2/>{t.competition.state}</span><h3>{t.competition.title}</h3><p>{t.competition.text}</p><div className="cl4-rank-signal"><Trophy/><b>VS</b><LineChart/></div><Link href={localize(locale,'/leaderboard')}>{t.competition.cta}<Arrow ar={ar}/></Link><PeopleRow label={ar?'ملفات تجريبية محلية':'Local demo profiles'}/></article><article className="cl4-feature cv"><FeatureArt src="/marketing/auto-cv.png" alt={ar?'معاينة السيرة الذاتية المبنية من دليل اللعب':'Preview of the evidence-based ATS CV'}/><span><FileCheck2/>{t.cv.state}</span><h3>{t.cv.title}</h3><p>{t.cv.text}</p><div className="cl4-cv-signals">{t.cvSignals.map(signal=><i key={signal}><Check/>{signal}</i>)}</div><Link href={localize(locale,'/career-profile/cv')}>{t.cv.cta}<Arrow ar={ar}/></Link><div className="cl4-evidence-proof"><ShieldCheck/><span><b>{ar?'دليل مهني قابل للتفسير':'Explainable evidence'}</b><small>{ar?'بدون اختلاق خبرة':'No invented experience'}</small></span><BadgeCheck/></div></article><article className="cl4-feature skills" id="tools"><FeatureArt src="/landing/skills-world-v2.webp" alt={ar?'عالم مهارات مالية ومهنية ثلاثي الأبعاد':'Three-dimensional financial and professional skill world'}/><span><BarChart3/>{t.skills.state}</span><h3>{t.skills.title}</h3><p>{t.skills.text}</p><div className="cl4-skill-states">{t.skillStates.map(([skill,state])=><i key={skill}><b>{skill}</b><small>{state}</small></i>)}</div><Link href={localize(locale,'/career-profile/skills')}>{t.skills.cta}<Arrow ar={ar}/></Link><PeopleRow label={ar?'6 مجالات مهارية واضحة':'6 mapped skill areas'}/></article></div></section>;
 }
 
 function FeatureArt({src,alt}:{src:string;alt:string}){return <div className="cl4-feature-art"><Image src={src} alt={alt} fill sizes="(max-width: 760px) 92vw, (max-width: 1100px) 48vw, 31vw"/></div>}
 
+function PeopleRow({label}:{label:string}){return <div className="cl4-people-row"><span aria-hidden="true">{[0,1,2,1].map((portrait,index)=><i key={index}><Image src="/landing/player-journeys-v2.png" alt="" fill sizes="36px" className={`portrait-${portrait}`}/></i>)}</span><b>{label}</b></div>}
+
 function PlayerJourneyStories({locale}:LandingProps){
   const t=copy[locale];
-  return <section className="cl4-stories" aria-labelledby="cl4-stories-title"><header><span><Users/>{t.storiesKicker}</span><h2 id="cl4-stories-title">{t.storiesTitle}</h2><p>{t.storiesText}</p></header><div>{t.stories.map(([role,quote],index)=><article key={role}><i><UserRound/></i><span><small>{t.sample}</small><b>{role}</b></span><blockquote>“{quote}”</blockquote><em>{index===0?<GraduationCap/>:index===1?<BriefcaseBusiness/>:<LineChart/>}</em></article>)}</div></section>;
+  return <section className="cl4-stories" aria-labelledby="cl4-stories-title"><header><span><Users/>{t.storiesKicker}</span><h2 id="cl4-stories-title">{t.storiesTitle}</h2><p>{t.storiesText}</p></header><div>{t.stories.map(([role,quote],index)=><article key={role}><div className="cl4-story-photo"><Image src="/landing/player-journeys-v2.png" alt={role} fill sizes="76px" className={`portrait-${index}`}/></div><span><small>{t.sample}</small><b>{role}</b></span><blockquote>“{quote}”</blockquote><em>{index===0?<GraduationCap/>:index===1?<BriefcaseBusiness/>:<LineChart/>}</em></article>)}</div></section>;
 }
 
 function CareerFutureCta({locale}:LandingProps){

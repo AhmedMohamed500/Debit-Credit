@@ -12,6 +12,7 @@
 - Full `npm run check`: ESLint passed, TypeScript passed, 330 tests in 47 files passed, and the production build passed.
 - Detailed report: [`docs/LANDING-PAGE-V2.md`](docs/LANDING-PAGE-V2.md).
 - Review artifacts: `artifacts/landing-v2/`.
+- Reference correction: Hero characters are unobstructed; feature cards match the requested physical order and include icon/portrait proof strips; illustrative player stories now contain visible fictional portraits; the final CTA aligns the role labels with the glowing career steps.
 
 ## Cinematic Career League landing page — 2026-09-20
 

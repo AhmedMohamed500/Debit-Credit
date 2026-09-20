@@ -6,6 +6,8 @@ The Career League landing experience now follows the approved four-reference dir
 
 The page has dedicated desktop and mobile compositions, concise navigation, Arabic RTL/English LTR support, keyboard-visible focus, and reduced-motion handling. Browser QA passed twelve locale/viewport combinations from 1920×1080 to 390×844 with no overflow, broken images, or console/page errors. The complete `npm run check` passed with zero ESLint warnings, clean TypeScript, 330 tests across 47 files, and a successful production build. Full architecture, routes, claim boundaries, image-generation record, and screenshots are in [docs/LANDING-PAGE-V2.md](docs/LANDING-PAGE-V2.md).
 
+The visual correction pass moved Hero panels away from both faces, matched the reference feature-card order and icon density, added three visible fictional player portraits, and tightened the final career-step composition. Updated browser captures retain zero horizontal overflow and zero broken images across the full matrix.
+
 ## Cinematic public landing redesign — 2026-09-20
 
 The public Arabic/English landing experience was rebuilt around the approved two-player Career League direction. A clean cinematic hero image now supports real HTML mission panels, a central VS moment, a five-step company path, truthful product metrics, a game-like career journey, three routed product pillars, clearly disclosed illustrative journey voices, and a final simulated career ladder. The current competition remains labeled as a local demo; the page makes no claim of live players, employer partners, job offers, or guaranteed outcomes. Internal gameplay and accounting behavior were not changed.

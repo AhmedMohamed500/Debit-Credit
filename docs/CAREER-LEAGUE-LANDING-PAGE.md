@@ -8,6 +8,8 @@ The implementation preserves all existing gameplay and evidence behavior. Month-
 
 Final browser QA passed Arabic and English at 1920×1080, 1600×900, 1440×900, 1366×768, 430×932, and 390×844 with zero horizontal overflow, zero broken images, and zero console/page errors. `npm run check` passed: ESLint, TypeScript, 330 tests across 47 files, and the production build. The eight review captures are stored in `artifacts/landing-v2/`.
 
+The reference-alignment follow-up keeps both Hero people unobstructed, restores the requested left-to-right physical order of the three feature cards in Arabic, adds visible fictional portraits to the player-story cards, and aligns the final city composition with its glowing responsibility path. The feature cards now include portrait/evidence strips and clearer icon-based states without inventing live users, employer partners, or published reviews.
+
 ## Current delivery snapshot
 
 | Item | Value |

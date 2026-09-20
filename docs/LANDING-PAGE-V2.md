@@ -72,8 +72,8 @@ Automated browser QA covered Arabic and English at 1920×1080, 1600×900, 1440×
 | Career stages / feature worlds | 5 / 3 |
 | Broken images | 0 |
 | Browser console/page errors | 0 |
-| Desktop page height | 3,828–4,156px |
-| Mobile page height | 5,269–5,474px |
+| Desktop page height | 3,922–4,236px |
+| Mobile page height | 5,838–5,972px |
 
 ## Truth and claim boundaries
 
@@ -89,6 +89,7 @@ The page does not claim live online multiplayer, live learner counts, employer p
 | `public/marketing/auto-cv.png` | Existing evidence-based CV preview |
 | `public/landing/skills-world-v2.webp` | Financial skill world |
 | `public/landing/career-future-v2.webp` | Final city and responsibility path |
+| `public/landing/player-journeys-v2.png` | Consistent fictional player portraits for mission and journey cards |
 
 New bitmap assets are clean, text-free compositions. Product claims, labels, links, and states remain HTML so they are responsive, accessible, localizable, and testable.
 
@@ -132,3 +133,15 @@ The source images used text-free prompts so all user-facing language stays in HT
 - **Final CTA:** a wide sunset/night Cairo-inspired skyline, a professional with a briefcase, four blank glowing responsibility steps, and clear space for HTML copy; no words, brands, or logos.
 
 The optimized WebP files are committed in `public/landing/`.
+
+## Reference-alignment correction
+
+The follow-up pass corrected the four differences found during direct comparison with the supplied references:
+
+- Moved the Hero mission cards to the outer edges, reduced the central heading, and lightened the overlay so both people remain visible.
+- Forced the Arabic feature order to match the reference physically: competition on the left, Auto CV in the center, and skills on the right.
+- Added portrait rows, evidence/status icon strips, and more prominent skill tiles to the three feature worlds.
+- Rebuilt “What do players say?” with three visible fictional character portraits while retaining the disclosure that these are examples rather than published reviews.
+- Tightened the final skyline composition and placed the four responsibility roles over the glowing career steps.
+
+The portrait strip was generated in new-image mode as three consistent photorealistic Middle Eastern professional headshots with a text-free blue-white studio background. It is used only for fictional/sample characters and does not represent real testimonials.

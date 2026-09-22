@@ -1,0 +1,2 @@
+import{CandidateProfile}from'@/components/companies/candidate-profile';import{PlatformNav}from'@/components/platform/platform-nav';import type{Locale}from'@/types';
+export default async function Page({params}:{params:Promise<{locale:Locale;id:string}>}){const{locale,id}=await params;return <main className="platform-page employer-platform"><PlatformNav locale={locale}/><CandidateProfile locale={locale} id={id}/></main>}

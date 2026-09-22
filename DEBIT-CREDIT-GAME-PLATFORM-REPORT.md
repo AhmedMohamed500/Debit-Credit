@@ -1,5 +1,27 @@
 # Debit & Credit
 
+## Mizan Trading Interactive Game Hub — 2026-09-13
+
+The Game Hub was corrected to match the requested way of playing: a full professional company simulation centered on a realistic Mizan Trading campus and port. Suppliers, Customers, Bank, and Logistics are live HTML routes over the world artwork; Month End and Chapter 2 remain locked. The previous abstract zone-card composition is no longer rendered.
+
+The surrounding command center now shows the real First Shift work queue, saved 0–3 document progress, company impact, player game level, professional rank, Skill Passport dimensions, readiness explanation, and employer demo entry. Every number comes from existing player, case, company, or evidence state. No fake employer verification or Chapter 2 content was added.
+
+New asset: `public/platform/mizan-trading-world.png`. Updated captures: `artifacts/gamified-academy-platform/game-hub-light.png`, `game-hub-dark.png`, and `game-hub-mobile.png`. Validation: 236 tests across 28 files, ESLint, TypeScript, and production build passed.
+
+Published correction: commit `8311d967cff586b631db576a8e182deb3cd3378d`, PR #3, Vercel Preview https://debit-credit-h7gicg65j-ahmed-mohameds-projects-c51bc2cc.vercel.app.
+
+## Gamified Academy Platform — 2026-09-12
+
+The new review branch adds a bilingual public marketing layer, onboarding, Light/Dark/System themes, a responsive Mizan Trading Game Hub, Academy Phase 0–6 progression, challenges, deterministic local demo leagues, Career Hub role mapping, evidence-driven Auto CV behavior, and a clearly labeled employer comparison/evidence demo. It builds on Gameplay Phase B and leaves the accounting engine, Case Engine, 197-account Nature of Accounts source, saves, First Shift, and Chapter 2 lock intact.
+
+Routes: `/[locale]`, `/onboarding`, `/game`, `/game/first-shift`, `/academy`, `/challenges`, `/leaderboard`, `/career`, `/career-profile/skills`, `/career-profile/cv`, `/employers`, `/employers/talent`, and `/employers/candidate/[id]`.
+
+Integrity: XP remains game progression; competition remains a Demo/Local Preview; professional rank/readiness use Skill Passport coverage; Practiced and Demonstrated have separate CV treatment; generated bullets require structured evidence; local evidence remains non-Verified; Mizan Trading remains labeled Simulation.
+
+Browser QA covers Arabic/English, Light/Dark, refresh persistence, console errors, and 390–1920px layouts with no page-wide overflow. Fifteen captures are stored under `artifacts/gamified-academy-platform/`. Detailed documentation is in [docs/GAMIFIED-ACADEMY-PLATFORM.md](docs/GAMIFIED-ACADEMY-PLATFORM.md), [docs/ACADEMY-LEARNING-PATH.md](docs/ACADEMY-LEARNING-PATH.md), [docs/SKILLS-CAREER-CV-MAPPING.md](docs/SKILLS-CAREER-CV-MAPPING.md), and [GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md](GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md).
+
+Review: https://github.com/AhmedMohamed500/Debit-Credit/pull/3. Preview: https://debit-credit-git-codex-540b1c-ahmed-mohameds-projects-c51bc2cc.vercel.app. The implementation build was verified on Vercel at commit `1ba1cb1080e8019705d8bb7409e02f8577322fd5`; later metadata-only delivery commits are reported in the final PR status.
+
 > التقرير العربي الموحد لأعمال First Shift وطبيعة الحسابات والربط والـResponsive والنشر: [DEBIT-CREDIT-COMPLETE-WORK-REPORT.md](DEBIT-CREDIT-COMPLETE-WORK-REPORT.md)
 
 ## Nature of Accounts — 2026-09-09
@@ -655,3 +677,15 @@ Publication for Gameplay Phase B:
 - English: https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app/en
 - Vercel record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/FdrKruSqWCZvd91kng4xS7LZ6hr5
 - Deployment `6400969250` was ready for exact implementation commit `7d8a6593d5958e813ec64c9a1831cbf9185744f7`.
+
+## Game Hub Full-Screen and Routing Correction — September 13, 2026
+
+The Mizan Trading Game Hub now occupies the full desktop viewport directly below its single primary header. The centered page container, outer vertical margins, and non-flexible viewport sizing that produced unused bands were replaced with a dedicated `100dvh` game shell. Tablet and mobile return to natural page scrolling, with zero horizontal overflow verified at 430px and 390px.
+
+Accounting and company navigation now use one canonical map. Ledger has a dedicated `/[locale]/ledger` experience backed only by accepted journal entries; Journal and Trial Balance also read accepted accounting state, while Nature of Accounts remains the separate `/[locale]/account-guide` reference. Financial Statements disclose the available accepted-entry snapshot and keep the unimplemented Closing Week reporting package locked.
+
+Mizan Trading markers now open dedicated Suppliers, Customers, Bank, Logistics, and Month End zones. The first three expose only relevant existing First Shift work, Logistics is an honest locked zone, and Month End remains a locked Closing Week preview. No Chapter 2 gameplay was added.
+
+Validation completed with ESLint, TypeScript, 240 passing Vitest tests across 29 files, and a successful production build. Real browser QA covered five desktop viewports, 430×932 and 390×844 mobile, Arabic RTL, English LTR, Light Mode, Dark Mode, route clicks, breadcrumbs, one-header rendering, exact viewport fill, and zero horizontal overflow.
+
+Detailed correction record and screenshots: [`docs/GAME-HUB-LAYOUT-ROUTING-FIX.md`](docs/GAME-HUB-LAYOUT-ROUTING-FIX.md).

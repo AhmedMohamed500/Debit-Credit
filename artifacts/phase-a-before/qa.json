@@ -1,0 +1,155 @@
+{
+  "mode": "before",
+  "routes": {
+    "nature-ar-1906x890": {
+      "width": 1906,
+      "height": 890,
+      "overflow": 0,
+      "rings": {
+        "x": 885.59375,
+        "y": 281,
+        "width": 134.828125,
+        "height": 547
+      },
+      "listPage": {
+        "x": 203.953125,
+        "y": 281,
+        "width": 681.640625,
+        "height": 547
+      },
+      "detailPage": {
+        "x": 1020.421875,
+        "y": 281,
+        "width": 681.640625,
+        "height": 547
+      }
+    },
+    "first-day-intro-ar-1877x953": {
+      "width": 1877,
+      "height": 953,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "intro-ar-360": {
+      "width": 360,
+      "height": 844,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-360": {
+      "width": 360,
+      "height": 844,
+      "overflow": 0,
+      "rings": null,
+      "listPage": {
+        "x": 28,
+        "y": 527.359375,
+        "width": 304,
+        "height": 550
+      },
+      "detailPage": null
+    },
+    "intro-ar-390": {
+      "width": 390,
+      "height": 844,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-390": {
+      "width": 390,
+      "height": 844,
+      "overflow": 0,
+      "rings": null,
+      "listPage": {
+        "x": 28,
+        "y": 527.359375,
+        "width": 334,
+        "height": 550
+      },
+      "detailPage": null
+    },
+    "intro-ar-768": {
+      "width": 768,
+      "height": 900,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-768": {
+      "width": 768,
+      "height": 900,
+      "overflow": 0,
+      "rings": null,
+      "listPage": {
+        "x": 28,
+        "y": 506.359375,
+        "width": 712,
+        "height": 550
+      },
+      "detailPage": null
+    },
+    "intro-ar-1280": {
+      "width": 1280,
+      "height": 900,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-1280": {
+      "width": 1280,
+      "height": 900,
+      "overflow": 0,
+      "rings": {
+        "x": 592.421875,
+        "y": 281,
+        "width": 95.140625,
+        "height": 557
+      },
+      "listPage": {
+        "x": 111.359375,
+        "y": 281,
+        "width": 481.0625,
+        "height": 557
+      },
+      "detailPage": {
+        "x": 687.5625,
+        "y": 281,
+        "width": 481.078125,
+        "height": 557
+      }
+    },
+    "intro-ar-1440": {
+      "width": 1440,
+      "height": 900,
+      "overflow": 0,
+      "ctaVisible": true
+    },
+    "manual-en-1440": {
+      "width": 1440,
+      "height": 900,
+      "overflow": 0,
+      "rings": {
+        "x": 669.0625,
+        "y": 281,
+        "width": 101.859375,
+        "height": 557
+      },
+      "listPage": {
+        "x": 154.078125,
+        "y": 281,
+        "width": 514.984375,
+        "height": 557
+      },
+      "detailPage": {
+        "x": 770.921875,
+        "y": 281,
+        "width": 515,
+        "height": 557
+      }
+    },
+    "desk-ar-390": {
+      "width": 390,
+      "height": 844,
+      "overflow": 0
+    }
+  },
+  "errors": []
+}

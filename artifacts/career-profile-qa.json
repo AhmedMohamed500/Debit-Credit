@@ -1,0 +1,12 @@
+{
+  "dashboard": true,
+  "skillDrillDown": true,
+  "cv": true,
+  "printStyles": true,
+  "employerPreview": true,
+  "publicLinkPrivacy": true,
+  "rtl": true,
+  "mobileWidth": 390,
+  "horizontalOverflow": 0,
+  "pageErrors": []
+}

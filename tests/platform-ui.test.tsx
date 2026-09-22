@@ -3,9 +3,39 @@ import{MarketingLanding}from'@/components/platform/marketing-landing';import{Pla
 vi.mock('next/navigation',()=>({usePathname:()=>'/en'}));
 beforeEach(()=>{localStorage.clear();document.documentElement.dataset.theme=''});afterEach(cleanup);
 describe('platform UI',()=>{
- it('presents the complete cinematic Career League journey and its live product routes',()=>{render(<MarketingLanding locale="en"/>);expect(screen.getByRole('heading',{name:'Real competition. From anywhere.'})).toBeInTheDocument();expect(screen.getByRole('link',{name:'Start your journey'})).toHaveAttribute('href','/en/onboarding');expect(screen.getByRole('img',{name:/Two learners competing/})).toHaveAttribute('src',expect.stringContaining('career-league-hero-v2.png'));expect(screen.getByRole('heading',{name:'Your professional journey starts here'})).toBeInTheDocument();expect(screen.getByRole('link',{name:'Mizan Trading: Playable'})).toHaveAttribute('href','/en/game');expect(screen.getByRole('link',{name:'Month-End: Locked preview'})).toHaveClass('locked');expect(screen.getByRole('link',{name:'Finance Leadership: Career target'})).toHaveAttribute('href','/en/career-league/promotion');expect(screen.getByRole('link',{name:'Start competition'})).toHaveAttribute('href','/en/leaderboard');expect(screen.getByRole('link',{name:'View your CV'})).toHaveAttribute('href','/en/career-profile/cv');expect(screen.getByRole('link',{name:'Browse skills'})).toHaveAttribute('href','/en/career-profile/skills');expect(screen.getByAltText('Preview of the evidence-based ATS CV')).toBeInTheDocument();expect(screen.getByText('197')).toBeInTheDocument()});
- it('renders the Arabic landing hierarchy, career stages, and calls to action',()=>{render(<MarketingLanding locale="ar"/>);expect(screen.getByRole('heading',{name:'منافسة حقيقية من أي مكان!'})).toBeInTheDocument();expect(screen.getByRole('link',{name:'ابدأ رحلتك الآن'})).toHaveAttribute('href','/ar/onboarding');expect(screen.getByRole('heading',{name:'رحلتك المهنية تبدأ من هنا'})).toBeInTheDocument();expect(screen.getByRole('link',{name:'ميزان للتجارة: قابل للعب'})).toHaveAttribute('href','/ar/game');expect(screen.getByRole('link',{name:'الإقفال الشهري: معاينة مقفلة'})).toHaveClass('locked');expect(screen.getByRole('link',{name:'ابدأ المنافسة'})).toHaveAttribute('href','/ar/leaderboard');expect(screen.getByRole('link',{name:'شاهد سيرتك'})).toHaveAttribute('href','/ar/career-profile/cv');expect(screen.getByRole('link',{name:'تصفح المهارات'})).toHaveAttribute('href','/ar/career-profile/skills')});
- it('keeps competition and player stories honest about the local preview',()=>{const view=render(<MarketingLanding locale="en"/>);expect(screen.getAllByText('Local demo competition').length).toBeGreaterThan(0);expect(screen.getByText('Illustrative characters — not published reviews')).toBeInTheDocument();expect(screen.getAllByRole('img',{name:/Accounting Student|Fresh Graduate|Working Accountant/})).toHaveLength(3);expect(screen.queryByText(/students online/i)).not.toBeInTheDocument();expect(screen.queryByText(/job offer unlocked/i)).not.toBeInTheDocument();expect(screen.queryByText(/real employers/i)).not.toBeInTheDocument();expect(screen.queryByText(/Deloitte|KPMG|PwC|EY/)).not.toBeInTheDocument();view.rerender(<MarketingLanding locale="ar"/>);expect(screen.getAllByText('منافسة محلية تجريبية').length).toBeGreaterThan(0);expect(screen.getByText('شخصيات توضيحية — ليست تقييمات منشورة')).toBeInTheDocument();expect(screen.getByRole('heading',{name:'رحلة مختلفة. تقدّم حقيقي.'})).toBeInTheDocument();expect(screen.queryByText(/طلاب متصلون/)).not.toBeInTheDocument();expect(screen.queryByText(/عرض وظيفي/)).not.toBeInTheDocument()});
+ it('uses approved artwork and preserves the five career and three feature routes',()=>{
+   const {container}=render(<MarketingLanding locale="en"/>);
+   expect(screen.getByRole('heading',{name:'A local accounting competition that builds career skills'})).toBeInTheDocument();
+   expect(container.querySelector('.cl4-hero-image')).toHaveAttribute('src',expect.stringContaining('approved-hero-clean.png'));
+   expect(container.querySelector('.cl4-journey-art img')).toHaveAttribute('src',expect.stringContaining('approved-journey.png'));
+   expect(container.querySelector('.cl4-feature-art img')).toHaveAttribute('src',expect.stringContaining('approved-features.png'));
+   expect(container.querySelector('.cl4-final-image')).toHaveAttribute('src',expect.stringContaining('approved-final.png'));
+   const routes=[['Accounting Bootcamp','/en/bootcamp'],['Mizan Trading','/en/game'],['Bigger Companies','/en/career-league/companies'],['Month-End','/en/game/month-end'],['Finance Leadership','/en/career-league/promotion'],['Try the demo competition','/en/leaderboard'],['View your CV','/en/career-profile/cv'],['Browse skills','/en/career-profile/skills']];
+   routes.forEach(([name,href])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',href));
+ });
+ it('renders accessible Arabic headings and real calls to action',()=>{
+   render(<MarketingLanding locale="ar"/>);
+   expect(screen.getByRole('heading',{name:'منافسة محاسبية تجريبية تبني مهاراتك المهنية'})).toBeInTheDocument();
+   expect(screen.getAllByRole('link',{name:'ابدأ مجانًا'}).map(link=>link.getAttribute('href'))).toContain('/ar/onboarding');
+   expect(screen.getByRole('heading',{name:'خريطة رحلتك المهنية'})).toBeInTheDocument();
+   expect(screen.getByRole('link',{name:'ميزان للتجارة'})).toHaveAttribute('href','/ar/game');
+   expect(screen.getByRole('link',{name:'الإقفال الشهري'})).toHaveAttribute('href','/ar/game/month-end');
+   expect(screen.getByRole('link',{name:'ابدأ المنافسة التجريبية'})).toHaveAttribute('href','/ar/leaderboard');
+   expect(screen.getByRole('link',{name:'شاهد سيرتك الذاتية'})).toHaveAttribute('href','/ar/career-profile/cv');
+   expect(screen.getByRole('link',{name:'تصفح المهارات'})).toHaveAttribute('href','/ar/career-profile/skills');
+ });
+ it('labels personas as examples and exposes truthful skill status',()=>{
+   const view=render(<MarketingLanding locale="en"/>);
+   expect(screen.getByRole('heading',{name:'Example player journeys'})).toBeInTheDocument();
+   expect(screen.getByText(/not customer reviews or testimonials/)).toBeInTheDocument();
+   expect(screen.getByText('Excel — Available')).toBeInTheDocument();
+   expect(screen.getByText('Risk & Controls — In development')).toBeInTheDocument();
+   expect(screen.getByText('IFRS — Roadmap')).toBeInTheDocument();
+   expect(screen.queryByText(/Deloitte|KPMG|PwC|EY/)).not.toBeInTheDocument();
+   view.rerender(<MarketingLanding locale="ar"/>);
+   expect(screen.getByRole('heading',{name:'نماذج رحلات توضيحية'})).toBeInTheDocument();
+   expect(screen.getByText('Excel — متاح')).toBeInTheDocument();
+ });
  it('renders Arabic academy content and leaves Closing locked',()=>{render(<AcademyPlatform locale="ar"/>);expect(screen.getByRole('heading',{name:'اتعلّمها. تدرّب عليها. استخدمها في الشغل.'})).toBeInTheDocument();expect(screen.getByText(/الإقفال/).closest('article')).toHaveClass('locked')});
  it('exposes real challenge routes and labels the boss as locked',()=>{render(<ChallengesPlatform locale="en"/>);expect(screen.getAllByRole('link',{name:/Play challenge/})).toHaveLength(2);expect(screen.getByText('Month-End Crisis').closest('article')).toHaveClass('locked')});
  it('persists dark theme and applies it',async()=>{render(<ThemeProvider><ThemeToggle/></ThemeProvider>);fireEvent.click(screen.getByTitle('dark'));await waitFor(()=>expect(document.documentElement.dataset.theme).toBe('dark'));expect(localStorage.getItem(THEME_KEY)).toBe('dark')});

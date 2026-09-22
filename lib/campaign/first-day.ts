@@ -1,4 +1,5 @@
 import { w,type Account,type Attempt,type GameState,type Line,type Words } from './model';
+import { openAccountingCase,recordCaseEntrySubmission,startFirstShiftCasework } from '@/lib/cases/engine';
 
 export type FirstDayDocumentId='supplier-invoice'|'customer-receipt'|'office-expense';
 export type FirstDayDocument={id:FirstDayDocumentId;number:string;title:Words;party:Words;subtitle:Words;date:Words;amount:number;accent:'blue'|'green'|'orange';details:{label:Words;value:Words}[];expected:Line[]};
@@ -18,8 +19,8 @@ export const firstDayDocuments:FirstDayDocument[]=[
 export const emptyFirstDay=():FirstDayProgress=>({cinematicSeen:false,deskEntered:false,introVersion:0,opened:[],completed:[],selected:null,rewarded:false,completionSeen:false,mistakes:{},drafts:{},draftHints:{}});
 export function firstDayProgress(s:GameState):FirstDayProgress{const saved=(s.legacy[FIRST_DAY_KEY] as Partial<FirstDayProgress>|undefined)??{};return {...emptyFirstDay(),...saved,mistakes:{...saved.mistakes},drafts:{...saved.drafts},draftHints:{...saved.draftHints}};}
 export function completeFirstDayIntro(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),cinematicSeen:true,introVersion:FIRST_DAY_INTRO_VERSION});}
-export function enterFirstDayDesk(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),deskEntered:true});}
-export function selectFirstDayDocument(s:GameState,id:FirstDayDocumentId):GameState{const p=firstDayProgress(s);return saveProgress(s,{...p,selected:id,opened:[...new Set([...p.opened,id])]});}
+export function enterFirstDayDesk(s:GameState,now=Date.now()):GameState{return startFirstShiftCasework(saveProgress(s,{...firstDayProgress(s),deskEntered:true}),now);}
+export function selectFirstDayDocument(s:GameState,id:FirstDayDocumentId,now=Date.now()):GameState{const p=firstDayProgress(s);return openAccountingCase(saveProgress(s,{...p,selected:id,opened:[...new Set([...p.opened,id])]}),id,now);}
 export function closeFirstDayDocument(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),selected:null});}
 export function saveFirstDayDraft(s:GameState,id:FirstDayDocumentId,draft:string,hintUsed=false):GameState{const p=firstDayProgress(s);if(p.completed.includes(id))return s;return saveProgress(s,{...p,drafts:{...p.drafts,[id]:draft},draftHints:{...p.draftHints,[id]:p.draftHints[id]||hintUsed}});}
 export function markFirstDayCompletionSeen(s:GameState):GameState{return saveProgress(s,{...firstDayProgress(s),completionSeen:true});}
@@ -27,9 +28,9 @@ export function markFirstDayCompletionSeen(s:GameState):GameState{return savePro
 const normalize=(lines:Line[])=>lines.filter(line=>line.debit||line.credit).map(line=>`${line.account}:${line.debit}:${line.credit}`).sort().join('|');
 export function submitFirstDayDocument(s:GameState,id:FirstDayDocumentId,draft:string,now=Date.now(),hintsUsed=0){
  const doc=firstDayDocuments.find(item=>item.id===id);if(!doc)return {state:s,correct:false};let lines:Line[]=[];try{lines=JSON.parse(draft);}catch{}
- const correct=Array.isArray(lines)&&normalize(lines)===normalize(doc.expected),p=firstDayProgress(s);if(correct&&p.completed.includes(id))return {state:s,correct:true};const prior=s.evidence.filter(item=>item.activityId===`first-day/${id}`).length;
+ const correct=Array.isArray(lines)&&normalize(lines)===normalize(doc.expected),p=firstDayProgress(s);if(correct&&p.completed.includes(id))return {state:s,correct:true};const prior=s.evidence.filter(item=>item.activityId===`first-day/${id}`).length,balanced=Array.isArray(lines)&&lines.length>1&&lines.reduce((sum,line)=>sum+Number(line.debit||0),0)===lines.reduce((sum,line)=>sum+Number(line.credit||0),0)&&lines.reduce((sum,line)=>sum+Number(line.debit||0),0)>0,caseState=recordCaseEntrySubmission(s,id,correct,balanced,now);
  const evidence:Attempt={activityId:`first-day/${id}`,missionId:'first-day',chapterId:1,skillId:'journal',difficulty:1,accuracy:correct?100:0,attempts:prior+1,hintsUsed,completionTime:0,independentCompletion:correct&&prior===0&&hintsUsed===0,criticalErrors:correct?0:1,score:correct?Math.max(70,100-prior*10-hintsUsed*5):0,completedAt:new Date(now).toISOString(),mode:'practice',response:draft,correct};
- let next={...s,evidence:[...s.evidence,evidence]};
+ let next={...caseState,evidence:[...caseState.evidence,evidence]};
  if(!correct){const mistakes={...p.mistakes,[id]:(p.mistakes[id]??0)+1};return {state:saveProgress(next,{...p,mistakes,selected:id}),correct};}
  const alreadyComplete=p.completed.includes(id),completed=[...new Set([...p.completed,id])],missionComplete=completed.length===firstDayDocuments.length,documentReward=!alreadyComplete,missionReward=missionComplete&&!p.rewarded;
  if(!next.journal.some(item=>item.id===`first-day/${id}`))next={...next,journal:[...next.journal,{id:`first-day/${id}`,documentIds:[doc.number],lines:doc.expected}]};

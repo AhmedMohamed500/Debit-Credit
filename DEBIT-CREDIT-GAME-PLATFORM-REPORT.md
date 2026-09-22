@@ -617,3 +617,41 @@ Publication for the Career Profile foundation:
 - Vercel record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/F3dXHi7Qntavhg5rAAU3BvMhotrS
 
 The Preview is protected by the existing Vercel SSO setting, so anonymous page requests redirect to the Vercel login page. The GitHub/Vercel records verify successful publication; the complete interactive route matrix was verified against the same production build locally.
+
+## Gameplay Phase B — September 11, 2026
+
+First Shift now runs on a reusable Accounting Case and append-only gameplay-event foundation. Each Mizan Trading file combines business context, required evidence, a professional decision, protected posting, real company impact, and event-derived performance. The three existing accounting outcomes remain unchanged.
+
+- Added versioned case definitions/runtime, stable per-case attempts, append-only events, repository adapters, performance projection, and a tested delayed-consequence seam.
+- Added invoice/PO/GRN, receipt/bank/customer-invoice, and petty-cash/policy investigation flows.
+- Added Post, Hold, and context-specific information/contact decisions; posting is blocked until required evidence is reviewed.
+- Added tracked progressive Kareem guidance, workday time, professional results, explainable Skill Passport evidence, safe historical migration, and optional muted audio feedback.
+- Preserved the existing semantic accounting validator, ledger idempotency, reward idempotency, Arabic/English behavior, RTL/LTR, keyboard accessibility, save compatibility, and 390px support.
+- Added locked/non-routable Closing Week metadata and future month-end workflow types without implementing Chapter 2.
+- Final `npm run check` equivalent passed through the system npm CLI: ESLint zero warnings, TypeScript, 211 Vitest tests across 26 files, and the production build.
+- Browser QA passed at 1672×941, 1440×900, 1366×768, and 390×844 with zero horizontal overflow and zero page errors.
+
+Full architecture and QA details: [`docs/GAMEPLAY-PHASE-B.md`](docs/GAMEPLAY-PHASE-B.md).
+
+Arabic implementation report: [`GAMEPLAY-PHASE-B-REPORT-AR.md`](GAMEPLAY-PHASE-B-REPORT-AR.md).
+
+Phase B review captures:
+
+- `artifacts/gameplay-phase-b-desk-ar.png`
+- `artifacts/gameplay-phase-b-case-ar.png`
+- `artifacts/gameplay-phase-b-mobile-desk-ar.png`
+- `artifacts/gameplay-phase-b-mobile-case-ar.png`
+- `artifacts/gameplay-phase-b-posting-result-en.png`
+- `artifacts/gameplay-phase-b-shift-complete-en.png`
+
+Publication for Gameplay Phase B:
+
+- Branch: `codex/gameplay-phase-b`
+- Commits: `43bc76f`, `751ecc0`, `1f69465`, `7d8a659`
+- Pull Request #2: https://github.com/AhmedMohamed500/Debit-Credit/pull/2
+- Stable Vercel branch preview: https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Verified deployment: https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Arabic: https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app/ar
+- English: https://debit-credit-7nhcoyspi-ahmed-mohameds-projects-c51bc2cc.vercel.app/en
+- Vercel record: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/FdrKruSqWCZvd91kng4xS7LZ6hr5
+- Deployment `6400969250` was ready for exact implementation commit `7d8a6593d5958e813ec64c9a1831cbf9185744f7`.

@@ -1,0 +1,3 @@
+import{createCompanyProgressionState,migrateCompanyProgressionState}from'./engine';import type{CompanyProgressionState}from'./model';
+export const COMPANY_PROGRESSION_KEY='debit-credit-company-progression-v1';
+export class BrowserCompanyProgressionRepository{get(legacyCompleted:string[]=[]){if(typeof window==='undefined')return migrateCompanyProgressionState(null,legacyCompleted);try{return migrateCompanyProgressionState(JSON.parse(localStorage.getItem(COMPANY_PROGRESSION_KEY)??'null'),legacyCompleted)}catch{return createCompanyProgressionState()}}save(state:CompanyProgressionState){const next=migrateCompanyProgressionState(state);if(typeof window!=='undefined')localStorage.setItem(COMPANY_PROGRESSION_KEY,JSON.stringify(next));return next}}

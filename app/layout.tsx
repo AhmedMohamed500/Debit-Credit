@@ -6,20 +6,25 @@ import "./world.css";
 import "./office.css";
 import "./first-day.css";
 import "./platform.css";
+import "./landing-v2.css";
+import "./landing-v3.css";
+import "./landing-v4.css";
+import "./beginner-career-world.css";
+import "./bootcamp.css";
 import { ThemeProvider } from "@/components/platform/theme-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://debit-credit-nine.vercel.app"),
-  title: { default: "Debit & Credit | Play. Learn Accounting. Get Hired.", template: "%s | Debit & Credit" },
-  description: "A game-based accounting learning platform by Money Coder. Build measurable skills through lessons, practice, missions, cases, and professional simulations.",
+  title: { default: "Debit & Credit Career League | Build Your Accounting Career", template: "%s | Debit & Credit" },
+  description: "Work inside simulated companies, solve realistic accounting cases, build professional evidence, and prepare for your next accounting role.",
   applicationName: "Debit & Credit",
   manifest: "/manifest.webmanifest",
   icons: { icon: "/debit-credit-icon.svg", apple: "/debit-credit-icon.svg" },
   openGraph: {
     type: "website",
     siteName: "Debit & Credit",
-    title: "Debit & Credit | Play. Learn Accounting. Get Hired.",
-    description: "Learn accounting through one connected game journey and build measurable, career-ready skills.",
+    title: "Debit & Credit Career League | Build Your Accounting Career",
+    description: "Start small, prove your accounting skills through realistic company simulations, and move up.",
   },
 };
 

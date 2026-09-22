@@ -1,5 +1,45 @@
 # Debit & Credit
 
+## Career League Landing Page V2 — 2026-09-20
+
+- Rebuilt the public landing as one continuous career-game experience based on the approved four visual references.
+- Added a two-player mission hero, five-stage career-island map, three product worlds, disclosed illustrative journeys, and a city-scale career CTA.
+- Linked actions to the existing localized Bootcamp, Mizan Trading, company ladder, Month-End preview, Promotion target, leaderboard, Auto CV, and Skill Passport routes.
+- Reduced navigation to the requested product anchors while preserving language, theme, demo access, and start actions.
+- Kept competition local/demo, journeys fictional, Month-End locked, Finance Leadership a target, and future skills visibly labeled by state.
+- Preserved the accounting engine, First Shift, persistence, rewards, evidence rules, and save compatibility.
+- Verified Arabic/English at 1920×1080, 1600×900, 1440×900, 1366×768, 430×932, and 390×844 with `0px` horizontal overflow and no broken images or browser errors.
+- Full `npm run check`: ESLint passed, TypeScript passed, 330 tests in 47 files passed, and the production build passed.
+- Detailed report: [`docs/LANDING-PAGE-V2.md`](docs/LANDING-PAGE-V2.md).
+- Review artifacts: `artifacts/landing-v2/`.
+- Reference correction: Hero characters are unobstructed; feature cards match the requested physical order and include icon/portrait proof strips; illustrative player stories now contain visible fictional portraits; the final CTA aligns the role labels with the glowing career steps.
+
+## Cinematic Career League landing page — 2026-09-20
+
+The public `/ar` and `/en` entry routes now open a cinematic two-player Career League landing page based on the approved visual direction. The page is built from responsive components and real HTML controls around a clean generated hero scene. It includes a premium marketing header, local-demo competition hero, truthful metrics, a five-stage game-world journey, competition/Auto CV/skills pillars, disclosed illustrative journey voices, and a final career-progression CTA. All implemented CTAs preserve locale and route to existing onboarding, company, leaderboard, CV, and Skill Passport experiences. No accounting engine, saved evidence, or internal game screen was changed.
+
+Automated browser QA passed Arabic and English at 1920×1080 plus Arabic at 390×844 with zero horizontal overflow, correct RTL/LTR direction, loaded hero imagery, and no browser errors. Review files are in `artifacts/landing/`; the complete specification and claim boundaries are in [`docs/LANDING-PAGE-REDESIGN.md`](docs/LANDING-PAGE-REDESIGN.md).
+
+The full release quality gate passed: ESLint with zero warnings, TypeScript, 330 Vitest tests across 47 files, and the production build.
+
+The landing implementation was published in commit `16f40acf51d5a8077920a4d10e9f2f2438b06162` to open/clean [PR #4](https://github.com/AhmedMohamed500/Debit-Credit/pull/4). Vercel completed the exact-commit deployment successfully at <https://debit-credit-b93frf2l6-ahmed-mohameds-projects-c51bc2cc.vercel.app>; the existing project Deployment Protection remains enabled.
+
+## Complete accounting career game foundation — 2026-09-19
+
+The current Career League review branch extends the playable beginner journey into a governed accounting-career architecture. It adds Bootcamp, three-persona placement, professional responsibility levels 0–8, connected Mizan work, local/offline multi-profile competition contracts, evidence-driven profile/CV automation, Corporate Bridge and Month-End foundations, progressive company tiers, and guarded standards/certification roadmaps. It remains frontend-only and makes no live multiplayer, employer, job-offer, accreditation or Verified-evidence claim. See [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md) and [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).
+
+## Career League competition landing section — 2026-09-19
+
+The public landing page now includes the approved Career League competition artwork as a large, responsive centerpiece supported by bilingual HTML copy, a demo-state label, four product proof points, and a canonical localized leaderboard CTA. The artwork remains a marketing concept: the page explicitly avoids claims of live players, real online competition, employer offers, or real student counts. Arabic/English, Light/Dark, desktop, and 390px/430px QA passed with no console errors or horizontal overflow. `npm run check` passed with zero ESLint warnings, clean TypeScript, 271 tests in 32 files, and a successful production build. Full details are recorded in [docs/CAREER-LEAGUE-LANDING-PAGE.md](docs/CAREER-LEAGUE-LANDING-PAGE.md).
+
+## Account City — 2026-09-19
+
+The former open-book Nature of Accounts route was intentionally transformed into a playable full-screen Account City. Six districts connect the unchanged 197-account source to discovery, searchable account locations, an interactive behavior inspector, documents, transaction stories, local XP-only practice, and a beginner boss. First Shift now passes the selected account while retaining its case/draft state. The new city writes no professional Skill Passport evidence and does not change accepted accounting entries. Browser QA passed in Arabic and English, light and dark modes, and 390px/430px mobile with no page errors or horizontal overflow. `npm run check` passed with zero ESLint warnings, clean TypeScript, 270 tests in 32 files, and the production build. Review [docs/ACCOUNT-CITY.md](docs/ACCOUNT-CITY.md), [NATURE-OF-ACCOUNTS-REPORT.md](NATURE-OF-ACCOUNTS-REPORT.md), and `artifacts/account-city/`.
+
+## Beginner Career World — 2026-09-18
+
+Student/beginner players now enter a cinematic five-company career world on `/[locale]/game`; graduate and working-accountant players keep their existing home. The world combines an eight-stage roadmap, current Mizan mission, real company unlock conditions, Skill Passport evidence states, accounting tools, and a clearly labeled local Demo League. A new owner-capital investigation records only game practice and does not grant professional evidence. See [docs/BEGINNER-CAREER-WORLD.md](docs/BEGINNER-CAREER-WORLD.md) and the four review images under `artifacts/career-league/beginner-game-home-*.png`. Nature of Accounts content, the accounting engine, save formats, and Chapter 2 remain unchanged.
+
 ## Mizan Trading Interactive Game Hub — 2026-09-13
 
 The Game Hub was corrected to match the requested way of playing: a full professional company simulation centered on a realistic Mizan Trading campus and port. Suppliers, Customers, Bank, and Logistics are live HTML routes over the world artwork; Month End and Chapter 2 remain locked. The previous abstract zone-card composition is no longer rendered.
@@ -689,3 +729,41 @@ Mizan Trading markers now open dedicated Suppliers, Customers, Bank, Logistics, 
 Validation completed with ESLint, TypeScript, 240 passing Vitest tests across 29 files, and a successful production build. Real browser QA covered five desktop viewports, 430×932 and 390×844 mobile, Arabic RTL, English LTR, Light Mode, Dark Mode, route clicks, breadcrumbs, one-header rendering, exact viewport fill, and zero horizontal overflow.
 
 Detailed correction record and screenshots: [`docs/GAME-HUB-LAYOUT-ROUTING-FIX.md`](docs/GAME-HUB-LAYOUT-ROUTING-FIX.md).
+# Beginner Career World follow-up — 2026-09-18
+
+The student/beginner `/[locale]/game` now uses saved company unlocks for its five-destination map line and current/completed markers. Company previews name the missing mission and promotion review, and distinguish a met unlock from a playable company case that remains planned. The owner-capital receipt opens the introductory case; wrong choices lower its local practice accuracy without creating professional Skill Passport evidence. Escape dismisses open overlays. Arabic desktop and 390px/430px phone, English desktop, and light mode were captured with no page errors or horizontal overflow. `npm run check` passed: ESLint, TypeScript, 260 tests across 31 files, production build. Details and screenshots: [`docs/BEGINNER-CAREER-WORLD.md`](docs/BEGINNER-CAREER-WORLD.md).
+
+# Career League Phase — 2026-09-14
+
+## Landing experience update — 2026-09-15
+
+The public landing page now presents Career League as a professional accounting career game. It uses real screenshots from the Game Hub, First Shift, and Auto CV; explains the evidence pipeline; separates the three audience journeys; and drives each visitor into the matching onboarding route. The bilingual responsive implementation has no horizontal overflow at the verified desktop and mobile sizes.
+
+## IMPLEMENTED
+
+- Career League identity: **Start small. Prove your skills. Move up.**
+- Persona onboarding for Accounting Student, Fresh Graduate, and Working Accountant, including current environment and career goal.
+- Placement path, fictional Job Market, Train For This Job, Career Gap Report, five-tier Company Career Ladder, Promotion Assessment foundation, Corporate Bridge vertical slice, Career Reputation, and role-quality League scoring.
+- Game Hub now surfaces career target and next company while preserving the canonical Ledger, Bank, and reference-only Nature of Accounts routes.
+- Career target flows into Career Profile and Auto CV; gameplay evidence remains the only source of Skill Passport competence.
+- Centralized Free/Pro access metadata with no payment integration.
+
+## DEMO / LOCAL-ONLY
+
+- Career Simulation Job Market, fictional opportunities and companies.
+- League competitors, ranking, seasons, sample Supplier Crisis event, employer discovery surfaces, and placement result.
+- Placement never creates Verified evidence; local gameplay remains subject to the existing conservative evidence rules.
+
+## PLANNED
+
+- Full 90 Days in Corporate Accounting, connected multi-case Promotion Assessments, additional company cases and delayed consequence stories.
+- Cross-device competition, verified identity, employer accounts, live opportunities and payments require future backend infrastructure.
+
+## Quality and artifacts
+
+- Career League domain/UI tests, TypeScript and ESLint pass in focused verification.
+- Pull Request: https://github.com/AhmedMohamed500/Debit-Credit/pull/4
+- Vercel Preview: https://debit-credit-git-codex-f76031-ahmed-mohameds-projects-c51bc2cc.vercel.app
+- Browser QA covers English/Arabic, RTL/LTR, required desktop/mobile viewports, overflow, and console errors.
+- Screenshots: `artifacts/career-league/`.
+- Detailed documents: `docs/CAREER-LEAGUE-PRODUCT.md`, `docs/PLAYER-PERSONAS-AND-PROGRESSION.md`, `docs/CORPORATE-BRIDGE-TRACK.md`, `docs/CAREER-LEAGUE-CURRICULUM.md`, and `CAREER-LEAGUE-IMPLEMENTATION-REPORT.md`.

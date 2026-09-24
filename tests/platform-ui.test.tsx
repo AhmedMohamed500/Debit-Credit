@@ -3,38 +3,38 @@ import{MarketingLanding}from'@/components/platform/marketing-landing';import{Pla
 vi.mock('next/navigation',()=>({usePathname:()=>'/en'}));
 beforeEach(()=>{localStorage.clear();document.documentElement.dataset.theme=''});afterEach(cleanup);
 describe('platform UI',()=>{
- it('uses approved artwork and preserves the five career and three feature routes',()=>{
+ it('uses clean text-free artwork and preserves the five career and three feature routes',()=>{
    const {container}=render(<MarketingLanding locale="en"/>);
-   expect(screen.getByRole('heading',{name:'A local accounting competition that builds career skills'})).toBeInTheDocument();
-   expect(container.querySelector('.cl4-hero-image')).toHaveAttribute('src',expect.stringContaining('approved-hero-clean.png'));
-   expect(container.querySelector('.cl4-journey-art img')).toHaveAttribute('src',expect.stringContaining('approved-journey.png'));
-   expect(container.querySelector('.cl4-feature-art img')).toHaveAttribute('src',expect.stringContaining('approved-features.png'));
-   expect(container.querySelector('.cl4-final-image')).toHaveAttribute('src',expect.stringContaining('approved-final.png'));
-   const routes=[['Accounting Bootcamp','/en/bootcamp'],['Mizan Trading','/en/game'],['Bigger Companies','/en/career-league/companies'],['Month-End','/en/game/month-end'],['Finance Leadership','/en/career-league/promotion'],['Try the demo competition','/en/leaderboard'],['View your CV','/en/career-profile/cv'],['Browse skills','/en/career-profile/skills']];
-   routes.forEach(([name,href])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',href));
+   expect(screen.getByRole('heading',{name:'Learn accounting through work and build your career step by step'})).toBeInTheDocument();
+   expect(container.querySelector('.cl4-hero-visual img')).toHaveAttribute('src',expect.stringContaining('career-league-hero-v2.png'));
+   expect(container.querySelector('.cl4-journey-visual img')).toHaveAttribute('src',expect.stringContaining('career-journey-world-v2.webp'));
+   expect(container.querySelectorAll('.cl4-feature-image img')).toHaveLength(3);
+   expect(container.querySelector('.cl4-final-image img')).toHaveAttribute('src',expect.stringContaining('career-future-v2.webp'));
+   const stages=[['Accounting Bootcamp','/en/bootcamp'],['Mizan Trading','/en/game'],['Structured Company','/en/career-league/companies'],['Month-End Close','/en/game/month-end'],['Finance Leadership','/en/career-league/promotion']];
+   stages.forEach(([name,href])=>expect(screen.getByRole('heading',{name}).closest('a')).toHaveAttribute('href',href));
+   const features=[['Try competition','/en/leaderboard'],['View your CV','/en/career-profile/cv'],['Browse skills','/en/career-profile/skills']];
+   features.forEach(([name,href])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',href));
  });
  it('renders accessible Arabic headings and real calls to action',()=>{
    render(<MarketingLanding locale="ar"/>);
-   expect(screen.getByRole('heading',{name:'منافسة محاسبية تجريبية تبني مهاراتك المهنية'})).toBeInTheDocument();
+   expect(screen.getByRole('heading',{name:'تعلّم المحاسبة بالشغل، وابنِ مستقبلك خطوة بخطوة'})).toBeInTheDocument();
    expect(screen.getAllByRole('link',{name:'ابدأ مجانًا'}).map(link=>link.getAttribute('href'))).toContain('/ar/onboarding');
-   expect(screen.getByRole('heading',{name:'خريطة رحلتك المهنية'})).toBeInTheDocument();
-   expect(screen.getByRole('link',{name:'ميزان للتجارة'})).toHaveAttribute('href','/ar/game');
-   expect(screen.getByRole('link',{name:'الإقفال الشهري'})).toHaveAttribute('href','/ar/game/month-end');
-   expect(screen.getByRole('link',{name:'ابدأ المنافسة التجريبية'})).toHaveAttribute('href','/ar/leaderboard');
-   expect(screen.getByRole('link',{name:'شاهد سيرتك الذاتية'})).toHaveAttribute('href','/ar/career-profile/cv');
+   expect(screen.getByRole('heading',{name:'رحلتك المهنية في خمس مراحل'})).toBeInTheDocument();
+   expect(screen.getByRole('link',{name:/ميزان للتجارة/})).toHaveAttribute('href','/ar/game');
+   expect(screen.getByRole('link',{name:/الإقفال الشهري/})).toHaveAttribute('href','/ar/game/month-end');
+   expect(screen.getByRole('link',{name:'ابدأ المنافسة'})).toHaveAttribute('href','/ar/leaderboard');
+   expect(screen.getByRole('link',{name:'شاهد سيرتك'})).toHaveAttribute('href','/ar/career-profile/cv');
    expect(screen.getByRole('link',{name:'تصفح المهارات'})).toHaveAttribute('href','/ar/career-profile/skills');
  });
- it('labels personas as examples and exposes truthful skill status',()=>{
+ it('labels personas as examples and keeps skill claims truthful',()=>{
    const view=render(<MarketingLanding locale="en"/>);
-   expect(screen.getByRole('heading',{name:'Example player journeys'})).toBeInTheDocument();
-   expect(screen.getByText(/not customer reviews or testimonials/)).toBeInTheDocument();
-   expect(screen.getByText('Excel — Available')).toBeInTheDocument();
-   expect(screen.getByText('Risk & Controls — In development')).toBeInTheDocument();
-   expect(screen.getByText('IFRS — Roadmap')).toBeInTheDocument();
+   expect(screen.getByRole('heading',{name:'Start from where you really are'})).toBeInTheDocument();
+   expect(screen.getByText(/Illustrative examples, not reviews/)).toBeInTheDocument();
+   expect(screen.getByText(/See what you practised, demonstrated/)).toBeInTheDocument();
    expect(screen.queryByText(/Deloitte|KPMG|PwC|EY/)).not.toBeInTheDocument();
    view.rerender(<MarketingLanding locale="ar"/>);
-   expect(screen.getByRole('heading',{name:'نماذج رحلات توضيحية'})).toBeInTheDocument();
-   expect(screen.getByText('Excel — متاح')).toBeInTheDocument();
+   expect(screen.getByRole('heading',{name:'ابدأ من مكانك الحقيقي'})).toBeInTheDocument();
+   expect(screen.getByText(/نماذج توضيحية وليست تقييمات/)).toBeInTheDocument();
  });
  it('renders Arabic academy content and leaves Closing locked',()=>{render(<AcademyPlatform locale="ar"/>);expect(screen.getByRole('heading',{name:'اتعلّمها. تدرّب عليها. استخدمها في الشغل.'})).toBeInTheDocument();expect(screen.getByText(/الإقفال/).closest('article')).toHaveClass('locked')});
  it('exposes real challenge routes and labels the boss as locked',()=>{render(<ChallengesPlatform locale="en"/>);expect(screen.getAllByRole('link',{name:/Play challenge/})).toHaveLength(2);expect(screen.getByText('Month-End Crisis').closest('article')).toHaveClass('locked')});

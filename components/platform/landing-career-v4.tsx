@@ -1,130 +1,46 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import {ArrowLeft,ArrowRight,BadgeCheck,BookOpenCheck,Building2,LockKeyhole,ShieldCheck,Sparkles,Target,Trophy} from 'lucide-react';
 import type {Locale} from '@/types';
 
-type Props = {locale: Locale};
-
-const language = {
-  ar: {
-    hero: 'منافسة محاسبية تجريبية تبني مهاراتك المهنية',
-    heroDescription: 'تعلّم وطبّق وتنافس محليًا داخل محاكاة مهنية. المشهد الفني توضيحي، وليس عددًا فعليًا للاعبين أو شراكة مع جهات توظيف.',
-    start: 'ابدأ مجانًا', explore: 'اكتشف رحلتك المهنية',
-    journey: 'خريطة رحلتك المهنية',
-    journeyDescription: 'خمس مراحل من أساسيات المحاسبة إلى القيادة المالية داخل المحاكاة. المراحل المتقدمة قد تتطلب التقدم في اللعبة.',
-    stages: ['معسكر البداية', 'ميزان للتجارة', 'شركات أكبر', 'الإقفال الشهري', 'القيادة المالية'],
-    features: 'المنافسة والسيرة الذاتية والمهارات',
-    featuresDescription: 'منافسة تجريبية محلية، وسيرة ذاتية مرتبطة بإنجازاتك، وخريطة مهارات توضّح المتاح وما يزال قيد التطوير.',
-    featureLinks: ['ابدأ المنافسة التجريبية', 'شاهد سيرتك الذاتية', 'تصفح المهارات'],
-    statusTitle: 'حالة المهارات الحالية',
-    statuses: ['Excel — متاح', 'Financial Analysis — قيد التطوير', 'Risk & Controls — قيد التطوير', 'IFRS — ضمن الخطة', 'Power BI — ضمن الخطة', 'ERP — ضمن الخطة'],
-    stories: 'نماذج رحلات توضيحية', storiesIntro: 'شخصيات افتراضية لشرح مسارات استخدام مختلفة، وليست شهادات أو تقييمات عملاء.',
-    personas: [
-      ['طالب محاسبة', 'من فهم القيود إلى تطبيقها داخل مواقف عملية.'],
-      ['خريج جديد', 'من الدراسة النظرية إلى ممارسة خطوات العمل.'],
-      ['محاسب', 'من الخبرة الحالية إلى تحديد المهارات التالية.'],
-    ],
-    final: 'مستقبلك المهني يبدأ الآن',
-    finalDescription: 'ابدأ من مستواك الحالي وتدرّج عبر تجربة محاسبية محاكية للعمل.',
-    finalStart: 'ابدأ رحلتك المهنية', finalExplore: 'اكتشف المسارات',
-    artworkNote: 'الصور تصور توضيحي للمنتج؛ ليست إحصاءات استخدام أو شهادات فعلية.',
-  },
-  en: {
-    hero: 'A local accounting competition that builds career skills',
-    heroDescription: 'Learn, practise and compete in a local career simulation. The artwork is illustrative, not a live player count or employer partnership.',
-    start: 'Start for free', explore: 'Explore your career journey',
-    journey: 'Your career journey map',
-    journeyDescription: 'Five stages from accounting foundations to finance leadership within the simulation. Advanced stages may require progress.',
-    stages: ['Accounting Bootcamp', 'Mizan Trading', 'Bigger Companies', 'Month-End', 'Finance Leadership'],
-    features: 'Competition, CV and skills',
-    featuresDescription: 'A local demo competition, an achievement-linked CV, and a skill map showing what is available and what is still in development.',
-    featureLinks: ['Try the demo competition', 'View your CV', 'Browse skills'],
-    statusTitle: 'Current skill status',
-    statuses: ['Excel — Available', 'Financial Analysis — In development', 'Risk & Controls — In development', 'IFRS — Roadmap', 'Power BI — Roadmap', 'ERP — Roadmap'],
-    stories: 'Example player journeys', storiesIntro: 'Fictional personas illustrating different ways to use the experience. These are not customer reviews or testimonials.',
-    personas: [
-      ['Accounting student', 'Move from journal-entry concepts to practical scenarios.'],
-      ['New graduate', 'Turn classroom theory into a clearer workflow.'],
-      ['Working accountant', 'Find the next skill to develop from your current experience.'],
-    ],
-    final: 'Your career journey starts now',
-    finalDescription: 'Start at your level and progress through an accounting work simulation.',
-    finalStart: 'Start your career journey', finalExplore: 'Explore career paths',
-    artworkNote: 'Artwork is illustrative; embedded figures and stories are not real usage statistics or testimonials.',
-  },
+type Props={locale:Locale};
+const copy={
+ ar:{
+  kicker:'CAREER LEAGUE · محاكاة مهنية محلية',title:'تعلّم المحاسبة بالشغل، وابنِ مستقبلك خطوة بخطوة',description:'ابدأ من مستواك، نفّذ حالات محاسبية حقيقية داخل المحاكاة، وشاهد مهاراتك تتكوّن من قراراتك — لا من الحفظ.',start:'ابدأ مجانًا',explore:'شاهد الرحلة',disclaimer:'تجربة محاكاة تعليمية محلية. لا تمثل توظيفًا أو مستخدمين حقيقيين.',
+  facts:[['53','وحدة تعليمية'],['5','مستويات شركات'],['9','درجات مسؤولية']],
+  journeyKicker:'مسار واضح بدون زحمة',journey:'رحلتك المهنية في خمس مراحل',journeyDescription:'كل مرحلة لها هدف ومسؤولية واضحة. المتاح الآن ظاهر، والمراحل المستقبلية مكتوب عليها بوضوح أنها قيد التطوير.',
+  stages:[['معسكر البداية','افهم طبيعة الحسابات والقيود الأساسية.','متاح'],['ميزان للتجارة','طبّق على مستندات ومواقف عمل.','ابدأ هنا'],['شركة منظمة','مطابقة وتسويات ورقابة أوضح.','بالتقدم'],['الإقفال الشهري','تسويات ومراجعة نهاية الفترة.','قيد التطوير'],['القيادة المالية','قرارات أوسع وتأثير أكبر.','هدف مهني']],
+  featuresKicker:'ثلاث أدوات، وظيفة واحدة',features:'الممارسة تتحول إلى دليل مهني مفهوم',featuresDescription:'لا تحتاج لقراءة كلام صغير داخل صورة. كل ميزة هنا مكتوبة بوضوح، ويمكن فتحها مباشرة.',
+  featureCards:[['منافسة محاسبية','قارن جودة قراراتك في تحديات محلية تجريبية، بدون ادعاء لاعبين أونلاين.','ابدأ المنافسة'],['سيرة ذاتية مبنية على الأدلة','إنجازات المحاكاة تظهر منفصلة عن خبرتك الحقيقية وبصياغة قابلة للشرح.','شاهد سيرتك'],['خريطة مهارات واضحة','اعرف ما مارسته، وما أثبته، وما يزال يحتاج حالات إضافية.','تصفح المهارات']],
+  storiesKicker:'نماذج توضيحية وليست تقييمات',stories:'ابدأ من مكانك الحقيقي',storiesIntro:'ثلاث شخصيات افتراضية توضّح كيف يتغير المسار حسب خبرتك الحالية.',personas:[['طالبة محاسبة','من فهم القاعدة إلى استخدامها داخل حالة.'],['خريج جديد','من الدراسة النظرية إلى خطوات عمل واضحة.'],['محاسب يعمل','من الخبرة الحالية إلى مسؤولية أكبر.']],
+  finalKicker:'خطوتك التالية واضحة',final:'مستقبلك المهني يبدأ بقرار واحد جيد',finalDescription:'ابدأ بمهمة قصيرة، وابنِ ملفًا يوضح ما تستطيع فعله فعلًا داخل المحاكاة.',finalStart:'ابدأ رحلتك',finalExplore:'اكتشف الشركات',trust:['بدون بطاقة ائتمان','عربي وإنجليزي','التقدم محفوظ محليًا']
+ },
+ en:{
+  kicker:'CAREER LEAGUE · LOCAL CAREER SIMULATION',title:'Learn accounting through work and build your career step by step',description:'Start at your level, solve realistic accounting cases, and watch your skills grow from decisions—not memorisation.',start:'Start for free',explore:'See the journey',disclaimer:'A local learning simulation. It does not represent employment or live users.',
+  facts:[['53','learning modules'],['5','company tiers'],['9','responsibility levels']],
+  journeyKicker:'A clear path without clutter',journey:'Your career journey in five stages',journeyDescription:'Every stage has one clear goal and responsibility. Available work is visible now; future stages are labelled honestly.',
+  stages:[['Accounting Bootcamp','Understand account nature and core entries.','Available'],['Mizan Trading','Apply skills to documents and work situations.','Start here'],['Structured Company','Matching, reconciliations and stronger controls.','Unlock'],['Month-End Close','Period-end review and adjustments.','In development'],['Finance Leadership','Broader judgment and business impact.','Career goal']],
+  featuresKicker:'Three tools, one purpose',features:'Practice becomes understandable career evidence',featuresDescription:'No tiny text baked into an image. Every feature is readable and opens directly.',
+  featureCards:[['Accounting competition','Compare decision quality in local demo challenges without claiming live online players.','Try competition'],['Evidence-based CV','Simulation achievements remain separate from real experience and easy to explain.','View your CV'],['Clear skill map','See what you practised, demonstrated, and still need to develop.','Browse skills']],
+  storiesKicker:'Illustrative examples, not reviews',stories:'Start from where you really are',storiesIntro:'Three fictional personas show how the path adapts to current experience.',personas:[['Accounting student','Move from understanding a rule to using it in a case.'],['New graduate','Turn classroom theory into a clear workflow.'],['Working accountant','Move from current experience toward wider responsibility.']],
+  finalKicker:'Your next step is clear',final:'Your professional future starts with one good decision',finalDescription:'Begin with a short mission and build a profile that shows what you can actually do in the simulation.',finalStart:'Start your journey',finalExplore:'Explore companies',trust:['No credit card','Arabic and English','Progress saved locally']
+ }
 } as const;
 
-const stageRoutes = ['/bootcamp', '/game', '/career-league/companies', '/game/month-end', '/career-league/promotion'];
-const featureRoutes = ['/leaderboard', '/career-profile/cv', '/career-profile/skills'];
+const stageRoutes=['/bootcamp','/game','/career-league/companies','/game/month-end','/career-league/promotion'];
+const featureRoutes=['/leaderboard','/career-profile/cv','/career-profile/skills'];
+const featureImages=['/landing/competition-world-v2.webp','/landing/career-future-v2.webp','/landing/skills-world-v2.webp'];
+const href=(locale:Locale,route:string)=>`/${locale}${route}`;
+function Arrow({ar}:{ar:boolean}){return ar?<ArrowLeft/>:<ArrowRight/>}
 
-function href(locale: Locale, route: string) { return `/${locale}${route}`; }
+export function CareerLandingV4({locale}:Props){const t=copy[locale],ar=locale==='ar';return <div className="cl4" dir={ar?'rtl':'ltr'}>
+ <section className="cl4-hero" id="home" aria-labelledby="cl4-title"><div className="cl4-hero-layout"><div className="cl4-hero-copy"><span className="cl4-kicker"><Sparkles/>{t.kicker}</span><h1 id="cl4-title">{t.title}</h1><p>{t.description}</p><div className="cl4-actions"><Link className="cl4-primary" href={href(locale,'/onboarding')}>{t.start}<Arrow ar={ar}/></Link><Link className="cl4-secondary" href="#journey">{t.explore}<Target/></Link></div><small><ShieldCheck/>{t.disclaimer}</small></div><div className="cl4-hero-visual"><Image src="/landing/career-league-hero-v2.png" alt={ar?'شاب وفتاة يتقدمان عبر شركات محاسبية داخل محاكاة تعليمية':'Two learners progressing through accounting companies in a career simulation'} fill priority sizes="(max-width: 760px) 100vw, 760px"/><div className="cl4-visual-label"><Trophy/><span><b>CAREER LEAGUE</b>{ar?'تعلّم · طبّق · اثبت':'Learn · Apply · Prove'}</span></div></div></div><div className="cl4-facts">{t.facts.map(([value,label],index)=>{const Icon=[BookOpenCheck,Building2,BadgeCheck][index];return <span key={label}><Icon/><b>{value}</b><small>{label}</small></span>})}</div></section>
 
-export function CareerLandingV4({locale}: Props) {
-  return <div className="cl4" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-    <CareerLeagueHero locale={locale}/>
-    <CareerJourneyWorld locale={locale}/>
-    <LandingFeatureWorlds locale={locale}/>
-    <PlayerJourneyStories locale={locale}/>
-    <CareerFutureCta locale={locale}/>
-  </div>;
-}
+ <section className="cl4-journey" id="journey" aria-labelledby="cl4-journey-title"><header><span>{t.journeyKicker}</span><h2 id="cl4-journey-title">{t.journey}</h2><p>{t.journeyDescription}</p></header><div className="cl4-journey-visual" id="companies"><Image src="/landing/career-journey-world-v2.webp" alt="" fill sizes="(max-width: 1450px) 100vw, 1400px"/></div><div className="cl4-stage-grid">{t.stages.map(([title,description,status],index)=><Link href={href(locale,stageRoutes[index])} className={index===3?'future':index===4?'goal':''} key={title}><i>{index===3?<LockKeyhole/>:index===4?<Trophy/>:<span>{index+1}</span>}</i><small>{status}</small><h3>{title}</h3><p>{description}</p><Arrow ar={ar}/></Link>)}</div></section>
 
-function CareerLeagueHero({locale}: Props) {
-  const t = language[locale];
-  return <section className="cl4-hero" id="home" aria-labelledby="cl4-title">
-    <Image src="/landing/approved-hero-clean.png" alt="" fill priority unoptimized sizes="100vw" className="cl4-hero-image"/>
-    <h1 id="cl4-title" className="cl4-hero-title">{t.hero}</h1>
-    <p className="sr-only">{t.heroDescription}</p>
-    <Link className="cl4-hero-hotspot cl4-hero-start" href={href(locale, '/onboarding')} aria-label={t.start}><span className="sr-only">{t.start}</span></Link>
-    <Link className="cl4-hero-hotspot cl4-hero-explore" href="#journey" aria-label={t.explore}><span className="sr-only">{t.explore}</span></Link>
-    {locale === 'en' && <div className="cl4-english-caption"><strong>{t.hero}</strong><span>{t.heroDescription}</span></div>}
-    <p className="cl4-art-disclaimer">{t.artworkNote}</p>
-  </section>;
-}
+ <section className="cl4-features" id="competition" aria-labelledby="cl4-features-title"><header><span>{t.featuresKicker}</span><h2 id="cl4-features-title">{t.features}</h2><p>{t.featuresDescription}</p></header><div className="cl4-feature-grid">{t.featureCards.map(([title,description,cta],index)=><article key={title} id={index===2?'tools':undefined}><div className="cl4-feature-image"><Image src={featureImages[index]} alt="" fill sizes="(max-width: 760px) 92vw, 420px"/></div><div><span>0{index+1}</span><h3>{title}</h3><p>{description}</p><Link href={href(locale,featureRoutes[index])}>{cta}<Arrow ar={ar}/></Link></div></article>)}</div></section>
 
-function CareerJourneyWorld({locale}: Props) {
-  const t = language[locale];
-  return <section className="cl4-journey" id="journey" aria-labelledby="cl4-journey-title">
-    <h2 id="cl4-journey-title" className="sr-only">{t.journey}</h2>
-    <p className="sr-only">{t.journeyDescription}</p>
-    <div className="cl4-journey-art" id="companies">
-      <Image src="/landing/approved-journey.png" alt="" fill unoptimized sizes="100vw" className="cl4-art-image"/>
-      <div className="cl4-stage-hotspots">
-        {stageRoutes.map((route, index) => <Link key={route} className={`cl4-stage-hotspot cl4-stage-${index + 1}`} href={href(locale, route)} aria-label={t.stages[index]}><span className="sr-only">{t.stages[index]}</span></Link>)}
-      </div>
-    </div>
-    {locale === 'en' && <div className="cl4-section-caption"><strong>{t.journey}</strong><span>{t.journeyDescription}</span></div>}
-  </section>;
-}
+ <section className="cl4-stories" aria-labelledby="cl4-stories-title"><header><span>{t.storiesKicker}</span><h2 id="cl4-stories-title">{t.stories}</h2><p>{t.storiesIntro}</p></header><div className="cl4-personas">{t.personas.map(([role,description],index)=><article key={role}><div className={`cl4-persona-photo person-${index+1}`}><Image src="/landing/player-journeys-v2.png" alt="" fill sizes="96px"/></div><div><h3>{role}</h3><p>{description}</p></div></article>)}</div></section>
 
-function LandingFeatureWorlds({locale}: Props) {
-  const t = language[locale];
-  return <section className="cl4-features" id="competition" aria-labelledby="cl4-features-title">
-    <h2 id="cl4-features-title" className="sr-only">{t.features}</h2>
-    <p className="sr-only">{t.featuresDescription}</p>
-    <div className="cl4-feature-art">
-      <Image src="/landing/approved-features.png" alt="" fill unoptimized sizes="100vw" className="cl4-art-image"/>
-      {featureRoutes.map((route, index) => <Link key={route} className={`cl4-feature-hotspot cl4-feature-${index + 1}`} href={href(locale, route)} aria-label={t.featureLinks[index]}><span className="sr-only">{t.featureLinks[index]}</span></Link>)}
-    </div>
-    {locale === 'en' && <div className="cl4-section-caption"><strong>{t.features}</strong><span>{t.featuresDescription}</span></div>}
-    <div className="cl4-skill-status" id="tools" aria-label={t.statusTitle}>
-      <strong>{t.statusTitle}</strong>
-      <ul>{t.statuses.map((status) => <li key={status}>{status}</li>)}</ul>
-    </div>
-  </section>;
-}
-
-function PlayerJourneyStories({locale}: Props) {
-  const t = language[locale];
-  return <section className="cl4-stories" aria-labelledby="cl4-stories-title">
-    <div className="cl4-stories-heading"><span>{locale === 'ar' ? 'نماذج توضيحية' : 'ILLUSTRATIVE EXAMPLES'}</span><h2 id="cl4-stories-title">{t.stories}</h2><p>{t.storiesIntro}</p></div>
-    <div className="cl4-personas">{t.personas.map(([role, description], index) => <article key={role}><span className="cl4-persona-number">0{index + 1}</span><div><h3>{role}</h3><p>{description}</p></div></article>)}</div>
-  </section>;
-}
-
-function CareerFutureCta({locale}: Props) {
-  const t = language[locale];
-  return <section className="cl4-final" id="about" aria-labelledby="cl4-final-title">
-    <Image src="/landing/approved-final.png" alt="" fill unoptimized sizes="100vw" className="cl4-final-image"/>
-    <div className="cl4-final-copy"><h2 id="cl4-final-title">{t.final}</h2><p>{t.finalDescription}</p><div className="cl4-final-actions"><Link href={href(locale, '/onboarding')}>{t.finalStart}</Link><Link href={href(locale, '/career-league/companies')}>{t.finalExplore}</Link></div></div>
-  </section>;
-}
+ <section className="cl4-final" id="about" aria-labelledby="cl4-final-title"><div className="cl4-final-layout"><div className="cl4-final-image"><Image src="/landing/career-future-v2.webp" alt="" fill sizes="(max-width: 760px) 100vw, 720px"/></div><div className="cl4-final-copy"><span>{t.finalKicker}</span><h2 id="cl4-final-title">{t.final}</h2><p>{t.finalDescription}</p><div className="cl4-final-actions"><Link href={href(locale,'/onboarding')}>{t.finalStart}<Arrow ar={ar}/></Link><Link href={href(locale,'/career-league/companies')}>{t.finalExplore}<Building2/></Link></div><div className="cl4-trust">{t.trust.map(item=><span key={item}><ShieldCheck/>{item}</span>)}</div></div></div></section>
+ </div>}

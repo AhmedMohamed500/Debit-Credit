@@ -13,6 +13,21 @@ describe('platform UI',()=>{
    const routes=[['Accounting Bootcamp','/en/bootcamp'],['Mizan Trading','/en/game'],['Bigger Companies','/en/career-league/companies'],['Month-End','/en/game/month-end'],['Finance Leadership','/en/career-league/promotion'],['Try the demo competition','/en/leaderboard'],['View your CV','/en/career-profile/cv'],['Browse skills','/en/career-profile/skills']];
    routes.forEach(([name,href])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',href));
  });
+ it('adds the connected how-it-works and audience sections in both directions',()=>{
+   const view=render(<MarketingLanding locale="en"/>);
+   expect(view.container.querySelector('.cl4')).toHaveAttribute('dir','ltr');
+   expect(screen.getByRole('heading',{name:'From Your First Step to Your Professional Future'})).toBeInTheDocument();
+   ['Choose your starting point','Enter the right company','Solve cases and tasks','Build your profile and ATS CV'].forEach(name=>expect(screen.getByRole('heading',{name})).toBeInTheDocument());
+   expect(screen.getByRole('heading',{name:'Built for every stage of your career journey'})).toBeInTheDocument();
+   ['Start as a student','Start as a graduate','Develop your path'].forEach(name=>expect(screen.getByRole('link',{name})).toHaveAttribute('href','/en/onboarding'));
+   expect(screen.queryByText(/guaranteed job|guaranteed hiring|career ready 100%/i)).not.toBeInTheDocument();
+   view.rerender(<MarketingLanding locale="ar"/>);
+   expect(view.container.querySelector('.cl4')).toHaveAttribute('dir','rtl');
+   expect(screen.getByRole('heading',{name:'من أول خطوة إلى مستقبلك المهني'})).toBeInTheDocument();
+   ['اختر نقطة بدايتك','ادخل شركة مناسبة','حل حالات ومهام','ابنِ ملفك المهني وATS CV'].forEach(name=>expect(screen.getByRole('heading',{name})).toBeInTheDocument());
+   expect(screen.getByRole('heading',{name:'مناسبة في كل مرحلة من رحلتك المهنية'})).toBeInTheDocument();
+   ['ابدأ كطالب','ابدأ كخريج','طوّر مسارك'].forEach(name=>expect(screen.getByRole('link',{name})).toHaveAttribute('href','/ar/onboarding'));
+ });
  it('renders accessible Arabic headings and real calls to action',()=>{
    render(<MarketingLanding locale="ar"/>);
    expect(screen.getByRole('heading',{name:'منافسة محاسبية تجريبية تبني مهاراتك المهنية'})).toBeInTheDocument();

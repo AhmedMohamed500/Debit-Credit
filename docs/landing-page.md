@@ -39,7 +39,6 @@ The locale prefix (`/ar` or `/en`) is added automatically.
 ## Readability and responsive behavior
 
 - The desktop hero uses a bounded 1440px grid, generous line height, and live type that remains sharp at every device scale.
-- The landing header is a compact 60px (54px on phones) and stays in normal document flow, so it never overlays the hero artwork while scrolling.
 - At 800px the hero, feature cards, and final CTA stack. At 560px actions become full-width and the journey becomes a single readable column.
 - Arabic uses the inherited RTL direction and English uses LTR. Buttons and arrows adapt to the locale.
 - Decorative artwork has empty alternative text; meaningful hero artwork has localized alternative text.

@@ -10,3 +10,8 @@ coverage
 .DS_Store
 
 .vercel
+
+# Local before/after comparison captures; publish only the selected final review images.
+/artifacts/landing-polish/before/
+/artifacts/landing-polish/after/
+/artifacts/landing-polish/after-dark/

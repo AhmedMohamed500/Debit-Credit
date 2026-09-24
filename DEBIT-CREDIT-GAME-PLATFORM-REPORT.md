@@ -1,5 +1,12 @@
 # Debit & Credit
 
+## Current Career League Landing Page V4 polish — 2026-09-24
+
+- Kept the five current landing sections, four approved artwork assets, bilingual routes, local-demo competition, skill statuses, and disclosed illustrative personas.
+- Unified marketing-nav heights at 72px desktop and 62px mobile; fixed sticky containment, mobile-menu placement, and the `#journey`, `#companies`, `#competition`, and `#tools` scroll offsets.
+- Removed the extra hero raster scale, kept original Next/Image rendering, reduced redundant hover glow, enlarged live copy, and regularized section spacing without changing the artwork itself.
+- Added a readable localized heading for the narrow hero crop. See [docs/landing-page.md](docs/landing-page.md) and `artifacts/landing-polish/` for the current implementation and before/after QA.
+
 ## Career League Landing Page V2 — 2026-09-20
 
 - Rebuilt the public landing as one continuous career-game experience based on the approved four visual references.

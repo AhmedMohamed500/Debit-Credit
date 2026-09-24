@@ -1,5 +1,7 @@
 # Landing Page V2 — Career League
 
+> هذا الملف يحفظ توثيق تنفيذ V2 التاريخي. واجهة النشر الحالية هي V4 المبنية على الصور الأربع المعتمدة؛ راجع [دليل Landing Page الحالي](landing-page.md) وتقرير [Career League Landing Page](CAREER-LEAGUE-LANDING-PAGE.md) لأي تعديل أو فحص جديد. لا تُستخدم أصول V2 القديمة في القسم الحالي.
+
 **Project:** Debit & Credit — by Money Coder  
 **Branch:** `codex/career-league`  
 **Pull Request:** [#4](https://github.com/AhmedMohamed500/Debit-Credit/pull/4)  

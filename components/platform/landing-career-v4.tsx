@@ -72,7 +72,7 @@ function CareerLeagueHero({locale}: Props) {
   const t = language[locale];
   return <section className="cl4-hero" id="home" aria-labelledby="cl4-title">
     <Image src="/landing/approved-hero-clean.png" alt="" fill priority unoptimized sizes="100vw" className="cl4-hero-image"/>
-    <h1 id="cl4-title" className="sr-only">{t.hero}</h1>
+    <h1 id="cl4-title" className="cl4-hero-title">{t.hero}</h1>
     <p className="sr-only">{t.heroDescription}</p>
     <Link className="cl4-hero-hotspot cl4-hero-start" href={href(locale, '/onboarding')} aria-label={t.start}><span className="sr-only">{t.start}</span></Link>
     <Link className="cl4-hero-hotspot cl4-hero-explore" href="#journey" aria-label={t.explore}><span className="sr-only">{t.explore}</span></Link>
@@ -86,10 +86,10 @@ function CareerJourneyWorld({locale}: Props) {
   return <section className="cl4-journey" id="journey" aria-labelledby="cl4-journey-title">
     <h2 id="cl4-journey-title" className="sr-only">{t.journey}</h2>
     <p className="sr-only">{t.journeyDescription}</p>
-    <div className="cl4-journey-art">
+    <div className="cl4-journey-art" id="companies">
       <Image src="/landing/approved-journey.png" alt="" fill unoptimized sizes="100vw" className="cl4-art-image"/>
       <div className="cl4-stage-hotspots">
-        {stageRoutes.map((route, index) => <Link key={route} id={index === 2 ? 'companies' : undefined} className={`cl4-stage-hotspot cl4-stage-${index + 1}`} href={href(locale, route)} aria-label={t.stages[index]}><span className="sr-only">{t.stages[index]}</span></Link>)}
+        {stageRoutes.map((route, index) => <Link key={route} className={`cl4-stage-hotspot cl4-stage-${index + 1}`} href={href(locale, route)} aria-label={t.stages[index]}><span className="sr-only">{t.stages[index]}</span></Link>)}
       </div>
     </div>
     {locale === 'en' && <div className="cl4-section-caption"><strong>{t.journey}</strong><span>{t.journeyDescription}</span></div>}

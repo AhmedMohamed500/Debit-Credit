@@ -1,5 +1,13 @@
 # Debit & Credit — Career League Landing Page
 
+## Landing Page V4 visual polish — 2026-09-24
+
+This is a polish of the current artwork-led landing, not a return to the V2 composition documented below. The five existing sections, approved four-image artwork, localized routes, and truthful product status remain unchanged. The marketing header now has one 72px desktop / 62px mobile height token, a quieter translucent surface, and a mobile menu positioned immediately below it. Replacing scroll-container-forming `overflow:hidden` with `overflow:clip` restores sticky behavior; shared `scroll-margin-top` keeps the journey, companies, competition, and tools targets below the header.
+
+The source artwork is 1672×941px. Next/Image continues to serve the approved files without recompression, with priority only for the hero. An extra hero scale transform was removed, hover glow was reduced, live explanatory copy was enlarged, and spacing now uses a shared section token. On narrow screens the clipped baked-in hero heading is covered by a readable localized heading; the five-island scroll panorama, three feature crops, compact fictional personas, and cinematic final scene remain intact. No gameplay or evidence logic changed.
+
+Before/after captures, image dimensions, anchor positions, menu behavior, and browser diagnostics are recorded in `artifacts/landing-polish/`. The full quality gate is ESLint, TypeScript, Vitest (330 tests), and a Next.js production build. At 1920px the 1672px source is enlarged about 15% to retain the approved full-bleed composition; a higher-resolution source would be needed for native-scale 1920px rendering.
+
 ## Landing Page V2 cinematic rebuild — 2026-09-20
 
 The current public Arabic/English landing page is the complete Career League V2 composition documented in [`LANDING-PAGE-V2.md`](LANDING-PAGE-V2.md). It combines a real HTML two-player hero, five linked career islands, local competition, evidence-based CV and skill worlds, explicitly illustrative player journeys, and a final professional city path. The navigation now contains only the six requested product anchors plus language, theme, demo access, and start actions.

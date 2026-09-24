@@ -1,5 +1,9 @@
 # Career League Implementation Report
 
+## Current Landing Page V4 polish — 2026-09-24
+
+The current five-section, approved-artwork landing was polished without adding sections, changing routes, or touching Career League, Account City, First Shift, Skill Passport, or ATS CV logic. The marketing header now uses a single desktop/mobile height token; a clipped, non-scrolling page container restores sticky navigation; and all four internal anchors stop below the header. The mobile menu opens immediately under the header. Removing the hero scale transform and retaining unoptimized original images avoids extra resampling, while restrained hover glow, larger live copy, consistent section spacing, and a readable mobile hero heading reduce fatigue. See [docs/landing-page.md](docs/landing-page.md) for implementation details and `artifacts/landing-polish/` for before/after screenshots and browser metrics.
+
 ## Landing Page V2 career-world rebuild — 2026-09-20
 
 The Career League landing experience now follows the approved four-reference direction as one continuous accounting-career game story. The hero combines the existing cinematic learner scene with real mission panels, a VS moment, five simulated company steps, and truthful current product facts. The journey uses a new five-island visual world linked to Bootcamp, Mizan Trading, company progression, the locked Month-End preview, and the Finance Leadership target. Competition, evidence-based CV, and skills are presented as three product worlds. Player stories are explicitly fictional examples, and the final CTA shows a responsibility ladder without promising employment.

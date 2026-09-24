@@ -71,7 +71,7 @@ export function CareerLandingV4({locale}: Props) {
 function CareerLeagueHero({locale}: Props) {
   const t = language[locale];
   return <section className="cl4-hero" id="home" aria-labelledby="cl4-title">
-    <Image src="/landing/approved-hero-clean.png" alt="" fill priority unoptimized sizes="100vw" className="cl4-hero-image"/>
+    <Image src="/landing/approved-hero-clean.png" alt="" fill priority quality={100} sizes="100vw" className="cl4-hero-image"/>
     <h1 id="cl4-title" className="cl4-hero-title">{t.hero}</h1>
     <p className="sr-only">{t.heroDescription}</p>
     <Link className="cl4-hero-hotspot cl4-hero-start" href={href(locale, '/onboarding')} aria-label={t.start}><span className="sr-only">{t.start}</span></Link>
@@ -87,7 +87,7 @@ function CareerJourneyWorld({locale}: Props) {
     <h2 id="cl4-journey-title" className="sr-only">{t.journey}</h2>
     <p className="sr-only">{t.journeyDescription}</p>
     <div className="cl4-journey-art" id="companies">
-      <Image src="/landing/approved-journey.png" alt="" fill unoptimized sizes="100vw" className="cl4-art-image"/>
+      <Image src="/landing/approved-journey.png" alt="" fill quality={100} sizes="100vw" className="cl4-art-image"/>
       <div className="cl4-stage-hotspots">
         {stageRoutes.map((route, index) => <Link key={route} className={`cl4-stage-hotspot cl4-stage-${index + 1}`} href={href(locale, route)} aria-label={t.stages[index]}><span className="sr-only">{t.stages[index]}</span></Link>)}
       </div>
@@ -102,7 +102,7 @@ function LandingFeatureWorlds({locale}: Props) {
     <h2 id="cl4-features-title" className="sr-only">{t.features}</h2>
     <p className="sr-only">{t.featuresDescription}</p>
     <div className="cl4-feature-art">
-      <Image src="/landing/approved-features.png" alt="" fill unoptimized sizes="100vw" className="cl4-art-image"/>
+      <Image src="/landing/approved-features.png" alt="" fill quality={100} sizes="100vw" className="cl4-art-image"/>
       {featureRoutes.map((route, index) => <Link key={route} className={`cl4-feature-hotspot cl4-feature-${index + 1}`} href={href(locale, route)} aria-label={t.featureLinks[index]}><span className="sr-only">{t.featureLinks[index]}</span></Link>)}
     </div>
     {locale === 'en' && <div className="cl4-section-caption"><strong>{t.features}</strong><span>{t.featuresDescription}</span></div>}
@@ -124,7 +124,7 @@ function PlayerJourneyStories({locale}: Props) {
 function CareerFutureCta({locale}: Props) {
   const t = language[locale];
   return <section className="cl4-final" id="about" aria-labelledby="cl4-final-title">
-    <Image src="/landing/approved-final.png" alt="" fill unoptimized sizes="100vw" className="cl4-final-image"/>
+    <Image src="/landing/approved-final.png" alt="" fill quality={100} sizes="100vw" className="cl4-final-image"/>
     <div className="cl4-final-copy"><h2 id="cl4-final-title">{t.final}</h2><p>{t.finalDescription}</p><div className="cl4-final-actions"><Link href={href(locale, '/onboarding')}>{t.finalStart}</Link><Link href={href(locale, '/career-league/companies')}>{t.finalExplore}</Link></div></div>
   </section>;
 }

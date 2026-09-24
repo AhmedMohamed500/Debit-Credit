@@ -1,9 +1,5 @@
 # Career League Implementation Report
 
-## Crisp text-first landing rebuild — 2026-09-25
-
-The public Arabic/English landing was rebuilt to remove its core readability problem: full-width screenshots with headings and buttons baked into the pixels. The active page now combines text-free artwork with semantic HTML headings, descriptions, statuses, and calls to action. Artwork is contained at or below its native width instead of being stretched across the viewport, and the responsive layout stacks cleanly on a 390×844 phone. All existing destinations remain connected, Month-End alone is labelled as in development, and the implemented promotion assessment remains an active career goal. Browser inspection covered desktop and mobile; release verification includes ESLint, TypeScript, Vitest, and a production build. Technical details are in [docs/landing-page.md](docs/landing-page.md).
-
 ## Connected Promotion Assessment and bank reconciliation — 2026-09-24
 
 The first promotion review is now a complete bilingual connected case: AP mismatch control, supported customer-receipt investigation, a five-item structured bank reconciliation, and documented sign-off. Correct classification reconciles the 256,900 bank statement and 235,400 ledger to 250,400. The deterministic rubric scores six professional dimensions, treats unsupported posting and forced balancing as critical errors, preserves an earned pass and the strongest prior evidence, unlocks Delta Commerce through the existing rule, and projects only local `Demonstrated` simulation evidence to Skill Passport. Corporate Bridge now exposes structured AP/AR and bank reconciliation as its first playable file while later weeks remain planned. Full details are in [docs/PROMOTION-ASSESSMENT-RECONCILIATION.md](docs/PROMOTION-ASSESSMENT-RECONCILIATION.md). The complete gate passed: ESLint, TypeScript, 336 tests across 49 files, and production build.

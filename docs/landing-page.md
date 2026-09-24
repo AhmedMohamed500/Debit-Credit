@@ -1,54 +1,61 @@
-# Landing Page V4 — crisp text-first rebuild
+# Landing Page V4 — دليل القسم
 
-The public Arabic/English landing page is implemented in `components/platform/landing-career-v4.tsx`, styled by `app/landing-v4.css`, and mounted below the shared marketing navigation by `components/platform/marketing-landing.tsx`.
+هذه الصفحة هي واجهة التسويق الرئيسية بالعربية والإنجليزية، وتعرض تجربة Career League بوصفها محاكاة مهنية محلية/تجريبية. مصدر التنفيذ هو `components/platform/landing-career-v4.tsx` والتنسيق في `app/landing-v4.css`، بينما يعرض `components/platform/marketing-landing.tsx` شريط التنقل ثم الصفحة.
 
-## Why it was rebuilt
+## ترتيب الأقسام والأصول
 
-The previous composition stretched 1672×941 screenshots across wide viewports. Those screenshots contained headings, labels, and buttons baked into the pixels, so the most important copy became soft at desktop scale and too small on phones. The active landing no longer uses those full-page screenshots.
-
-All headings, descriptions, statuses, and calls to action are now semantic HTML. The artwork is text-free and is displayed at or below its native width; `next/image` supplies responsive variants without artificial sharpening or browser scaling of embedded text.
-
-## Active artwork
-
-| Section | Asset | Treatment |
+| القسم | الأصل الفني | الوظيفة |
 | --- | --- | --- |
-| Hero | `public/landing/career-league-hero-v2.png` | Contained inside the two-column hero; never stretched full-bleed |
-| Career journey | `public/landing/career-journey-world-v2.webp` | Capped at 1400px and paired with five real HTML stage cards |
-| Product features | `competition-world-v2.webp`, `career-future-v2.webp`, `skills-world-v2.webp` | Three responsive cards with live copy and links |
-| Example journeys | `player-journeys-v2.png` | Cropped into three decorative portraits; all explanatory copy remains HTML |
-| Final CTA | `career-future-v2.webp` | Image and CTA copy are separate grid columns |
+| Hero | `public/landing/approved-hero-clean.png` | مشهد المنافسة، مع رابطين فعليين للبدء واستكشاف الرحلة |
+| Career Journey | `public/landing/approved-journey.png` | خريطة الجزر الخمس، مع خمس مناطق ضغط فوق المراحل |
+| Feature Worlds | `public/landing/approved-features.png` | عوالم المنافسة والسيرة والمهارات، مع ثلاث مناطق ضغط |
+| Example Player Journeys | HTML دلالي موجز | ثلاث شخصيات افتراضية توضيحية؛ ليست شهادات عملاء |
+| Final CTA | الجزء السينمائي من `public/landing/approved-final.png` | دعوة البدء واستكشاف المسارات |
 
-The discarded `approved-*.png` files remain historical repository assets only; the current component does not reference them.
+الصور المرفوعة هي أساس التصميم وليست خلفيات لبطاقات HTML مكررة. أصل الجزر نسخة من المرجع أزيلت منها أسماء الشركات الخارجية. وأزيلت من الهيرو شارة «شهادات معتمدة» لعدم إثباتها. المناطق التي تحتوي على أرقام لاعبين أو تقييمات افتراضية في المراجع تُقصّ أو تُحجب، ولا يُعاد عرضها كحقائق.
 
-## Routes
+## الروابط
 
-The locale prefix (`/ar` or `/en`) is added automatically.
+تُضاف بادئة اللغة `/ar` أو `/en` تلقائيًا:
 
-| UI action | Route |
+| عنصر الواجهة | المسار |
 | --- | --- |
-| Start / final CTA | `/onboarding` |
-| Accounting Bootcamp | `/bootcamp` |
-| Mizan Trading | `/game` |
-| Structured Company / explore companies | `/career-league/companies` |
-| Month-End Close | `/game/month-end` |
-| Finance Leadership | `/career-league/promotion` |
-| Competition | `/leaderboard` |
-| CV | `/career-profile/cv` |
-| Skills | `/career-profile/skills` |
+| ابدأ مجانًا / CTA النهائي | `/onboarding` |
+| معسكر البداية | `/bootcamp` |
+| ميزان للتجارة | `/game` |
+| شركات أكبر / اكتشف المسارات | `/career-league/companies` |
+| الإقفال الشهري | `/game/month-end` |
+| القيادة المالية | `/career-league/promotion` |
+| المنافسة | `/leaderboard` |
+| السيرة الذاتية | `/career-profile/cv` |
+| المهارات | `/career-profile/skills` |
 
-## Readability and responsive behavior
+شريط التنقل التسويقي موجود خارج مكونات الفن في `PlatformNav`. نقاط الانتقال الداخلية `#journey`، `#companies`، `#competition`، و`#tools` محفوظة. يشير `#companies` الآن إلى بداية لوحة الجزر، لا إلى رابط الجزيرة الثالثة في منتصف الصورة.
 
-- The desktop hero uses a bounded 1440px grid, generous line height, and live type that remains sharp at every device scale.
-- At 800px the hero, feature cards, and final CTA stack. At 560px actions become full-width and the journey becomes a single readable column.
-- Arabic uses the inherited RTL direction and English uses LTR. Buttons and arrows adapt to the locale.
-- Decorative artwork has empty alternative text; meaningful hero artwork has localized alternative text.
-- Visible focus, reduced-motion handling, light/dark themes, and truthful local-simulation disclosure are retained.
-- Month-End is the only stage visually marked as in development. Promotion is an active career goal and links to the implemented assessment.
+## إتاحة الاستخدام والتجاوب
 
-## Claim boundaries
+- العناوين والوصف الدلالي موجودة لقارئات الشاشة دون نسخ بصري فوق النصوص المرسومة في الصور.
+- مناطق الضغط هي روابط حقيقية تحمل أسماء واضحة، ويمكن الوصول إليها بلوحة المفاتيح، وتُظهر إطار تركيز مرئي.
+- على سطح المكتب تُعرض الصور بعرض الشاشة مع قصّ الحواف غير الملائمة فقط. على الهاتف يُستخدم قصّ للهيرو، وتمرير أفقي لخريطة الرحلة، وشرائح من صورة الميزات الأصلية، وقصّ للجزء السينمائي من الصورة الأخيرة.
+- النصوص الإنجليزية التوضيحية ظاهرة أسفل الصور التي تحتوي نصًا عربيًا مطبوعًا، مع اتجاه `ltr`؛ العربية تستخدم `rtl`.
+- ارتفاع شريط التسويق محدد برمز CSS واحد: `--marketing-nav-height` (72px للشاشة العريضة، 62px للهاتف). يبقى الشريط في تدفق المستند ثم يلتصق بأعلى الشاشة، وتستخدم الأهداف `scroll-margin-top` لإبقاء بداية الأقسام تحته.
+- استخدمنا `overflow:clip` في الحاويات العامة بدل `overflow:hidden`؛ الأخير كان يعرقل سلوك `position:sticky` وانتقالات الروابط الداخلية. تبدأ قائمة الهاتف مباشرة أسفل الشريط.
+- على الهاتف يظهر عنوان HTML عربي/إنجليزي واضح داخل الهيرو فوق موضع العنوان المطبوع الذي يُقصّ حتمًا في الشاشة الضيقة، من دون إضافة قسم جديد.
 
-The page describes a local learning simulation. It does not claim live users, employer partnerships, guaranteed jobs, accredited certificates, or externally verified evidence. Example player journeys are explicitly illustrative.
+## ضبط الجودة البصرية
 
-## Verification
+- كل الأصول المعتمدة أصلها 1672×941px. تُعرض بواسطة `Next/Image` من النسخ الأصلية غير المضغوطة مجددًا؛ صورة الهيرو تحمل أولوية التحميل، وما تحتها يُحمّل عند الحاجة. أزيل تكبير `transform:scale(1.01)` عن الهيرو؛ لا تُستخدم فلاتر تمويه أو زيادة حدّة مصطنعة.
+- يظل العرض السينمائي كاملًا على سطح المكتب. عند عرض 1920px يوجد تكبير بنحو 15% على أصل 1672px؛ هذا حد دقة الأصل المعتمد وليس أثر ضغط من Next.js، ويحتاج أصلًا أعلى دقة إذا طُلب تطابق 1:1.
+- درجات توهج الروابط التفاعلية أصبحت مقتصرة على خط تحديد واحد، وخُفف ضباب شريط التنقل. لم تُخفض درجة تشبع الصور نفسها.
+- كُبرت الكتابة الحية الصغيرة: إفصاح الهيرو، حالة المهارات، وصف الشخصيات، الوصف الإنجليزي، وأزرار النهاية. ظل نص الصورة المطبوع كما هو؛ تعديل حجمه يتطلب أصلًا فنيًا جديدًا.
+- المسافات بين الجزر والميزات والقصص تعتمد `--landing-section-space` بدل أرقام متفرقة، مع الحفاظ على انتقال المشهد الداكن إلى الفاتح ثم الخاتمة الداكنة.
 
-The page was inspected in a real browser at desktop size and at 390×844. Both layouts showed sharp live copy, readable buttons, clean imagery, and no horizontal overflow. ESLint, TypeScript, the Vitest suite, and the production Next.js build are the required release gate.
+## حدود الحقيقة التسويقية
+
+المنافسة الحالية محلية وتجريبية، ولا يجوز تقديم أعداد اللاعبين أو تفاعلهم في الرسم على أنها إحصاءات حية. لا توجد شراكات معلنة مع PwC أو Deloitte أو KPMG أو EY، ولا شهادات عملاء موثقة في هذه الصفحة. حالات المهارات: Excel متاح؛ Financial Analysis وRisk & Controls قيد التطوير؛ IFRS وPower BI وERP ضمن الخطة. يجب مراجعة أي أصل فني جديد قبل نشره إذا احتوى على وعد توظيف أو اعتماد أو شراكة أو مقياس استخدام.
+
+## التحقق والتسليم
+
+يشغّل `npm run check` فحوص ESLint وTypeScript وVitest والبناء الإنتاجي. إذا تعطل مسار npm في الجهاز، تُشغّل الأوامر الأربعة المقابلة من `package.json` مباشرة. يشغّل `artifacts/verify-landing-final.mjs` مراجعة لثمانية أوضاع عرض، ويضع اللقطات في `artifacts/landing-final/`. قائمة اللقطات المطلوبة: `01-hero-1920.png`، `02-journey-1920.png`، `03-features-1920.png`، `04-stories-final-1920.png`، `full-ar-1920.png`، `full-ar-1440.png`، و`mobile-ar-390.png`.
+
+يمثل `artifacts/verify-landing-polish.mjs` فحص الصقل الحالي: يلتقط «قبل/بعد» على 1920 و1600 و1440 و1366 و1100 و1024 و430 و390، ويتحقق من فتح القائمة بدءًا من 1100px حتى لا تتزاحم الروابط مع الشعار، وموضع الروابط الداخلية نسبةً إلى ارتفاع الشريط، وتحميل الصور، وأخطاء المتصفح، وعدد المسارات. لقطات المقارنة الكاملة وبيانات القياس تبقى محليًا في المجلدات `before/` و`after/` و`after-dark/`، بينما تُحفظ اللقطات الثماني المختارة للنشر مباشرة داخل `artifacts/landing-polish/` حتى لا يكبر المستودع بلقطات مكررة.

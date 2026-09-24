@@ -1,5 +1,9 @@
 # Career League Implementation Report
 
+## Connected Promotion Assessment and bank reconciliation — 2026-09-24
+
+The first promotion review is now a complete bilingual connected case: AP mismatch control, supported customer-receipt investigation, a five-item structured bank reconciliation, and documented sign-off. Correct classification reconciles the 256,900 bank statement and 235,400 ledger to 250,400. The deterministic rubric scores six professional dimensions, treats unsupported posting and forced balancing as critical errors, preserves an earned pass and the strongest prior evidence, unlocks Delta Commerce through the existing rule, and projects only local `Demonstrated` simulation evidence to Skill Passport. Corporate Bridge now exposes structured AP/AR and bank reconciliation as its first playable file while later weeks remain planned. Full details are in [docs/PROMOTION-ASSESSMENT-RECONCILIATION.md](docs/PROMOTION-ASSESSMENT-RECONCILIATION.md). The complete gate passed: ESLint, TypeScript, 336 tests across 49 files, and production build.
+
 ## Current Landing Page V4 polish — 2026-09-24
 
 The current five-section, approved-artwork landing was polished without adding sections, changing routes, or touching Career League, Account City, First Shift, Skill Passport, or ATS CV logic. The marketing header now uses a single desktop/mobile height token; a clipped, non-scrolling page container restores sticky navigation; and all four internal anchors stop below the header. The mobile menu opens immediately under the header. Removing the hero scale transform and retaining unoptimized original images avoids extra resampling, while restrained hover glow, larger live copy, consistent section spacing, and a readable mobile hero heading reduce fatigue. See [docs/landing-page.md](docs/landing-page.md) for implementation details and `artifacts/landing-polish/` for before/after screenshots and browser metrics.

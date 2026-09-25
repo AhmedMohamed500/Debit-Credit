@@ -12,10 +12,14 @@ const language = {
     start: 'ابدأ مجانًا', explore: 'اكتشف رحلتك المهنية',
     journey: 'خريطة رحلتك المهنية',
     journeyDescription: 'خمس مراحل من أساسيات المحاسبة إلى القيادة المالية داخل المحاكاة. المراحل المتقدمة قد تتطلب التقدم في اللعبة.',
+    journeyScrollHint: 'اسحب أفقيًا لاستكشاف المراحل الخمس',
     stages: ['معسكر البداية', 'ميزان للتجارة', 'شركات أكبر', 'الإقفال الشهري', 'القيادة المالية'],
+    stageStatuses: ['متاح الآن', 'متاح الآن', 'بالتقدم', 'قيد التطوير', 'مسار متقدم'],
     features: 'المنافسة والسيرة الذاتية والمهارات',
     featuresDescription: 'منافسة تجريبية محلية، وسيرة ذاتية مرتبطة بإنجازاتك، وخريطة مهارات توضّح المتاح وما يزال قيد التطوير.',
     featureLinks: ['ابدأ المنافسة التجريبية', 'شاهد سيرتك الذاتية', 'تصفح المهارات'],
+    featureTitles: ['تنافس مع زملائك', 'سيرة ذاتية تنمو معك', 'اكتسب مهارات مطلوبة'],
+    featureDescriptions: ['تحديات محلية تجريبية لقياس تقدمك.', 'إنجازات محاكاة مؤهلة مرتبطة بملفك المهني.', 'تعلّم المهارات المتاحة وتابع ما هو قيد التطوير.'],
     statusTitle: 'حالة المهارات الحالية',
     statuses: ['Excel — متاح', 'Financial Analysis — قيد التطوير', 'Risk & Controls — قيد التطوير', 'IFRS — ضمن الخطة', 'Power BI — ضمن الخطة', 'ERP — ضمن الخطة'],
     stories: 'نماذج رحلات توضيحية', storiesIntro: 'شخصيات افتراضية لشرح مسارات استخدام مختلفة، وليست شهادات أو تقييمات عملاء.',
@@ -30,13 +34,13 @@ const language = {
     artworkNote: 'الصور تصور توضيحي للمنتج؛ ليست إحصاءات استخدام أو شهادات فعلية.',
     how: {
       eyebrow: 'كيف تعمل اللعبة؟',
-      title: 'من أول خطوة إلى مستقبلك المهني',
+      title: 'من أول خطوة إلى مستقبل مهني حقيقي',
       description: 'رحلة عملية وتفاعلية تحاكي بيئة العمل الحقيقية في عالم المحاسبة والمال والأعمال.',
       steps: [
-        {title: 'اختر نقطة بدايتك', description: 'ابدأ من مستواك الحالي، سواء كنت تبدأ من الصفر أو لديك دراسة أو خبرة سابقة.', details: ['طالب محاسبة', 'خريج جديد', 'محاسب يعمل'], alt: 'متعلم يبدأ رحلته المهنية من المستوى المناسب'},
+        {title: 'اختر مستواك', description: 'ابدأ من الأساسيات أو اختر مستواك الحالي، مع مسار تعليمي يناسبك.', details: ['مبتدئ', 'متوسط', 'متقدم'], alt: 'لاعب يبدأ رحلته المهنية'},
         {title: 'ادخل شركة مناسبة', description: 'انتقل بين شركات محاكاة لها بيئات عمل ومسؤوليات وتحديات مختلفة.', details: ['ميزان للتجارة · متاحة', 'شركات منظمة · بالتقدم', 'مستويات متقدمة · ضمن الخطة'], alt: 'عالم شركات محاسبية متدرج داخل المحاكاة'},
-        {title: 'حل حالات ومهام', description: 'تعامل مع مستندات وحالات، واتخذ قراراتك وسجّل القيود خطوة بخطوة.', details: ['مراجعة فاتورة · متاحة', 'تسوية بنكية · متاحة', 'الإقفال الشهري · قيد التطوير'], alt: 'أدوات محاسبية تدعم حل الحالات والمهام'},
-        {title: 'ابنِ ملفك المهني وATS CV', description: 'الإنجازات المؤهلة تحدّث Skill Passport والسيرة الذاتية مع فصل المحاكاة عن الخبرة الحقيقية.', details: ['مهارة أضيفت', 'دليل محاكاة أضيف', 'السيرة اتحدثت'], alt: 'مسار مهني وأدوات لبناء ملف قائم على الأدلة'},
+        {title: 'حل حالات ومهام', description: 'تعامل مع مستندات وحالات، واتخذ قراراتك وسجّل القيود خطوة بخطوة.', details: ['مراجعة فاتورة · متاحة', 'تسوية بنكية · متاحة', 'الإقفال الشهري · قيد التطوير'], alt: 'محاسب يحل حالات مهنية'},
+        {title: 'ابنِ CV وسجّل مهاراتك', description: 'الإنجازات المؤهلة تحدّث ملفك وATS CV مع فصل المحاكاة عن الخبرة الحقيقية.', details: ['Skill Passport', 'دليل محاكاة مؤهل', 'ATS CV'], alt: 'صورة رمزية لمسار مهني متدرج'},
       ],
     },
     audience: {
@@ -45,9 +49,9 @@ const language = {
       description: 'سواء كنت طالبًا، خريجًا جديدًا، أو محاسبًا تعمل حاليًا — ستجد مسارًا يناسب المرحلة التي أنت فيها.',
       labels: ['مشكلتك الآن', 'ستتعلم', 'ستصل إلى'],
       personas: [
-        {title: 'طالب محاسبة', rows: ['المفاهيم أحيانًا تتحول إلى حفظ من غير فهم عملي كافٍ.', 'من الأساسيات إلى فهم الحركة المحاسبية وتطبيقها عمليًا.', 'فهم أقوى واستعداد أفضل لأول تجربة عمل.'], cta: 'ابدأ كطالب', alt: 'طالبة محاسبة في بداية رحلتها المهنية'},
-        {title: 'خريج جديد', rows: ['درست النظرية، لكن خبرتك العملية ما زالت محدودة.', 'التعامل مع المستندات والحالات والقيود ومسارات العمل داخل المحاكاة.', 'ملف مهني أقوى وSkill Passport وATS CV مبني على الأدلة المؤهلة.'], cta: 'ابدأ كخريج', alt: 'خريج محاسبة جديد يستعد للعمل'},
-        {title: 'محاسب في شركة صغيرة', rows: ['لديك خبرة في العمل اليومي، لكنك تحتاج مسؤوليات أوسع للانتقال إلى بيئة منظمة.', 'التسويات والتحليل والمراجعة والرقابة ومسارات الشركات المتاحة أو المخطط لها بوضوح.', 'معرفة فجواتك وتطوير مهاراتك للمسار الوظيفي التالي.'], cta: 'طوّر مسارك', alt: 'محاسب يعمل ويخطط لمسؤولية مهنية أكبر'},
+        {title: 'طالب محاسبة', rows: ['المفاهيم صعبة ومشتتة أحيانًا.', 'من الأساسيات إلى التطبيق العملي.', 'فهم أقوى واستعداد أفضل لسوق العمل.'], cta: 'ابدأ كطالب', alt: 'طالبة محاسبة في بداية رحلتها المهنية'},
+        {title: 'خريج جديد', rows: ['الخبرة العملية ما زالت محدودة.', 'ممارسة مهام داخل شركات محاكاة.', 'ملف مهني أقوى واستعداد أفضل للتوظيف.'], cta: 'ابدأ كخريج جديد', alt: 'خريج محاسبة جديد يستعد للعمل'},
+        {title: 'محاسب في شركة صغيرة', rows: ['الاعتماد على المهام الروتينية فقط.', 'التحليل والمراجعة والتسويات المتاحة، ثم مهارات أوسع بالتدرج.', 'تطوير مهاراتك والاستعداد لأدوار أكبر.'], cta: 'ابدأ كمحاسب محترف', alt: 'محاسب يعمل ويخطط لمسؤولية مهنية أكبر'},
       ],
     },
   },
@@ -57,10 +61,14 @@ const language = {
     start: 'Start for free', explore: 'Explore your career journey',
     journey: 'Your career journey map',
     journeyDescription: 'Five stages from accounting foundations to finance leadership within the simulation. Advanced stages may require progress.',
+    journeyScrollHint: 'Swipe sideways to explore all five stages',
     stages: ['Accounting Bootcamp', 'Mizan Trading', 'Bigger Companies', 'Month-End', 'Finance Leadership'],
+    stageStatuses: ['Available', 'Available', 'Unlock with progress', 'In development', 'Advanced path'],
     features: 'Competition, CV and skills',
     featuresDescription: 'A local demo competition, an achievement-linked CV, and a skill map showing what is available and what is still in development.',
     featureLinks: ['Try the demo competition', 'View your CV', 'Browse skills'],
+    featureTitles: ['Compete with peers', 'A CV that grows with you', 'Build in-demand skills'],
+    featureDescriptions: ['A local demo challenge to track your progress.', 'Qualified simulation achievements connected to your career profile.', 'Practise available skills and see what remains in development.'],
     statusTitle: 'Current skill status',
     statuses: ['Excel — Available', 'Financial Analysis — In development', 'Risk & Controls — In development', 'IFRS — Roadmap', 'Power BI — Roadmap', 'ERP — Roadmap'],
     stories: 'Example player journeys', storiesIntro: 'Fictional personas illustrating different ways to use the experience. These are not customer reviews or testimonials.',
@@ -78,10 +86,10 @@ const language = {
       title: 'From Your First Step to Your Professional Future',
       description: 'A practical, interactive journey built around realistic accounting work.',
       steps: [
-        {title: 'Choose your starting point', description: 'Start from where you are today, whether you are new, have studied accounting, or already work in it.', details: ['Accounting student', 'Fresh graduate', 'Working accountant'], alt: 'A learner beginning from an appropriate career level'},
+        {title: 'Choose your level', description: 'Begin with the foundations or choose your current level and follow a suitable learning path.', details: ['Beginner', 'Intermediate', 'Advanced'], alt: 'A learner beginning a career journey'},
         {title: 'Enter the right company', description: 'Move through simulated companies with different work environments and responsibilities.', details: ['Mizan Trading · Available', 'Structured companies · Unlock', 'Advanced tiers · Planned'], alt: 'A progressive world of simulated accounting companies'},
-        {title: 'Solve cases and tasks', description: 'Work with documents and cases, make decisions, and record entries step by step.', details: ['Invoice review · Available', 'Bank reconciliation · Available', 'Month-end · In development'], alt: 'Accounting tools supporting realistic cases and tasks'},
-        {title: 'Build your profile and ATS CV', description: 'Qualified achievements update your Skill Passport and CV while simulation stays separate from employment.', details: ['Skill added', 'Simulation evidence added', 'CV updated'], alt: 'Career path and tools for an evidence-based profile'},
+        {title: 'Solve cases and tasks', description: 'Work with documents and cases, make decisions, and record entries step by step.', details: ['Invoice review · Available', 'Bank reconciliation · Available', 'Month-end · In development'], alt: 'Accountant solving career cases'},
+        {title: 'Build your CV and skills', description: 'Qualified achievements update your profile and ATS CV while simulation stays separate from employment.', details: ['Skill Passport', 'Qualified simulation evidence', 'ATS CV'], alt: 'Illustration of a progressive career path'},
       ],
     },
     audience: {
@@ -90,9 +98,9 @@ const language = {
       description: 'Whether you are a student, a fresh graduate, or a working accountant, there is a starting path that fits your current stage.',
       labels: ['Your challenge now', 'You will learn', 'You can build toward'],
       personas: [
-        {title: 'Accounting student', rows: ['Concepts can become memorisation without enough practical understanding.', 'Move from foundations to understanding accounting movement and applying it.', 'Stronger understanding and better preparation for a first work experience.'], cta: 'Start as a student', alt: 'An accounting student at the beginning of her career journey'},
-        {title: 'Fresh graduate', rows: ['You studied the theory, but your practical experience is still limited.', 'Handle documents, cases, entries, reviews, and simulated workflows.', 'A stronger profile, Skill Passport, and ATS CV built from qualifying evidence.'], cta: 'Start as a graduate', alt: 'A fresh accounting graduate preparing for work'},
-        {title: 'Working accountant', rows: ['You know daily work but need broader responsibilities for a structured corporate environment.', 'Develop reconciliation, analysis, review, controls, and clearly labelled available or planned workflows.', 'Understand your gaps and develop skills for the next career path.'], cta: 'Develop your path', alt: 'A working accountant planning broader professional responsibility'},
+        {title: 'Accounting student', rows: ['Accounting concepts can feel scattered.', 'Move from foundations to practical application.', 'Build understanding and prepare better for work.'], cta: 'Start as a student', alt: 'An accounting student at the beginning of her career journey'},
+        {title: 'Fresh graduate', rows: ['Practical experience is still limited.', 'Practise tasks inside simulated companies.', 'Build a stronger profile and prepare for applications.'], cta: 'Start as a graduate', alt: 'A fresh accounting graduate preparing for work'},
+        {title: 'Small-company accountant', rows: ['Daily work can become repetitive.', 'Develop available analysis, review and reconciliation skills before broader paths unlock.', 'Grow your skills and prepare for wider responsibilities.'], cta: 'Start as an accountant', alt: 'A working accountant planning broader professional responsibility'},
       ],
     },
   },
@@ -100,8 +108,9 @@ const language = {
 
 const stageRoutes = ['/bootcamp', '/game', '/career-league/companies', '/game/month-end', '/career-league/promotion'];
 const featureRoutes = ['/leaderboard', '/career-profile/cv', '/career-profile/skills'];
+const featureImages = ['/landing/competition-world-v2.webp', '/landing/career-future-v2.webp', '/landing/skills-world-v2.webp'];
 const landingImageQuality = process.env.NODE_ENV === 'test' ? undefined : 100;
-const howImages = ['/landing/career-league-hero-v2.png', '/landing/career-journey-world-v2.webp', '/landing/skills-world-v2.webp', '/landing/career-future-v2.webp'];
+const howImages = ['/landing/career-league-hero-v2.png', '/landing/career-journey-world-v2.webp', '/landing/player-journeys-v2.png', '/landing/career-future-v2.webp'];
 const howIcons = [Target, Building2, ClipboardCheck, BriefcaseBusiness];
 const personaIcons = [GraduationCap, BriefcaseBusiness, BarChart3];
 
@@ -123,13 +132,28 @@ function HowGameWorks({locale}: Props) {
   const t = language[locale].how;
   const ar = locale === 'ar';
   const Connector = ar ? ArrowLeft : ArrowRight;
+  const visualLabels = ar ? [
+    ['اختر مستواك', 'مبتدئ', 'متوسط', 'متقدم'],
+    ['شركة محاكاة', 'ميزان للتجارة', 'شركات منظمة', 'مستويات متقدمة'],
+    ['مهام اليوم', 'مراجعة فاتورة', 'تسوية بنكية', 'الإقفال الشهري'],
+    ['ملفك المهني', 'Skill Passport', 'دليل محاكاة', 'ATS CV'],
+  ] : [
+    ['Choose your level', 'Beginner', 'Intermediate', 'Advanced'],
+    ['Simulation company', 'Mizan Trading', 'Structured companies', 'Advanced levels'],
+    ['Today’s tasks', 'Review an invoice', 'Bank reconciliation', 'Month-end'],
+    ['Your career profile', 'Skill Passport', 'Simulation evidence', 'ATS CV'],
+  ];
   return <section className="cl4-how" id="how" aria-labelledby="cl4-how-title">
     <header className="cl4-new-heading"><span>{t.eyebrow}</span><h2 id="cl4-how-title">{t.title}</h2><p>{t.description}</p></header>
     <div className="cl4-how-flow">
       {t.steps.map((step, index) => {
         const Icon = howIcons[index];
         return <article className={`cl4-how-step step-${index + 1}`} key={step.title}>
-          <div className="cl4-how-visual"><Image src={howImages[index]} alt={step.alt} fill quality={landingImageQuality} sizes="(max-width: 700px) 92vw, (max-width: 1200px) 46vw, 340px"/><b>{index + 1}</b><span><Icon aria-hidden/></span></div>
+          <div className="cl4-how-visual">
+            <Image src={howImages[index]} alt="" fill quality={75} sizes={index === 2 ? '(max-width: 600px) 1200px, (max-width: 1200px) 1170px, 1200px' : '(max-width: 600px) 420px, (max-width: 1200px) 420px, 440px'}/>
+            <b className="cl4-how-number">{index + 1}</b>
+            <div className="cl4-how-mock" aria-hidden="true"><strong><Icon/>{visualLabels[index][0]}</strong>{visualLabels[index].slice(1).map((label, row) => {const planned=row === 2 && (index === 1 || index === 2);return <span className={planned ? 'is-planned' : ''} key={label}>{planned ? <LockKeyhole/> : <CheckCircle2/>}{label}</span>;})}</div>
+          </div>
           <div className="cl4-how-copy"><h3>{step.title}</h3><p>{step.description}</p><ul>{step.details.map((detail, detailIndex) => <li className={(index === 1 || index === 2) && detailIndex === 2 ? 'planned' : ''} key={detail}>{(index === 1 || index === 2) && detailIndex === 2 ? <LockKeyhole aria-hidden/> : <CheckCircle2 aria-hidden/>}{detail}</li>)}</ul></div>
           {index < t.steps.length - 1 ? <i className="cl4-how-connector" aria-hidden><Connector/></i> : null}
         </article>;
@@ -157,12 +181,8 @@ function WhoPlatformFor({locale}: Props) {
 function CareerLeagueHero({locale}: Props) {
   const t = language[locale];
   return <section className="cl4-hero" id="home" aria-labelledby="cl4-title">
-    <Image src="/landing/approved-hero-clean.png" alt="" fill priority quality={landingImageQuality} sizes="100vw" className="cl4-hero-image"/>
-    <h1 id="cl4-title" className="cl4-hero-title">{t.hero}</h1>
-    <p className="sr-only">{t.heroDescription}</p>
-    <Link className="cl4-hero-hotspot cl4-hero-start" href={href(locale, '/onboarding')} aria-label={t.start}><span className="sr-only">{t.start}</span></Link>
-    <Link className="cl4-hero-hotspot cl4-hero-explore" href="#journey" aria-label={t.explore}><span className="sr-only">{t.explore}</span></Link>
-    {locale === 'en' && <div className="cl4-english-caption"><strong>{t.hero}</strong><span>{t.heroDescription}</span></div>}
+    <Image src="/landing/career-league-hero-v2.png" alt="" fill priority quality={75} sizes="(max-width: 1672px) 100vw, 1672px" className="cl4-hero-image"/>
+    <div className="cl4-hero-copy"><span>CAREER LEAGUE</span><h1 id="cl4-title">{t.hero}</h1><p>{t.heroDescription}</p><div className="cl4-hero-actions"><Link href={href(locale, '/onboarding')}>{t.start}</Link><Link href="#journey">{t.explore}</Link></div></div>
     <p className="cl4-art-disclaimer">{t.artworkNote}</p>
   </section>;
 }
@@ -170,28 +190,23 @@ function CareerLeagueHero({locale}: Props) {
 function CareerJourneyWorld({locale}: Props) {
   const t = language[locale];
   return <section className="cl4-journey" id="journey" aria-labelledby="cl4-journey-title">
-    <h2 id="cl4-journey-title" className="sr-only">{t.journey}</h2>
-    <p className="sr-only">{t.journeyDescription}</p>
+    <header className="cl4-world-heading"><h2 id="cl4-journey-title">{t.journey}</h2><p>{t.journeyDescription}</p><span className="cl4-journey-scroll-hint">{t.journeyScrollHint}</span></header>
     <div className="cl4-journey-art" id="companies">
-      <Image src="/landing/approved-journey.png" alt="" fill quality={landingImageQuality} sizes="100vw" className="cl4-art-image"/>
+      <Image src="/landing/career-journey-world-v2.webp" alt="" fill quality={75} sizes="(max-width: 600px) 1100px, (max-width: 1672px) 100vw, 1672px" className="cl4-art-image"/>
       <div className="cl4-stage-hotspots">
-        {stageRoutes.map((route, index) => <Link key={route} className={`cl4-stage-hotspot cl4-stage-${index + 1}`} href={href(locale, route)} aria-label={t.stages[index]}><span className="sr-only">{t.stages[index]}</span></Link>)}
+        {stageRoutes.map((route, index) => <Link key={route} className={`cl4-stage-hotspot cl4-stage-${index + 1}`} href={href(locale, route)} aria-label={t.stages[index]}><span className="cl4-stage-number">{index + 1}</span><strong>{t.stages[index]}</strong><small>{t.stageStatuses[index]}</small></Link>)}
       </div>
     </div>
-    {locale === 'en' && <div className="cl4-section-caption"><strong>{t.journey}</strong><span>{t.journeyDescription}</span></div>}
   </section>;
 }
 
 function LandingFeatureWorlds({locale}: Props) {
   const t = language[locale];
   return <section className="cl4-features" id="competition" aria-labelledby="cl4-features-title">
-    <h2 id="cl4-features-title" className="sr-only">{t.features}</h2>
-    <p className="sr-only">{t.featuresDescription}</p>
+    <header className="cl4-world-heading"><h2 id="cl4-features-title">{t.features}</h2><p>{t.featuresDescription}</p></header>
     <div className="cl4-feature-art">
-      <Image src="/landing/approved-features.png" alt="" fill quality={landingImageQuality} sizes="100vw" className="cl4-art-image"/>
-      {featureRoutes.map((route, index) => <Link key={route} className={`cl4-feature-hotspot cl4-feature-${index + 1}`} href={href(locale, route)} aria-label={t.featureLinks[index]}><span className="sr-only">{t.featureLinks[index]}</span></Link>)}
+      {featureRoutes.map((route, index) => <Link key={route} className={`cl4-feature-hotspot cl4-feature-${index + 1}`} href={href(locale, route)} aria-label={t.featureLinks[index]}><span className="cl4-feature-image"><Image src={featureImages[index]} alt="" fill quality={75} sizes="(max-width: 600px) 92vw, (max-width: 1000px) 46vw, 520px"/></span><span className="cl4-feature-copy"><strong>{t.featureTitles[index]}</strong><span>{t.featureDescriptions[index]}</span><b>{t.featureLinks[index]}{locale === 'ar' ? <ArrowLeft aria-hidden/> : <ArrowRight aria-hidden/>}</b></span></Link>)}
     </div>
-    {locale === 'en' && <div className="cl4-section-caption"><strong>{t.features}</strong><span>{t.featuresDescription}</span></div>}
     <div className="cl4-skill-status" id="tools" aria-label={t.statusTitle}>
       <strong>{t.statusTitle}</strong>
       <ul>{t.statuses.map((status) => <li key={status}>{status}</li>)}</ul>

@@ -1,5 +1,9 @@
 # Local Multi-Profile Architecture
 
+## Competition V2 isolation update
+
+Creation snapshots the active player's saves and clears scoped keys before the new profile becomes active. Switching captures the old profile and restores the selected one; global competition comparison summaries remain separate from private career saves. Scoped keys now include the bank workpaper. Rename and inactive-profile deletion are available; import validates the shape and only known scoped storage keys. Local JSON is editable and not identity proof.
+
 ## Purpose
 
 Multiple people can use one browser without mixing game, Bootcamp, placement, Career League, Skill Passport, Career Profile or CV preferences. This is a local device feature and does not provide accounts, passwords, cloud sync or verified identity.

@@ -1,5 +1,9 @@
 # Career Diagnostic
 
+## Bank Reconciliation follow-through (2026-09-26)
+
+The diagnostic establishes a starting gap; it does not grant a skill. General Accounting, GL and Treasury players can now follow the bank recommendation into a workpaper. After a qualifying case, stored evidence becomes Practiced and the gap is recalculated. One introductory attempt never becomes Verified or a hiring claim.
+
 ## Persona-specific cases
 
 | Persona | Cases | Focus |

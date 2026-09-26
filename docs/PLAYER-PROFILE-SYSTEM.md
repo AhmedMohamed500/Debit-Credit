@@ -1,5 +1,9 @@
 # Player Profile and Career Identity
 
+## Game competition versus professional profile (2026-09-26)
+
+The Career League hub shows local league, weekly rank, ranked cases, streak, recent attempts, deterministic game awards and offline comparison. This is unverified game identity. Professional Skill Passport, Career Gap and ATS CV remain separate and derive only from qualifying underlying case evidence; wins and rank never upgrade them.
+
 Debit & Credit keeps two related identities clear:
 
 - the **game identity** contains level, XP, Coins, badges and local challenge titles;

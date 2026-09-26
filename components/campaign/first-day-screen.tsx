@@ -1,5 +1,6 @@
 "use client";
 import '@/app/first-shift-scene.css';
+import '@/app/first-shift-v2.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect,useRef,useState } from 'react';
@@ -80,6 +81,7 @@ export function FirstDayScreen({locale}:{locale:Locale}){
    </footer>
    {state.storageWarning&&<p className="scene-storage-warning" role="alert">{say('Storage unavailable. Keep this tab open to retain progress.','التخزين غير متاح. اترك الصفحة مفتوحة للحفاظ على تقدمك.')}</p>}
    {progress.completionSeen&&<div className="scene-next"><LockKeyhole/><small>{say('NEXT · LOCKED','التالي · مقفول')}</small><h2>{say('Chapter 2 — THE MISSING MONEY','الفصل ٢ — المال المفقود')}</h2></div>}
+   {progress.rewarded&&<Link className="scene-bank-next" href={`/${locale}/game/bank-reconciliation`}><FileCheck2/>{say('Next professional mission · Bank Reconciliation','المهمة المهنية التالية · التسوية البنكية')}<ChevronRight/></Link>}
   </div>
   {doc&&<FirstDayCaseWorkbench key={doc.id} locale={locale} doc={doc} caseDefinition={getFirstShiftCase(doc.id)!} runtime={casework.cases[doc.id]} performance={projectCasePerformance(state,doc.id)} completed={progress.completed.includes(doc.id)} initialDraft={progress.drafts[doc.id]} initialHint={progress.draftHints[doc.id]} pendingAfter={company.pendingDocuments} onClose={closeDocument} onDraftChange={(draft,hintUsed)=>change(current=>saveFirstDayDraft(current,doc.id,draft,hintUsed))} onInspect={documentId=>inspectEvidence(doc.id,documentId)} onAction={action=>chooseCaseAction(doc.id,action)} onHelp={()=>askKareem(doc.id)} onSubmit={(draft,hints)=>submit(doc.id,draft,hints)}/>}
   {tool&&<DeskTool tool={tool} locale={locale} state={state} onClose={()=>setTool(null)}/>}

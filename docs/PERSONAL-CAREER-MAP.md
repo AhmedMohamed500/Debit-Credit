@@ -1,5 +1,9 @@
 # Personal Career Map
 
+## 2026-09-26 professional mission and optional league
+
+The `bank-reconciliation` node now routes to the playable `/game/bank-reconciliation` workpaper. A qualifying reconciliation marks the skill Practiced through the shared evidence repository; the map and gap recalculate from that passport. Competition is optional game activity and never turns league points into evidence. Full Month-End stays planned/locked.
+
 `/{locale}/career-league/map` is a role-specific sequence calculated from `CareerLeagueState.targetRoleId`, the role catalog and the saved Skill Passport projection. A General Accountant path explicitly covers journal entries, bank reconciliation, adjusting entries, expense recognition/prepayment concepts, trial balance, month-end and financial statements. Other targets use their weighted role-skill requirements.
 
 Each node shows its skill, a reason the skill matters, related accounting roles, a status and a required activity. Statuses:

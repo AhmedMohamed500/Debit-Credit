@@ -1,0 +1,9 @@
+# Career League — Local Competition V2
+
+`/[locale]/leaderboard` now hosts a local competition hub, deterministic daily case, sealed two-profile duel, weekly standings, boss mission links, competition profile, local player manager and challenge library. It uses the existing Mizan cases, local multi-profile repository and established career evidence systems. It does **not** claim real players, online matchmaking, a global rank or employer verification.
+
+League families are Foundation (practice preview), Practical Accounting (approved First Shift case), General Accounting (approved bank-fee adjustment item from the workpaper), Advanced Review (locked) and Finance Leadership (locked). Foundation has non-ranked preview practice. Specialist tracks are architecture-ready, not represented as playable online leagues. The same date and league produce the same scenario seed and version for local profiles. One ranked result per profile/challenge/version/scoring version is allowed; replays are practice-only.
+
+The hub shows local weekly position, points, an optional duel, quality dimensions, game awards and recent results. Full First Shift and Bank Reconciliation missions are the two released boss-style case experiences; the Boss tab links to them rather than fabricating a separate 20-question boss or awarding unearned evidence. A future dedicated boss ruleset remains pending.
+
+`lib/local-competition/v2.ts` owns challenge selection, scoring, duel state, anti-farming, weekly standings, streaks and deterministic awards. `v2-repository.ts` stores public comparison summaries locally. `BrowserMultiProfileRepository` isolates game, career, First Shift, Bank Reconciliation, Skill Passport and CV keys during profile switches, creation and import. Results are local/unverified even when compared across devices.

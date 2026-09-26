@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {useEffect,useState} from 'react';
-import {ArrowLeft,ArrowRight,BadgeCheck,BarChart3,Bell,BookMarked,BookOpen,BriefcaseBusiness,Building2,Check,ChevronRight,CircleUserRound,ClipboardCheck,FileBarChart,FileText,Gamepad2,Inbox,Landmark,Lock,Settings,ShieldCheck,Star,Target,Truck,Users,WalletCards} from 'lucide-react';
+import {ArrowLeft,ArrowRight,BadgeCheck,BarChart3,Bell,BookMarked,BookOpen,BriefcaseBusiness,Building2,Check,ChevronRight,CircleUserRound,ClipboardCheck,FileBarChart,FileText,Gamepad2,Inbox,Landmark,Lock,Settings,ShieldCheck,Star,Target,Trophy,Truck,Users,WalletCards} from 'lucide-react';
 import {useGame} from '@/lib/campaign/store';
 import {firstDayCompany,firstDayDocuments,firstDayProgress} from '@/lib/campaign/first-day';
 import {projectShiftPerformance} from '@/lib/cases/performance';
@@ -44,5 +44,5 @@ export function GameHub({locale}:{locale:Locale}){
    <section className="readiness-panel"><header><BriefcaseBusiness/><b>{say('Hiring readiness','الجاهزية المهنية')}</b><span>{readiness.score===null?say('Building evidence','نبني الأدلة'):`${readiness.score}%`}</span></header><p>{say('Complete professional cases to build an evidence-based profile. Local gameplay never becomes Verified.','أكمل حالات مهنية لبناء ملف قائم على الأدلة. اللعب المحلي لا يصبح «موثقًا».')}</p><Link href={`/${locale}/career`}>{say('Open Career Hub','افتح المسار المهني')}<Arrow/></Link></section>
    <section className="employer-preview-panel"><span><FileBarChart/>{say('EMPLOYER PREVIEW · DEMO','معاينة الشركات · تجريبية')}</span><h2>{say('Performance becomes evidence.','الأداء يتحول إلى دليل.')}</h2><p>{say('See how completed cases can be presented without claiming verification.','شاهد كيف تُعرض الحالات المكتملة دون ادعاء التوثيق.')}</p><Link href={`/${locale}/employers`}>{say('View preview','اعرض المعاينة')}<Arrow/></Link></section>
   </aside>
- </section><button className="command-alert" aria-label={say('Notifications','الإشعارات')}><Bell/><span>{company.pendingDocuments}</span></button></main>;
+ </section><div className="hub-competition-card"><Trophy/><div><b>{say('Local Career League','الدوري المهني المحلي')}</b><small>{say('Daily challenge · offline duel · weekly league','تحدٍ يومي · مبارزة محلية · دوري أسبوعي')}</small></div><Link href={`/${locale}/leaderboard`}>{say('Play challenge','العب التحدي')}<Arrow/></Link><Link href={`/${locale}/game/bank-reconciliation`}>{say('Reconciliation workpaper','ورقة عمل التسوية')}<Arrow/></Link></div><button className="command-alert" aria-label={say('Notifications','الإشعارات')}><Bell/><span>{company.pendingDocuments}</span></button></main>;
 }

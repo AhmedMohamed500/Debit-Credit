@@ -24,7 +24,7 @@ export const missionRoutes:Record<string,{skillId:SkillId;route:string|null;lock
  'supplier-work':{skillId:'accounts-payable',route:'/game/suppliers',locked:false,reason:t('Supplier document control builds AP readiness.','رقابة مستندات الموردين تبني جاهزية AP.')},
  'customer-work':{skillId:'accounts-receivable',route:'/game/customers',locked:false,reason:t('Receipt investigation builds AR readiness.','التحقق من التحصيل يبني جاهزية AR.')},
  'cash-control':{skillId:'cash-treasury',route:'/game/bank',locked:false,reason:t('Cash and receipt control supports treasury work.','رقابة النقدية والتحصيل تدعم شغل الخزينة.')},
- 'bank-reconciliation':{skillId:'bank-reconciliation',route:'/game/bank',locked:true,reason:t('Bank reconciliation is required for cash and corporate roles.','تسوية البنك مطلوبة لأدوار الخزينة والشركات.')},
+ 'bank-reconciliation':{skillId:'bank-reconciliation',route:'/game/bank-reconciliation',locked:false,reason:t('Practice a real bank reconciliation workpaper for cash and corporate roles.','تدرّب على ورقة عمل تسوية بنكية حقيقية لأدوار الخزينة والشركات.')},
  'adjustments':{skillId:'adjusting-entries',route:'/game/month-end',locked:true,reason:t('Adjustments support accurate period-end reporting.','قيود التسوية تدعم تقارير نهاية الفترة.')},
  'month-end':{skillId:'month-end-closing',route:'/game/month-end',locked:true,reason:t('Close discipline is central to corporate accounting.','انضباط الإقفال أساسي في محاسبة الشركات.')},
  'ledger-rescue':{skillId:'ledger-posting',route:'/ledger',locked:false,reason:t('Ledger review connects accepted entries to account balances.','مراجعة الأستاذ تربط القيود المقبولة بأرصدة الحسابات.')},

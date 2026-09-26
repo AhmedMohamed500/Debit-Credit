@@ -1,5 +1,7 @@
 # Personal Career Map
 
+Phase A/B integration: Game Hub now uses the same `personalCareerMap` and `nextCareerActivity` prerequisites to show one actionable recommendation after career entry and placement. See [PRODUCT-USER-FLOW.md](PRODUCT-USER-FLOW.md); map pages and saved data remain unchanged.
+
 ## 2026-09-26 professional mission and optional league
 
 The `bank-reconciliation` node now routes to the playable `/game/bank-reconciliation` workpaper. A qualifying reconciliation marks the skill Practiced through the shared evidence repository; the map and gap recalculate from that passport. Competition is optional game activity and never turns league points into evidence. Full Month-End stays planned/locked.

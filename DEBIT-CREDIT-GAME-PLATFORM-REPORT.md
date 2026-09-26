@@ -1,5 +1,9 @@
 # Debit & Credit
 
+## Phase A/B product integration and four-persona landing — 2026-09-26
+
+The product-flow audit, navigation cleanup, one evidence-led Game Hub next action, bank-zone redirect, and four-persona Landing V4 redesign are recorded in [PHASE-A-B-PRODUCT-INTEGRATION.md](PHASE-A-B-PRODUCT-INTEGRATION.md). Bank Track expansion is deliberately deferred to Phase C.
+
 ## Career Game Phase 2–3 update — 2026-09-26
 
 The preserved First Shift workplace now continues to a mathematically tested Bank Reconciliation workpaper. A complete local reconciliation records conservative Practiced evidence, updates the career gap and supports a deduplicated CV simulation bullet. The local Career League hub adds deterministic approved-case challenges, sealed same-scenario duels, weekly standings, game-only awards, offline JSON comparison and unverified labels. Full Month-End, online multiplayer and verified rankings remain unavailable. See [Phase 2](CAREER-GAME-PHASE-2-REPORT.md), [Phase 3](CAREER-GAME-PHASE-3-COMPETITION-REPORT.md) and [project guide](PROJECT-COMPLETE-GUIDE.md).

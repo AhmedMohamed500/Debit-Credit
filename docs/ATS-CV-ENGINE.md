@@ -1,5 +1,7 @@
 # Skill Passport → Role → ATS CV Engine
 
+Phase A/B integration: the primary navigation now links to the real CV, while the Landing persona choices only preselect Career Entry and cannot create CV claims. Existing simulation bullets remain separate from employment. See [PRODUCT-USER-FLOW.md](PRODUCT-USER-FLOW.md).
+
 ## Phase 2 bank reconciliation addition
 
 A qualifying Mizan bank workpaper contributes one deduplicated simulation bullet describing statement/ledger matching, timing differences and adjustments. It appears only under **Accounting Simulation Experience**, not employment. Opening the CV after evidence merge recomputes the document and records a changed local revision.

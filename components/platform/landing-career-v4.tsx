@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {ArrowLeft, ArrowRight, BarChart3, BriefcaseBusiness, Building2, CheckCircle2, ClipboardCheck, GraduationCap, LockKeyhole, Target, TriangleAlert} from 'lucide-react';
+import {ArrowLeft, ArrowRight, BarChart3, BookOpen, BriefcaseBusiness, Building2, CheckCircle2, ClipboardCheck, FileCheck2, GraduationCap, LockKeyhole, Target, TriangleAlert} from 'lucide-react';
 import type {Locale} from '@/types';
 
 type Props = {locale: Locale};
@@ -44,16 +44,18 @@ const language = {
       ],
     },
     audience: {
-      eyebrow: 'لمن هذه المنصة؟',
+      eyebrow: 'من أنت في رحلتك المهنية؟',
       title: 'مناسبة في كل مرحلة من رحلتك المهنية',
-      description: 'سواء كنت طالبًا، خريجًا جديدًا، أو محاسبًا تعمل حاليًا — ستجد مسارًا يناسب المرحلة التي أنت فيها.',
-      labels: ['مشكلتك الآن', 'ستتعلم', 'ستصل إلى'],
+      description: 'سواء كنت طالبًا، خريجًا جديدًا، محاسبًا تعمل حاليًا، أو صاحب خبرة تستعد لمسؤولية أكبر — ابدأ من مستواك الحقيقي.',
+      labels: ['تحديك الآن', 'هتمارس إيه؟', 'الخطوة التالية'],
       personas: [
-        {title: 'طالب محاسبة', rows: ['المفاهيم صعبة ومشتتة أحيانًا.', 'من الأساسيات إلى التطبيق العملي.', 'فهم أقوى واستعداد أفضل لسوق العمل.'], cta: 'ابدأ كطالب', alt: 'طالبة محاسبة في بداية رحلتها المهنية'},
-        {title: 'خريج جديد', rows: ['الخبرة العملية ما زالت محدودة.', 'ممارسة مهام داخل شركات محاكاة.', 'ملف مهني أقوى واستعداد أفضل للتوظيف.'], cta: 'ابدأ كخريج جديد', alt: 'خريج محاسبة جديد يستعد للعمل'},
-        {title: 'محاسب في شركة صغيرة', rows: ['الاعتماد على المهام الروتينية فقط.', 'التحليل والمراجعة والتسويات المتاحة، ثم مهارات أوسع بالتدرج.', 'تطوير مهاراتك والاستعداد لأدوار أكبر.'], cta: 'ابدأ كمحاسب محترف', alt: 'محاسب يعمل ويخطط لمسؤولية مهنية أكبر'},
+        {id: 'student', title: 'طالب محاسبة', stage: 'بناء الأساس', promise: 'حوّل المفاهيم إلى فهم عملي.', rows: ['النظرية مشتتة والتطبيق محدود.', 'أساسيات المحاسبة وAccount City وBootcamp وأول قيد.', 'استعداد أقوى للتدريب والعمل.'], cta: 'ابدأ كطالب', alt: 'طالبة محاسبة تدرس في مساحة عمل مضيئة'},
+        {id: 'graduate', title: 'خريج جديد', stage: 'بداية المسيرة', promise: 'ابدأ أول يوم شغل بثقة أكبر.', rows: ['درست النظرية لكن خبرتك بالمستندات محدودة.', 'Mizan Trading وFirst Shift والقيود وحالات العملاء والموردين.', 'ملف محاكاة مهني أقوى، لا خبرة عمل مزعومة.'], cta: 'ابدأ كخريج جديد', alt: 'خريج محاسبة في مكتب حديث'},
+        {id: 'working-accountant', title: 'محاسب شغال', stage: 'تطوير المسار', promise: 'وسّع مسؤولياتك خارج روتينك.', rows: ['قد لا تتعرض لكل المهارات المطلوبة في شركة أكبر.', 'تشخيص الفجوة والتسوية البنكية وحالات العمل المتاحة.', 'استعداد لمسار أكبر بخطوات قابلة للقياس.'], cta: 'ابدأ كمحاسب شغال', alt: 'محاسب يراجع مستندات مالية في العمل'},
+        {id: 'experienced-accountant', title: 'محاسب بخبرة', stage: 'المستوى التالي', promise: 'انتقل من التنفيذ إلى المراجعة.', rows: ['تبحث عن مسؤوليات أوسع في التحليل والرقابة.', 'تقييم المسار وما يتاح الآن من حالات ومراجعة؛ الإقفال والقيادة قيد التطوير.', 'خطة واضحة نحو أدوار أعلى دون وعود وظيفية.'], cta: 'ابدأ كمحاسب بخبرة', alt: 'محاسب خبير في مكتب مالي'},
       ],
     },
+    work: {eyebrow: 'شغل محاسبي مش أسئلة وبس', title: 'هتشتغل على حالات محاسبية', description: 'ابدأ بمستندات وقرارات حقيقية داخل المحاكاة. نوضّح المتاح الآن وما يزال ضمن الخطة.', statuses: ['متاح', 'متاح', 'قابل للعب', 'قيد التطوير', 'مقفول · قيد التطوير'], items: ['مراجعة فاتورة مورد', 'إيصال عميل', 'تسوية بنكية', 'تسويات الاستحقاق', 'الإقفال الشهري'], action: 'افتح الحالة'},
   },
   en: {
     hero: 'A local accounting competition that builds career skills',
@@ -95,14 +97,16 @@ const language = {
     audience: {
       eyebrow: 'WHO IS THIS PLATFORM FOR?',
       title: 'Built for every stage of your career journey',
-      description: 'Whether you are a student, a fresh graduate, or a working accountant, there is a starting path that fits your current stage.',
-      labels: ['Your challenge now', 'You will learn', 'You can build toward'],
+      description: 'Student, new graduate, working or experienced accountant: begin from your real starting point and grow toward wider responsibility.',
+      labels: ['Your challenge', 'What you will practise', 'Where it leads'],
       personas: [
-        {title: 'Accounting student', rows: ['Accounting concepts can feel scattered.', 'Move from foundations to practical application.', 'Build understanding and prepare better for work.'], cta: 'Start as a student', alt: 'An accounting student at the beginning of her career journey'},
-        {title: 'Fresh graduate', rows: ['Practical experience is still limited.', 'Practise tasks inside simulated companies.', 'Build a stronger profile and prepare for applications.'], cta: 'Start as a graduate', alt: 'A fresh accounting graduate preparing for work'},
-        {title: 'Small-company accountant', rows: ['Daily work can become repetitive.', 'Develop available analysis, review and reconciliation skills before broader paths unlock.', 'Grow your skills and prepare for wider responsibilities.'], cta: 'Start as an accountant', alt: 'A working accountant planning broader professional responsibility'},
+        {id: 'student', title: 'Accounting student', stage: 'Build foundations', promise: 'Turn concepts into practical understanding.', rows: ['Theory feels scattered; practice is limited.', 'Accounting foundations, Account City, Bootcamp and first entries.', 'Stronger preparation for training and work.'], cta: 'Start as a student', alt: 'Accounting student studying in a bright workspace'},
+        {id: 'graduate', title: 'Fresh graduate', stage: 'Begin your career', promise: 'Face your first shift with confidence.', rows: ['You studied theory, but have handled few real documents.', 'Mizan Trading, First Shift, journals, customer and supplier cases.', 'A stronger simulation record, not claimed employment.'], cta: 'Start as a graduate', alt: 'Fresh accounting graduate in a modern office'},
+        {id: 'working-accountant', title: 'Working accountant', stage: 'Grow your path', promise: 'Practise beyond your daily routine.', rows: ['Your current role may not expose you to broader work.', 'Career gap diagnosis, bank reconciliation and available cases.', 'Evidence-led preparation for wider responsibilities.'], cta: 'Start as a working accountant', alt: 'Accountant reviewing financial documents at work'},
+        {id: 'experienced-accountant', title: 'Experienced accountant', stage: 'Next responsibility', promise: 'Move from doing to reviewing.', rows: ['You need broader analysis and control responsibility.', 'Career assessment and available review cases; closing and leadership are planned.', 'A clear route toward senior roles without hiring promises.'], cta: 'Start as an experienced accountant', alt: 'Experienced accountant in a finance office'},
       ],
     },
+    work: {eyebrow: 'MORE THAN ANSWERING QUESTIONS', title: 'Work through accounting cases', description: 'Inspect documents and make decisions inside the simulation. Current and planned activities are clearly labelled.', statuses: ['Available', 'Available', 'Playable', 'In development', 'Locked · in development'], items: ['Supplier invoice review', 'Customer receipt', 'Bank reconciliation', 'Accrual adjustment', 'Month-end close'], action: 'Open case'},
   },
 } as const;
 
@@ -112,7 +116,9 @@ const featureImages = ['/landing/competition-world-v2.webp', '/landing/career-fu
 const landingImageQuality = process.env.NODE_ENV === 'test' ? undefined : 100;
 const howImages = ['/landing/career-league-hero-v2.png', '/landing/career-journey-world-v2.webp', '/landing/player-journeys-v2.png', '/landing/career-future-v2.webp'];
 const howIcons = [Target, Building2, ClipboardCheck, BriefcaseBusiness];
-const personaIcons = [GraduationCap, BriefcaseBusiness, BarChart3];
+const personaIcons = [BookOpen, GraduationCap, BriefcaseBusiness, BarChart3];
+const personaImages = ['/landing/persona-student-v1.webp', '/landing/persona-graduate-v1.webp', '/landing/persona-working-v1.webp', '/landing/persona-experienced-v1.webp'];
+const workRoutes = ['/game/suppliers', '/game/customers', '/game/bank-reconciliation', null, null] as const;
 
 function href(locale: Locale, route: string) { return `/${locale}${route}`; }
 
@@ -122,8 +128,8 @@ export function CareerLandingV4({locale}: Props) {
     <HowGameWorks locale={locale}/>
     <WhoPlatformFor locale={locale}/>
     <CareerJourneyWorld locale={locale}/>
+    <AccountingWorkSection locale={locale}/>
     <LandingFeatureWorlds locale={locale}/>
-    <PlayerJourneyStories locale={locale}/>
     <CareerFutureCta locale={locale}/>
   </div>;
 }
@@ -170,11 +176,19 @@ function WhoPlatformFor({locale}: Props) {
       {t.personas.map((persona, index) => {
         const Icon = personaIcons[index];
         return <article className={`cl4-audience-card persona-${index + 1}`} key={persona.title}>
-          <div className="cl4-audience-photo"><Image src="/landing/player-journeys-v2.png" alt={persona.alt} fill quality={landingImageQuality} sizes="(max-width: 700px) 92vw, 180px"/></div>
-          <div className="cl4-audience-copy"><header><span><Icon aria-hidden/></span><h3>{persona.title}</h3></header><div className="cl4-audience-rows">{persona.rows.map((row, rowIndex) => <div key={t.labels[rowIndex]}><i>{rowIndex === 0 ? <TriangleAlert aria-hidden/> : rowIndex === 1 ? <Target aria-hidden/> : <BarChart3 aria-hidden/>}</i><span><b>{t.labels[rowIndex]}</b><p>{row}</p></span></div>)}</div><Link href={href(locale, '/onboarding')}>{persona.cta}{locale === 'ar' ? <ArrowLeft aria-hidden/> : <ArrowRight aria-hidden/>}</Link></div>
+          <div className="cl4-audience-photo"><Image src={personaImages[index]} alt={persona.alt} fill quality={75} sizes="(max-width: 600px) 92vw, (max-width: 1200px) 45vw, 400px"/><span className="cl4-audience-stage"><Icon aria-hidden/>{persona.stage}</span><div className="cl4-audience-identity"><h3>{persona.title}</h3><p>{persona.promise}</p></div></div>
+          <div className="cl4-audience-copy"><div className="cl4-audience-rows">{persona.rows.map((row, rowIndex) => <div key={t.labels[rowIndex]}><i>{rowIndex === 0 ? <TriangleAlert aria-hidden/> : rowIndex === 1 ? <Target aria-hidden/> : <BarChart3 aria-hidden/>}</i><span><b>{t.labels[rowIndex]}</b><p>{row}</p></span></div>)}</div><Link href={href(locale, `/onboarding?persona=${persona.id}`)}>{persona.cta}{locale === 'ar' ? <ArrowLeft aria-hidden/> : <ArrowRight aria-hidden/>}</Link></div>
         </article>;
       })}
     </div>
+  </section>;
+}
+
+function AccountingWorkSection({locale}: Props) {
+  const t = language[locale].work;
+  return <section className="cl4-work" id="accounting-work" aria-labelledby="cl4-work-title">
+    <header className="cl4-new-heading"><span>{t.eyebrow}</span><h2 id="cl4-work-title">{t.title}</h2><p>{t.description}</p></header>
+    <div className="cl4-work-grid">{t.items.map((item, index) => <article key={item} className={workRoutes[index] ? 'available' : 'planned'}><span className="cl4-work-icon">{index < 2 ? <FileCheck2 aria-hidden/> : index === 2 ? <Building2 aria-hidden/> : <LockKeyhole aria-hidden/>}</span><h3>{item}</h3><small>{t.statuses[index]}</small>{workRoutes[index] ? <Link href={href(locale, workRoutes[index])}>{t.action}{locale === 'ar' ? <ArrowLeft aria-hidden/> : <ArrowRight aria-hidden/>}</Link> : null}</article>)}</div>
   </section>;
 }
 
@@ -211,14 +225,6 @@ function LandingFeatureWorlds({locale}: Props) {
       <strong>{t.statusTitle}</strong>
       <ul>{t.statuses.map((status) => <li key={status}>{status}</li>)}</ul>
     </div>
-  </section>;
-}
-
-function PlayerJourneyStories({locale}: Props) {
-  const t = language[locale];
-  return <section className="cl4-stories" aria-labelledby="cl4-stories-title">
-    <div className="cl4-stories-heading"><span>{locale === 'ar' ? 'نماذج توضيحية' : 'ILLUSTRATIVE EXAMPLES'}</span><h2 id="cl4-stories-title">{t.stories}</h2><p>{t.storiesIntro}</p></div>
-    <div className="cl4-personas">{t.personas.map(([role, description], index) => <article key={role}><span className="cl4-persona-number">0{index + 1}</span><div><h3>{role}</h3><p>{description}</p></div></article>)}</div>
   </section>;
 }
 

@@ -3,15 +3,40 @@ import{MarketingLanding}from'@/components/platform/marketing-landing';import{Pla
 vi.mock('next/navigation',()=>({usePathname:()=>'/en'}));
 beforeEach(()=>{localStorage.clear();document.documentElement.dataset.theme=''});afterEach(cleanup);
 describe('platform UI',()=>{
- it('uses approved artwork and preserves the five career and three feature routes',()=>{
+ it('uses text-free supporting artwork and preserves the five career and three feature routes',()=>{
    const {container}=render(<MarketingLanding locale="en"/>);
    expect(screen.getByRole('heading',{name:'A local accounting competition that builds career skills'})).toBeInTheDocument();
-   expect(container.querySelector('.cl4-hero-image')).toHaveAttribute('src',expect.stringContaining('approved-hero-clean.png'));
-   expect(container.querySelector('.cl4-journey-art img')).toHaveAttribute('src',expect.stringContaining('approved-journey.png'));
-   expect(container.querySelector('.cl4-feature-art img')).toHaveAttribute('src',expect.stringContaining('approved-features.png'));
+   expect(container.querySelector('.cl4-hero-image')).toHaveAttribute('src',expect.stringContaining('career-league-hero-v2.png'));
+   expect(container.querySelector('.cl4-journey-art img')).toHaveAttribute('src',expect.stringContaining('career-journey-world-v2.webp'));
+   expect(container.querySelector('.cl4-feature-art img')).toHaveAttribute('src',expect.stringContaining('competition-world-v2.webp'));
    expect(container.querySelector('.cl4-final-image')).toHaveAttribute('src',expect.stringContaining('approved-final.png'));
+   expect(container.querySelectorAll('.cl4-stage-hotspot strong')).toHaveLength(5);
+   expect(container.querySelectorAll('.cl4-feature-copy strong')).toHaveLength(3);
    const routes=[['Accounting Bootcamp','/en/bootcamp'],['Mizan Trading','/en/game'],['Bigger Companies','/en/career-league/companies'],['Month-End','/en/game/month-end'],['Finance Leadership','/en/career-league/promotion'],['Try the demo competition','/en/leaderboard'],['View your CV','/en/career-profile/cv'],['Browse skills','/en/career-profile/skills']];
    routes.forEach(([name,href])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',href));
+ });
+ it('adds the connected how-it-works and audience sections in both directions',()=>{
+   const view=render(<MarketingLanding locale="en"/>);
+   expect(view.container.querySelector('.cl4')).toHaveAttribute('dir','ltr');
+   expect(screen.getByRole('heading',{name:'From Your First Step to Your Professional Future'})).toBeInTheDocument();
+   ['Choose your level','Enter the right company','Solve cases and tasks','Build your CV and skills'].forEach(name=>expect(screen.getByRole('heading',{name})).toBeInTheDocument());
+   expect(view.container.querySelectorAll('.cl4-how-step')).toHaveLength(4);
+   expect(view.container.querySelectorAll('.cl4-audience-card')).toHaveLength(3);
+   expect(screen.getByRole('heading',{name:'Built for every stage of your career journey'})).toBeInTheDocument();
+   ['Start as a student','Start as a graduate','Start as an accountant'].forEach(name=>expect(screen.getByRole('link',{name})).toHaveAttribute('href','/en/onboarding'));
+   const studentCta=screen.getByRole('link',{name:'Start as a student'});
+   studentCta.addEventListener('click',event=>event.preventDefault());
+   fireEvent.click(studentCta);
+   expect(localStorage.getItem(PLATFORM_KEY)).toBeNull();
+   expect(view.container.querySelectorAll('.cl4-how-visual img[alt=""]')).toHaveLength(4);
+   ['#how','#journey','#companies','#competition','#tools'].forEach(anchor=>expect(view.container.querySelector(`[id="${anchor.slice(1)}"]`)).toBeInTheDocument());
+   expect(screen.queryByText(/guaranteed job|guaranteed hiring|career ready 100%/i)).not.toBeInTheDocument();
+   view.rerender(<MarketingLanding locale="ar"/>);
+   expect(view.container.querySelector('.cl4')).toHaveAttribute('dir','rtl');
+   expect(screen.getByRole('heading',{name:'من أول خطوة إلى مستقبل مهني حقيقي'})).toBeInTheDocument();
+   ['اختر مستواك','ادخل شركة مناسبة','حل حالات ومهام','ابنِ CV وسجّل مهاراتك'].forEach(name=>expect(screen.getByRole('heading',{name})).toBeInTheDocument());
+   expect(screen.getByRole('heading',{name:'مناسبة في كل مرحلة من رحلتك المهنية'})).toBeInTheDocument();
+   ['ابدأ كطالب','ابدأ كخريج جديد','ابدأ كمحاسب محترف'].forEach(name=>expect(screen.getByRole('link',{name})).toHaveAttribute('href','/ar/onboarding'));
  });
  it('renders accessible Arabic headings and real calls to action',()=>{
    render(<MarketingLanding locale="ar"/>);
@@ -40,7 +65,8 @@ describe('platform UI',()=>{
  it('exposes real challenge routes and labels the boss as locked',()=>{render(<ChallengesPlatform locale="en"/>);expect(screen.getAllByRole('link',{name:/Play challenge/})).toHaveLength(2);expect(screen.getByText('Month-End Crisis').closest('article')).toHaveClass('locked')});
  it('persists dark theme and applies it',async()=>{render(<ThemeProvider><ThemeToggle/></ThemeProvider>);fireEvent.click(screen.getByTitle('dark'));await waitFor(()=>expect(document.documentElement.dataset.theme).toBe('dark'));expect(localStorage.getItem(THEME_KEY)).toBe('dark')});
  it('restores a saved theme preference',async()=>{localStorage.setItem(THEME_KEY,'dark');render(<ThemeProvider><ThemeToggle/></ThemeProvider>);await waitFor(()=>expect(screen.getByTitle('dark')).toHaveAttribute('aria-pressed','true'))});
- it('stores student career entry and sends the foundation path to Bootcamp without granting evidence',()=>{render(<PlatformOnboarding locale="en"/>);fireEvent.click(screen.getByRole('button',{name:/Accounting Student/}));fireEvent.click(screen.getByRole('button',{name:/Get first accounting job/}));fireEvent.click(screen.getByRole('button',{name:/Start from the beginning/}));const enter=screen.getByRole('link',{name:/Enter Accounting Bootcamp/});expect(enter).toHaveAttribute('href','/en/bootcamp');enter.addEventListener('click',event=>event.preventDefault());fireEvent.click(enter);expect(JSON.parse(localStorage.getItem(PLATFORM_KEY)??'{}')).toMatchObject({experience:'student',goal:'career',onboardingComplete:true});expect(localStorage.getItem(PLATFORM_KEY)).not.toMatch(/verified|evidence/i)});
+ it('stores the student path and target without granting evidence',()=>{const view=render(<PlatformOnboarding locale="en"/>);expect(view.container.querySelector('.career-entry')).toHaveAttribute('dir','ltr');fireEvent.click(screen.getByRole('button',{name:/Accounting Student/}));fireEvent.click(screen.getByRole('button',{name:/Choose my destination/}));fireEvent.click(screen.getByRole('button',{name:/Prepare for my first job/}));const enter=screen.getByRole('link',{name:/Start my career diagnostic/});expect(enter).toHaveAttribute('href','/en/career-league/placement');enter.addEventListener('click',event=>event.preventDefault());fireEvent.click(enter);expect(JSON.parse(localStorage.getItem(PLATFORM_KEY)??'{}')).toMatchObject({experience:'student',goal:'career',onboardingComplete:true});expect(localStorage.getItem(PLATFORM_KEY)).not.toMatch(/verified|evidence/i)});
+ it('offers the experienced path, every target role and Arabic RTL',()=>{const view=render(<PlatformOnboarding locale="ar"/>);expect(view.container.querySelector('.career-entry')).toHaveAttribute('dir','rtl');expect(view.container.querySelectorAll('.career-entry-personas button')).toHaveLength(4);fireEvent.click(screen.getByRole('button',{name:/محاسب بخبرة/}));fireEvent.click(screen.getByRole('button',{name:/اختار وجهتي/}));fireEvent.click(screen.getByRole('button',{name:/أنقل لشركة أكبر/}));fireEvent.click(screen.getByRole('button',{name:/استكشف كل الوظائف/}));expect(view.container.querySelectorAll('.career-entry-roles button')).toHaveLength(9);fireEvent.click(screen.getByRole('button',{name:/مدير مالي/}));const enter=screen.getByRole('link',{name:/ابدأ التشخيص المهني/});enter.addEventListener('click',event=>event.preventDefault());fireEvent.click(enter);expect(JSON.parse(localStorage.getItem('debit-credit-career-league-v1')??'{}')).toMatchObject({persona:'experienced-accountant',targetRoleId:'finance-manager'});expect(localStorage.getItem('debit-credit-skill-evidence-v1')).toBeNull()});
  it('provides five career-game mobile destinations in both directions',()=>{const view=render(<MobileGameNav locale="en"/>);expect(screen.getByRole('navigation',{name:'Mobile navigation'}).querySelectorAll('a')).toHaveLength(5);expect(screen.getByRole('link',{name:'League'})).toHaveAttribute('href','/en/leaderboard');expect(screen.getByRole('link',{name:'Profile'})).toHaveAttribute('href','/en/profile');view.rerender(<MobileGameNav locale="ar"/>);expect(screen.getByRole('navigation',{name:'تنقل الهاتف'})).toBeInTheDocument()});
  it('renders one full-screen Game Hub shell with canonical accounting routes',()=>{const{container}=render(<GameHub locale="en"/>);expect(container.querySelector('main')).toHaveClass('command-game');expect(container.querySelectorAll('.platform-nav')).toHaveLength(1);expect(screen.getByRole('region',{name:'Interactive Mizan Trading map'})).toBeInTheDocument();expect(screen.getByRole('link',{name:/Suppliers/})).toHaveAttribute('href','/en/game/suppliers');expect(screen.getByRole('link',{name:/Customers/})).toHaveAttribute('href','/en/game/customers');expect(screen.getByRole('link',{name:/Bank/})).toHaveAttribute('href','/en/game/bank');expect(screen.getByRole('link',{name:/Logistics/})).toHaveAttribute('href','/en/game/logistics');expect(screen.getByRole('link',{name:/Month End/})).toHaveAttribute('href','/en/game/month-end');expect(screen.getByRole('link',{name:'Ledger'})).toHaveAttribute('href','/en/ledger');expect(screen.getByRole('link',{name:'Nature of Accounts'})).toHaveAttribute('href','/en/account-guide');expect(screen.getByRole('link',{name:'Journal'})).toHaveAttribute('href','/en/journal');expect(screen.getByRole('link',{name:'Trial Balance'})).toHaveAttribute('href','/en/trial-balance');expect(screen.getByText('EMPLOYER PREVIEW · DEMO')).toBeInTheDocument()});
 });

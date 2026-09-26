@@ -1,5 +1,9 @@
 # Complete Career Game Implementation Report
 
+## Career Entry System update (26 September 2026)
+
+The current branch adds a focused local career-entry campaign: four starting personas, aspirations and nine target roles, four distinct diagnostic case sets, a result separating diagnostic judgment from saved Skill Passport evidence, and a role-specific career map with honest Available/Locked/Practiced/Demonstrated/Planned states. The onboarding choice updates Career Profile and ATS CV target preferences without awarding skills. Existing versioned saves survive. See `docs/CAREER-ENTRY-SYSTEM.md`, `docs/CAREER-DIAGNOSTIC.md` and `docs/PERSONAL-CAREER-MAP.md` for the current implementation; older delivery details below are historical. PR #4 was already merged before this update, so its historical status must not be described as open.
+
 ## Delivery identity
 
 - Repository: AhmedMohamed500/Debit-Credit

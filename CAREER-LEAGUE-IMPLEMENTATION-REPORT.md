@@ -1,5 +1,17 @@
 # Career League Implementation Report
 
+## Career Game Phase 2–3 — 2026-09-26
+
+First Shift's protected three-case operations room now leads to a Bank Reconciliation workpaper with matching, classification, balanced adjustments, unresolved handling and conservative evidence projection. Career League is a local competition hub with deterministic approved daily cases, sealed two-profile duels, anti-farming, weekly standings, offline unverified packages, game-only awards and profile management. Professional evidence stays independent of scores and wins. `npm run check` passed: zero-warning lint, TypeScript, 358 tests in 52 files and production build. Details and limitations: [Phase 2](CAREER-GAME-PHASE-2-REPORT.md), [Phase 3](CAREER-GAME-PHASE-3-COMPETITION-REPORT.md).
+
+## Connected Promotion Assessment and bank reconciliation — 2026-09-24
+
+The first promotion review is now a complete bilingual connected case: AP mismatch control, supported customer-receipt investigation, a five-item structured bank reconciliation, and documented sign-off. Correct classification reconciles the 256,900 bank statement and 235,400 ledger to 250,400. The deterministic rubric scores six professional dimensions, treats unsupported posting and forced balancing as critical errors, preserves an earned pass and the strongest prior evidence, unlocks Delta Commerce through the existing rule, and projects only local `Demonstrated` simulation evidence to Skill Passport. Corporate Bridge now exposes structured AP/AR and bank reconciliation as its first playable file while later weeks remain planned. Full details are in [docs/PROMOTION-ASSESSMENT-RECONCILIATION.md](docs/PROMOTION-ASSESSMENT-RECONCILIATION.md). The complete gate passed: ESLint, TypeScript, 336 tests across 49 files, and production build.
+
+## Current Landing Page V4 polish — 2026-09-24
+
+The current five-section, approved-artwork landing was polished without adding sections, changing routes, or touching Career League, Account City, First Shift, Skill Passport, or ATS CV logic. The marketing header now uses a single desktop/mobile height token; a clipped, non-scrolling page container restores sticky navigation; and all four internal anchors stop below the header. The mobile menu opens immediately under the header. Removing the hero scale transform and retaining unoptimized original images avoids extra resampling, while restrained hover glow, larger live copy, consistent section spacing, and a readable mobile hero heading reduce fatigue. See [docs/landing-page.md](docs/landing-page.md) for implementation details and `artifacts/landing-polish/` for before/after screenshots and browser metrics.
+
 ## Landing Page V2 career-world rebuild — 2026-09-20
 
 The Career League landing experience now follows the approved four-reference direction as one continuous accounting-career game story. The hero combines the existing cinematic learner scene with real mission panels, a VS moment, five simulated company steps, and truthful current product facts. The journey uses a new five-island visual world linked to Bootcamp, Mizan Trading, company progression, the locked Month-End preview, and the Finance Leadership target. Competition, evidence-based CV, and skills are presented as three product worlds. Player stories are explicitly fictional examples, and the final CTA shows a responsibility ladder without promising employment.

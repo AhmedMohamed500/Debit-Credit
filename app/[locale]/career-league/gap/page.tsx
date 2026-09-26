@@ -1,1 +1,1 @@
-import {CareerGapScreen} from '@/components/platform/career-league';import type{Locale}from'@/types';export default async function Page({params}:{params:Promise<{locale:Locale}>}){return <CareerGapScreen locale={(await params).locale}/>}
+import {PersonalCareerGap} from '@/components/platform/personal-career-gap';import type{Locale}from'@/types';export default async function Page({params}:{params:Promise<{locale:Locale}>}){return <PersonalCareerGap locale={(await params).locale}/>}

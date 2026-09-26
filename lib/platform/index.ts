@@ -47,7 +47,7 @@ export const gameBadges=[
 
 export function roleSkillGroups(roleId:RoleId,passport:SkillResult[]){const weights=roleCatalog[roleId].skills,rows=Object.keys(weights).map(id=>passport.find(item=>item.skillId===id as SkillId)!);return{demonstrated:rows.filter(x=>x.status==='demonstrated'||x.status==='verified'),practiced:rows.filter(x=>x.status==='practiced'),missing:rows.filter(x=>x.status==='unassessed')}}
 const missionBySkill:Partial<Record<SkillId,{route:string|null;ar:string;en:string;locked?:boolean}>>={
- 'bank-reconciliation':{route:null,ar:'تسوية البنك — ضمن Closing Week',en:'Bank Reconciliation — Closing Week',locked:true},
+ 'bank-reconciliation':{route:'/game/bank-reconciliation',ar:'تسوية البنك — ورقة عمل مهنية',en:'Bank Reconciliation — Professional Workpaper',locked:false},
  'journal-entries':{route:'/practice',ar:'تحدي القيود اليومية',en:'Journal Entry Challenge'},
  'document-analysis':{route:'/game/first-shift',ar:'أول وردية مهنية',en:'First Professional Shift'},
  'accounts-payable':{route:'/game/first-shift',ar:'تحقيق فاتورة المورد',en:'Supplier Invoice Investigation'},

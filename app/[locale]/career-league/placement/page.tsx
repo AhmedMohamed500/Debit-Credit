@@ -1,1 +1,1 @@
-import {PlacementChallengeScreen} from '@/components/platform/career-league';import type{Locale}from'@/types';export default async function Page({params}:{params:Promise<{locale:Locale}>}){return <PlacementChallengeScreen locale={(await params).locale}/>}
+import {CareerEntryDiagnostic} from '@/components/platform/career-entry-diagnostic';import type{Locale}from'@/types';export default async function Page({params}:{params:Promise<{locale:Locale}>}){return <CareerEntryDiagnostic locale={(await params).locale}/>}

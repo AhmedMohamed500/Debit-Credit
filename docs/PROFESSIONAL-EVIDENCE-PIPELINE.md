@@ -1,0 +1,7 @@
+# Professional Evidence Pipeline
+
+First Shift events continue to project through the existing case performance and evidence engine. A completed Bank Reconciliation workpaper produces one local `bank-reconciliation` evidence record only when all required work reconciles. The record contains scenario/rubric version, attempt count, matching/investigation, classification and journal dimensions. It is merged idempotently into `BrowserSkillEvidenceRepository` for the current local candidate.
+
+`calculatePassport` assigns **Practiced** to the single introductory bank case; it does not award Demonstrated or Verified. Existing role weights and `personalCareerGap` then show bank reconciliation as practiced for relevant target roles and recalculate the next gap. `buildCv` generates one deduplicated evidence-backed sentence under **Accounting Simulation Experience**, never under Work Experience. The CV and gap are derived from saved evidence when their pages are opened; local CV revision history is saved when the CV view is rendered. The completion view links to both and presents one modest notification.
+
+XP, league points, duel wins, badges and titles never enter this evidence stream. Competition's compact challenge is game practice; the full approved professional case supplies evidence only through its own qualification rules. Local data remains editable and cannot be considered externally verified.

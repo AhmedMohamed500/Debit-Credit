@@ -1,5 +1,21 @@
 # Debit & Credit — Career League Landing Page
 
+## How It Works and audience sections — 2026-09-25
+
+Two bilingual sections now sit between the existing hero and Career Journey without changing the five existing landing sections. **How It Works** presents one connected four-step career-game loop: choose a persona-based starting point, enter a simulated company, solve accounting cases, and build qualified simulation evidence into Skill Passport and the ATS CV. Available and planned states are labelled separately; Mizan Trading, invoice review, journal work, and bank reconciliation are not conflated with the planned Month-End experience.
+
+**Who Is This For?** gives Accounting Student, Fresh Graduate, and Working Accountant their own problem/learning/outcome panel. Every CTA preserves locale and opens the existing `/{locale}/onboarding` flow. The section does not infer a persona from the click because onboarding currently requires the user to make that choice explicitly.
+
+The four-step journey is a connected four-column sequence on wide screens, a horizontal snap journey on tablets, and a vertical connected journey on phones. Persona cards use three columns on desktop and one card per row below 900px. All copy, statuses, and actions are HTML; existing text-free landing artwork is used only as visual support. Dark mode, reduced motion, keyboard focus, RTL/LTR direction, and comfortable Arabic type sizes are preserved. The new copy promises preparation, evidence, and gap awareness—not employment, promotion, employer acceptance, or certification.
+
+## Landing Page V4 visual polish — 2026-09-24
+
+This is a polish of the current artwork-led landing, not a return to the V2 composition documented below. The five existing sections, approved four-image artwork, localized routes, and truthful product status remain unchanged. The marketing header now has one 72px desktop / 62px mobile height token, a quieter translucent surface, and a mobile menu positioned immediately below it. Replacing scroll-container-forming `overflow:hidden` with `overflow:clip` restores sticky behavior; shared `scroll-margin-top` keeps the journey, companies, competition, and tools targets below the header.
+
+The source artwork is 1672×941px. Next/Image continues to serve the approved files without recompression, with priority only for the hero. An extra hero scale transform was removed, hover glow was reduced, live explanatory copy was enlarged, and spacing now uses a shared section token. On narrow screens the clipped baked-in hero heading is covered by a readable localized heading; the five-island scroll panorama, three feature crops, compact fictional personas, and cinematic final scene remain intact. No gameplay or evidence logic changed.
+
+Before/after captures, image dimensions, anchor positions, menu behavior, and browser diagnostics are recorded in `artifacts/landing-polish/`. The full quality gate is ESLint, TypeScript, Vitest (330 tests), and a Next.js production build. At 1920px the 1672px source is enlarged about 15% to retain the approved full-bleed composition; a higher-resolution source would be needed for native-scale 1920px rendering.
+
 ## Landing Page V2 cinematic rebuild — 2026-09-20
 
 The current public Arabic/English landing page is the complete Career League V2 composition documented in [`LANDING-PAGE-V2.md`](LANDING-PAGE-V2.md). It combines a real HTML two-player hero, five linked career islands, local competition, evidence-based CV and skill worlds, explicitly illustrative player journeys, and a final professional city path. The navigation now contains only the six requested product anchors plus language, theme, demo access, and start actions.

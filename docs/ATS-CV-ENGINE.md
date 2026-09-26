@@ -1,5 +1,9 @@
 # Skill Passport → Role → ATS CV Engine
 
+## Phase 2 bank reconciliation addition
+
+A qualifying Mizan bank workpaper contributes one deduplicated simulation bullet describing statement/ledger matching, timing differences and adjustments. It appears only under **Accounting Simulation Experience**, not employment. Opening the CV after evidence merge recomputes the document and records a changed local revision.
+
 ## Evidence flow
 
 Accepted gameplay events project into professional evidence. Evidence projects into Skill Passport states. The selected target role supplies ordering weights. The CV then rebuilds from the same facts.

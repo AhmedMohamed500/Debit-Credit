@@ -6,6 +6,7 @@ import "./world.css";
 import "./office.css";
 import "./first-day.css";
 import "./platform.css";
+import "./career-entry.css";
 import "./landing-v2.css";
 import "./landing-v3.css";
 import "./landing-v4.css";

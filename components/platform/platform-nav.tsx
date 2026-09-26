@@ -12,7 +12,7 @@ export function PlatformNav({locale,marketing=false}:{locale:Locale;marketing?:b
   const main:[GameDestinationId,LucideIcon][]=[['game-hub',Home],['academy',BookOpen],['inbox',Gamepad2],['leaderboard',Medal],['career',BriefcaseBusiness]];
   const items:[string,LucideIcon,string,string][]=marketing?[
     [`/${locale}`,Home,'الرئيسية','Home'],
-    ['#journey',Workflow,'كيف يعمل؟','How it works'],
+    ['#how',Workflow,'كيف يعمل؟','How it works'],
     ['#journey',Route,'رحلتك المهنية','Career journey'],
     ['#companies',Building2,'الشركات','Companies'],
     ['#competition',Trophy,'المنافسة','Competition'],

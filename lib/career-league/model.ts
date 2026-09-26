@@ -1,15 +1,15 @@
 import type {RoleId,SkillId,SkillStatus} from '@/lib/career/model';
 import type {LocalizedText} from '@/lib/career/model';
 
-export type PlayerPersona='student'|'graduate'|'working-accountant';
+export type PlayerPersona='student'|'graduate'|'working-accountant'|'experienced-accountant';
 export type WorkEnvironment='small-business'|'accounting-office'|'retail'|'restaurant'|'trading-company'|'other';
-export type CareerGoal='first-job'|'bigger-company'|'general-accountant'|'ap'|'ar'|'treasury'|'gl'|'cost'|'corporate-accounting';
+export type CareerGoal='understand-basics'|'first-job'|'improve-current'|'bigger-company'|'general-accountant'|'ap'|'ar'|'treasury'|'gl'|'cost'|'corporate-accounting';
 export type PlacementPath='start-basics'|'take-challenge';
 export type CompanyTierId=1|2|3|4|5;
 export type AccessTier='free'|'pro';
 export type CareerFeature='foundation'|'first-shift'|'daily-challenge'|'basic-profile'|'career-league'|'corporate-bridge'|'company-tiers'|'promotion-assessments'|'advanced-cases'|'seasons'|'career-gap'|'full-passport'|'role-cv';
 
-export interface CareerLeagueState{version:1;persona:PlayerPersona|null;workEnvironment:WorkEnvironment|null;goal:CareerGoal|null;placementPath:PlacementPath|null;placementScore:number|null;placementRecommendation:CompanyTierId;targetOpportunityId:string|null;acceptedOfferId:string|null;onboardingComplete:boolean;assessmentResults:Record<string,'pass'|'needs-practice'>;updatedAt:string}
+export interface CareerLeagueState{version:1;persona:PlayerPersona|null;workEnvironment:WorkEnvironment|null;goal:CareerGoal|null;targetRoleId:RoleId|null;placementPath:PlacementPath|null;placementScore:number|null;placementRecommendation:CompanyTierId;targetOpportunityId:string|null;acceptedOfferId:string|null;onboardingComplete:boolean;assessmentResults:Record<string,'pass'|'needs-practice'>;updatedAt:string}
 export interface SkillRequirement{skillId:SkillId;minimum:Exclude<SkillStatus,'unassessed'|'verified'>}
 export interface CompanyUnlockRule{requiredMissionIds:string[];requirements:SkillRequirement[];promotionAssessmentId:string|null}
 export interface VirtualCompany{id:string;tier:CompanyTierId;name:LocalizedText;environment:LocalizedText;simulationLabel:LocalizedText;characteristics:LocalizedText[];unlock:CompanyUnlockRule}

@@ -31,6 +31,9 @@ export const roleCatalog:Record<RoleId,{label:LocalizedText;skills:Partial<Recor
  'inventory-accountant':{label:t('Inventory Accountant','محاسب مخزون'),skills:{'inventory-accounting':.35,'document-analysis':.15,'journal-entries':.15,'ledger-posting':.12,'cost-accounting':.13,'error-detection':.1}},
  'gl-accountant':{label:t('GL Accountant','محاسب أستاذ عام'),skills:{'ledger-posting':.25,'journal-entries':.2,'trial-balance':.18,'adjusting-entries':.15,'month-end-closing':.12,'financial-statements':.1}},
  'junior-auditor':{label:t('Junior Auditor','مراجع مبتدئ'),skills:{'document-analysis':.2,'error-detection':.25,'trial-balance':.14,'account-classification':.12,'bank-reconciliation':.12,'financial-statements':.1,'journal-entries':.07}},
+ 'senior-accountant':{label:t('Senior Accountant','محاسب أول'),skills:{'journal-entries':.12,'trial-balance':.14,'bank-reconciliation':.14,'adjusting-entries':.16,'month-end-closing':.18,'financial-statements':.14,'error-detection':.12}},
+ 'chief-accountant':{label:t('Chief Accountant','رئيس حسابات'),skills:{'trial-balance':.12,'bank-reconciliation':.12,'adjusting-entries':.14,'month-end-closing':.22,'financial-statements':.2,'error-detection':.2}},
+ 'finance-manager':{label:t('Finance Manager','مدير مالي'),skills:{'financial-statements':.28,'month-end-closing':.22,'error-detection':.18,'bank-reconciliation':.12,'trial-balance':.1,'adjusting-entries':.1}},
 };
 export const roleIds=Object.keys(roleCatalog) as RoleId[];
 export const skillIds=Object.keys(skillCatalog) as SkillId[];

@@ -1,15 +1,15 @@
 import type { GameState } from '@/lib/campaign/model';
 import { firstShiftCases,FIRST_SHIFT_RUBRIC_VERSION,FIRST_SHIFT_SCENARIO_VERSION,getFirstShiftCase } from './first-shift-cases';
-import type { AccountingCaseAction,AccountingCaseRuntime,CaseActionResult,CaseworkState,GameplayEvent,GameplayEventOutcome,GameplayEventType,GameplayPayload } from './model';
+import type { AccountingCaseAction,AccountingCaseRuntime,CaseActionResult,CaseMatchVerdict,CaseworkState,GameplayEvent,GameplayEventOutcome,GameplayEventType,GameplayPayload } from './model';
 import { gameStateCaseworkRepository } from './repository';
 
 const iso=(now:number)=>new Date(now).toISOString();
 const attemptId=(caseId:string)=>`first-shift/${caseId}/attempt-1`;
-const emptyRuntime=(caseId:string):AccountingCaseRuntime=>({caseId,status:'new',attemptId:attemptId(caseId),openedAt:null,inspectedDocumentIds:[],selectedActions:[],submissionCount:0,managerHelpCount:0,resolvedAt:null});
+const emptyRuntime=(caseId:string):AccountingCaseRuntime=>({caseId,status:'new',attemptId:attemptId(caseId),openedAt:null,inspectedDocumentIds:[],matchingDecisions:{},selectedActions:[],submissionCount:0,managerHelpCount:0,resolvedAt:null});
 export const emptyCasework=():CaseworkState=>({schemaVersion:1,scenarioVersion:FIRST_SHIFT_SCENARIO_VERSION,rubricVersion:FIRST_SHIFT_RUBRIC_VERSION,localCandidateId:'local-player',shiftStartedAt:null,workMinutes:0,cases:Object.fromEntries(firstShiftCases.map(item=>[item.id,emptyRuntime(item.id)])),events:[],scheduledConsequences:[]});
 
-export function caseworkState(state:GameState):CaseworkState{
- const saved=gameStateCaseworkRepository.read(state);if(saved?.schemaVersion===1&&Array.isArray(saved.events))return{...emptyCasework(),...saved,cases:Object.fromEntries(firstShiftCases.map(item=>[item.id,{...emptyRuntime(item.id),...saved.cases?.[item.id]}]))};
+ export function caseworkState(state:GameState):CaseworkState{
+ const saved=gameStateCaseworkRepository.read(state);if(saved?.schemaVersion===1&&Array.isArray(saved.events))return{...emptyCasework(),...saved,cases:Object.fromEntries(firstShiftCases.map(item=>[item.id,{...emptyRuntime(item.id),...saved.cases?.[item.id],matchingDecisions:saved.cases?.[item.id]?.matchingDecisions??{}}]))};
  const base=emptyCasework(),progress=state.legacy['first-day'] as {completed?:string[]}|undefined;
  for(const id of progress?.completed??[]){if(base.cases[id])base.cases[id]={...base.cases[id],status:'resolved',resolvedAt:state.evidence.filter(item=>item.activityId===`first-day/${id}`&&item.correct).at(-1)?.completedAt??null};}
  return base;
@@ -32,10 +32,19 @@ export function inspectCaseDocument(state:GameState,caseId:string,documentId:str
  const definition=getFirstShiftCase(caseId),work=caseworkState(state),runtime=work.cases[caseId],document=definition?.documents.find(item=>item.id===documentId);if(!runtime||!document||runtime.status==='resolved')return state;
  const updated={...runtime,status:'investigating' as const,inspectedDocumentIds:[...new Set([...runtime.inspectedDocumentIds,documentId])]};let next={...work,cases:{...work.cases,[caseId]:updated}};const type=document.kind==='source'?'document_inspected':'supporting_document_inspected';next=append(next,event(next,type,`${runtime.attemptId}:${type}:${documentId}`,now,caseId,runtime.attemptId,{documentId,documentKind:document.kind},'recorded',definition!.accountingReference));return save(state,next);
 }
+export function recordCaseFieldMatch(state:GameState,caseId:string,fieldId:string,verdict:CaseMatchVerdict,now=Date.now()):{state:GameState;accepted:boolean}{
+ const definition=getFirstShiftCase(caseId),work=caseworkState(state),runtime=work.cases[caseId],field=definition?.matchingFields?.find(item=>item.id===fieldId);
+ if(!runtime||!field||runtime.status==='resolved'||!field.documentIds.every(id=>runtime.inspectedDocumentIds.includes(id)))return{state,accepted:false};
+ const accepted=verdict===field.expected,updated={...runtime,status:'investigating' as const,matchingDecisions:{...runtime.matchingDecisions,[fieldId]:verdict}};
+ let next={...work,cases:{...work.cases,[caseId]:updated}};
+ const attempts=work.events.filter(item=>item.eventType==='field_matched'&&item.caseId===caseId&&item.payload.fieldId===fieldId).length+1;
+ next=append(next,event(next,'field_matched',`${runtime.attemptId}:field_matched:${fieldId}:${attempts}`,now,caseId,runtime.attemptId,{fieldId,verdict,documentIds:field.documentIds},accepted?'accepted':'blocked',definition!.accountingReference));
+ return{state:save(state,next),accepted};
+}
 export function selectCaseAction(state:GameState,caseId:string,action:AccountingCaseAction,now=Date.now()):CaseActionResult{
- const definition=getFirstShiftCase(caseId),work=caseworkState(state),runtime=work.cases[caseId];if(!definition||!runtime||runtime.status==='resolved')return{state,readyToPost:false,missingDocumentIds:[],outcome:'blocked'};
- const required=definition.documents.filter(item=>item.required).map(item=>item.id),missing=required.filter(id=>!runtime.inspectedDocumentIds.includes(id)),ready=action==='post'&&missing.length===0,outcome:GameplayEventOutcome=ready?'accepted':action==='post'?'blocked':'recorded';
- const updated={...runtime,status:(ready?'ready':action==='post'?'investigating':'waiting') as AccountingCaseRuntime['status'],selectedActions:[...new Set([...runtime.selectedActions,action])]};let next={...work,cases:{...work.cases,[caseId]:updated}};next=append(next,event(next,'case_action_selected',`${runtime.attemptId}:case_action_selected:${action}`,now,caseId,runtime.attemptId,{action,missingDocumentIds:missing},outcome,definition.accountingReference));return{state:save(state,next),readyToPost:ready,missingDocumentIds:missing,outcome};
+ const definition=getFirstShiftCase(caseId),work=caseworkState(state),runtime=work.cases[caseId];if(!definition||!runtime||runtime.status==='resolved')return{state,readyToPost:false,missingDocumentIds:[],missingMatchIds:[],outcome:'blocked'};
+ const required=definition.documents.filter(item=>item.required).map(item=>item.id),missing=required.filter(id=>!runtime.inspectedDocumentIds.includes(id)),missingMatchIds=(definition.matchingFields??[]).filter(field=>runtime.matchingDecisions[field.id]!==field.expected).map(field=>field.id),ready=action==='post'&&missing.length===0&&missingMatchIds.length===0,outcome:GameplayEventOutcome=ready?'accepted':action==='post'?'blocked':'recorded';
+ const updated={...runtime,status:(ready?'ready':action==='post'?'investigating':'waiting') as AccountingCaseRuntime['status'],selectedActions:[...new Set([...runtime.selectedActions,action])]};let next={...work,cases:{...work.cases,[caseId]:updated}};next=append(next,event(next,'case_action_selected',`${runtime.attemptId}:case_action_selected:${action}:${work.events.filter(item=>item.eventType==='case_action_selected'&&item.caseId===caseId&&item.payload.action===action).length+1}`,now,caseId,runtime.attemptId,{action,missingDocumentIds:missing,missingMatchIds},outcome,definition.accountingReference));return{state:save(state,next),readyToPost:ready,missingDocumentIds:missing,missingMatchIds,outcome};
 }
 export function requestCaseManagerHelp(state:GameState,caseId:string,now=Date.now()):GameState{
  const definition=getFirstShiftCase(caseId),work=caseworkState(state),runtime=work.cases[caseId];if(!definition||!runtime||runtime.status==='resolved')return state;const count=Math.min(definition.managerGuidance.length,runtime.managerHelpCount+1);if(count===runtime.managerHelpCount)return state;

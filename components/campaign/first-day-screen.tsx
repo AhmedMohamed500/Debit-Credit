@@ -1,21 +1,22 @@
 "use client";
 import '@/app/first-shift-scene.css';
 import '@/app/first-shift-v2.css';
+import '@/app/accounting-workspace.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect,useRef,useState } from 'react';
 import { AlertTriangle,BookOpen,BriefcaseBusiness,Building2,Calculator,Check,ChevronRight,Clock3,Coins,FileCheck2,FileText,LockKeyhole,Mail,PenLine,Trophy,X,Zap } from 'lucide-react';
 import { CinematicChapterIntro } from './cinematic-chapter-intro';
-import { FirstDayCaseWorkbench } from './first-day-case-workbench';
+import { AccountingCaseWorkspace } from './first-day-case-workbench';
 import { firstDayIntro,storyCharacters } from '@/lib/campaign/first-day-story';
 import { accountLabel,closeFirstDayDocument,completeFirstDayIntro,enterFirstDayDesk,FIRST_DAY_INTRO_VERSION,firstDayCompany,firstDayDocuments,firstDayProgress,markFirstDayCompletionSeen,saveFirstDayDraft,selectFirstDayDocument,submitFirstDayDocument,type FirstDayDocumentId } from '@/lib/campaign/first-day';
 import { useGame } from '@/lib/campaign/store';
 import type { GameState } from '@/lib/campaign/model';
 import type { Locale } from '@/types';
-import { caseClock,caseworkState,inspectCaseDocument,requestCaseManagerHelp,selectCaseAction } from '@/lib/cases/engine';
+import { caseClock,caseworkState,inspectCaseDocument,recordCaseFieldMatch,requestCaseManagerHelp,selectCaseAction } from '@/lib/cases/engine';
 import { getFirstShiftCase } from '@/lib/cases/first-shift-cases';
 import { kareemPerformanceFeedback,projectCasePerformance,projectShiftPerformance } from '@/lib/cases/performance';
-import type { AccountingCaseAction,CaseActionResult } from '@/lib/cases/model';
+import type { AccountingCaseAction,CaseActionResult,CaseMatchVerdict } from '@/lib/cases/model';
 import { closingWeekMetadata } from '@/lib/cases/chapter-two';
 import { SimulationSound } from './simulation-sound';
 
@@ -33,7 +34,8 @@ export function FirstDayScreen({locale}:{locale:Locale}){
  const closeDocument=()=>{change(closeFirstDayDocument);setActive(null);if(queuedProcessed){setProcessedAnimation(queuedProcessed);setQueuedProcessed(null);}};
  const submit=(id:FirstDayDocumentId,draft:string,hints:number)=>{let correct=false;change(current=>{const result=submitFirstDayDocument(current,id,draft,Date.now(),hints);correct=result.correct;return result.state;});if(correct)setQueuedProcessed(id);window.dispatchEvent(new CustomEvent('debit-credit-sound-event',{detail:{type:correct?'correct-answer':'wrong-answer',documentId:id}}));return correct;};
  const inspectEvidence=(id:FirstDayDocumentId,documentId:string)=>change(current=>inspectCaseDocument(current,id,documentId));
- const chooseCaseAction=(id:FirstDayDocumentId,action:AccountingCaseAction)=>{let result:CaseActionResult={state,readyToPost:false,missingDocumentIds:[],outcome:'blocked'};change(current=>{result=selectCaseAction(current,id,action);return result.state});return result};
+ const chooseCaseAction=(id:FirstDayDocumentId,action:AccountingCaseAction)=>{let result:CaseActionResult={state,readyToPost:false,missingDocumentIds:[],missingMatchIds:[],outcome:'blocked'};change(current=>{result=selectCaseAction(current,id,action);return result.state});return result};
+ const chooseFieldMatch=(id:FirstDayDocumentId,fieldId:string,verdict:CaseMatchVerdict)=>{let accepted=false;change(current=>{const result=recordCaseFieldMatch(current,id,fieldId,verdict);accepted=result.accepted;return result.state});return accepted};
  const askKareem=(id:FirstDayDocumentId)=>{let count=0;change(current=>{const next=requestCaseManagerHelp(current,id);count=caseworkState(next).cases[id].managerHelpCount;return next});return count};
  const stages=[say('Arrival','الوصول'),say('Meet Kareem','مقابلة كريم'),say('First Shift','وردية اليوم'),say("Something's Wrong",'في حاجة غلط'),say('End of Day','نهاية اليوم')];
  const pending=firstDayDocuments.filter(item=>!progress.completed.includes(item.id));
@@ -83,7 +85,7 @@ export function FirstDayScreen({locale}:{locale:Locale}){
    {progress.completionSeen&&<div className="scene-next"><LockKeyhole/><small>{say('NEXT · LOCKED','التالي · مقفول')}</small><h2>{say('Chapter 2 — THE MISSING MONEY','الفصل ٢ — المال المفقود')}</h2></div>}
    {progress.rewarded&&<Link className="scene-bank-next" href={`/${locale}/game/bank-reconciliation`}><FileCheck2/>{say('Next professional mission · Bank Reconciliation','المهمة المهنية التالية · التسوية البنكية')}<ChevronRight/></Link>}
   </div>
-  {doc&&<FirstDayCaseWorkbench key={doc.id} locale={locale} doc={doc} caseDefinition={getFirstShiftCase(doc.id)!} runtime={casework.cases[doc.id]} performance={projectCasePerformance(state,doc.id)} completed={progress.completed.includes(doc.id)} initialDraft={progress.drafts[doc.id]} initialHint={progress.draftHints[doc.id]} pendingAfter={company.pendingDocuments} onClose={closeDocument} onDraftChange={(draft,hintUsed)=>change(current=>saveFirstDayDraft(current,doc.id,draft,hintUsed))} onInspect={documentId=>inspectEvidence(doc.id,documentId)} onAction={action=>chooseCaseAction(doc.id,action)} onHelp={()=>askKareem(doc.id)} onSubmit={(draft,hints)=>submit(doc.id,draft,hints)}/>}
+  {doc&&<AccountingCaseWorkspace key={doc.id} locale={locale} doc={doc} caseDefinition={getFirstShiftCase(doc.id)!} runtime={casework.cases[doc.id]} performance={projectCasePerformance(state,doc.id)} completed={progress.completed.includes(doc.id)} completedIds={progress.completed} initialDraft={progress.drafts[doc.id]} initialHint={progress.draftHints[doc.id]} pendingAfter={company.pendingDocuments} ledgerErrors={company.ledgerErrors} clock={caseClock(state)} gameXp={state.xp} onClose={closeDocument} onSelectCase={openDocument} onDraftChange={(draft,hintUsed)=>change(current=>saveFirstDayDraft(current,doc.id,draft,hintUsed))} onInspect={documentId=>inspectEvidence(doc.id,documentId)} onMatch={(fieldId,verdict)=>chooseFieldMatch(doc.id,fieldId,verdict)} onAction={action=>chooseCaseAction(doc.id,action)} onHelp={()=>askKareem(doc.id)} onSubmit={(draft,hints)=>submit(doc.id,draft,hints)}/>}
   {tool&&<DeskTool tool={tool} locale={locale} state={state} onClose={()=>setTool(null)}/>}
  </div>;
 }

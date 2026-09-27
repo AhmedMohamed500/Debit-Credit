@@ -1,5 +1,9 @@
 # Debit & Credit
 
+## Accounting Case Workspace — 2026-09-27
+
+First Shift now presents the approved accounting-office direction as a functional bilingual workplace instead of a question/answer overlay. The Alpha Supplies supplier-invoice slice requires structured invoice/PO/GRN inspection, active comparison, a balanced and semantically valid journal entry, then a professional post/hold/request/escalate decision. Unsafe attempts leave accepted books unchanged. Existing local evidence, Skill Passport, Career Gap and ATS CV remain the authority; XP is displayed separately. Architecture, accounting treatment, limitations and visual QA are recorded in [Accounting Case Workspace](docs/ACCOUNTING-CASE-WORKSPACE.md), [Decision Engine](docs/PROFESSIONAL-DECISION-ENGINE.md) and [Gameplay Conversion Audit](docs/GAMEPLAY-CONVERSION-AUDIT.md).
+
 ## Phase A/B product integration and four-persona landing — 2026-09-26
 
 The product-flow audit, navigation cleanup, one evidence-led Game Hub next action, bank-zone redirect, and four-persona Landing V4 redesign are recorded in [PHASE-A-B-PRODUCT-INTEGRATION.md](PHASE-A-B-PRODUCT-INTEGRATION.md). Bank Track expansion is deliberately deferred to Phase C.

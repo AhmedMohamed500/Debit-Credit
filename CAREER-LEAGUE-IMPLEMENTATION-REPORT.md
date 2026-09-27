@@ -1,5 +1,9 @@
 # Career League Implementation Report
 
+## Approved accounting gameplay workspace — 2026-09-27
+
+The Mizan Trading First Shift supplier file is now processed in `AccountingCaseWorkspace`: an assigned inbox, source documents, player-confirmed matching, editable journal workpaper, Kareem/policy controls, professional actions and consequence-led result. Alpha Supplies source math is EGP 100,000 with zero billed VAT/freight, and accepted posting remains guarded by the existing case/campaign engine. Protective actions do not alter the ledger. No backend or new paid service was added. Existing professional evidence qualification remains separate from XP and competition. See [implementation](docs/ACCOUNTING-CASE-WORKSPACE.md), [decision rules](docs/PROFESSIONAL-DECISION-ENGINE.md) and [conversion audit](docs/GAMEPLAY-CONVERSION-AUDIT.md).
+
 ## Phase A/B integration checkpoint — 2026-09-26
 
 See [PHASE-A-B-PRODUCT-INTEGRATION.md](PHASE-A-B-PRODUCT-INTEGRATION.md) for the route audit, connected user flow, four routed personas, truthful practice preview, Game Hub next mission and QA. Existing saves and professional-evidence rules remain intact. Bank Track is the next phase, not part of this release.

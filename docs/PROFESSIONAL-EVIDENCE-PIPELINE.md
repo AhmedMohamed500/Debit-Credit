@@ -1,5 +1,9 @@
 # Professional Evidence Pipeline
 
+## Accounting workspace integration — 2026-09-27
+
+The new First Shift workspace records document inspections, player-confirmed comparison verdicts, actions and submissions in existing local casework state. A successful post still flows through the established `firstDay` submission and `lib/career/evidence.ts` projection; qualification depends on resolved case events, investigation, first-attempt accuracy and assistance. The result links to Skill Passport, Career Gap and ATS CV, but the links themselves create no credential. Hold/request/escalate protect the ledger and do not masquerade as a completed-case skill. XP remains a separate game reward. See [workspace](ACCOUNTING-CASE-WORKSPACE.md) and [decision rules](PROFESSIONAL-DECISION-ENGINE.md).
+
 Phase A/B integration: the Game Hub reads existing evidence through the versioned repository, scopes it to the current local candidate and keeps XP/league wins out of its professional Skill Passport panel. No evidence schema or migration changed. See [PRODUCT-INTEGRATION-AUDIT.md](PRODUCT-INTEGRATION-AUDIT.md).
 
 First Shift events continue to project through the existing case performance and evidence engine. A completed Bank Reconciliation workpaper produces one local `bank-reconciliation` evidence record only when all required work reconciles. The record contains scenario/rubric version, attempt count, matching/investigation, classification and journal dimensions. It is merged idempotently into `BrowserSkillEvidenceRepository` for the current local candidate.

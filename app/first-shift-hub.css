@@ -37,3 +37,73 @@ html[data-theme='dark'] .fsh-portal-index{color:color-mix(in srgb,var(--tone) 52
 @media(max-width:1250px){.fsh-portal p{font-size:12px}}
 @media(max-width:600px){.fsh-active .fsh-topbar{min-height:62px}.fsh-active .fsh-content{padding-top:74px}.fsh-os ul{grid-template-columns:repeat(2,minmax(0,1fr))}.fsh-portal button{min-width:78px;font-size:12px}.fsh-portal p{font-size:12px}}
 @media(max-width:390px){.fsh-os ul{grid-template-columns:1fr}}
+/* The mission world is a live UI layered over scenic artwork. */
+.fsh-active .fsh-content{width:100%;max-width:none;padding:72px 0 0}
+.fsh-active .fsh-topbar{direction:ltr;background:#061c36e8;backdrop-filter:blur(12px);border-bottom-color:#47b9ed80}
+.fsh-shell[dir='rtl'] .fsh-topbar nav,.fsh-shell[dir='rtl'] .fsh-top-actions{direction:rtl}
+.fsh-world{position:relative;isolation:isolate;min-height:900px;overflow:clip;padding:22px clamp(24px,2.6vw,50px) 16px;background:#0b3b73 url('/game/first-shift-city-v2.png') center center/cover no-repeat;color:#f5fbff}
+.fsh-world:before{position:absolute;z-index:-1;inset:0;content:'';background:linear-gradient(180deg,#051b38a1 0,#06285520 24%,#001b3e08 53%,#052e66ad 100%)}
+.fsh-world .fsh-hero{display:block;min-height:184px;overflow:visible;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.fsh-world .fsh-hero:before,.fsh-world .fsh-skyline{display:none}
+.fsh-world .fsh-hero-copy{width:min(550px,45%);margin:auto;padding:9px 17px 12px;border:1px solid #64c7f2b5;border-radius:22px;background:#061d3be9;text-align:center;box-shadow:0 12px 30px #001b39a8}
+.fsh-world .fsh-eyebrow{justify-content:center;color:#42d6ec;font-size:16px}
+.fsh-world .fsh-hero h1{margin:0;color:#f9feff;font-size:clamp(45px,4.1vw,69px);line-height:1.05;text-shadow:0 3px 10px #03162f}
+.fsh-world .fsh-hero-copy>p{margin:5px 0 9px;color:#e5f7ff;font-size:clamp(14px,1.1vw,18px);line-height:1.35}
+.fsh-world .fsh-start{min-height:35px;min-width:175px;padding:6px 14px;border:1px solid #70d5ff;background:#087cbac9;font-size:13px;box-shadow:none}
+.fsh-world .fsh-hero-side{position:absolute;inset:2px 0 auto auto;display:grid;width:244px;gap:7px}
+.fsh-world .fsh-company,.fsh-world .fsh-progress{padding:8px 10px;border:1px solid #60caffab;border-radius:12px;background:#06234bdc;color:#fff;box-shadow:0 5px 18px #001b3c66}
+.fsh-world .fsh-company>span{width:37px;height:37px;background:#1a6aa1;color:#bcf3ff}
+.fsh-world .fsh-company b{font-size:15px}.fsh-world .fsh-company small,.fsh-world .fsh-progress small{color:#c6e8fc}
+.fsh-world .fsh-progress strong{color:#84eaff}.fsh-world .fsh-progress-track{background:#295d8b}
+.fsh-world .fsh-books-health{justify-content:center;color:#b2ffe9;font-size:11px;text-shadow:0 1px 5px #001c3d}
+.fsh-world .fsh-journey{margin-top:0}
+.fsh-world .fsh-journey .fsh-section-heading{min-height:38px;align-items:end;margin-bottom:14px;color:#fff}
+.fsh-world .fsh-journey .fsh-section-heading small{color:#a8f2ff}
+.fsh-world .fsh-journey .fsh-section-heading h2{color:#fff;font-size:18px;text-shadow:0 2px 8px #00162f}
+.fsh-world .fsh-journey .fsh-section-heading>span{color:#eafaff}
+.fsh-world .fsh-portal-grid{gap:clamp(8px,1vw,18px)}
+.fsh-world .fsh-portal{display:flex;align-items:center;min-height:310px;gap:0;padding:40px 12px 12px;overflow:visible;border:4px solid var(--tone);border-top-width:7px;border-radius:115px 115px 15px 15px;background:linear-gradient(180deg,#071933f4 0,#102e59e9 45%,#144372de 100%);color:#fff;text-align:center;box-shadow:0 0 0 3px #ffffff52,0 14px 28px #001a3ec4,inset 0 0 23px color-mix(in srgb,var(--tone) 43%,transparent)}
+.fsh-world .fsh-portal:hover{transform:translateY(-7px);box-shadow:0 0 0 4px #ffffff9c,0 20px 30px #00172ddb,0 0 25px var(--tone)}
+.fsh-world .fsh-portal-top{position:absolute;inset:0 0 auto;height:38px;pointer-events:none}
+.fsh-world .fsh-portal-index{position:absolute;top:-27px;left:50%;display:grid;place-items:center;width:47px;height:47px;transform:translateX(-50%);border:3px solid #fff;border-radius:50%;background:var(--tone);color:#fff;font-size:21px;box-shadow:0 0 0 4px color-mix(in srgb,var(--tone) 52%,transparent),0 0 16px var(--tone)}
+.fsh-world .fsh-portal-status{position:absolute;top:26px;inset-inline-end:9px;border:1px solid color-mix(in srgb,var(--tone) 70%,white);background:#071f3eeb;color:#fff;font-size:10px}
+.fsh-world .fsh-portal h3{order:1;margin:7px 0 3px;color:#fff;font-size:clamp(18px,1.5vw,26px);line-height:1.2;text-shadow:0 2px 6px #00142b}
+.fsh-world .fsh-portal-art{order:2;width:100%;min-height:125px;padding:10px 0}
+.fsh-world .fsh-portal-arch{width:min(120px,85%);height:126px;border:3px solid #b7eaff;border-bottom-width:7px;border-radius:15px 15px 7px 7px;background:linear-gradient(150deg,#ffffff,#d1f4ff 57%,color-mix(in srgb,var(--tone) 40%,white));color:var(--tone);box-shadow:0 0 18px #a9edff8c,5px 9px 0 color-mix(in srgb,var(--tone) 70%,#071d3c)}
+.fsh-world .fsh-portal-arch:after{inset:auto 16px 18px;height:28px;border:0;border-top:3px solid #65a5cf;border-bottom:3px solid #65a5cf;border-radius:0;opacity:.6}
+.fsh-world .fsh-portal-arch svg{width:55px;height:55px;stroke-width:1.6}
+.fsh-world .fsh-portal p{order:3;min-height:31px;margin:0 0 7px;color:#e2f4ff;font-size:12px;line-height:1.3}
+.fsh-world .fsh-portal button{order:4;min-height:35px;border-color:#96dffd;background:#08274ee8;color:#fff;font-size:12px}
+.fsh-world .fsh-portal button:hover:not(:disabled){background:var(--tone)}
+.fsh-world .fsh-portal button:disabled{border-color:#6d8ca6;background:#12304d;color:#d4e4f1}
+.fsh-world .fsh-portal.is-locked{border-color:#9baec0;filter:saturate(.75)}
+.fsh-world .fsh-info-grid{grid-template-columns:minmax(0,30%) minmax(0,30%);justify-content:space-between;gap:0;margin-top:24px;direction:ltr}
+.fsh-world .fsh-os,.fsh-world .fsh-rewards{min-height:174px;padding:13px 15px;border:1px solid #67d6ff;border-radius:15px;background:#061d3eea;color:#fff;box-shadow:0 12px 25px #001730aa}
+.fsh-shell[dir='rtl'] .fsh-world .fsh-os,.fsh-shell[dir='rtl'] .fsh-world .fsh-rewards{direction:rtl}
+.fsh-world .fsh-rewards .fsh-panel-title h2,.fsh-world .fsh-how .fsh-section-heading h2{color:#fff}
+.fsh-world .fsh-reward-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px}
+.fsh-world .fsh-reward-grid article{padding:6px;border-color:#4486b5;background:#0b3860;color:#fff}
+.fsh-world .fsh-reward-grid small,.fsh-world .fsh-rewards>p{color:#c5e1f3}
+.fsh-world .fsh-how{margin-top:20px;padding:12px 0;border:0;background:none}
+.fsh-world .fsh-how .fsh-section-heading{justify-content:center;margin-bottom:8px;text-align:center}
+.fsh-world .fsh-how .fsh-section-heading small{color:#a8edff}
+.fsh-world .fsh-how .fsh-section-heading h2{font-size:17px;text-shadow:0 2px 8px #001735}
+.fsh-world .fsh-how ol{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.fsh-world .fsh-how li{min-height:85px;padding:9px;border:1px solid #56c8f1;border-radius:12px;background:#062448e9;color:#fff;box-shadow:0 5px 14px #00162e75}
+.fsh-world .fsh-how-number{background:#1396d0}
+.fsh-world .fsh-how li>svg{display:block;color:#83dbff}
+.fsh-world .fsh-how small{color:#d1e9f8}
+.fsh-world .fsh-footer{color:#dbedfb}.fsh-world .fsh-footer button,.fsh-world .fsh-footer a{color:#a7ecff}
+@media(max-width:1150px){.fsh-world .fsh-hero-copy{width:min(490px,52%)}.fsh-world .fsh-hero-side{width:205px}.fsh-world .fsh-portal-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:30px 15px}.fsh-world .fsh-portal{min-height:285px}.fsh-world .fsh-info-grid{grid-template-columns:36% 36%}.fsh-world{background-position:center top}}
+@media(max-width:780px){.fsh-active .fsh-content{padding-top:62px}.fsh-world{padding:18px 16px 20px}.fsh-world .fsh-hero{min-height:0}.fsh-world .fsh-hero-copy{width:100%;max-width:540px}.fsh-world .fsh-hero-side{position:static;grid-template-columns:1fr 1fr;width:100%;max-width:540px;margin:12px auto 0}.fsh-world .fsh-books-health{grid-column:1/-1}.fsh-world .fsh-portal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fsh-world .fsh-info-grid{grid-template-columns:1fr 1fr;gap:12px}.fsh-world .fsh-how ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.fsh-world{padding:15px 12px 24px;background-size:auto 880px;background-position:center top;background-color:#092449}.fsh-world:before{background:linear-gradient(180deg,#051b38b0,#082b58a9 41%,#071b37 78%)}.fsh-world .fsh-hero-copy{padding:12px}.fsh-world .fsh-hero h1{font-size:43px}.fsh-world .fsh-hero-side{grid-template-columns:1fr}.fsh-world .fsh-journey{margin-top:10px}.fsh-world .fsh-journey .fsh-section-heading h2{font-size:16px}.fsh-world .fsh-portal-grid{grid-template-columns:1fr;gap:18px}.fsh-world .fsh-portal{display:grid;grid-template-columns:76px minmax(0,1fr) auto;grid-template-rows:auto auto auto;min-height:126px;gap:2px 8px;padding:12px 10px;border-width:2px 2px 2px 5px;border-radius:15px;background:#06254de8;text-align:start}.fsh-world .fsh-portal-index{top:-9px;left:auto;inset-inline-start:4px;width:35px;height:35px;transform:none;font-size:14px}.fsh-world .fsh-portal-status{top:7px;inset-inline-end:8px}.fsh-world .fsh-portal h3{grid-column:2;grid-row:1;margin:0;font-size:19px}.fsh-world .fsh-portal-art{grid-column:1;grid-row:1/4;width:65px;min-height:0;padding:0}.fsh-world .fsh-portal-arch{width:59px;height:75px;border-width:2px;border-bottom-width:4px}.fsh-world .fsh-portal-arch svg{width:30px;height:30px}.fsh-world .fsh-portal-arch:after{display:none}.fsh-world .fsh-portal p{grid-column:2;grid-row:2;min-height:0;margin:0;font-size:12px}.fsh-world .fsh-portal button{grid-column:2/4;grid-row:3;width:100%;min-height:32px;font-size:12px}.fsh-world .fsh-info-grid{grid-template-columns:1fr;gap:12px;margin-top:18px}.fsh-world .fsh-how ol{grid-template-columns:1fr}.fsh-world .fsh-how li{min-height:60px}.fsh-world .fsh-footer{font-size:11px}}
+.fsh-world .fsh-journey{padding-top:52px}
+.fsh-world .fsh-journey .fsh-section-heading{position:absolute;width:1px;height:1px;min-height:0;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.fsh-world .fsh-portal p{font-size:15px;min-height:38px}
+.fsh-world .fsh-portal button{font-size:14px}
+.fsh-world .fsh-portal-grid,.fsh-world .fsh-how ol{direction:ltr}
+.fsh-shell[dir='rtl'] .fsh-world .fsh-portal,.fsh-shell[dir='rtl'] .fsh-world .fsh-how li{direction:rtl}
+.fsh-world .fsh-os li b,.fsh-world .fsh-reward-grid b{font-size:14px}
+.fsh-world .fsh-how b{font-size:15px}
+.fsh-world .fsh-how small{font-size:12px}
+@media(max-width:600px){.fsh-world .fsh-journey{padding-top:16px}.fsh-world .fsh-portal p{font-size:12px;min-height:0}.fsh-world .fsh-portal button{font-size:12px}}

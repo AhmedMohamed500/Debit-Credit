@@ -107,3 +107,83 @@ html[data-theme='dark'] .fsh-portal-index{color:color-mix(in srgb,var(--tone) 52
 .fsh-world .fsh-how b{font-size:15px}
 .fsh-world .fsh-how small{font-size:12px}
 @media(max-width:600px){.fsh-world .fsh-journey{padding-top:16px}.fsh-world .fsh-portal p{font-size:12px;min-height:0}.fsh-world .fsh-portal button{font-size:12px}}
+
+/* Reference-led mission stage: the scenery stays artwork; every gateway remains live UI. */
+.fsh-world{min-height:calc(100dvh - 72px);padding-top:17px;background-position:center 53%}
+.fsh-world:after{position:absolute;z-index:-1;inset:54% 0 0;content:'';background:linear-gradient(180deg,transparent 0,#031b3d27 18%,#04172fc9 100%);pointer-events:none}
+.fsh-world .fsh-hero{min-height:138px}
+.fsh-world .fsh-hero-copy{width:min(570px,47%);padding:7px 18px 10px;border-color:#69d9ff;border-radius:24px;background:linear-gradient(180deg,#06284ff0,#061a38f0);box-shadow:0 0 0 2px #041d37a0,0 12px 25px #00172ca8}
+.fsh-world .fsh-hero h1{font-size:clamp(52px,4.8vw,86px);background:linear-gradient(180deg,#fff 15%,#f3fcff 48%,#43d6ff 100%);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.fsh-world .fsh-hero-copy>p{font-size:clamp(15px,1vw,18px)}
+.fsh-world .fsh-start{background:linear-gradient(100deg,#087aba,#0aaae2);border-color:#8ae8ff;box-shadow:0 3px 12px #0b8db46b}
+.fsh-world .fsh-journey{margin-top:-26px;padding-top:0}
+.fsh-world .fsh-portal-grid{height:400px;align-items:end;gap:clamp(9px,1.1vw,21px)}
+.fsh-world .fsh-portal{position:relative;isolation:isolate;min-height:0;height:345px;padding:47px 12px 15px;overflow:visible;border:0;border-radius:0;background:none;box-shadow:none;transform:none}
+.fsh-world .fsh-portal:nth-child(1),.fsh-world .fsh-portal:nth-child(5){height:390px}
+.fsh-world .fsh-portal:nth-child(2),.fsh-world .fsh-portal:nth-child(4){height:362px}
+.fsh-world .fsh-portal:nth-child(3){height:325px}
+.fsh-world .fsh-portal:before,.fsh-world .fsh-portal:after{position:absolute;content:'';pointer-events:none;clip-path:polygon(0 100%,0 22%,10% 10%,50% 0,90% 10%,100% 22%,100% 100%)}
+.fsh-world .fsh-portal:before{z-index:-2;inset:0;background:linear-gradient(120deg,#d7f9ff 0,var(--tone) 14%,#062c5b 33%,#8aeaff 51%,var(--tone) 76%,#f3d69d 100%);filter:drop-shadow(0 10px 14px #00152b)}
+.fsh-world .fsh-portal:after{z-index:-1;inset:7px 8px 9px;background:radial-gradient(circle at 50% 57%,color-mix(in srgb,var(--tone) 33%,#123e72) 0,#09264b 53%,#04162e 100%);box-shadow:inset 0 0 25px var(--tone)}
+.fsh-world .fsh-portal:hover{transform:translateY(-5px);box-shadow:none}
+.fsh-world .fsh-portal>*{position:relative;z-index:1}
+.fsh-world .fsh-portal-top{position:absolute;z-index:2;inset:0 0 auto}
+.fsh-world .fsh-portal-index{top:-22px;width:51px;height:51px;border:3px solid #fff;font-size:24px;box-shadow:0 0 0 4px #092343,0 0 0 7px var(--tone),0 0 15px var(--tone)}
+.fsh-world .fsh-portal-status{top:34px;inset-inline-end:14px;padding:4px 8px;font-size:11px}
+.fsh-world .fsh-portal h3{order:1;margin:0 0 7px;font-size:clamp(19px,1.65vw,30px);line-height:1.15;text-shadow:0 2px 5px #000,0 0 12px color-mix(in srgb,var(--tone) 35%,transparent)}
+.fsh-world .fsh-portal-art{order:2;display:flex;flex:1;flex-direction:column;justify-content:center;width:100%;min-height:0;padding:0 4px}
+.fsh-world .fsh-portal-arch{display:flex;align-items:center;justify-content:center;width:min(100%,183px);height:100%;max-height:195px;min-height:122px;margin:auto;border:3px solid color-mix(in srgb,var(--tone) 65%,white);border-bottom-width:8px;border-radius:82px 82px 9px 9px;background:linear-gradient(150deg,#0a7ca895,#e9f9ff79 39%,#1242778c 75%);box-shadow:inset 0 0 0 5px #ffffff36,inset 0 0 25px #dffbff8f,0 0 17px var(--tone),7px 10px 0 #05182f}
+.fsh-world .fsh-portal-arch:after{inset:10px 10px 5px;height:auto;border:1px solid #d2f6ffb0;border-bottom:0;border-radius:70px 70px 0 0;opacity:.85}
+.fsh-world .fsh-portal-document{position:relative;z-index:2;display:flex;flex-direction:column;align-items:stretch;gap:8px;width:73%;height:78%;min-height:109px;padding:12px 10px;border:1px solid #b7d7ec;border-radius:4px;background:linear-gradient(145deg,#fff,#e8f5ff 82%);color:#102b53;box-shadow:3px 7px 0 #bdd6e2,6px 10px 13px #00172c9c;transform:rotate(-3deg)}
+.fsh-world .fsh-document-heading{display:flex;align-items:center;justify-content:center;gap:5px;min-height:30px;border-bottom:2px solid color-mix(in srgb,var(--tone) 55%,#dce7f2);font-size:clamp(10px,.8vw,13px);line-height:1.12}
+.fsh-world .fsh-document-heading svg{flex:none;width:19px;height:19px;stroke-width:2}
+.fsh-world .fsh-document-line{display:block;height:6px;margin-inline-end:10%;border-radius:2px;background:repeating-linear-gradient(90deg,#93b0c8 0 2px,#d8e8f2 2px 18px)}
+.fsh-world .fsh-document-line:nth-of-type(3){margin-inline-end:34%}
+.fsh-world .fsh-document-stamp{position:absolute;inset:auto auto 8px 8px;display:grid;place-items:center;width:25px;height:25px;border:2px solid var(--tone);border-radius:50%;color:var(--tone);transform:rotate(-14deg)}
+.fsh-world .fsh-document-stamp svg{width:16px;height:16px}
+.fsh-world .fsh-portal:nth-child(2) .fsh-portal-document{transform:rotate(3deg)}
+.fsh-world .fsh-portal:nth-child(3) .fsh-portal-document{transform:rotate(-4deg)}
+.fsh-world .fsh-portal:nth-child(4) .fsh-portal-document,.fsh-world .fsh-portal:nth-child(5) .fsh-portal-document{background:linear-gradient(#fff,#f2f6ff),repeating-linear-gradient(0deg,transparent 0 14px,#8fb8d4 15px 16px);transform:rotate(3deg)}
+.fsh-world .fsh-portal-pedestal{display:block;width:88%;height:13px;margin:-2px auto 0;border:1px solid #97e9ff;border-radius:50%;background:radial-gradient(ellipse,#ecffff 0,var(--tone) 38%,#073260 80%);box-shadow:0 0 17px var(--tone)}
+.fsh-world .fsh-portal p{order:3;min-height:38px;margin:8px 0 6px;font-size:clamp(12px,.85vw,15px);line-height:1.25}
+.fsh-world .fsh-portal button{order:4;min-height:35px;border-color:color-mix(in srgb,var(--tone) 70%,white);background:linear-gradient(90deg,#061b3df2,#0d3b6bed);font-size:13px}
+.fsh-world .fsh-portal.is-locked{filter:saturate(.85)}
+.fsh-world .fsh-info-grid{grid-template-columns:minmax(300px,29%) minmax(300px,29%);margin-top:-7px}
+.fsh-world .fsh-os,.fsh-world .fsh-rewards{min-height:193px;padding:10px 13px;border-color:#7cdbff;background:linear-gradient(160deg,#061b38ee,#082850ed);box-shadow:0 0 0 2px #051b36,0 12px 24px #00152ba9}
+.fsh-world .fsh-os ul{grid-template-columns:1fr;gap:2px;margin-top:8px}
+.fsh-world .fsh-os li{min-height:24px;padding:1px 6px;border:0;border-bottom:1px solid #2c6381;border-radius:0;background:transparent}
+.fsh-world .fsh-os li b{font-size:12px}.fsh-world .fsh-os li em{font-size:11px}
+.fsh-world .fsh-reward-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.fsh-world .fsh-reward-grid article{flex-direction:column;justify-content:center;min-height:72px;padding:5px 3px;text-align:center}
+.fsh-world .fsh-reward-grid article>span{width:28px;height:28px}
+.fsh-world .fsh-reward-grid b{font-size:11px;line-height:1.1}.fsh-world .fsh-reward-grid small{font-size:9px}
+.fsh-world .fsh-how{margin-top:10px;padding:0}
+.fsh-world .fsh-how ol{gap:7px}
+.fsh-world .fsh-how li{min-height:99px;border-width:2px;background:linear-gradient(180deg,#062648f2,#041c36f5)}
+.fsh-world .fsh-how b{font-size:clamp(13px,1vw,17px)}.fsh-world .fsh-how small{font-size:clamp(11px,.85vw,13px)}
+@media(max-width:1150px){.fsh-world .fsh-hero{min-height:175px}.fsh-world .fsh-journey{margin-top:0;padding-top:15px}.fsh-world .fsh-portal-grid{height:auto;align-items:stretch}.fsh-world .fsh-portal,.fsh-world .fsh-portal:nth-child(n){height:330px}.fsh-world .fsh-info-grid{margin-top:18px}.fsh-world .fsh-os ul{grid-template-columns:repeat(2,minmax(0,1fr))}.fsh-world .fsh-reward-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fsh-world .fsh-reward-grid article{flex-direction:row;text-align:start}}
+@media(max-width:780px){.fsh-world .fsh-hero{min-height:0}.fsh-world .fsh-hero-copy{width:100%}.fsh-world .fsh-journey{padding-top:22px}.fsh-world .fsh-info-grid{grid-template-columns:1fr 1fr}.fsh-world .fsh-os ul{grid-template-columns:1fr}}
+@media(max-width:600px){.fsh-world{min-height:0;padding-top:16px}.fsh-world .fsh-hero h1{font-size:45px}.fsh-world .fsh-journey{padding-top:18px}.fsh-world .fsh-portal-grid{gap:12px}.fsh-world .fsh-portal,.fsh-world .fsh-portal:nth-child(n){display:grid;grid-template-columns:74px minmax(0,1fr);grid-template-rows:auto auto auto;height:auto;min-height:158px;padding:14px 12px;border:2px solid var(--tone);border-radius:15px;background:linear-gradient(135deg,#061b38f2,#123e68e9);text-align:start}.fsh-world .fsh-portal:before,.fsh-world .fsh-portal:after,.fsh-world .fsh-portal-pedestal{display:none}.fsh-world .fsh-portal-top{inset:0 0 auto}.fsh-world .fsh-portal-index{top:-12px;left:auto;inset-inline-start:-8px;width:34px;height:34px;transform:none;font-size:14px}.fsh-world .fsh-portal-status{top:8px;inset-inline-end:8px}.fsh-world .fsh-portal h3{grid-column:2;grid-row:1;margin:19px 0 0;font-size:19px}.fsh-world .fsh-portal-art{grid-column:1;grid-row:1/4;width:67px;padding:0}.fsh-world .fsh-portal-arch{width:63px;height:84px;min-height:0;border-width:2px;border-bottom-width:5px}.fsh-world .fsh-portal-document{width:70%;height:74%;min-height:0;gap:3px;padding:5px 3px}.fsh-world .fsh-document-heading{min-height:20px;font-size:7px}.fsh-world .fsh-document-heading svg{width:12px;height:12px}.fsh-world .fsh-document-line{height:3px}.fsh-world .fsh-document-stamp{width:13px;height:13px;inset:auto auto 3px 3px;border-width:1px}.fsh-world .fsh-document-stamp svg{width:9px;height:9px}.fsh-world .fsh-portal p{grid-column:2;grid-row:2;min-height:0;margin:4px 0;font-size:12px}.fsh-world .fsh-portal button{grid-column:2;grid-row:3;width:100%;min-height:32px}.fsh-world .fsh-info-grid{grid-template-columns:1fr}.fsh-world .fsh-reward-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fsh-world .fsh-how ol{grid-template-columns:1fr}}
+
+@media(min-width:1151px){
+ .fsh-world .fsh-hero-copy{width:min(510px,41%);padding:6px 15px 8px}
+ .fsh-world .fsh-hero h1{font-size:clamp(52px,4vw,70px)}
+ .fsh-world .fsh-hero-copy>p{margin:1px 0 5px;white-space:nowrap;font-size:clamp(14px,.95vw,17px)}
+ .fsh-world .fsh-start{min-height:30px;padding:4px 11px;font-size:12px}
+ .fsh-world .fsh-hero-side{grid-template-columns:170px 220px;width:396px;gap:5px}
+ .fsh-world .fsh-company,.fsh-world .fsh-progress{min-height:62px}
+ .fsh-world .fsh-progress small{display:none}
+ .fsh-world .fsh-books-health{grid-column:1/-1;justify-content:end;margin-top:-3px}
+ .fsh-world .fsh-portal-grid{height:330px}
+ .fsh-world .fsh-portal:nth-child(1),.fsh-world .fsh-portal:nth-child(5){top:-68px;height:320px}
+ .fsh-world .fsh-portal:nth-child(2),.fsh-world .fsh-portal:nth-child(4){top:-42px}
+ .fsh-world .fsh-portal:nth-child(2),.fsh-world .fsh-portal:nth-child(4){height:295px}
+ .fsh-world .fsh-portal:nth-child(3){top:-8px;height:265px}
+ .fsh-world .fsh-portal-arch{min-height:105px}
+ .fsh-world .fsh-portal-document{min-height:90px;gap:5px}
+ .fsh-world .fsh-portal:nth-child(3) .fsh-portal-arch{min-height:88px}
+ .fsh-world .fsh-portal:nth-child(3) .fsh-portal-document{min-height:76px;padding:6px 5px;gap:4px}
+ .fsh-world .fsh-portal h3{margin-bottom:4px}
+ .fsh-world .fsh-portal p{min-height:29px;margin:4px 0;font-size:12px}
+ .fsh-world .fsh-portal button{min-height:31px}
+}

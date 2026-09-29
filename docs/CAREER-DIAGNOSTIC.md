@@ -1,5 +1,7 @@
 # Career Diagnostic
 
+Phase A/B integration: the Game Hub recommends this diagnostic when a career persona/goal is saved but no placement result exists. Its self-reported strengths never create professional evidence. See [PRODUCT-USER-FLOW.md](PRODUCT-USER-FLOW.md).
+
 ## Bank Reconciliation follow-through (2026-09-26)
 
 The diagnostic establishes a starting gap; it does not grant a skill. General Accounting, GL and Treasury players can now follow the bank recommendation into a workpaper. After a qualifying case, stored evidence becomes Practiced and the gap is recalculated. One introductory attempt never becomes Verified or a hiring claim.

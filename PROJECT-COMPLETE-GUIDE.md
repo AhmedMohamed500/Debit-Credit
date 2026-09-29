@@ -1,5 +1,7 @@
 # Debit & Credit — دليل المشروع الشامل
 
+> أحدث إضافة: [Phase A/B — Product Integration & Landing Personas](PHASE-A-B-PRODUCT-INTEGRATION.md). تشمل مراجعة المسارات وإصلاح التدفق وأربع شخصيات جديدة. توسعة Bank Track مؤجلة للمرحلة التالية.
+
 آخر تحديث: 26 سبتمبر 2026 · المستودع: `AhmedMohamed500/Debit-Credit` · فرع التطوير: `codex/career-league`
 
 ## 1. فكرة المنتج وحدوده

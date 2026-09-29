@@ -1,0 +1,45 @@
+{
+  "desktop": {
+    "width": 1672,
+    "viewport": 1672,
+    "artwork": "/game/first-shift-world-art.png",
+    "portals": [
+      {
+        "label": "فاتورة مورد · افتح المستند",
+        "status": "active",
+        "disabled": false
+      },
+      {
+        "label": "سند قبض عميل · مقفلة",
+        "status": "locked",
+        "disabled": true
+      },
+      {
+        "label": "مصروف مكتب · مقفلة",
+        "status": "locked",
+        "disabled": true
+      },
+      {
+        "label": "دفتر اليومية · مقفلة",
+        "status": "locked",
+        "disabled": true
+      },
+      {
+        "label": "دفتر الأستاذ · مقفلة",
+        "status": "locked",
+        "disabled": true
+      }
+    ]
+  },
+  "laptop": {
+    "width": 1351,
+    "viewport": 1366,
+    "portalCount": 5
+  },
+  "mobile": {
+    "width": 390,
+    "viewport": 390,
+    "artworkVisible": false,
+    "portalCount": 5
+  }
+}

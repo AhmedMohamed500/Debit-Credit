@@ -2,14 +2,14 @@
 import '@/app/first-shift-scene.css';
 import '@/app/first-shift-v2.css';
 import '@/app/accounting-workspace.css';
-import '@/app/first-shift-hub.css';
+import '@/app/first-shift-world.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect,useRef,useState } from 'react';
 import {BriefcaseBusiness,ChevronRight,Coins,LockKeyhole,Trophy,X,Zap} from 'lucide-react';
 import { CinematicChapterIntro } from './cinematic-chapter-intro';
 import { AccountingCaseWorkspace } from './first-day-case-workbench';
-import {FirstShiftMissionHub} from './first-shift-mission-hub';
+import {FirstShiftMissionHub} from './first-shift-world';
 import { firstDayIntro,storyCharacters } from '@/lib/campaign/first-day-story';
 import { accountLabel,closeFirstDayDocument,completeFirstDayIntro,enterFirstDayDesk,FIRST_DAY_INTRO_VERSION,firstDayCompany,firstDayDocuments,firstDayProgress,markFirstDayCompletionSeen,saveFirstDayDraft,selectFirstDayDocument,submitFirstDayDocument,type FirstDayDocumentId } from '@/lib/campaign/first-day';
 import { useGame } from '@/lib/campaign/store';
@@ -20,7 +20,7 @@ import { getFirstShiftCase } from '@/lib/cases/first-shift-cases';
 import { kareemPerformanceFeedback,projectCasePerformance,projectShiftPerformance } from '@/lib/cases/performance';
 import type { AccountingCaseAction,CaseActionResult,CaseMatchVerdict } from '@/lib/cases/model';
 import { closingWeekMetadata } from '@/lib/cases/chapter-two';
-import {markFirstShiftLedgerReviewed} from '@/lib/campaign/first-shift-hub';
+import {firstShiftMissionProgress,markFirstShiftLedgerReviewed} from '@/lib/campaign/first-shift-hub';
 
 export function FirstDayScreen({locale}:{locale:Locale}){
  const ar=locale==='ar',say=(en:string,a:string)=>ar?a:en,{state,ready,change}=useGame(),progress=firstDayProgress(state),company=firstDayCompany(state),casework=caseworkState(state);
@@ -30,7 +30,7 @@ export function FirstDayScreen({locale}:{locale:Locale}){
  if(!ready)return <div className="first-day-loading">{say('Preparing your first day…','بنجهّز أول يوم ليك…')}</div>;
  if(progress.introVersion<FIRST_DAY_INTRO_VERSION)return <CinematicChapterIntro chapter={firstDayIntro} locale={locale} variant="intro" onComplete={()=>change(completeFirstDayIntro)} onSkip={()=>{}}/>;
  if(!progress.deskEntered)return <ManagerBriefing locale={locale} onContinue={()=>change(enterFirstDayDesk)}/>;
- if(progress.rewarded&&!progress.completionSeen&&!active&&!processedAnimation)return <ShiftComplete locale={locale} state={state} onContinue={()=>change(markFirstDayCompletionSeen)}/>;
+ if(progress.rewarded&&firstShiftMissionProgress(state).ledgerComplete&&!progress.completionSeen&&!active&&!processedAnimation&&!tool)return <ShiftComplete locale={locale} state={state} onContinue={()=>change(markFirstDayCompletionSeen)}/>;
  const doc=firstDayDocuments.find(item=>item.id===active);
  const openDocument=(id:FirstDayDocumentId)=>{window.dispatchEvent(new CustomEvent('debit-credit-sound-event',{detail:{type:'paper-open',documentId:id}}));change(current=>selectFirstDayDocument(current,id));setActive(id);};
  const closeDocument=()=>{change(closeFirstDayDocument);setActive(null);if(queuedProcessed){setProcessedAnimation(queuedProcessed);setQueuedProcessed(null);}};

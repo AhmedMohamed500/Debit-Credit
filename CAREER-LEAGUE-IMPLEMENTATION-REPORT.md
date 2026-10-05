@@ -1,5 +1,9 @@
 # Career League Implementation Report
 
+## Accounting Foundations — complete Stage 0 — 2026-10-06
+
+Upgraded the existing Bootcamp into a bright, reference-led 12-mission learning world plus a seven-transaction Start Mizan Trading boss. Varied mechanics cover observable owner investment, transaction classification, document matching, physical equation balance, starter-account sorting, earnings/consumption, contra carrying value, movement, debit/credit lanes, money flow, editable journal construction and a clickable accounting-cycle journey. The boss derives its journal, ledger, trial balance and statement preview from accepted economically correct entries, includes inventory cost on sale, and ends at the existing First Shift route. The version-2 payload stays under the existing repository key and preserves legacy history/company access. Learning rewards never generate professional evidence, certificates or employment claims. Full gate: zero-warning lint, TypeScript, 404 tests/54 files and production build. See [stage](docs/ACCOUNTING-FOUNDATIONS-STAGE.md), [design](docs/FOUNDATION-GAMEPLAY-DESIGN.md) and browser screenshots in `artifacts/foundations/`.
+
 ## Approved accounting gameplay workspace — 2026-09-27
 
 The Mizan Trading First Shift supplier file is now processed in `AccountingCaseWorkspace`: an assigned inbox, source documents, player-confirmed matching, editable journal workpaper, Kareem/policy controls, professional actions and consequence-led result. Alpha Supplies source math is EGP 100,000 with zero billed VAT/freight, and accepted posting remains guarded by the existing case/campaign engine. Protective actions do not alter the ledger. No backend or new paid service was added. Existing professional evidence qualification remains separate from XP and competition. See [implementation](docs/ACCOUNTING-CASE-WORKSPACE.md), [decision rules](docs/PROFESSIONAL-DECISION-ENGINE.md) and [conversion audit](docs/GAMEPLAY-CONVERSION-AUDIT.md).

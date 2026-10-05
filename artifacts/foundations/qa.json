@@ -1,0 +1,70 @@
+{
+  "origin": "http://127.0.0.1:3105",
+  "results": [
+    {
+      "locale": "ar",
+      "width": 1905,
+      "height": 1080,
+      "viewport": 1920,
+      "nodes": 13,
+      "locked": 12,
+      "broken": 0,
+      "background": "rgb(243, 247, 252)",
+      "mobileVertical": true
+    },
+    {
+      "locale": "ar",
+      "width": 1425,
+      "height": 900,
+      "viewport": 1440,
+      "nodes": 13,
+      "locked": 12,
+      "broken": 0,
+      "background": "rgb(243, 247, 252)",
+      "mobileVertical": true
+    },
+    {
+      "locale": "ar",
+      "width": 1351,
+      "height": 768,
+      "viewport": 1366,
+      "nodes": 13,
+      "locked": 12,
+      "broken": 0,
+      "background": "rgb(243, 247, 252)",
+      "mobileVertical": true
+    },
+    {
+      "locale": "ar",
+      "width": 415,
+      "height": 932,
+      "viewport": 430,
+      "nodes": 13,
+      "locked": 12,
+      "broken": 0,
+      "background": "rgb(243, 247, 252)",
+      "mobileVertical": true
+    },
+    {
+      "locale": "ar",
+      "width": 375,
+      "height": 844,
+      "viewport": 390,
+      "nodes": 13,
+      "locked": 12,
+      "broken": 0,
+      "background": "rgb(243, 247, 252)",
+      "mobileVertical": true
+    }
+  ],
+  "en": {
+    "width": 375,
+    "viewport": 390,
+    "completed": 13,
+    "dir": "ltr"
+  },
+  "errors": [],
+  "fullPlaythrough": "12 missions + 28 boss steps via real mouse/keyboard",
+  "bossTrialBalance": 135000,
+  "mizanFirstShiftLinkVerified": true
+}

@@ -1,5 +1,11 @@
 # Complete Accounting Career Curriculum
 
+## Implemented Stage 0 — Accounting Foundations (2026-10-06)
+
+The authoritative beginner world is the upgraded `/{locale}/bootcamp`: 12 playable missions plus the seven-transaction **Start Mizan Trading** boss. The order is company investment → transaction classification → source documents → equation → seven starter accounts → revenue/expense → contra → increase/decrease → debit/credit → double entry → journal builder → accounting-cycle journey → connected company boss. See [stage specification](ACCOUNTING-FOUNDATIONS-STAGE.md) and [gameplay design](FOUNDATION-GAMEPLAY-DESIGN.md).
+
+Stage 0 awards only XP, a game-learning badge and local practice history. It does not generate professional skill evidence, Verified status, employment experience or CV work claims. The module registry below also describes later independent professional cases; its professional evidence rules must not be applied to guided Stage 0 completion. Full Account City remains authoritative, but Stage 0 initially introduces only seven accounts and three districts. Old Bootcamp saves and previously unlocked Mizan access are retained explicitly.
+
 This is the master curriculum reference for Debit & Credit. It maps accounting knowledge to simulated professional responsibility. A status of Implemented means playable code exists now. Foundation means the reusable engine or data contract exists, while full case coverage is still incomplete. Planned means the module is a product commitment, not a current feature. Review required means no professional assessment or Demonstrated claim may be produced until an accountable subject-matter review is recorded.
 
 ## Progression standard

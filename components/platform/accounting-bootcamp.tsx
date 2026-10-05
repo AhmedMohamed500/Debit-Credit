@@ -1,35 +1,389 @@
-'use client';
-
-import Link from 'next/link';
-import {useMemo,useState} from 'react';
-import {ArrowLeft,ArrowRight,BookOpenCheck,Building2,Check,FileText,Flag,Landmark,Lock,Map,RefreshCw,ShieldCheck,Sparkles,Target,Trophy,WalletCards} from 'lucide-react';
-import type {Locale} from '@/types';
-import {bootcampMissions,getBootcampMission} from '@/lib/bootcamp/catalog';
-import {bootcampMissionReady,bootcampProgress,completeBootcampMission,isBootcampMissionUnlocked,recordBootcampInteraction} from '@/lib/bootcamp/engine';
-import {BrowserBootcampRepository} from '@/lib/bootcamp/repository';
-import type {BootcampMissionId,BootcampState} from '@/lib/bootcamp/model';
-import {PlatformNav} from './platform-nav';
-
-const accountLabels:Record<string,{en:string;ar:string}>={Cash:{en:'Cash',ar:'النقدية'},Capital:{en:'Capital',ar:'رأس المال'},'Office Equipment':{en:'Office Equipment',ar:'المعدات المكتبية'},'Accounts Payable':{en:'Accounts Payable',ar:'الموردون'},'Sales Revenue':{en:'Sales Revenue',ar:'إيراد المبيعات'},Bank:{en:'Bank',ar:'البنك'},'Accounts Receivable':{en:'Accounts Receivable',ar:'العملاء'},'Rent Expense':{en:'Rent Expense',ar:'مصروف الإيجار'}};
-const allAccounts=Object.keys(accountLabels);
-
-export function AccountingBootcamp({locale}:{locale:Locale}){
- const ar=locale==='ar',say=(en:string,arabic:string)=>ar?arabic:en,repo=useMemo(()=>new BrowserBootcampRepository(),[]);
- const [state,setState]=useState<BootcampState>(()=>repo.get()),[feedback,setFeedback]=useState(''),[bossDrafts,setBossDrafts]=useState<Record<string,{debit:string;credit:string}>>({});
- const mission=getBootcampMission(state.currentMissionId)!;
- const save=(next:BootcampState)=>{setState(repo.save(next));return next};
- const selectMission=(id:BootcampMissionId)=>{if(isBootcampMissionUnlocked(state,id)){setState(current=>({...current,currentMissionId:id}));setFeedback('')}};
- const interact=(id:string,correct:boolean)=>{const next=save(recordBootcampInteraction(state,mission.id,id,correct));setFeedback(correct?say('Good. The financial story is becoming clear.','تمام. القصة المالية بدأت توضح.'):say('That event does not create the required accounting change. Try again.','الحدث ده لا يصنع التغير المحاسبي المطلوب. جرّب مرة أخرى.'));return next};
- const finish=()=>{const next=completeBootcampMission(state,mission.id);if(next===state){setFeedback(say('Finish the required work first.','أكمل الشغل المطلوب الأول.'));return}save(next);setFeedback(next.mizanUnlocked?say('Mizan Trading unlocked. Your first workday is ready.','تم فتح شركة ميزان. أول يوم عمل جاهز.'):say('Mission complete. The next station is open.','تمت المهمة. المحطة التالية اتفتحت.'))};
- const submitBoss=(entryId:string)=>{const entry=mission.entries?.find(item=>item.id===entryId),draft=bossDrafts[entryId];if(!entry||!draft)return;interact(entryId,draft.debit===entry.debit&&draft.credit===entry.credit)};
- const done=state.interactionProgress[mission.id]??[],required=mission.entries?.length??mission.interactions.filter(item=>item.correct).length,ready=bootcampMissionReady(state,mission.id),progress=bootcampProgress(state),Arrow=ar?ArrowLeft:ArrowRight;
- return <main className="bootcamp-page" dir={ar?'rtl':'ltr'}><PlatformNav locale={locale}/><section className="bootcamp-world"><header className="bootcamp-hero"><div><span><Sparkles/> {say('ACCOUNTING BOOTCAMP · PRACTICE WORLD','معسكر البداية المحاسبي · عالم التدريب')}</span><h1>{say('Your first day as an accountant starts here.','أول خطوة في شغل المحاسب تبدأ هنا.')}</h1><p>{say('Explore a small business, repair its financial story, build the equation, enter Account City, then earn access to Mizan Trading.','استكشف منشأة صغيرة، أصلح قصتها المالية، ابنِ المعادلة، ادخل مدينة الحسابات، ثم افتح العمل داخل شركة ميزان.')}</p></div><aside><b>{progress}%</b><span>{say('Bootcamp progress','تقدم المعسكر')}</span><progress max="100" value={progress}/><small>{state.completedMissionIds.length}/10 {say('missions complete','مهام مكتملة')}</small></aside></header>
-  <nav className="bootcamp-route" aria-label={say('Bootcamp missions','مهام المعسكر')}>{bootcampMissions.map(item=>{const unlocked=isBootcampMissionUnlocked(state,item.id),complete=state.completedMissionIds.includes(item.id);return <button key={item.id} className={`${item.id===mission.id?'active':''} ${complete?'complete':''}`} disabled={!unlocked} onClick={()=>selectMission(item.id)} aria-label={`${item.order}. ${item.title[locale]}`}><i>{complete?<Check/>:unlocked?item.order:<Lock/>}</i><b>{item.title[locale]}</b><small>{complete?say('Complete','مكتملة'):unlocked?say('Open station','محطة مفتوحة'):say('Locked','مقفلة')}</small></button>})}</nav>
-  <section className={`bootcamp-station mechanic-${mission.mechanic}`} aria-labelledby="bootcamp-mission-title"><div className="bootcamp-brief"><span>{String(mission.order).padStart(2,'0')} · {say('CAREER FOUNDATION','أساس المسار')}</span><h2 id="bootcamp-mission-title">{mission.title[locale]}</h2><h3>{mission.subtitle[locale]}</h3><p>{mission.brief[locale]}</p><div className="bootcamp-kareem"><ShieldCheck/><p><b>{say('Kareem · Finance Manager','أ/ كريم · المدير المالي')}</b>{mission.order<10?say('Understand the business first. The entry comes later.','افهم الشغل الأول. القيد ييجي بعد ما تعرف إيه اللي حصل.'):say('Build every entry carefully. Mizan needs reliable work.','ابنِ كل قيد بعناية. ميزان محتاجة شغل يعتمد عليه.')}</p></div>{mission.accountCityRoute&&<Link className="bootcamp-city-link" href={`/${locale}${mission.accountCityRoute}`}><Map/>{say('Enter the full Account City','ادخل مدينة الحسابات الكاملة')}<Arrow/></Link>}</div>
-   <div className="bootcamp-playfield">{mission.mechanic==='build-equation'?<div className="equation-stage"><div><b>{say('ASSETS','الأصول')}</b><strong>{done.includes('asset-cash')?'50,000':'0'}</strong><span>{say('Cash','النقدية')}</span></div><em>=</em><div><b>{say('LIABILITIES','الالتزامات')}</b><strong>0</strong><span>{say('Nothing owed','لا يوجد التزام')}</span></div><em>+</em><div><b>{say('EQUITY','حقوق الملكية')}</b><strong>{done.includes('equity-capital')?'50,000':'0'}</strong><span>{say('Capital','رأس المال')}</span></div></div>:null}
-    {mission.entries?<div className="boss-file">{mission.entries.map(entry=>{const completed=done.includes(entry.id),draft=bossDrafts[entry.id]??{debit:'',credit:''};return <article className={completed?'resolved':''} key={entry.id}><header><Flag/><div><b>{entry.story[locale]}</b><small>EGP {entry.amount.toLocaleString('en-US')}</small></div>{completed&&<Check/>}</header><div><label>{say('Debit account','الحساب المدين')}<select disabled={completed} value={draft.debit} onChange={event=>setBossDrafts(current=>({...current,[entry.id]:{...draft,debit:event.target.value}}))}><option value="">—</option>{allAccounts.map(name=><option value={name} key={name}>{accountLabels[name][locale]}</option>)}</select></label><label>{say('Credit account','الحساب الدائن')}<select disabled={completed} value={draft.credit} onChange={event=>setBossDrafts(current=>({...current,[entry.id]:{...draft,credit:event.target.value}}))}><option value="">—</option>{allAccounts.map(name=><option value={name} key={name}>{accountLabels[name][locale]}</option>)}</select></label><button disabled={completed||!draft.debit||!draft.credit} onClick={()=>submitBoss(entry.id)}>{completed?say('Entry accepted','تم اعتماد القيد'):say('Check entry','راجع القيد')}</button></div></article>})}</div>:<div className="bootcamp-objects">{mission.interactions.map(item=>{const collected=done.includes(item.id);return <button className={`${collected?'collected':''} ${!item.correct?'decoy':''}`} disabled={collected} onClick={()=>interact(item.id,item.correct)} key={item.id}><i>{mission.mechanic==='documents'?<FileText/>:mission.mechanic==='districts'?<Landmark/>:mission.mechanic==='connect'?<RefreshCw/>:mission.mechanic==='journal'?<BookOpenCheck/>:mission.mechanic==='explore'?<Building2/>:<WalletCards/>}</i><b>{item.label[locale]}</b><small>{collected?item.description[locale]:say('Inspect / place','افحص / ضع')}</small>{collected&&<Check/>}</button>})}</div>}
-    <footer><div><span>{done.length}/{required}</span><progress max={required} value={Math.min(done.length,required)}/><small>{say('required actions','حركات مطلوبة')} · {state.attempts[mission.id]??0} {say('retry','محاولة تصحيح')}</small></div><button disabled={!ready||state.completedMissionIds.includes(mission.id)} onClick={finish}>{state.completedMissionIds.includes(mission.id)?say('Mission complete','المهمة مكتملة'):mission.id==='mizan-boss'?say('Unlock Mizan Trading','افتح شركة ميزان'):say('Complete mission','أكمل المهمة')}<Arrow/></button></footer>{feedback&&<p className="bootcamp-feedback" role="status">{feedback}</p>}</div>
-  </section>
-  <footer className="bootcamp-unlock"><Target/><div><small>{say('NEXT WORLD','العالم التالي')}</small><b>{say('Mizan Trading · First Company','شركة ميزان · أول شركة')}</b><p>{state.mizanUnlocked?say('Unlocked through completed foundation work.','تم فتحها بعد إكمال شغل الأساسيات.'):say('Finish the boss file to start real company work.','أنهِ ملف المهمة الكبرى لبدء شغل الشركة الحقيقي.')}</p></div>{state.mizanUnlocked?<Link href={`/${locale}/game`}><Trophy/>{say('Start at Mizan Trading','ابدأ في شركة ميزان')}</Link>:<span><Lock/>{say('Locked','مقفلة')}</span>}</footer>
- </section></main>;
+"use client";
+import Link from "next/link";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Home,
+  Map,
+  Star,
+  Trophy,
+} from "lucide-react";
+import type { Locale } from "@/types";
+import { foundationEntries, getBootcampMission } from "@/lib/bootcamp/catalog";
+import {
+  bootcampMissionReady,
+  completeBootcampMission,
+  createBootcampState,
+  currentFoundationTask,
+  foundationXp,
+  isBootcampMissionUnlocked,
+  submitFoundationTask,
+} from "@/lib/bootcamp/engine";
+import {
+  BrowserBootcampRepository,
+  syncFoundationRewards,
+} from "@/lib/bootcamp/repository";
+import type {
+  BootcampMissionId,
+  FoundationResponse,
+} from "@/lib/bootcamp/model";
+import { FoundationWorldMap } from "@/components/foundations/world-map";
+import { FoundationMissionGameplay } from "@/components/foundations/mission-gameplay";
+import { GuideCharacter } from "@/components/foundations/visuals";
+import { FoundationBooks } from "@/components/foundations/accounting-journey";
+const serverState = createBootcampState();
+export function AccountingBootcamp({ locale }: { locale: Locale }) {
+  const ar = locale === "ar",
+    say = (en: string, arabic: string) => (ar ? arabic : en),
+    Arrow = ar ? ArrowLeft : ArrowRight,
+    repo = useMemo(() => new BrowserBootcampRepository(), []),
+    state = useSyncExternalStore(
+      repo.subscribe,
+      repo.snapshot,
+      () => serverState,
+    );
+  const [screen, setScreen] = useState<"map" | "mission" | "result">("map"),
+    [feedback, setFeedback] = useState<{
+      correct: boolean;
+      text: string;
+    } | null>(null),
+    [hint, setHint] = useState(false);
+  const mission = getBootcampMission(state.currentMissionId)!,
+    task = currentFoundationTask(state),
+    ready = bootcampMissionReady(state, mission.id),
+    done = state.interactionProgress[mission.id] ?? [],
+    completed = state.completedMissionIds.includes(mission.id),
+    entry = task?.entryId
+      ? foundationEntries.find((e) => e.id === task.entryId)
+      : null;
+  useEffect(() => {
+    syncFoundationRewards(state);
+  }, [state]);
+  const open = (id: BootcampMissionId) => {
+    if (!isBootcampMissionUnlocked(state, id)) return;
+    repo.save({ ...state, currentMissionId: id });
+    setScreen("mission");
+    setFeedback(null);
+    setHint(false);
+    window.scrollTo(0, 0);
+  };
+  const submit = (response: FoundationResponse) => {
+    if (!task) return;
+    const result = submitFoundationTask(state, mission.id, task.id, response);
+    repo.save(result.state);
+    setFeedback({
+      correct: result.correct,
+      text: result.correct
+        ? task.explanation[locale]
+        : say(
+            "Not quite. Follow the business change and check your choice. Balance alone is not enough.",
+            "لسه مش صحيح. تتبع التغير في الشركة وراجع اختيارك. تساوي المبالغ وحده لا يكفي.",
+          ),
+    });
+    setHint(false);
+  };
+  const finish = () => {
+    const next = completeBootcampMission(state, mission.id);
+    if (next === state) return;
+    repo.save(next);
+    syncFoundationRewards(next);
+    setFeedback(null);
+    setScreen(mission.id === "mizan-boss" ? "result" : "map");
+    window.scrollTo(0, 0);
+  };
+  const continueTask = () => {
+    setFeedback(null);
+    setHint(false);
+  };
+  return (
+    <main className="fdn-page" dir={ar ? "rtl" : "ltr"}>
+      <aside className="fdn-sidebar">
+        <Link href={`/${locale}`} className="fdn-brand">
+          <span className="fdn-brand-mark">▟</span>
+          <b>Debit &amp; Credit</b>
+          <small>by Money Coder</small>
+        </Link>
+        <nav aria-label={say("Foundation navigation", "تنقل الأساسيات")}>
+          <Link href={`/${locale}`}>
+            <Home />
+            {say("Home", "الرئيسية")}
+          </Link>
+          <button
+            aria-pressed={screen === "map"}
+            onClick={() => setScreen("map")}
+          >
+            <Map />
+            {say("Missions", "المراحل")}
+          </button>
+          <button
+            onClick={() => {
+              setScreen("map");
+              document.querySelector(".fdn-map-bottom")?.scrollIntoView();
+            }}
+          >
+            <Star />
+            {say("Progress", "تقدمي")}
+          </button>
+          {state.mizanUnlocked && (
+            <Link href={`/${locale}/game/first-shift`}>
+              <Trophy />
+              {say("First shift", "أول وردية")}
+            </Link>
+          )}
+        </nav>
+        <div className="fdn-sidebar-profile">
+          <b>{say("Foundation learner", "متعلم الأساسيات")}</b>
+          <span>{foundationXp(state)} XP</span>
+          <small>
+            {say("Learning, not employment experience", "تعلم وليس خبرة عمل")}
+          </small>
+        </div>
+      </aside>
+      <div className="fdn-main">
+        <header className="fdn-topbar">
+          <button onClick={() => setScreen("map")}>
+            <span className="fdn-brand-mark">▟</span>Debit &amp; Credit
+          </button>
+          <span dir={ar ? "rtl" : "ltr"}>
+            {say("Stage 0", "المرحلة 0")} ·{" "}
+            {screen === "mission" ? (
+              <>{say("Mission", "المهمة")} {mission.order === 13 ? say("Boss", "النهائية") : <bdi>{mission.order}</bdi>}</>
+            ) : (
+              <bdi dir="ltr">{state.completedMissionIds.filter((id) => id !== "mizan-boss").length} / 12</bdi>
+            )}
+          </span>
+          <progress
+            aria-label={say("Stage progress", "تقدم المرحلة")}
+            value={
+              state.completedMissionIds.filter((id) => id !== "mizan-boss")
+                .length
+            }
+            max={12}
+          />
+          <span className="fdn-xp">
+            <Star />
+            {foundationXp(state)} XP
+          </span>
+          <Link href={`/${ar ? "en" : "ar"}/bootcamp`}>{ar ? "EN" : "AR"}</Link>
+        </header>
+        {screen === "map" ? (
+          <FoundationWorldMap locale={locale} state={state} onOpen={open} />
+        ) : screen === "result" ? (
+          <section className="fdn-result">
+            <div className="fdn-result-celebration">
+              <GuideCharacter
+                locale={locale}
+                dialogue={say(
+                  "Congratulations! You ran your first company. Now you are ready for your first accounting shift.",
+                  "مبروك! شغّلت شركتك الأولى. أنت الآن جاهز لأول وردية محاسبية.",
+                )}
+              />
+              <div>
+                <Trophy />
+                <h1>{say("MIZAN TRADING UNLOCKED", "تم فتح MIZAN TRADING")}</h1>
+                <p>
+                  {say(
+                    "12 missions + 7 connected transactions completed.",
+                    "أكملت 12 مهمة و7 عمليات مترابطة.",
+                  )}
+                </p>
+                <strong>+500 XP · ★★★</strong>
+                <p>
+                  {say(
+                    "Foundation learning badge · no verified skills or employment history awarded.",
+                    "شارة تعلم الأساسيات · لا تمنح مهارات موثقة أو تاريخ توظيف.",
+                  )}
+                </p>
+                <Link
+                  className="fdn-primary"
+                  href={`/${locale}/game/first-shift`}
+                >
+                  {say("Start your first shift", "ابدأ أول وردية")}
+                  <Arrow />
+                </Link>
+              </div>
+            </div>
+            <FoundationBooks locale={locale} state={state} />
+          </section>
+        ) : (
+          <section
+            className={`fdn-mission fdn-mechanic-${mission.mechanic}`}
+            aria-labelledby="foundation-title"
+          >
+            <header className="fdn-mission-heading">
+              <button className="fdn-back" onClick={() => setScreen("map")}>
+                <Map />
+                {say("World map", "خريطة الرحلة")}
+              </button>
+              <span>
+                {mission.order === 13 ? say("FINAL BOSS", "المهمة النهائية") : (
+                  <>{say("MISSION", "المهمة")} <bdi dir="ltr">{mission.order} / 12</bdi></>
+                )}
+              </span>
+              <h1 id="foundation-title">{mission.title[locale]}</h1>
+              <p>{mission.brief[locale]}</p>
+              <div className="fdn-mission-meter">
+                <progress
+                  max={mission.tasks.length}
+                  value={done.length}
+                  aria-label={say("Mission progress", "تقدم المهمة")}
+                />
+                <b>
+                  {done.length} / {mission.tasks.length}
+                </b>
+                <span>
+                  <Star />
+                  {mission.xp} XP
+                </span>
+              </div>
+            </header>
+            <div className="fdn-mission-layout">
+              <GuideCharacter
+                locale={locale}
+                dialogue={
+                  feedback?.text ??
+                  (hint
+                    ? say(
+                        "Look for what the company controls, owes or earns. Use the evidence; do not guess.",
+                        "اسأل: ماذا تملك الشركة؟ ماذا عليها؟ وماذا كسبت؟ استخدم الدليل، لا التخمين.",
+                      )
+                    : (entry?.story[locale] ??
+                      task?.prompt[locale] ??
+                      say(
+                        "Great work. You made the financial story clear.",
+                        "شغل ممتاز. القصة المالية أصبحت واضحة.",
+                      )))
+                }
+              />
+              <div className="fdn-interaction-area">
+                {mission.mechanic === "boss" && (
+                  <ol
+                    className="fdn-boss-queue"
+                    aria-label={say(
+                      "Boss transaction queue",
+                      "طابور عمليات المهمة النهائية",
+                    )}
+                  >
+                    {foundationEntries.map((e, i) => (
+                      <li
+                        key={e.id}
+                        data-state={
+                          done.includes(`${e.id}:journal`)
+                            ? "done"
+                            : task?.entryId === e.id
+                              ? "current"
+                              : "locked"
+                        }
+                      >
+                        {done.includes(`${e.id}:journal`) ? (
+                          <CheckCircle2 />
+                        ) : (
+                          i + 1
+                        )}
+                        <span>{e.reference}</span>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                {feedback?.correct ? (
+                  <div className="fdn-task-success" role="status">
+                    <CheckCircle2 />
+                    <h2>{say("You saw the effect!", "شفت التأثير!")}</h2>
+                    <p>{feedback.text}</p>
+                    <button className="fdn-primary" onClick={continueTask}>
+                      {say("Next", "التالي")}
+                      <Arrow />
+                    </button>
+                  </div>
+                ) : task ? (
+                  <>
+                    <h2 className="fdn-task-prompt">{task.prompt[locale]}</h2>
+                    <FoundationMissionGameplay
+                      key={`${mission.id}/${task.id}`}
+                      locale={locale}
+                      mission={mission}
+                      task={task}
+                      draft={state.drafts[`${mission.id}/${task.id}`]}
+                      onDraft={(value) =>
+                        repo.save({
+                          ...state,
+                          drafts: {
+                            ...state.drafts,
+                            [`${mission.id}/${task.id}`]: value,
+                          },
+                        })
+                      }
+                      onSubmit={submit}
+                    />
+                    {feedback && !feedback.correct && (
+                      <p className="fdn-error" role="alert">
+                        {feedback.text}
+                      </p>
+                    )}
+                    <button className="fdn-hint" onClick={() => setHint(!hint)}>
+                      {say("A small hint", "تلميح صغير")}
+                    </button>
+                  </>
+                ) : (
+                  <div className="fdn-mission-done">
+                    <CheckCircle2 />
+                    <h2>{say("Mission complete!", "المهمة اكتملت!")}</h2>
+                    <p>
+                      {say(
+                        "You learned by making the company’s story visible.",
+                        "اتعلمت وأنت بتوضح قصة الشركة المالية.",
+                      )}
+                    </p>
+                    <strong>★★★ · +{mission.xp} XP</strong>
+                    {ready && !completed ? (
+                      <button className="fdn-primary" onClick={finish}>
+                        {mission.id === "mizan-boss"
+                          ? say("Unlock Mizan Trading", "افتح Mizan Trading")
+                          : say(
+                              "Collect reward · next mission",
+                              "استلم المكافأة · المهمة التالية",
+                            )}
+                        <Arrow />
+                      </button>
+                    ) : (
+                      <button
+                        className="fdn-primary"
+                        onClick={() =>
+                          setScreen(
+                            mission.id === "mizan-boss" ? "result" : "map",
+                          )
+                        }
+                      >
+                        {say("Back to your journey", "ارجع لرحلتك")}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            {mission.mechanic === "boss" &&
+              done.some((id) => id.endsWith(":journal")) && (
+                <FoundationBooks locale={locale} state={state} />
+              )}
+          </section>
+        )}
+        {state.storageWarning && (
+          <p role="alert" className="fdn-storage-warning">
+            {say(
+              "Local storage is unavailable. Keep this tab open; progress is temporary.",
+              "التخزين المحلي غير متاح. اترك الصفحة مفتوحة؛ التقدم مؤقت.",
+            )}
+          </p>
+        )}
+        <footer className="fdn-footer">
+          {say(
+            "Local-first foundation practice · No backend · No professional evidence",
+            "تدريب أساسيات محفوظ محليًا · بلا خادم · بلا أدلة مهنية",
+          )}
+        </footer>
+      </div>
+    </main>
+  );
 }

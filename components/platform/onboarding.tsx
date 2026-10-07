@@ -1,44 +1,466 @@
-'use client';
-import {useEffect,useState} from 'react';
-import Link from 'next/link';
-import {ArrowLeft,ArrowRight,BookOpen,BriefcaseBusiness,Building2,GraduationCap,ShieldCheck,Sparkles,Target,UserRound} from 'lucide-react';
-import {BrowserPlatformRepository} from '@/lib/platform/repository';
-import {BrowserCareerLeagueRepository} from '@/lib/career-league/repository';
-import {roleForCareerGoal} from '@/lib/career-league/engine';
-import type {CareerGoal,PlayerPersona,WorkEnvironment} from '@/lib/career-league/model';
-import {roleCatalog} from '@/lib/career/catalog';
-import type {RoleId} from '@/lib/career/model';
-import {BrowserCareerProfileRepository,BrowserCvPreferencesRepository,createDefaultProfile} from '@/lib/career/repository';
-import type {Locale} from '@/types';
-import {PlatformNav} from './platform-nav';
+"use client";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { cloudUser, saveCloudCareer } from "@/lib/cloud/runtime";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  BriefcaseBusiness,
+  Building2,
+  GraduationCap,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  UserRound,
+} from "lucide-react";
+import { BrowserPlatformRepository } from "@/lib/platform/repository";
+import { BrowserCareerLeagueRepository } from "@/lib/career-league/repository";
+import { roleForCareerGoal } from "@/lib/career-league/engine";
+import type {
+  CareerGoal,
+  PlayerPersona,
+  WorkEnvironment,
+} from "@/lib/career-league/model";
+import { roleCatalog } from "@/lib/career/catalog";
+import type { RoleId } from "@/lib/career/model";
+import {
+  BrowserCareerProfileRepository,
+  BrowserCvPreferencesRepository,
+  createDefaultProfile,
+} from "@/lib/career/repository";
+import type { Locale } from "@/types";
+import { PlatformNav } from "./platform-nav";
 
-const careerRepository=new BrowserCareerLeagueRepository(),platformRepository=new BrowserPlatformRepository();
-const personaCards=[
- {id:'student',icon:GraduationCap,en:'Accounting Student',ar:'طالب محاسبة',situation:{en:'Learning the language of accounting',ar:'بتتعلم لغة المحاسبة'},focus:{en:'Accounts, debit and credit, first entries',ar:'الحسابات والمدين والدائن وأول قيد'},start:{en:'Accounting Bootcamp',ar:'معسكر البداية'}},
- {id:'graduate',icon:UserRound,en:'Fresh Graduate',ar:'خريج جديد',situation:{en:'Ready to turn study into practice',ar:'جاهز تحول الدراسة لممارسة'},focus:{en:'Documents, journals and company workflow',ar:'المستندات والقيود ودورة الشركة'},start:{en:'Mizan Trading',ar:'ميزان للتجارة'}},
- {id:'working-accountant',icon:BriefcaseBusiness,en:'Working Accountant',ar:'محاسب شغال',situation:{en:'Handling day-to-day transactions',ar:'بتتعامل مع العمليات اليومية'},focus:{en:'Reconciliation and stronger controls',ar:'التسويات والرقابة الأقوى'},start:{en:'Realistic work cases',ar:'حالات عمل واقعية'}},
- {id:'experienced-accountant',icon:ShieldCheck,en:'Experienced Accountant',ar:'محاسب بخبرة',situation:{en:'Reviewing others and owning outcomes',ar:'بتراجع عمل الآخرين وتتحمل النتيجة'},focus:{en:'Close, review, controls and analysis',ar:'الإقفال والمراجعة والرقابة والتحليل'},start:{en:'Advanced diagnostic',ar:'تشخيص متقدم'}},
+const careerRepository = new BrowserCareerLeagueRepository(),
+  platformRepository = new BrowserPlatformRepository();
+const personaCards = [
+  {
+    id: "student",
+    icon: GraduationCap,
+    en: "Accounting Student",
+    ar: "طالب محاسبة",
+    situation: {
+      en: "Learning the language of accounting",
+      ar: "بتتعلم لغة المحاسبة",
+    },
+    focus: {
+      en: "Accounts, debit and credit, first entries",
+      ar: "الحسابات والمدين والدائن وأول قيد",
+    },
+    start: { en: "Accounting Bootcamp", ar: "معسكر البداية" },
+  },
+  {
+    id: "graduate",
+    icon: UserRound,
+    en: "Fresh Graduate",
+    ar: "خريج جديد",
+    situation: {
+      en: "Ready to turn study into practice",
+      ar: "جاهز تحول الدراسة لممارسة",
+    },
+    focus: {
+      en: "Documents, journals and company workflow",
+      ar: "المستندات والقيود ودورة الشركة",
+    },
+    start: { en: "Mizan Trading", ar: "ميزان للتجارة" },
+  },
+  {
+    id: "working-accountant",
+    icon: BriefcaseBusiness,
+    en: "Working Accountant",
+    ar: "محاسب شغال",
+    situation: {
+      en: "Handling day-to-day transactions",
+      ar: "بتتعامل مع العمليات اليومية",
+    },
+    focus: {
+      en: "Reconciliation and stronger controls",
+      ar: "التسويات والرقابة الأقوى",
+    },
+    start: { en: "Realistic work cases", ar: "حالات عمل واقعية" },
+  },
+  {
+    id: "experienced-accountant",
+    icon: ShieldCheck,
+    en: "Experienced Accountant",
+    ar: "محاسب بخبرة",
+    situation: {
+      en: "Reviewing others and owning outcomes",
+      ar: "بتراجع عمل الآخرين وتتحمل النتيجة",
+    },
+    focus: {
+      en: "Close, review, controls and analysis",
+      ar: "الإقفال والمراجعة والرقابة والتحليل",
+    },
+    start: { en: "Advanced diagnostic", ar: "تشخيص متقدم" },
+  },
 ] as const;
-const goalCards:{id:CareerGoal;en:string;ar:string;role:RoleId}[]=[
- {id:'understand-basics',en:'Understand accounting from the beginning',ar:'أفهم المحاسبة من البداية',role:'junior-accountant'},
- {id:'first-job',en:'Prepare for my first job',ar:'أجهز لأول وظيفة',role:'junior-accountant'},
- {id:'improve-current',en:'Grow in my current role',ar:'أطور نفسي في شغلي الحالي',role:'general-accountant'},
- {id:'bigger-company',en:'Move to a bigger company',ar:'أنقل لشركة أكبر',role:'general-accountant'},
+const goalCards: { id: CareerGoal; en: string; ar: string; role: RoleId }[] = [
+  {
+    id: "understand-basics",
+    en: "Understand accounting from the beginning",
+    ar: "أفهم المحاسبة من البداية",
+    role: "junior-accountant",
+  },
+  {
+    id: "first-job",
+    en: "Prepare for my first job",
+    ar: "أجهز لأول وظيفة",
+    role: "junior-accountant",
+  },
+  {
+    id: "improve-current",
+    en: "Grow in my current role",
+    ar: "أطور نفسي في شغلي الحالي",
+    role: "general-accountant",
+  },
+  {
+    id: "bigger-company",
+    en: "Move to a bigger company",
+    ar: "أنقل لشركة أكبر",
+    role: "general-accountant",
+  },
 ];
-const targetRoles:RoleId[]=['junior-accountant','ap-accountant','ar-accountant','general-accountant','gl-accountant','treasury-accountant','senior-accountant','chief-accountant','finance-manager'];
-const recommended:Record<PlayerPersona,RoleId[]>={student:['junior-accountant','ap-accountant'],graduate:['junior-accountant','general-accountant','ap-accountant'],'working-accountant':['general-accountant','gl-accountant','senior-accountant'],'experienced-accountant':['senior-accountant','chief-accountant','finance-manager']};
-const environments:[WorkEnvironment,string,string][]=[['small-business','Small business','شركة صغيرة'],['accounting-office','Accounting office','مكتب محاسبة'],['retail','Retail','تجزئة'],['restaurant','Restaurant','مطعم'],['trading-company','Trading company','شركة تجارية'],['other','Other','أخرى']];
+const targetRoles: RoleId[] = [
+  "junior-accountant",
+  "ap-accountant",
+  "ar-accountant",
+  "general-accountant",
+  "gl-accountant",
+  "treasury-accountant",
+  "senior-accountant",
+  "chief-accountant",
+  "finance-manager",
+];
+const recommended: Record<PlayerPersona, RoleId[]> = {
+  student: ["junior-accountant", "ap-accountant"],
+  graduate: ["junior-accountant", "general-accountant", "ap-accountant"],
+  "working-accountant": [
+    "general-accountant",
+    "gl-accountant",
+    "senior-accountant",
+  ],
+  "experienced-accountant": [
+    "senior-accountant",
+    "chief-accountant",
+    "finance-manager",
+  ],
+};
+const environments: [WorkEnvironment, string, string][] = [
+  ["small-business", "Small business", "شركة صغيرة"],
+  ["accounting-office", "Accounting office", "مكتب محاسبة"],
+  ["retail", "Retail", "تجزئة"],
+  ["restaurant", "Restaurant", "مطعم"],
+  ["trading-company", "Trading company", "شركة تجارية"],
+  ["other", "Other", "أخرى"],
+];
 
-export function PlatformOnboarding({locale}:{locale:Locale}){
- const ar=locale==='ar',say=(en:string,a:string)=>ar?a:en,Arrow=ar?ArrowLeft:ArrowRight;
- const [state,setState]=useState(()=>careerRepository.get()),[step,setStep]=useState<1|2>(1),[showAll,setShowAll]=useState(false);
- useEffect(()=>{const requested=new URLSearchParams(window.location.search).get('persona');if(requested&&personaCards.some(item=>item.id===requested))setState(current=>({...current,persona:requested as PlayerPersona}))},[]);
- const choosePersona=(persona:PlayerPersona)=>setState(current=>({...current,persona,workEnvironment:persona==='working-accountant'||persona==='experienced-accountant'?current.workEnvironment:null}));
- const chooseGoal=(goal:CareerGoal,role:RoleId)=>setState(current=>({...current,goal,targetRoleId:role}));
- const chooseRole=(role:RoleId)=>setState(current=>({...current,targetRoleId:role,goal:role==='junior-accountant'?'first-job':role==='general-accountant'?'general-accountant':current.goal??'bigger-company'}));
- const save=()=>{if(!state.persona||!state.targetRoleId||!state.goal)return;const next=careerRepository.save({...state,placementPath:'take-challenge',onboardingComplete:true});const legacy=platformRepository.get();platformRepository.save({...legacy,experience:next.persona==='student'?'student':next.persona==='graduate'?'junior':'experienced',goal:'career',onboardingComplete:true});const role=next.targetRoleId??roleForCareerGoal(next.goal),profileRepo=new BrowserCareerProfileRepository(),profile=profileRepo.get()??createDefaultProfile('',role);profileRepo.save({...profile,targetRoleId:role,experienceLevel:next.persona==='student'?'student':next.persona==='graduate'?'fresh-graduate':next.persona==='experienced-accountant'?'senior':profile.experienceLevel});const cvRepo=new BrowserCvPreferencesRepository(),cv=cvRepo.get();cvRepo.save({version:1,targetRoleId:role,accent:cv?.accent??'navy',includeScores:cv?.includeScores??false,updatedAt:new Date().toISOString()})};
- const visibleRoles=state.persona&&!showAll?recommended[state.persona]:targetRoles;
- return <main className="platform-page career-entry" dir={ar?'rtl':'ltr'}><PlatformNav locale={locale}/><div className="career-entry-shell"><header className="career-entry-intro"><span><Sparkles size={17}/> CAREER LEAGUE · {say('CHOOSE YOUR PATH','اختار مسارك')}</span><h1>{step===1?say('Where are you in your journey?','إنت فين دلوقتي في رحلتك؟'):say('Where do you want to go?','عايز توصل لإيه؟')}</h1><p>{step===1?say('Choose your real starting position. Your choice changes the diagnostic, never your earned skills.','اختار نقطة بدايتك الحقيقية. اختيارك يغيّر التشخيص، لكنه لا يمنحك مهارات.'):say('Pick a goal and target role. You can explore every destination and change it later.','اختار هدفك والدور اللي تطمح له. تقدر تستكشف كل الوجهات وتغير اختيارك لاحقًا.')}</p><div className="career-entry-progress" aria-label={say('Career entry progress','تقدم بداية المسار')}><b className="active">01 <span>{say('Your path','مسارك')}</span></b><b className={step===2?'active':''}>02 <span>{say('Your target','هدفك')}</span></b><b>03 <span>{say('Diagnostic','التشخيص')}</span></b><b>04 <span>{say('Career map','الخريطة')}</span></b></div></header>
- {step===1?<section aria-labelledby="entry-persona-title"><h2 id="entry-persona-title">{say('Choose your career character','اختار شخصيتك المهنية')}</h2><div className="career-entry-personas">{personaCards.map((item,index)=>{const Icon=item.icon;return <button type="button" key={item.id} aria-pressed={state.persona===item.id} className={state.persona===item.id?'selected':''} onClick={()=>choosePersona(item.id)}><span className="career-entry-card-top"><i>0{index+1}</i><Icon aria-hidden/></span><strong>{ar?item.ar:item.en}</strong><span><small>{say('Today','دلوقتي')}</small>{item.situation[locale]}</span><span><small>{say('Focus','هتركز على')}</small>{item.focus[locale]}</span><em>{say('Start:','البداية:')} {item.start[locale]}</em></button>})}</div>{state.persona==='working-accountant'||state.persona==='experienced-accountant'?<div className="career-entry-environments"><h3>{say('Your current workplace (optional)','بيئة شغلك الحالية (اختياري)')}</h3><div>{environments.map(([id,en,a])=><button type="button" aria-pressed={state.workEnvironment===id} onClick={()=>setState(current=>({...current,workEnvironment:id}))} key={id}><Building2 size={17}/>{ar?a:en}</button>)}</div></div>:null}<button type="button" className="career-entry-next" disabled={!state.persona} onClick={()=>setStep(2)}>{say('Choose my destination','اختار وجهتي')}<Arrow aria-hidden/></button></section>:<section aria-labelledby="entry-goal-title"><h2 id="entry-goal-title">{say('What is your next milestone?','إيه خطوتك الجاية؟')}</h2><div className="career-entry-goals">{goalCards.map(item=><button type="button" key={item.id} aria-pressed={state.goal===item.id} onClick={()=>chooseGoal(item.id,item.role)}><Target aria-hidden/><span>{ar?item.ar:item.en}</span></button>)}</div><div className="career-entry-target-title"><h2>{say('Target role','الدور اللي عايز توصله')}</h2><button type="button" onClick={()=>setShowAll(value=>!value)}>{showAll?say('Show recommendations','اعرض المقترح'):say('Explore all roles','استكشف كل الوظائف')}</button></div><div className="career-entry-roles">{visibleRoles.map(role=><button type="button" key={role} aria-pressed={state.targetRoleId===role} onClick={()=>chooseRole(role)}><BriefcaseBusiness aria-hidden/><span>{roleCatalog[role].label[locale]}</span></button>)}</div><div className="career-entry-actions"><button type="button" onClick={()=>setStep(1)}>{say('Back','رجوع')}</button><Link aria-disabled={!state.persona||!state.goal||!state.targetRoleId} onClick={event=>{if(!state.persona||!state.goal||!state.targetRoleId)event.preventDefault();else save()}} href={`/${locale}/career-league/placement`}>{say('Start my career diagnostic','ابدأ التشخيص المهني')}<Arrow aria-hidden/></Link></div></section>}
- <p className="career-entry-note"><BookOpen size={17}/>{say('Local career planning only. No self-report creates professional evidence or Verified skills.','تخطيط مهني محلي فقط. الإجابات الشخصية لا تنشئ دليلًا مهنيًا ولا مهارات موثقة.')}</p></div></main>;
+export function PlatformOnboarding({ locale }: { locale: Locale }) {
+  const router = useRouter();
+  const [saving, setSaving] = useState(false),
+    [saveError, setSaveError] = useState("");
+  const ar = locale === "ar",
+    say = (en: string, a: string) => (ar ? a : en),
+    Arrow = ar ? ArrowLeft : ArrowRight;
+  const [state, setState] = useState(() => careerRepository.get()),
+    [step, setStep] = useState<1 | 2>(1),
+    [showAll, setShowAll] = useState(false);
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get(
+      "persona",
+    );
+    if (requested && personaCards.some((item) => item.id === requested))
+      setState((current) => ({
+        ...current,
+        persona: requested as PlayerPersona,
+      }));
+  }, []);
+  const choosePersona = (persona: PlayerPersona) =>
+    setState((current) => ({
+      ...current,
+      persona,
+      workEnvironment:
+        persona === "working-accountant" || persona === "experienced-accountant"
+          ? current.workEnvironment
+          : null,
+    }));
+  const chooseGoal = (goal: CareerGoal, role: RoleId) =>
+    setState((current) => ({ ...current, goal, targetRoleId: role }));
+  const chooseRole = (role: RoleId) =>
+    setState((current) => ({
+      ...current,
+      targetRoleId: role,
+      goal:
+        role === "junior-accountant"
+          ? "first-job"
+          : role === "general-accountant"
+            ? "general-accountant"
+            : (current.goal ?? "bigger-company"),
+    }));
+  const save = async () => {
+    if (!state.persona || !state.targetRoleId || !state.goal) return;
+    if (cloudUser()) await saveCloudCareer(state);
+    const next = careerRepository.save({
+      ...state,
+      placementPath: "take-challenge",
+      onboardingComplete: true,
+    });
+    const legacy = platformRepository.get();
+    platformRepository.save({
+      ...legacy,
+      experience:
+        next.persona === "student"
+          ? "student"
+          : next.persona === "graduate"
+            ? "junior"
+            : "experienced",
+      goal: "career",
+      onboardingComplete: true,
+    });
+    const role = next.targetRoleId ?? roleForCareerGoal(next.goal),
+      profileRepo = new BrowserCareerProfileRepository(),
+      profile = profileRepo.get() ?? createDefaultProfile("", role);
+    profileRepo.save({
+      ...profile,
+      targetRoleId: role,
+      experienceLevel:
+        next.persona === "student"
+          ? "student"
+          : next.persona === "graduate"
+            ? "fresh-graduate"
+            : next.persona === "experienced-accountant"
+              ? "senior"
+              : profile.experienceLevel,
+    });
+    const cvRepo = new BrowserCvPreferencesRepository(),
+      cv = cvRepo.get();
+    cvRepo.save({
+      version: 1,
+      targetRoleId: role,
+      accent: cv?.accent ?? "navy",
+      includeScores: cv?.includeScores ?? false,
+      updatedAt: new Date().toISOString(),
+    });
+  };
+  const visibleRoles =
+    state.persona && !showAll ? recommended[state.persona] : targetRoles;
+  return (
+    <main className="platform-page career-entry" dir={ar ? "rtl" : "ltr"}>
+      <PlatformNav locale={locale} />
+      <div className="career-entry-shell">
+        <header className="career-entry-intro">
+          <span>
+            <Sparkles size={17} /> CAREER LEAGUE ·{" "}
+            {say("CHOOSE YOUR PATH", "اختار مسارك")}
+          </span>
+          <h1>
+            {step === 1
+              ? say(
+                  "Where are you in your journey?",
+                  "إنت فين دلوقتي في رحلتك؟",
+                )
+              : say("Where do you want to go?", "عايز توصل لإيه؟")}
+          </h1>
+          <p>
+            {step === 1
+              ? say(
+                  "Choose your real starting position. Your choice changes the diagnostic, never your earned skills.",
+                  "اختار نقطة بدايتك الحقيقية. اختيارك يغيّر التشخيص، لكنه لا يمنحك مهارات.",
+                )
+              : say(
+                  "Pick a goal and target role. You can explore every destination and change it later.",
+                  "اختار هدفك والدور اللي تطمح له. تقدر تستكشف كل الوجهات وتغير اختيارك لاحقًا.",
+                )}
+          </p>
+          <div
+            className="career-entry-progress"
+            aria-label={say("Career entry progress", "تقدم بداية المسار")}
+          >
+            <b className="active">
+              01 <span>{say("Your path", "مسارك")}</span>
+            </b>
+            <b className={step === 2 ? "active" : ""}>
+              02 <span>{say("Your target", "هدفك")}</span>
+            </b>
+            <b>
+              03 <span>{say("Diagnostic", "التشخيص")}</span>
+            </b>
+            <b>
+              04 <span>{say("Career map", "الخريطة")}</span>
+            </b>
+          </div>
+        </header>
+        {step === 1 ? (
+          <section aria-labelledby="entry-persona-title">
+            <h2 id="entry-persona-title">
+              {say("Choose your career character", "اختار شخصيتك المهنية")}
+            </h2>
+            <div className="career-entry-personas">
+              {personaCards.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    type="button"
+                    key={item.id}
+                    aria-pressed={state.persona === item.id}
+                    className={state.persona === item.id ? "selected" : ""}
+                    onClick={() => choosePersona(item.id)}
+                  >
+                    <span className="career-entry-card-top">
+                      <i>0{index + 1}</i>
+                      <Icon aria-hidden />
+                    </span>
+                    <strong>{ar ? item.ar : item.en}</strong>
+                    <span>
+                      <small>{say("Today", "دلوقتي")}</small>
+                      {item.situation[locale]}
+                    </span>
+                    <span>
+                      <small>{say("Focus", "هتركز على")}</small>
+                      {item.focus[locale]}
+                    </span>
+                    <em>
+                      {say("Start:", "البداية:")} {item.start[locale]}
+                    </em>
+                  </button>
+                );
+              })}
+            </div>
+            {state.persona === "working-accountant" ||
+            state.persona === "experienced-accountant" ? (
+              <div className="career-entry-environments">
+                <h3>
+                  {say(
+                    "Your current workplace (optional)",
+                    "بيئة شغلك الحالية (اختياري)",
+                  )}
+                </h3>
+                <div>
+                  {environments.map(([id, en, a]) => (
+                    <button
+                      type="button"
+                      aria-pressed={state.workEnvironment === id}
+                      onClick={() =>
+                        setState((current) => ({
+                          ...current,
+                          workEnvironment: id,
+                        }))
+                      }
+                      key={id}
+                    >
+                      <Building2 size={17} />
+                      {ar ? a : en}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            <button
+              type="button"
+              className="career-entry-next"
+              disabled={!state.persona}
+              onClick={() => setStep(2)}
+            >
+              {say("Choose my destination", "اختار وجهتي")}
+              <Arrow aria-hidden />
+            </button>
+          </section>
+        ) : (
+          <section aria-labelledby="entry-goal-title">
+            <h2 id="entry-goal-title">
+              {say("What is your next milestone?", "إيه خطوتك الجاية؟")}
+            </h2>
+            <div className="career-entry-goals">
+              {goalCards.map((item) => (
+                <button
+                  type="button"
+                  key={item.id}
+                  aria-pressed={state.goal === item.id}
+                  onClick={() => chooseGoal(item.id, item.role)}
+                >
+                  <Target aria-hidden />
+                  <span>{ar ? item.ar : item.en}</span>
+                </button>
+              ))}
+            </div>
+            <div className="career-entry-target-title">
+              <h2>{say("Target role", "الدور اللي عايز توصله")}</h2>
+              <button
+                type="button"
+                onClick={() => setShowAll((value) => !value)}
+              >
+                {showAll
+                  ? say("Show recommendations", "اعرض المقترح")
+                  : say("Explore all roles", "استكشف كل الوظائف")}
+              </button>
+            </div>
+            <div className="career-entry-roles">
+              {visibleRoles.map((role) => (
+                <button
+                  type="button"
+                  key={role}
+                  aria-pressed={state.targetRoleId === role}
+                  onClick={() => chooseRole(role)}
+                >
+                  <BriefcaseBusiness aria-hidden />
+                  <span>{roleCatalog[role].label[locale]}</span>
+                </button>
+              ))}
+            </div>
+            <div className="career-entry-actions">
+              <button type="button" onClick={() => setStep(1)}>
+                {say("Back", "رجوع")}
+              </button>
+              <Link
+                aria-disabled={
+                  saving || !state.persona || !state.goal || !state.targetRoleId
+                }
+                onClick={async (event) => {
+                  event.preventDefault();
+                  if (
+                    saving ||
+                    !state.persona ||
+                    !state.goal ||
+                    !state.targetRoleId
+                  )
+                    return;
+                  setSaving(true);
+                  setSaveError("");
+                  try {
+                    await save();
+                    router.push(`/${locale}/career-league/placement`);
+                  } catch {
+                    setSaveError(
+                      say(
+                        "Cloud save was not confirmed. Your selection remains here; retry.",
+                        "لم يُؤكَّد الحفظ السحابي. اختياراتك موجودة هنا؛ حاول ثانية.",
+                      ),
+                    );
+                  } finally {
+                    setSaving(false);
+                  }
+                }}
+                href={`/${locale}/career-league/placement`}
+              >
+                {saving
+                  ? say("Saving…", "جارٍ الحفظ…")
+                  : say("Start my career diagnostic", "ابدأ التشخيص المهني")}
+                <Arrow aria-hidden />
+              </Link>
+            </div>
+            {saveError && <p role="alert">{saveError}</p>}
+          </section>
+        )}
+        <p className="career-entry-note">
+          <BookOpen size={17} />
+          {say(
+            "Career planning only. Signed-in choices are cloud-backed; guest choices stay on this device. Self-report never creates Verified skills.",
+            "تخطيط مهني فقط. اختيارات الحساب تُحفظ سحابيًا والضيف محليًا. الإجابات الشخصية لا تمنح مهارات موثقة.",
+          )}
+        </p>
+      </div>
+    </main>
+  );
 }

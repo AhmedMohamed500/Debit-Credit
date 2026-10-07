@@ -1,6 +1,6 @@
 import{afterEach,beforeEach,describe,expect,it,vi}from'vitest';import{cleanup,fireEvent,render,screen,waitFor}from'@testing-library/react';
 import{MarketingLanding}from'@/components/platform/marketing-landing';import{PlatformOnboarding}from'@/components/platform/onboarding';import{MobileGameNav}from'@/components/game/mobile-game-nav';import{ThemeProvider,ThemeToggle}from'@/components/platform/theme-provider';import{AcademyPlatform}from'@/components/platform/academy-platform';import{ChallengesPlatform}from'@/components/platform/challenges-platform';import{GameHub}from'@/components/platform/game-hub';import{THEME_KEY}from'@/lib/platform';import{PLATFORM_KEY}from'@/lib/platform/repository';
-vi.mock('next/navigation',()=>({usePathname:()=>'/en'}));
+vi.mock('next/navigation',()=>({usePathname:()=>'/en',useRouter:()=>({push:vi.fn()})}));
 beforeEach(()=>{localStorage.clear();document.documentElement.dataset.theme=''});afterEach(cleanup);
 describe('platform UI',()=>{
  it('uses text-free supporting artwork and preserves the five career and three feature routes',()=>{
@@ -23,7 +23,7 @@ describe('platform UI',()=>{
    expect(view.container.querySelectorAll('.cl4-how-step')).toHaveLength(4);
    expect(view.container.querySelectorAll('.cl4-audience-card')).toHaveLength(4);
    expect(screen.getByRole('heading',{name:'Built for every stage of your career journey'})).toBeInTheDocument();
-   [['Start as a student','student'],['Start as a graduate','graduate'],['Start as a working accountant','working-accountant'],['Start as an experienced accountant','experienced-accountant']].forEach(([name,id])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',`/en/onboarding?persona=${id}`));
+   [['Start as a student','student'],['Start as a graduate','graduate'],['Start as a working accountant','working-accountant'],['Start as an experienced accountant','experienced-accountant']].forEach(([name,id])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',`/en/signup?next=${encodeURIComponent(`/en/onboarding?persona=${id}`)}`));
    const studentCta=screen.getByRole('link',{name:'Start as a student'});
    studentCta.addEventListener('click',event=>event.preventDefault());
    fireEvent.click(studentCta);
@@ -36,12 +36,12 @@ describe('platform UI',()=>{
    expect(screen.getByRole('heading',{name:'من أول خطوة إلى مستقبل مهني حقيقي'})).toBeInTheDocument();
    ['اختر مستواك','ادخل شركة مناسبة','حل حالات ومهام','ابنِ CV وسجّل مهاراتك'].forEach(name=>expect(screen.getByRole('heading',{name})).toBeInTheDocument());
    expect(screen.getByRole('heading',{name:'مناسبة في كل مرحلة من رحلتك المهنية'})).toBeInTheDocument();
-   [['ابدأ كطالب','student'],['ابدأ كخريج جديد','graduate'],['ابدأ كمحاسب شغال','working-accountant'],['ابدأ كمحاسب بخبرة','experienced-accountant']].forEach(([name,id])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',`/ar/onboarding?persona=${id}`));
+   [['ابدأ كطالب','student'],['ابدأ كخريج جديد','graduate'],['ابدأ كمحاسب شغال','working-accountant'],['ابدأ كمحاسب بخبرة','experienced-accountant']].forEach(([name,id])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',`/ar/signup?next=${encodeURIComponent(`/ar/onboarding?persona=${id}`)}`));
  });
  it('renders accessible Arabic headings and real calls to action',()=>{
    render(<MarketingLanding locale="ar"/>);
    expect(screen.getByRole('heading',{name:'منافسة محاسبية تجريبية تبني مهاراتك المهنية'})).toBeInTheDocument();
-   expect(screen.getAllByRole('link',{name:'ابدأ مجانًا'}).map(link=>link.getAttribute('href'))).toContain('/ar/onboarding');
+   expect(screen.getAllByRole('link',{name:'ابدأ مجانًا'}).map(link=>link.getAttribute('href'))).toContain('/ar/signup?next=%2Far%2Fonboarding');
    expect(screen.getByRole('heading',{name:'خريطة رحلتك المهنية'})).toBeInTheDocument();
    expect(screen.getByRole('link',{name:'ميزان للتجارة'})).toHaveAttribute('href','/ar/game');
    expect(screen.getByRole('link',{name:'الإقفال الشهري'})).toHaveAttribute('href','/ar/game/month-end');

@@ -13,6 +13,7 @@ import "./landing-v4.css";
 import "./beginner-career-world.css";
 import "./bootcamp.css";
 import "./foundations.css";
+import "./cloud.css";
 import { ThemeProvider } from "@/components/platform/theme-provider";
 
 export const metadata: Metadata = {

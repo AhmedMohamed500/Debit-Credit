@@ -12,5 +12,5 @@ export default defineConfig([
       "import/no-anonymous-default-export": "off",
     },
   },
-  globalIgnores([".next/**", "dist/**", "out/**", "node_modules/**", "next-env.d.ts"]),
+  globalIgnores([".next/**", ".next-backend-test/**", "lib/server/db/generated/**", "dist/**", "out/**", "node_modules/**", "next-env.d.ts"]),
 ]);

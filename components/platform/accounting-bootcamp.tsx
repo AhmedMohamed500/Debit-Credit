@@ -33,6 +33,7 @@ import { FoundationWorldMap } from "@/components/foundations/world-map";
 import { FoundationMissionGameplay } from "@/components/foundations/mission-gameplay";
 import { GuideCharacter } from "@/components/foundations/visuals";
 import { FoundationBooks } from "@/components/foundations/accounting-journey";
+import { cloudUser, submitCloudFoundation } from "@/lib/cloud/runtime";
 const serverState = createBootcampState();
 export function AccountingBootcamp({ locale }: { locale: Locale }) {
   const ar = locale === "ar",
@@ -69,10 +70,30 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
     setHint(false);
     window.scrollTo(0, 0);
   };
-  const submit = (response: FoundationResponse) => {
+  const submit = async (response: FoundationResponse) => {
     if (!task) return;
-    const result = submitFoundationTask(state, mission.id, task.id, response);
-    repo.save(result.state);
+    let result;
+    try {
+      if (cloudUser()) {
+        const online = await submitCloudFoundation(
+          mission.id,
+          task.id,
+          response,
+        );
+        result = { state: online.data, correct: online.correct };
+      } else
+        result = submitFoundationTask(state, mission.id, task.id, response);
+      repo.save(result.state);
+    } catch {
+      setFeedback({
+        correct: false,
+        text: say(
+          "Not saved to cloud. Your draft is still on this device; check the connection and retry.",
+          "لم يتم الحفظ سحابيًا. مسودتك ما زالت على الجهاز؛ راجع الاتصال وحاول ثانية.",
+        ),
+      });
+      return;
+    }
     setFeedback({
       correct: result.correct,
       text: result.correct
@@ -84,8 +105,22 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
     });
     setHint(false);
   };
-  const finish = () => {
-    const next = completeBootcampMission(state, mission.id);
+  const finish = async () => {
+    let next;
+    try {
+      next = cloudUser()
+        ? (await submitCloudFoundation(mission.id, "@complete", [])).data
+        : completeBootcampMission(state, mission.id);
+    } catch {
+      setFeedback({
+        correct: false,
+        text: say(
+          "Completion not confirmed. Retry when online.",
+          "لم يتم تأكيد الإكمال. حاول عند عودة الاتصال.",
+        ),
+      });
+      return;
+    }
     if (next === state) return;
     repo.save(next);
     syncFoundationRewards(next);
@@ -149,9 +184,22 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
           <span dir={ar ? "rtl" : "ltr"}>
             {say("Stage 0", "المرحلة 0")} ·{" "}
             {screen === "mission" ? (
-              <>{say("Mission", "المهمة")} {mission.order === 13 ? say("Boss", "النهائية") : <bdi>{mission.order}</bdi>}</>
+              <>
+                {say("Mission", "المهمة")}{" "}
+                {mission.order === 13 ? (
+                  say("Boss", "النهائية")
+                ) : (
+                  <bdi>{mission.order}</bdi>
+                )}
+              </>
             ) : (
-              <bdi dir="ltr">{state.completedMissionIds.filter((id) => id !== "mizan-boss").length} / 12</bdi>
+              <bdi dir="ltr">
+                {
+                  state.completedMissionIds.filter((id) => id !== "mizan-boss")
+                    .length
+                }{" "}
+                / 12
+              </bdi>
             )}
           </span>
           <progress
@@ -218,8 +266,13 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
                 {say("World map", "خريطة الرحلة")}
               </button>
               <span>
-                {mission.order === 13 ? say("FINAL BOSS", "المهمة النهائية") : (
-                  <>{say("MISSION", "المهمة")} <bdi dir="ltr">{mission.order} / 12</bdi></>
+                {mission.order === 13 ? (
+                  say("FINAL BOSS", "المهمة النهائية")
+                ) : (
+                  <>
+                    {say("MISSION", "المهمة")}{" "}
+                    <bdi dir="ltr">{mission.order} / 12</bdi>
+                  </>
                 )}
               </span>
               <h1 id="foundation-title">{mission.title[locale]}</h1>

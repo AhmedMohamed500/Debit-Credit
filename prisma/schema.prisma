@@ -1,0 +1,353 @@
+generator client {
+  provider = "prisma-client"
+  output = "../lib/server/db/generated"
+}
+datasource db {
+  provider = "postgresql"
+}
+enum UserRole {
+  USER
+  ADMIN
+}
+enum MatchStatus {
+  WAITING
+  PLAYING
+  COMPLETED
+  CANCELLED
+}
+enum QueueStatus {
+  WAITING
+  MATCHED
+  CANCELLED
+}
+model User {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  emailVerified Boolean @default(false)
+  image String?
+  role UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions Session[]
+  accounts Account[]
+  profile PlayerProfile?
+  preference UserPreference?
+  progress CloudProgress[]
+  snapshots ProgressSnapshot[]
+  imports LegacyImport[]
+  activity UserActivity?
+  goals CareerGoal[]
+  career CareerProfileCloud?
+  evidence SkillEvidenceCloud[]
+  cvs CvVersionCloud[]
+  missions MissionAttempt[]
+  cases CaseAttempt[]
+  outcomes AcceptedOutcome[]
+  competition CompetitionPlayer?
+  queue CompetitionQueue[]
+  matches CompetitionMatchPlayer[]
+  attempts CompetitionAttempt[]
+  audit AuditLog[]
+  wins CompetitionMatch[] @relation("MatchWinner")
+  @@index([createdAt])
+  @@map("app_user")
+}
+model Session {
+  id String @id @default(uuid())
+  token String @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("auth_session")
+}
+model Account {
+  id String @id @default(uuid())
+  accountId String
+  providerId String
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken String?
+  refreshToken String?
+  idToken String?
+  accessTokenExpiresAt DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope String?
+  password String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@index([providerId])
+  @@map("auth_account")
+}
+model Verification {
+  id String @id @default(uuid())
+  identifier String
+  value String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([identifier])
+  @@index([expiresAt])
+  @@map("auth_verification")
+}
+model RateLimit {
+  id String @id @default(uuid())
+  key String @unique
+  count Int
+  lastRequest BigInt
+  @@map("auth_rate_limit")
+}
+model PlayerProfile {
+  userId String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName String
+  handle String @unique
+  avatar String @default("blue")
+  locale String @default("ar")
+  persona String?
+  targetRoleId String @default("junior-accountant")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([persona])
+  @@map("player_profile")
+}
+model UserPreference {
+  userId String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  data Json
+  revision Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("user_preference")
+}
+model CloudProgress {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  domain String
+  data Json
+  revision Int @default(0)
+  provenance String @default("SERVER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([userId, domain])
+  @@map("cloud_progress")
+}
+model ProgressSnapshot {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  domain String
+  data Json
+  revision Int
+  createdAt DateTime @default(now())
+  @@unique([userId, domain, revision])
+  @@index([createdAt])
+  @@map("progress_snapshot")
+}
+model LegacyImport {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId String
+  importVersion Int
+  checksum String
+  summary Json
+  createdAt DateTime @default(now())
+  @@unique([userId, importVersion, checksum])
+  @@index([userId, deviceId])
+  @@map("legacy_import")
+}
+model UserActivity {
+  userId String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastActiveAt DateTime @default(now())
+  @@index([lastActiveAt])
+  @@map("user_activity")
+}
+model CareerGoal {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal String
+  targetRoleId String
+  createdAt DateTime @default(now())
+  @@index([userId, createdAt])
+  @@map("career_goal")
+}
+model CareerProfileCloud {
+  userId String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  data Json
+  revision Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("career_profile")
+}
+model SkillEvidenceCloud {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evidenceKey String
+  skillId String
+  strength String
+  source String
+  data Json
+  createdAt DateTime @default(now())
+  @@unique([userId, evidenceKey])
+  @@index([userId, skillId])
+  @@map("skill_evidence")
+}
+model CvVersionCloud {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  data Json
+  createdAt DateTime @default(now())
+  @@index([userId, createdAt])
+  @@map("cv_version")
+}
+model MissionAttempt {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commandId String
+  missionId String
+  taskId String
+  answers Json
+  correct Boolean
+  createdAt DateTime @default(now())
+  @@unique([userId, commandId])
+  @@index([userId, missionId])
+  @@map("mission_attempt")
+}
+model CaseAttempt {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  caseId String
+  caseVersion Int
+  commandId String?
+  status String
+  events CaseEvent[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId, caseId, caseVersion])
+  @@unique([userId, commandId])
+  @@map("case_attempt")
+}
+model CaseEvent {
+  id String @id @default(uuid())
+  attemptId String
+  attempt CaseAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  eventKey String
+  action Json
+  createdAt DateTime @default(now())
+  @@unique([attemptId, eventKey])
+  @@map("case_event")
+}
+model AcceptedOutcome {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outcomeKey String
+  domain String
+  data Json
+  createdAt DateTime @default(now())
+  @@unique([userId, outcomeKey])
+  @@map("accepted_outcome")
+}
+model CompetitionPlayer {
+  userId String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeMatchId String?
+  activeMatch CompetitionMatch? @relation(fields: [activeMatchId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([activeMatchId])
+  @@map("competition_player")
+}
+model CompetitionQueue {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  league String
+  challengeId String
+  challengeVersion Int
+  scoringVersion Int @default(1)
+  status QueueStatus @default(WAITING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([league, challengeId, challengeVersion, status, createdAt])
+  @@index([userId, status])
+  @@index([league, challengeId, challengeVersion, scoringVersion, status, createdAt], map: "competition_queue_version_fifo_idx")
+  @@map("competition_queue")
+}
+model CompetitionMatch {
+  id String @id @default(uuid())
+  league String
+  challengeId String
+  challengeVersion Int
+  scoringVersion Int @default(1)
+  issuedFor String
+  status MatchStatus @default(PLAYING)
+  winnerUserId String?
+  winner User? @relation("MatchWinner", fields: [winnerUserId], references: [id], onDelete: SetNull)
+  activePlayers CompetitionPlayer[]
+  attempts CompetitionAttempt[]
+  players CompetitionMatchPlayer[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  completedAt DateTime?
+  @@index([status, createdAt])
+  @@map("competition_match")
+}
+model CompetitionMatchPlayer {
+  id String @id @default(uuid())
+  matchId String
+  match CompetitionMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  score Int?
+  inspected String[] @default([])
+  submittedAt DateTime?
+  @@unique([matchId, userId])
+  @@index([userId, submittedAt])
+  @@map("competition_match_player")
+}
+model CompetitionAttempt {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challengeId String
+  challengeVersion Int
+  scoringVersion Int
+  league String
+  matchId String
+  answers Json
+  match CompetitionMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  score Int
+  dimensions Json
+  createdAt DateTime @default(now())
+  @@unique([userId, challengeId, challengeVersion, scoringVersion])
+  @@index([league, createdAt, score])
+  @@map("competition_attempt")
+}
+model AuditLog {
+  id String @id @default(uuid())
+  userId String?
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action String
+  resourceId String?
+  createdAt DateTime @default(now())
+  @@index([userId, createdAt])
+  @@map("audit_log")
+}

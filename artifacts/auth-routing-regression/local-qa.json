@@ -1,0 +1,126 @@
+{
+  "base": "http://localhost:3111",
+  "production": false,
+  "checks": 73,
+  "results": [
+    "Production build manifest includes /[locale]/login/page",
+    "Production build manifest includes /[locale]/signup/page",
+    "Production build manifest includes /api/auth/[...all]/route",
+    "http://localhost:3111/ar/login: HTTP 200, not locale rewritten",
+    "http://localhost:3111/ar/signup: HTTP 200, not locale rewritten",
+    "http://localhost:3111/en/login: HTTP 200, not locale rewritten",
+    "http://localhost:3111/en/signup: HTTP 200, not locale rewritten",
+    "http://localhost:3111/api/auth/get-session: HTTP 200, not locale rewritten",
+    "http://localhost:3111/api/auth/callback/google: HTTP 302, not locale rewritten",
+    "http://localhost:3111/sitemap.xml: HTTP 200, not locale rewritten",
+    "http://localhost:3111/manifest.webmanifest: HTTP 200, not locale rewritten",
+    "http://localhost:3111/docs/nature-of-accounts.md: HTTP 200, not locale rewritten",
+    "local-ar-1920 has no malformed locale links",
+    "local-ar-1920 Landing CTA -> existing localized signup",
+    "local-ar-1920 Signup -> Login preserves safe destination",
+    "local-ar-1920 layout fits viewport",
+    "local-ar-1920 Google unavailable without credentials",
+    "local-ar-1920 Email signup -> authenticated onboarding",
+    "local-ar-1920 authenticated CTA uses onboarding",
+    "local-ar-1920 Logout -> localized landing -> Login",
+    "local-ar-1920 Email login -> authenticated onboarding",
+    "local-ar-1920 Session remains HttpOnly",
+    "local-ar-1440 has no malformed locale links",
+    "local-ar-1440 Landing CTA -> existing localized signup",
+    "local-ar-1440 Signup -> Login preserves safe destination",
+    "local-ar-1440 layout fits viewport",
+    "local-ar-1440 Google unavailable without credentials",
+    "local-ar-1440 Signup -> Login -> authenticated onboarding",
+    "local-ar-1440 authenticated CTA uses onboarding",
+    "local-ar-1440 Logout -> localized landing -> Login",
+    "local-ar-1440 Email login -> authenticated onboarding",
+    "local-ar-1440 Session remains HttpOnly",
+    "local-ar-390 has no malformed locale links",
+    "local-ar-390 Landing CTA -> existing localized signup",
+    "local-ar-390 Signup -> Login preserves safe destination",
+    "local-ar-390 layout fits viewport",
+    "local-ar-390 Google unavailable without credentials",
+    "local-ar-390 Signup -> Login -> authenticated onboarding",
+    "local-ar-390 authenticated CTA uses onboarding",
+    "local-ar-390 Logout -> localized landing -> Login",
+    "local-ar-390 Email login -> authenticated onboarding",
+    "local-ar-390 Session remains HttpOnly",
+    "local-en-1920 has no malformed locale links",
+    "local-en-1920 Landing CTA -> existing localized signup",
+    "local-en-1920 Signup -> Login preserves safe destination",
+    "local-en-1920 layout fits viewport",
+    "local-en-1920 Google unavailable without credentials",
+    "local-en-1920 Email signup -> authenticated onboarding",
+    "local-en-1920 authenticated CTA uses onboarding",
+    "local-en-1920 Logout -> localized landing -> Login",
+    "local-en-1920 Email login -> authenticated onboarding",
+    "local-en-1920 Session remains HttpOnly",
+    "local-en-1440 has no malformed locale links",
+    "local-en-1440 Landing CTA -> existing localized signup",
+    "local-en-1440 Signup -> Login preserves safe destination",
+    "local-en-1440 layout fits viewport",
+    "local-en-1440 Google unavailable without credentials",
+    "local-en-1440 Signup -> Login -> authenticated onboarding",
+    "local-en-1440 authenticated CTA uses onboarding",
+    "local-en-1440 Logout -> localized landing -> Login",
+    "local-en-1440 Email login -> authenticated onboarding",
+    "local-en-1440 Session remains HttpOnly",
+    "local-en-390 has no malformed locale links",
+    "local-en-390 Landing CTA -> existing localized signup",
+    "local-en-390 Signup -> Login preserves safe destination",
+    "local-en-390 layout fits viewport",
+    "local-en-390 Google unavailable without credentials",
+    "local-en-390 Signup -> Login -> authenticated onboarding",
+    "local-en-390 authenticated CTA uses onboarding",
+    "local-en-390 Logout -> localized landing -> Login",
+    "local-en-390 Email login -> authenticated onboarding",
+    "local-en-390 Session remains HttpOnly",
+    "No uncaught browser errors"
+  ],
+  "httpResults": [
+    {
+      "pathname": "/ar/login",
+      "status": 200
+    },
+    {
+      "pathname": "/ar/signup",
+      "status": 200
+    },
+    {
+      "pathname": "/en/login",
+      "status": 200
+    },
+    {
+      "pathname": "/en/signup",
+      "status": 200
+    },
+    {
+      "pathname": "/api/auth/get-session",
+      "status": 200,
+      "location": null,
+      "handlerResponse": "application/json"
+    },
+    {
+      "pathname": "/api/auth/callback/google",
+      "status": 302,
+      "location": "http://localhost:3111/api/auth/error?error=state_not_found",
+      "handlerResponse": "application/json"
+    },
+    {
+      "pathname": "/sitemap.xml",
+      "status": 200
+    },
+    {
+      "pathname": "/manifest.webmanifest",
+      "status": 200
+    },
+    {
+      "pathname": "/docs/nature-of-accounts.md",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "googleLogin": "not tested; callback smoke is not OAuth sign-in",
+  "productionEmailLogin": "not submitted; read-only production audit",
+  "existingDatabaseReset": false
+}

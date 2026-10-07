@@ -1,0 +1,93 @@
+{
+  "base": "https://debit-credit-nine.vercel.app",
+  "production": true,
+  "checks": 40,
+  "results": [
+    "https://debit-credit-nine.vercel.app/ar/login: HTTP 200, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/ar/signup: HTTP 200, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/en/login: HTTP 200, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/en/signup: HTTP 200, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/api/auth/get-session: HTTP 503, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/api/auth/callback/google: HTTP 503, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/sitemap.xml: HTTP 200, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/manifest.webmanifest: HTTP 200, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/docs/nature-of-accounts.md: HTTP 200, not locale rewritten",
+    "production-ar-1920 has no malformed locale links",
+    "production-ar-1920 Landing CTA -> existing localized signup",
+    "production-ar-1920 Signup -> Login preserves safe destination",
+    "production-ar-1920 layout fits viewport",
+    "production-ar-1920 production auth controls reflect configuration",
+    "production-ar-1440 has no malformed locale links",
+    "production-ar-1440 Landing CTA -> existing localized signup",
+    "production-ar-1440 Signup -> Login preserves safe destination",
+    "production-ar-1440 layout fits viewport",
+    "production-ar-1440 production auth controls reflect configuration",
+    "production-ar-390 has no malformed locale links",
+    "production-ar-390 Landing CTA -> existing localized signup",
+    "production-ar-390 Signup -> Login preserves safe destination",
+    "production-ar-390 layout fits viewport",
+    "production-ar-390 production auth controls reflect configuration",
+    "production-en-1920 has no malformed locale links",
+    "production-en-1920 Landing CTA -> existing localized signup",
+    "production-en-1920 Signup -> Login preserves safe destination",
+    "production-en-1920 layout fits viewport",
+    "production-en-1920 production auth controls reflect configuration",
+    "production-en-1440 has no malformed locale links",
+    "production-en-1440 Landing CTA -> existing localized signup",
+    "production-en-1440 Signup -> Login preserves safe destination",
+    "production-en-1440 layout fits viewport",
+    "production-en-1440 production auth controls reflect configuration",
+    "production-en-390 has no malformed locale links",
+    "production-en-390 Landing CTA -> existing localized signup",
+    "production-en-390 Signup -> Login preserves safe destination",
+    "production-en-390 layout fits viewport",
+    "production-en-390 production auth controls reflect configuration",
+    "No uncaught browser errors"
+  ],
+  "httpResults": [
+    {
+      "pathname": "/ar/login",
+      "status": 200
+    },
+    {
+      "pathname": "/ar/signup",
+      "status": 200
+    },
+    {
+      "pathname": "/en/login",
+      "status": 200
+    },
+    {
+      "pathname": "/en/signup",
+      "status": 200
+    },
+    {
+      "pathname": "/api/auth/get-session",
+      "status": 503,
+      "location": null,
+      "handlerResponse": "application/json"
+    },
+    {
+      "pathname": "/api/auth/callback/google",
+      "status": 503,
+      "location": null,
+      "handlerResponse": "application/json"
+    },
+    {
+      "pathname": "/sitemap.xml",
+      "status": 200
+    },
+    {
+      "pathname": "/manifest.webmanifest",
+      "status": 200
+    },
+    {
+      "pathname": "/docs/nature-of-accounts.md",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "googleLogin": "not tested; callback smoke is not OAuth sign-in",
+  "productionEmailLogin": "not submitted; read-only production audit",
+  "existingDatabaseReset": false
+}

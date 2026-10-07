@@ -2,7 +2,9 @@
 
 ### by Money Coder
 
-Debit & Credit is a bilingual, frontend-only Gamified Accounting Academy and Mizan Trading career simulation. One player journey connects foundations, journal practice, professional cases, quality-based demo competition, explainable Skill Passport evidence, role readiness, an evidence-driven CV, and a clearly labeled employer preview.
+Backend Phase 1 now adds optional PostgreSQL accounts and supported cloud domains over the existing local learning product. Production services and credentials require owner setup; no backend deployment is claimed yet. See [Backend Phase 1](docs/BACKEND-PHASE-1.md) for architecture, local/cloud boundaries, zero-cost setup, migrations and security. Earlier reports below retain their historical release descriptions.
+
+Debit & Credit is a bilingual Gamified Accounting Academy and Mizan Trading career simulation with guest-local learning and an optional cloud backend. One player journey connects foundations, journal practice, professional cases, explainable Skill Passport evidence, role readiness, an evidence-driven CV, and a clearly labeled employer preview. Phase 1 adds authenticated, server-scored competition without replacing guest/demo learning.
 
 The current Career League work is documented in [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md). Its governed level 0–8 curriculum and the delivery state of every accounting/finance module are defined in [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).
 
@@ -39,7 +41,7 @@ The public landing page starts at `/ar` or `/en`. The current unified player rou
 
 ## Architecture
 
-The application is a Next.js App Router project using React, TypeScript, Tailwind CSS, Lucide icons, and Vitest. All content and progress remain in this repository and the browser. There is no backend, paid API, external local package, symlink, or runtime dependency on FINORA.
+The application is a Next.js App Router modular monolith using React, TypeScript, Tailwind CSS, Lucide icons, and Vitest. Server-only domain services use PostgreSQL, Prisma and Better Auth for supported authenticated state. Guest learning and unsupported domains retain existing browser repositories; private backups are not server-verified achievements. No paid API, separate backend host, external local package, symlink, or runtime dependency on FINORA is required. Live providers are pending owner configuration.
 
 Key folders:
 

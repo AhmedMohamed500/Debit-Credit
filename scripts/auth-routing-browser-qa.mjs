@@ -6,13 +6,17 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import EmbeddedPostgres from "embedded-postgres";
 import { chromium } from "playwright-core";
+import pg from "pg";
 import { auditAuthRoutes } from "./auth-route-smoke.mjs";
 
 const production = process.argv.includes("--production");
+const redesign = process.argv.includes("--redesign");
 const base = production
   ? "https://debit-credit-nine.vercel.app"
   : "http://localhost:3111";
-const output = path.resolve("artifacts/auth-routing-regression");
+const output = path.resolve(
+  redesign ? "artifacts/auth-redesign" : "artifacts/auth-routing-regression",
+);
 const temporary = path.resolve("artifacts/backend-phase-1/tmp/auth-routing");
 const results = [],
   errors = [];
@@ -138,7 +142,130 @@ async function stopLocal() {
   if (database) await database.stop();
 }
 async function capture(page, label) {
-  await page.screenshot({ path: path.join(output, label + ".png") });
+  await page.evaluate(() => document.fonts.ready);
+  await page.screenshot({
+    path: path.join(output, label + ".png"),
+    fullPage: redesign,
+  });
+}
+async function checkAuthUI(page, label, ar, signup) {
+  if (!redesign) return;
+  await page.evaluate(() => document.fonts.ready);
+  record(
+    label + " localized form direction",
+    (await page.locator(".auth-form-side").getAttribute("dir")) ===
+      (ar ? "rtl" : "ltr"),
+  );
+  record(
+    label + " no horizontal overflow",
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth + 1,
+    ),
+  );
+  for (const field of await page.locator(".auth-email-form input").all()) {
+    await field.scrollIntoViewIfNeeded();
+    const rect = await field.boundingBox();
+    assert.ok(
+      rect &&
+        rect.width > 230 &&
+        rect.height >= 50 &&
+        rect.x >= 0 &&
+        rect.x + rect.width <= page.viewportSize().width + 1,
+      "Comfortable unclipped input",
+    );
+  }
+  record(label + " fields remain usable through normal scrolling");
+  const field = page.locator('[name="password"]');
+  await field.fill("reveal-ui-fixture-only");
+  await field.focus();
+  await page.keyboard.press("Tab");
+  record(
+    label + " keyboard focus reaches password reveal",
+    await page
+      .getByRole("button", {
+        name: ar ? "إظهار كلمة المرور" : "Show password",
+        exact: true,
+      })
+      .evaluate(
+        (element) =>
+          element === document.activeElement &&
+          getComputedStyle(element).outlineStyle !== "none",
+      ),
+  );
+  await page
+    .getByRole("button", {
+      name: ar ? "إظهار كلمة المرور" : "Show password",
+      exact: true,
+    })
+    .click();
+  assert.equal(await field.getAttribute("type"), "text");
+  assert.equal(await field.inputValue(), "reveal-ui-fixture-only");
+  await page
+    .getByRole("button", {
+      name: ar ? "إخفاء كلمة المرور" : "Hide password",
+      exact: true,
+    })
+    .click();
+  assert.equal(await field.getAttribute("type"), "password");
+  await field.fill("");
+  if (signup) {
+    const confirm = page.locator('[name="confirm"]');
+    await page
+      .getByRole("button", {
+        name: ar ? "إظهار كلمة المرور المؤكدة" : "Show password confirmation",
+        exact: true,
+      })
+      .click();
+    assert.equal(await confirm.getAttribute("type"), "text");
+    await page
+      .getByRole("button", {
+        name: ar ? "إخفاء كلمة المرور المؤكدة" : "Hide password confirmation",
+        exact: true,
+      })
+      .click();
+  }
+  record(label + " independent accessible password visibility");
+  if (!production && signup && page.viewportSize().width === 1920) {
+    let posts = 0;
+    const countSignup = (request) => {
+      if (
+        request.method() === "POST" &&
+        request.url().includes("/api/auth/sign-up/email")
+      )
+        posts++;
+    };
+    page.on("request", countSignup);
+    await page.locator('[name="name"]').fill("UI validation fixture");
+    await page.locator('[name="email"]').fill("invalid-email");
+    await field.fill("validation-only-password");
+    await page.locator('[name="confirm"]').fill("validation-only-password");
+    await page.locator('.auth-email-form button[type="submit"]').click();
+    await page
+      .getByRole("alert")
+      .filter({ hasText: ar ? "راجع البريد" : "Check your email" })
+      .waitFor();
+    record(
+      label + " invalid email gives inline feedback without an auth request",
+      posts === 0,
+    );
+    await page.locator('[name="email"]').fill("validation-only@routing.test");
+    await page
+      .locator('[name="confirm"]')
+      .fill("different-validation-password");
+    await page.locator('.auth-email-form button[type="submit"]').click();
+    await page
+      .getByRole("alert")
+      .filter({ hasText: ar ? "غير متطابقتين" : "do not match" })
+      .waitFor();
+    record(
+      label + " mismatched passwords rejected before the server",
+      posts === 0,
+    );
+    page.off("request", countSignup);
+    await page.reload();
+    await page.locator('[name="confirm"]').waitFor();
+  }
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
 }
 try {
   await mkdir(output, { recursive: true });
@@ -156,11 +283,31 @@ try {
     args: ["--disable-background-networking", "--no-first-run"],
   });
   for (const locale of ["ar", "en"])
-    for (const viewport of [
-      { width: 1920, height: 1080 },
-      { width: 1440, height: 900 },
-      { width: 390, height: 844 },
-    ]) {
+    for (const viewport of redesign
+      ? [
+          { width: 1920, height: 1080 },
+          { width: 1440, height: 900 },
+          { width: 1366, height: 768 },
+          { width: 430, height: 932 },
+          { width: 390, height: 844 },
+        ]
+      : [
+          { width: 1920, height: 1080 },
+          { width: 1440, height: 900 },
+          { width: 390, height: 844 },
+        ]) {
+      if (
+        redesign &&
+        !production &&
+        locale === "en" &&
+        viewport.width === 1920
+      ) {
+        // Both locales share localhost's IP. Respect the existing 10/minute
+        // login protection: wait for its idle window, never reset/disable it.
+        console.log("Waiting for the unchanged local auth rate-limit window");
+        for (let part = 0; part < 3; part++)
+          await new Promise((resolve) => setTimeout(resolve, 22000));
+      }
       const context = await browser.newContext({ viewport });
       const page = await context.newPage();
       currentPage = page;
@@ -200,7 +347,13 @@ try {
           `/${locale}/onboarding`,
       );
       await page.locator('[name="confirm"]').waitFor();
-      await capture(page, label + "-signup");
+      await checkAuthUI(page, label + "-signup", ar, true);
+      await capture(
+        page,
+        redesign
+          ? `signup-${locale}-${viewport.width < 600 ? "mobile-" : ""}${viewport.width}${production ? "-production" : ""}`
+          : label + "-signup",
+      );
       await page
         .getByRole("link", {
           name: ar
@@ -216,7 +369,13 @@ try {
         new URL(page.url()).searchParams.get("next") ===
           `/${locale}/onboarding`,
       );
-      await capture(page, label + "-login");
+      await checkAuthUI(page, label + "-login", ar, false);
+      await capture(
+        page,
+        redesign
+          ? `login-${locale}-${viewport.width < 600 ? "mobile-" : ""}${viewport.width}${production ? "-production" : ""}`
+          : label + "-login",
+      );
       record(
         label + " layout fits viewport",
         await page.evaluate(
@@ -232,22 +391,26 @@ try {
         record(
           label + " production auth controls reflect configuration",
           unavailable
-            ? (await page.locator("form button").isDisabled()) &&
+            ? (await page
+                .locator('.auth-email-form button[type="submit"]')
+                .isDisabled()) &&
                 (await page
                   .getByRole("button", {
-                    name: /Continue with Google|تابع باستخدام Google/,
+                    name: /Continue with Google|المتابعة باستخدام Google/,
                   })
-                  .count()) === 0
-            : await page.locator("form button").isEnabled(),
+                  .isDisabled())
+            : await page
+                .locator('.auth-email-form button[type="submit"]')
+                .isEnabled(),
         );
       } else {
         record(
           label + " Google unavailable without credentials",
-          (await page
+          await page
             .getByRole("button", {
-              name: /Continue with Google|تابع باستخدام Google/,
+              name: /Continue with Google|المتابعة باستخدام Google/,
             })
-            .count()) === 0,
+            .isDisabled(),
         );
         await page
           .getByRole("link", {
@@ -280,7 +443,24 @@ try {
         await page.locator('[name="email"]').fill(email);
         await page.locator('[name="password"]').fill(password);
         if (signup) await page.locator('[name="confirm"]').fill(password);
-        await page.locator("form button").click();
+        if (redesign && signup)
+          await page.route("**/api/auth/sign-up/email", async (route) => {
+            // Delay the unchanged real request only; never fake an auth response.
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await route.continue();
+          });
+        await page.locator('.auth-email-form button[type="submit"]').click();
+        if (redesign && signup)
+          record(
+            label +
+              " real signup shows loading and blocks duplicate submission",
+            (await page
+              .locator('.auth-email-form button[type="submit"]')
+              .isDisabled()) &&
+              (await page
+                .locator(".auth-email-form")
+                .getAttribute("aria-busy")) === "true",
+          );
         await page.waitForURL(`**/${locale}/onboarding`);
         record(
           label +
@@ -322,8 +502,22 @@ try {
         await page.waitForURL(`**/${locale}/login`);
         record(label + " Logout -> localized landing -> Login");
         await page.locator('[name="email"]').fill(email);
+        if (redesign && signup) {
+          await page
+            .locator('[name="password"]')
+            .fill("deliberately-incorrect-password");
+          await page.locator('.auth-email-form button[type="submit"]').click();
+          await page
+            .getByRole("alert")
+            .filter({ hasText: ar ? "غير صحيحة" : "incorrect" })
+            .waitFor();
+          record(
+            label + " real invalid login returns polished inline error",
+            new URL(page.url()).pathname === `/${locale}/login`,
+          );
+        }
         await page.locator('[name="password"]').fill(password);
-        await page.locator("form button").click();
+        await page.locator('.auth-email-form button[type="submit"]').click();
         await page.waitForURL(`**/${locale}/onboarding`);
         record(label + " Email login -> authenticated onboarding");
         const cookies = await context.cookies();
@@ -337,6 +531,27 @@ try {
       }
       await context.close();
     }
+  if (!production && redesign) {
+    const fixtureClient = new pg.Client({
+      connectionString:
+        "postgresql://postgres:routing-local-fixture-only@127.0.0.1:55433/auth_routing_test",
+    });
+    await fixtureClient.connect();
+    try {
+      for (const [locale, fixture] of credentials) {
+        const count = await fixtureClient.query(
+          "SELECT COUNT(*)::int AS count FROM app_user WHERE email=$1",
+          [fixture.email],
+        );
+        record(
+          locale + " repeated login keeps exactly one database user",
+          count.rows[0].count === 1,
+        );
+      }
+    } finally {
+      await fixtureClient.end();
+    }
+  }
   record("No uncaught browser errors", errors.length === 0);
   await writeFile(
     path.join(output, `${production ? "production" : "local"}-qa.json`),

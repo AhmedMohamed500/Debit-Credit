@@ -1,3 +1,10 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import path from "node:path";
-export default defineConfig({ resolve: { alias: { "@": path.resolve(__dirname, ".") } }, test: { environment: "jsdom", setupFiles: ["./tests/setup.ts"] } });
+export default defineConfig({
+  resolve: { alias: { "@": path.resolve(__dirname, ".") } },
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./tests/setup.ts"],
+    exclude: [...configDefaults.exclude, "artifacts/backend-phase-1/tmp/**"],
+  },
+});

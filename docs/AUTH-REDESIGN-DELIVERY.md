@@ -87,7 +87,17 @@ Intermediate failure/debug screenshots are preserved locally but are not staged 
 
 ## Deployment and remaining configuration
 
-This redesign is **committed locally, not pushed/deployed yet**. Publication was asked as a non-blocking user choice; no approval was received before this handoff. Existing production was left unchanged. Current production smoke checks still return 200 for the four auth pages and JSON 503 for unconfigured session/callback endpoints, not generic Next.js 404.
+The owner explicitly authorized publication in the follow-up. This redesign is now **pushed to GitHub and deployed to Vercel production**.
+
+- Published source commit: `c3d37920ce0d16766722870fa09ffd5297d64018`, branch `codex/career-league`.
+- Vercel deployment: `dpl_GkneetwHEbN8uz9C2BnSQ2mGRiS1`.
+- Unique deployment: https://debit-credit-wu0016447-ahmed-mohameds-projects-c51bc2cc.vercel.app.
+- Production: https://debit-credit-nine.vercel.app.
+- Verified state: `READY`; target: `production`; alias assigned: true; source SHA matches the published commit.
+- Real production browser QA: **160 PASS**, zero uncaught browser errors, Arabic/English at all five requested desktop/mobile sizes. Landing → signup → login, safe `next`, RTL/LTR, input bounds, no horizontal overflow, visible keyboard focus, independent password reveal and honest disabled/unavailable controls passed.
+- All four auth pages return 200. Global session/callback endpoints return JSON 503 for missing configuration, without locale rewriting or generic Next.js 404; static-route checks passed.
+- Both published WebP assets return 200 and their SHA-256 hashes match the committed assets. The production HTML contains the redesigned auth experience.
+- Read-only production evidence: `artifacts/auth-redesign/production-qa.json` and 20 `*-production.png` screenshots. No credentials were submitted or production users created. The follow-up documentation/evidence commit does not change the deployed runtime source.
 
 Google OAuth end-to-end is **not claimed working**. Existing production configuration remains a blocker for Google and email/password login: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DATABASE_URL` are not configured in the checked production inventory. Only names/presence were inspected; no values were printed or requested.
 

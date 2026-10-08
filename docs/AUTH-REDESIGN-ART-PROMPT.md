@@ -1,0 +1,14 @@
+# Auth artwork — 2026-10-08
+
+Used the `imagegen` skill and the built-in image-generation tool. The user's signup screenshot was a visual/style reference, not a form to rasterize. Existing portraits were inspected; none combined the approved smiling male-at-laptop composition, pale-blue workspace and sufficient empty space for this layout.
+
+Only the workspace/man/laptop/desk layer was generated. All brand text, marketing copy, benefits, progress examples, achievement captions and form controls are separate HTML/SVG/CSS. The original full-resolution generation stays in the generated-image library; the project consumes these new, non-overwriting optimized assets:
+
+- `public/auth/career-workspace-v1.webp`: 1536×1024, 79,138 bytes, quality 84.
+- `public/auth/career-workspace-mobile-v1.webp`: 640×427, 20,764 bytes, quality 78.
+
+Lossy WebP resizing/encoding used the project's existing Sharp dependency. Next/Image supplies responsive optimized derivatives, with an explicit small-phone art source. No new dependency or remote stock-image request was added. The image is decorative: meaningful copy remains accessible HTML. No certification, employment guarantee, raster form or baked-in progress claim appears in the asset.
+
+## Final generation prompt
+
+Use case: photorealistic-natural. Asset type: art-only background for the LEFT story panel of the existing Debit & Credit signup website. Input image: supplied image is an approved visual/style and composition REFERENCE, not UI to reproduce. Generate a clean standalone photographic artwork inspired closely by the reference's young smiling Egyptian/MENA adult MALE accountant/student, wavy dark hair, neatly trimmed beard, light pale blue casual-business shirt, sitting at a bright white desk with a silver laptop, one hand near his chin, motivated friendly expression. Modern airy office windows, soft daylight, subtle blurred blue city skyline and plants, pale blue/cool white palette. Landscape canvas 1536x1024 style framing. Place the man and laptop in the lower-right 55 percent, face around x65%, y55%, laptop in lower right; leave top 35% and left 35% softly lit pale near-white negative space for separate HTML headlines and value points. White desk across bottom, small stack of plain navy accounting books at lower left, unbranded white mug beside laptop. MUST remove ALL text, ALL signup form/card/buttons, ALL logo marks, ALL floating dashboard/progress/achievement UI and ALL illustrated icons from reference; these will be real HTML overlays later. Image contains ONLY the photorealistic male, laptop, desk, books, cup, airy office. No baked marketing copy, no lettering on book spines, no second person, no woman, no cartoon mascot, no official certificate, no watermark. Keep premium professional, bright cinematic realistic proportions and natural hands.

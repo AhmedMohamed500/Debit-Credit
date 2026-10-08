@@ -98,8 +98,8 @@
   content: "";
   inset: 0;
   background:
-    linear-gradient(90deg, #f4fbffbd 0%, #f2faffb0 30%, #eef8ff00 60%),
-    linear-gradient(180deg, #f2faff30, transparent 65%);
+    linear-gradient(90deg, #f4fbffdb 0%, #f2faff99 28%, #eef8ff00 48%),
+    linear-gradient(180deg, #f2faff14, transparent 40%);
 }
 .auth-story-copy {
   position: relative;
@@ -703,8 +703,20 @@
   justify-content: center;
   align-items: center;
   gap: 7px;
+  min-height: 50px;
+  padding: 10px 14px;
+  border: 1px solid #9dc3f0;
+  border-radius: 12px;
+  background: #edf6ff;
+  font-size: 15px;
+  margin-top: 17px;
+}
+.auth-guest-entry p {
+  margin: 8px 0 0;
+  color: var(--auth-muted);
   font-size: 12px;
-  margin-top: 11px;
+  line-height: 1.7;
+  text-align: center;
 }
 .auth-guest-link svg {
   width: 14px;

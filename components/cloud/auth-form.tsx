@@ -371,10 +371,21 @@ export function AuthForm({
           </Link>
         </div>
         {!enabled && (
-          <Link className="auth-guest-link" href={`/${locale}/bootcamp`}>
-            {say("Explore local learning", "استكشف التعلّم المحلي")}
-            <Arrow aria-hidden="true" />
-          </Link>
+          <div className="auth-guest-entry">
+            <Link className="auth-guest-link" href={`/${locale}/onboarding`}>
+              {say(
+                "Continue as a guest — no account",
+                "المتابعة كضيف — بدون حساب",
+              )}
+              <Arrow aria-hidden="true" />
+            </Link>
+            <p>
+              {say(
+                "Guest progress stays on this device. This does not create a cloud account.",
+                "تقدم الضيف يُحفظ على هذا الجهاز فقط. هذا الخيار لا يُنشئ حسابًا سحابيًا.",
+              )}
+            </p>
+          </div>
         )}
       </AuthFormCard>
     </AuthShell>

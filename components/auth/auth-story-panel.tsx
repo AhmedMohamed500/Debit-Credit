@@ -19,17 +19,19 @@ export function AuthStoryPanel({ locale }: { locale: Locale }) {
       <div className="auth-art">
         <Image
           className="auth-art-desktop"
-          src="/auth/career-workspace-v1.webp"
+          src="/auth/career-workspace-v2.webp"
           alt=""
           fill
           priority
+          unoptimized
           sizes="(max-width: 900px) 1px, 62vw"
         />
         <Image
           className="auth-art-mobile"
-          src="/auth/career-workspace-mobile-v1.webp"
+          src="/auth/career-workspace-mobile-v2.webp"
           alt=""
           fill
+          unoptimized
           sizes="(max-width: 900px) 100vw, 1px"
         />
       </div>

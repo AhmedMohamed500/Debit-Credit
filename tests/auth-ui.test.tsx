@@ -22,7 +22,13 @@ vi.mock("@/lib/auth/client", () => ({
   },
 }));
 vi.mock("next/image", () => ({
-  default: () => <span data-testid="decorative-art" />,
+  default: ({ src, unoptimized }: { src: string; unoptimized?: boolean }) => (
+    <span
+      data-testid="decorative-art"
+      data-src={src}
+      data-unoptimized={String(unoptimized)}
+    />
+  ),
 }));
 
 const props = {
@@ -53,6 +59,31 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 describe("real auth UI contract", () => {
+  it("serves the revised artwork without a second lossy Next image encoding", () => {
+    render(<AuthForm {...props} />);
+    const art = screen.getAllByTestId("decorative-art");
+    expect(art[0]).toHaveAttribute(
+      "data-src",
+      "/auth/career-workspace-v2.webp",
+    );
+    expect(art[1]).toHaveAttribute(
+      "data-src",
+      "/auth/career-workspace-mobile-v2.webp",
+    );
+    for (const image of art)
+      expect(image).toHaveAttribute("data-unoptimized", "true");
+  });
+  it("offers real localized guest onboarding without pretending to create a cloud session", () => {
+    render(<AuthForm {...props} enabled={false} locale="ar" />);
+    expect(
+      screen.getByRole("link", { name: "المتابعة كضيف — بدون حساب" }),
+    ).toHaveAttribute("href", "/ar/onboarding");
+    expect(
+      screen.getByText(/هذا الخيار لا يُنشئ حسابًا سحابيًا/),
+    ).toBeInTheDocument();
+    expect(auth.signup).not.toHaveBeenCalled();
+    expect(auth.login).not.toHaveBeenCalled();
+  });
   it("does not add a second navigation when the installed client handles a confirmed login redirect", async () => {
     auth.login.mockResolvedValue({
       error: null,

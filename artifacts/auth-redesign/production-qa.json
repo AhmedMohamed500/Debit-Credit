@@ -7,8 +7,8 @@
     "https://debit-credit-nine.vercel.app/ar/signup: HTTP 200, not locale rewritten",
     "https://debit-credit-nine.vercel.app/en/login: HTTP 200, not locale rewritten",
     "https://debit-credit-nine.vercel.app/en/signup: HTTP 200, not locale rewritten",
-    "https://debit-credit-nine.vercel.app/api/auth/get-session: HTTP 503, not locale rewritten",
-    "https://debit-credit-nine.vercel.app/api/auth/callback/google: HTTP 503, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/api/auth/get-session: HTTP 200, not locale rewritten",
+    "https://debit-credit-nine.vercel.app/api/auth/callback/google: HTTP 302, not locale rewritten",
     "https://debit-credit-nine.vercel.app/sitemap.xml: HTTP 200, not locale rewritten",
     "https://debit-credit-nine.vercel.app/manifest.webmanifest: HTTP 200, not locale rewritten",
     "https://debit-credit-nine.vercel.app/docs/nature-of-accounts.md: HTTP 200, not locale rewritten",
@@ -183,14 +183,14 @@
     },
     {
       "pathname": "/api/auth/get-session",
-      "status": 503,
+      "status": 200,
       "location": null,
       "handlerResponse": "application/json"
     },
     {
       "pathname": "/api/auth/callback/google",
-      "status": 503,
-      "location": null,
+      "status": 302,
+      "location": "https://debit-credit-nine.vercel.app/api/auth/error?error=state_not_found",
       "handlerResponse": "application/json"
     },
     {

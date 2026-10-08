@@ -1,5 +1,7 @@
 # Auth experience redesign — 2026-10-08
 
+Latest follow-up: **production email/password signup and login are now enabled and verified**, using the owner-approved dedicated free PostgreSQL database. The artwork is revised to v2. See `AUTH-ACTIVATION-DELIVERY-AR.md` for the current deployment and real account QA. The deployment/configuration section below records the earlier first-redesign snapshot, not the current availability.
+
 تم تنفيذ تصميم التسجيل والدخول بالاستناد إلى الصورة المرجعية: مساحة عمل مضيئة وشاب يستخدم لابتوب، رسالة تعلّم بالممارسة، أربع فوائد، أمثلة تقدم وإنجازات، وبطاقة تسجيل حقيقية. بقية المنتج وأنظمة المحاسبة لم تتغير.
 
 ## Source and scope

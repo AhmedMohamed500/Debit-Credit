@@ -21,6 +21,6 @@
 
 ## النشر
 
-هذه تعديلات محلية واختبارات محلية؛ لم يحدث نشر جديد إلى GitHub أو Vercel أو Render ضمن هذا الطلب. يلزم نشر التعديل حتى يظهر على الرابط العام.
+تم نشر التعديل على GitHub وVercel ضمن [PR #9](https://github.com/AhmedMohamed500/Debit-Credit/pull/9). نشر الإنتاج `557a4a0e71a79fa95e76041df54a5af177955b64` نجح، وفحص الرابط العام نجح في 160 فحصًا قراءة فقط. التسجيل والدخول الحقيقيان اختُبرا محليًا (229 فحصًا)، ولم تُرسل بيانات حساب للإنتاج. التفاصيل في [تقرير الترتيب](PROJECT-ORGANIZATION-AR.md). لم يحدث نشر Render أو تغيير قاعدة الإنتاج.
 
 مرجع السلوك في Better Auth: https://better-auth.com/docs/authentication/email-password.

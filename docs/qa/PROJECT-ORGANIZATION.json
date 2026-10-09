@@ -1,9 +1,18 @@
 {
   "reviewed": "2026-10-10",
   "routeAndVisualChecks": 59,
-  "locales": ["ar", "en"],
-  "widths": [1440, 390],
-  "themes": ["light", "dark"],
+  "locales": [
+    "ar",
+    "en"
+  ],
+  "widths": [
+    1440,
+    390
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
   "visualDifferencePercent": 0,
   "uncaughtBrowserErrors": 0,
   "credentialsSubmitted": false,
@@ -13,5 +22,15 @@
   "legacyCssRulesRemoved": 329,
   "protectedAccountingSourceUnchanged": true,
   "fullCheck": "pass: lint, TypeScript, 534 tests across 62 files and production build",
-  "productionPublication": "pending"
+  "productionPublication": {
+    "status": "success",
+    "sourceSha": "557a4a0e71a79fa95e76041df54a5af177955b64",
+    "githubPullRequest": "https://github.com/AhmedMohamed500/Debit-Credit/pull/9",
+    "githubDeploymentId": 6971719477,
+    "url": "https://debit-credit-nine.vercel.app",
+    "readOnlyBrowserChecks": 160,
+    "credentialSubmissions": false,
+    "productionAccountsCreated": false,
+    "googleOAuth": "unconfigured; not tested"
+  }
 }

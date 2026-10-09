@@ -1,0 +1,34 @@
+# Secondary deployment only. Keep the Vercel production project and database.
+# No Render database, migration/reset command, paid service, or keep-alive job.
+services:
+  - type: web
+    name: debit-credit-fallback
+    runtime: node
+    plan: free
+    region: virginia
+    repo: https://github.com/AhmedMohamed500/Debit-Credit
+    branch: codex/render-fallback
+    autoDeployTrigger: off
+    buildCommand: npm ci --include=dev --no-audit --no-fund && npm run build
+    startCommand: npm start -- --hostname 0.0.0.0
+    healthCheckPath: /api/auth/get-session
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      - key: DATABASE_DRIVER
+        value: postgres
+      - key: DATABASE_URL
+        # Set privately to the EXISTING production PostgreSQL URL.
+        # Never substitute the isolated accounting-auth-test Neon URL.
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        fromService:
+          type: web
+          name: debit-credit-fallback
+          envVarKey: RENDER_EXTERNAL_URL

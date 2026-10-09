@@ -23,7 +23,7 @@ export default async function Page({
     <AuthForm
       locale={locale}
       signup
-      next={next ?? `/${locale}/onboarding`}
+      next={next ?? `/${locale}`}
       enabled={backendConfigured()}
       google={backendConfigured() && googleConfigured()}
       email={emailConfigured()}

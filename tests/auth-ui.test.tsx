@@ -13,6 +13,10 @@ const auth = vi.hoisted(() => ({
   login: vi.fn(),
   social: vi.fn(),
   reset: vi.fn(),
+  replace: vi.fn(),
+}));
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: auth.replace }),
 }));
 vi.mock("@/lib/auth/client", () => ({
   authClient: {
@@ -34,7 +38,7 @@ vi.mock("next/image", () => ({
 const props = {
   locale: "en" as const,
   signup: true,
-  next: "/en/onboarding",
+  next: "/en",
   enabled: true,
   google: false,
   email: false,
@@ -87,7 +91,7 @@ describe("real auth UI contract", () => {
   it("does not add a second navigation when the installed client handles a confirmed login redirect", async () => {
     auth.login.mockResolvedValue({
       error: null,
-      data: { redirect: true, url: "/en/onboarding" },
+      data: { redirect: true, url: "/en" },
     });
     render(<AuthForm {...props} signup={false} />);
     fireEvent.change(screen.getByLabelText("Email"), {
@@ -103,9 +107,53 @@ describe("real auth UI contract", () => {
       expect(screen.getByRole("button", { name: "Sign in" })).toBeEnabled(),
     );
     expect(auth.login).toHaveBeenCalledWith(
-      expect.objectContaining({ callbackURL: "/en/onboarding" }),
+      expect.objectContaining({ callbackURL: "/en" }),
     );
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(auth.replace).not.toHaveBeenCalled();
+  });
+  it.each(["ar", "en"] as const)(
+    "sends successful %s signup to a separate sign-in form without logging in",
+    async (locale) => {
+      auth.signup.mockResolvedValue({ error: null, data: { token: null } });
+      render(<AuthForm {...props} locale={locale} next={`/${locale}`} />);
+      const form = document.querySelector<HTMLFormElement>(".auth-email-form")!;
+      for (const [name, value] of Object.entries({
+        name: "Routing Learner",
+        email: "learner@example.test",
+        password: "routing-test-password",
+        confirm: "routing-test-password",
+      }))
+        fireEvent.change(form.querySelector(`[name="${name}"]`)!, {
+          target: { value },
+        });
+      fireEvent.submit(form);
+      const target = `/${locale}/login?next=${encodeURIComponent(`/${locale}`)}&registered=1`;
+      await waitFor(() => expect(auth.replace).toHaveBeenCalledWith(target));
+      expect(auth.signup).toHaveBeenCalledWith(
+        expect.objectContaining({ callbackURL: target }),
+      );
+      expect(auth.login).not.toHaveBeenCalled();
+    },
+  );
+  it("preserves an explicit protected destination through signup and login", async () => {
+    auth.signup.mockResolvedValue({ error: null, data: { token: null } });
+    render(<AuthForm {...props} next="/en/account" />);
+    fillSignup();
+    fireEvent.submit(document.querySelector(".auth-email-form")!);
+    await waitFor(() =>
+      expect(auth.replace).toHaveBeenCalledWith(
+        "/en/login?next=%2Fen%2Faccount&registered=1",
+      ),
+    );
+  });
+  it("offers sign-in guidance without claiming a session or exposing a password in the URL", () => {
+    render(<AuthForm {...props} signup={false} registered />);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Sign in with your account details",
+    );
+    expect(screen.getByLabelText("Password")).toHaveValue("");
+    expect(auth.login).not.toHaveBeenCalled();
   });
   it("replaces default invalid-field popups with localized inline guidance", () => {
     render(<AuthForm {...props} />);
@@ -254,7 +302,9 @@ describe("real auth UI contract", () => {
       screen.getByRole("button", { name: "Create free account" }),
     ).toBeEnabled();
     expect(auth.signup).toHaveBeenCalledWith(
-      expect.objectContaining({ callbackURL: "/en/onboarding" }),
+      expect.objectContaining({
+        callbackURL: "/en/login?next=%2Fen&registered=1",
+      }),
     );
   });
   it("uses the real social client method with a safe destination, not the provider callback", async () => {
@@ -266,7 +316,7 @@ describe("real auth UI contract", () => {
     await waitFor(() =>
       expect(auth.social).toHaveBeenCalledWith({
         provider: "google",
-        callbackURL: "/en/onboarding",
+        callbackURL: "/en",
       }),
     );
     expect(screen.getByRole("alert")).toHaveTextContent(
@@ -310,10 +360,10 @@ describe("real auth UI contract", () => {
     );
     expect(
       screen.getByRole("link", { name: "Create an account" }),
-    ).toHaveAttribute("href", "/en/signup?next=%2Fen%2Fonboarding");
+    ).toHaveAttribute("href", "/en/signup?next=%2Fen");
   });
   it("renders Arabic labels, direction and localized navigation", () => {
-    render(<AuthForm {...props} locale="ar" next="/ar/onboarding" />);
+    render(<AuthForm {...props} locale="ar" next="/ar" />);
     expect(screen.getByLabelText("الاسم المعروض")).toBeInTheDocument();
     expect(
       screen
@@ -322,7 +372,7 @@ describe("real auth UI contract", () => {
     ).toHaveAttribute("dir", "rtl");
     expect(
       screen.getByRole("link", { name: "لديك حساب؟ سجّل الدخول" }),
-    ).toHaveAttribute("href", "/ar/login?next=%2Far%2Fonboarding");
+    ).toHaveAttribute("href", "/ar/login?next=%2Far");
   });
   it("only offers password reset when email delivery and backend are configured", () => {
     const { rerender } = render(<AuthForm {...props} signup={false} />);

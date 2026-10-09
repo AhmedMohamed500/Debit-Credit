@@ -1,4 +1,6 @@
 /node_modules
+# Generated QA captures and isolated test databases stay local.
+/artifacts/
 /.next
 /.next-backend-test
 /.npm-cache-backend/

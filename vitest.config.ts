@@ -5,6 +5,6 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
-    exclude: [...configDefaults.exclude, "artifacts/backend-phase-1/tmp/**"],
+    exclude: [...configDefaults.exclude, "artifacts/**", "archive/**"],
   },
 });

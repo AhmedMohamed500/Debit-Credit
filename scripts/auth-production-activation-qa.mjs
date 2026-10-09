@@ -47,7 +47,7 @@ try {
       const label = `${locale}-${viewport.width}`;
       const signup = viewport.width === 1440;
       const response = await page.goto(
-        `${base}/${locale}/${signup ? "signup" : "login"}?next=%2F${locale}%2Fonboarding`,
+        `${base}/${locale}/${signup ? "signup" : "login"}?next=%2F${locale}`,
       );
       record(label + " real auth page returns 200", response.status() === 200);
       const button = page.locator('.auth-email-form button[type="submit"]');
@@ -86,11 +86,24 @@ try {
       await page.locator('[name="password"]').fill(password);
       if (signup) await page.locator('[name="confirm"]').fill(password);
       await button.click();
-      await page.waitForURL(`**/${locale}/onboarding`, { timeout: 45000 });
+      if (signup) {
+        await page.waitForURL(`**/${locale}/login?**`, { timeout: 45000 });
+        record(label + " real signup reaches separate sign-in");
+        record(
+          label + " signup does not establish a session",
+          (await (
+            await context.request.get(base + "/api/auth/get-session")
+          ).json()) === null,
+        );
+        await page.locator('[name="email"]').fill(email);
+        await page.locator('[name="password"]').fill(password);
+        await page.locator('.auth-email-form button[type="submit"]').click();
+      }
+      await page.waitForURL(`**/${locale}`, { timeout: 45000 });
       record(
         label +
           (signup
-            ? " real signup reaches onboarding"
+            ? " separate sign-in reaches authenticated homepage"
             : " same account signs in on a fresh mobile context"),
       );
       const session = await context.request.get(base + "/api/auth/get-session");
@@ -133,7 +146,7 @@ try {
         label + " real logout clears server session",
         (await signedOutResponse.json()) === null,
       );
-      await page.goto(`${base}/${locale}/login?next=%2F${locale}%2Fonboarding`);
+      await page.goto(`${base}/${locale}/login?next=%2F${locale}`);
       await page.locator('[name="email"]').fill(email);
       await page
         .locator('[name="password"]')

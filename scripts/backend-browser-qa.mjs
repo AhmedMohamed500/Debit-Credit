@@ -36,8 +36,12 @@ async function context(viewport = { width: 1920, height: 1080 }) {
   const c = await browser.newContext({ viewport });
   const p = await c.newPage();
   p.on("pageerror", (e) => errors.push(e.message));
-  p.on("dialog",async dialog=>{
-    if(dialog.type()==="confirm" && /not synced|لم تُحفظ/.test(dialog.message()))await dialog.accept();
+  p.on("dialog", async (dialog) => {
+    if (
+      dialog.type() === "confirm" &&
+      /not synced|لم تُحفظ/.test(dialog.message())
+    )
+      await dialog.accept();
     else await dialog.dismiss();
   });
   return [c, p];
@@ -62,7 +66,12 @@ async function signUp(p, email, name, locale) {
   await p.locator('[name="password"]').fill(password);
   await p.locator('[name="confirm"]').fill(password);
   await p.locator("form button").click();
-  await p.waitForURL(`**/${locale}/onboarding`);
+  await p.waitForURL(`**/${locale}/login?**`);
+  await p.locator('[name="email"]').fill(email);
+  await p.locator('[name="password"]').fill(password);
+  await p.locator('.auth-email-form button[type="submit"]').click();
+  await p.waitForURL(`**/${locale}`);
+  await p.goto(`${base}/${locale}/onboarding`);
   await p.locator(".career-entry-personas").waitFor();
 }
 try {

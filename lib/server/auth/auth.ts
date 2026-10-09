@@ -30,6 +30,7 @@ function createAuth() {
     },
     emailAndPassword: {
       enabled: true,
+      autoSignIn: false,
       minPasswordLength: 12,
       maxPasswordLength: 128,
       requireEmailVerification: false,

@@ -47,7 +47,7 @@ describe("backend safety rules", () => {
     "/ar/login",
     "/ar/game%0aevil",
   ])("rejects unsafe redirect %s", (value) =>
-    expect(safeNext(value, "en")).toBe("/en/onboarding"),
+    expect(safeNext(value, "en")).toBe("/en"),
   );
   it("preserves safe internal destination", () =>
     expect(safeNext("/ar/onboarding?persona=student", "ar")).toBe(

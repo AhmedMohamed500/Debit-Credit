@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -25,6 +26,7 @@ export function AuthForm({
   enabled,
   google,
   email,
+  registered = false,
 }: {
   locale: Locale;
   signup: boolean;
@@ -32,10 +34,13 @@ export function AuthForm({
   enabled: boolean;
   google: boolean;
   email: boolean;
+  registered?: boolean;
 }) {
+  const router = useRouter();
   const ar = locale === "ar",
     say = (en: string, a: string) => (ar ? a : en),
-    destination = safeNext(next, locale);
+    destination = safeNext(next, locale),
+    loginURL = `/${locale}/login?next=${encodeURIComponent(destination)}&registered=1`;
   const [operation, setOperation] = useState<
     "email" | "google" | "reset" | null
   >(null);
@@ -95,21 +100,29 @@ export function AuthForm({
       const fields = {
         email: String(data.get("email")),
         password,
-        callbackURL: destination,
       };
       const result = signup
         ? await authClient.signUp.email({
             ...fields,
             name: String(data.get("name")),
+            callbackURL: loginURL,
           })
-        : await authClient.signIn.email(fields);
+        : await authClient.signIn.email({
+            ...fields,
+            callbackURL: destination,
+          });
       if (result.error) {
         setError(authError(result.error.code));
         return;
       }
+      // Signup creates credentials only; the server deliberately creates no
+      // session until the user submits the separate sign-in form.
+      if (signup) {
+        router.replace(loginURL);
+        return;
+      }
       // Better Auth's installed client already navigates when email sign-in
       // returns redirect:true. Do not start a second competing navigation.
-      // Signup (without that SDK redirect) still uses the safe destination.
       const sdkRedirect =
         result.data && "redirect" in result.data && result.data.redirect;
       if (!sdkRedirect) window.location.assign(destination);
@@ -212,6 +225,14 @@ export function AuthForm({
         <div className="auth-divider">
           <span>{say("or use your email", "أو")}</span>
         </div>
+        {!signup && registered && (
+          <p className="auth-feedback" role="status">
+            {say(
+              "Sign in with your account details to start using the site.",
+              "سجّل الدخول ببيانات حسابك لتبدأ استخدام الموقع.",
+            )}
+          </p>
+        )}
         <form
           className="auth-email-form"
           onSubmit={submit}

@@ -57,9 +57,7 @@ describe("auth route deployment contract", () => {
   it.each(["ar", "en"])(
     "resolves actual %s destinations rather than a literal locale",
     (locale) => {
-      expect(safeNext(`/[locale]/onboarding`, locale)).toBe(
-        `/${locale}/onboarding`,
-      );
+      expect(safeNext(`/[locale]/onboarding`, locale)).toBe(`/${locale}`);
       expect(existsSync(path.resolve("app/[locale]/onboarding/page.tsx"))).toBe(
         true,
       );
@@ -68,6 +66,19 @@ describe("auth route deployment contract", () => {
       );
     },
   );
+  it.each(["ar", "en"])(
+    "accepts the real %s homepage after login",
+    (locale) => {
+      expect(safeNext(`/${locale}`, locale)).toBe(`/${locale}`);
+      expect(safeNext(undefined, locale)).toBe(`/${locale}`);
+      expect(existsSync(path.resolve("app/[locale]/page.tsx"))).toBe(true);
+    },
+  );
+  it("creates no automatic email session after signup", () => {
+    expect(
+      readFileSync(path.resolve("lib/server/auth/auth.ts"), "utf8"),
+    ).toContain("autoSignIn: false");
+  });
   it("uses social sign-in, never direct callback navigation, for the Google button", () => {
     const source = readFileSync(
       path.resolve("components/cloud/auth-form.tsx"),

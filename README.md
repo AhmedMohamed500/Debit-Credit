@@ -1,100 +1,42 @@
 # Debit & Credit
 
-### by Money Coder
+Bilingual accounting career simulation by Money Coder. Next.js App Router, React, TypeScript, PostgreSQL, Prisma and Better Auth.
 
-Backend Phase 1 now adds optional PostgreSQL accounts and supported cloud domains over the existing local learning product. Production services and credentials require owner setup; no backend deployment is claimed yet. See [Backend Phase 1](docs/BACKEND-PHASE-1.md) for architecture, local/cloud boundaries, zero-cost setup, migrations and security. Earlier reports below retain their historical release descriptions.
+[Arabic site](https://debit-credit-nine.vercel.app/ar) · [English site](https://debit-credit-nine.vercel.app/en) · [Documentation](docs/README.md) · [Current status](docs/STATUS.md)
 
-Debit & Credit is a bilingual Gamified Accounting Academy and Mizan Trading career simulation with guest-local learning and an optional cloud backend. One player journey connects foundations, journal practice, professional cases, explainable Skill Passport evidence, role readiness, an evidence-driven CV, and a clearly labeled employer preview. Phase 1 adds authenticated, server-scored competition without replacing guest/demo learning.
+## User journey
 
-The current Career League work is documented in [COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md](COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md). Its governed level 0–8 curriculum and the delivery state of every accounting/finance module are defined in [docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).
+Guests can learn and play with browser-local progress. Email signup creates an account without a session, then opens localized login. Successful login opens `/ar` or `/en`, unless a safe internal destination was requested. The homepage remains the starting point for learning and work.
 
-The complete Arabic project map, including the exact First Shift files, routes, architecture, storage, gameplay systems, delivery states and current limitations, is available in [DEBIT-CREDIT-COMPLETE-PROJECT-REPORT.md](DEBIT-CREDIT-COMPLETE-PROJECT-REPORT.md).
-
-The public landing page starts at `/ar` or `/en`. The current unified player routes are `/[locale]/onboarding`, `/game`, `/academy`, `/challenges`, `/leaderboard`, and `/career`; employer demo routes begin at `/[locale]/employers`.
-
-## Learning journey
-
-1. Accounting Foundations — equation, classification, protected Nature of Accounts, and Money Flow.
-2. Journal Entries — analyze transactions, choose accounts, determine sides, and validate balance.
-3. Ledger & Posting — move from journal entries to ledgers and running balances.
-4. Trial Balance — validate balances and detect posting differences.
-5. Adjusting Entries — accruals, prepayments, depreciation, and period-end adjustments.
-6. Financial Statements — income, financial position, and statement relationships.
-7. Real-World Accounting — Missions, Detective, Money Flow, and mixed cases.
-8. Professional Mode — Arena, Career Mode, timed work, and career readiness.
-
-## Features
-
-- Educational Account Guide in Arabic and English.
-- Touch, click, select, and drag-friendly Money Flow Lab.
-- Journal entry practice with balanced-entry validation.
-- Missions with hints, retry, feedback, score, and financial impact.
-- Accounting Detective cases with evidence, notes, links, progressive hints, and conclusions.
-- Debit & Credit Arena with career mode, daily challenges, CFO guidance, scoring, and best-attempt progress.
-- One canonical player model for XP, coins, levels, objectives, streaks, badges, certificates, skills, and career readiness.
-- Command Center, eight-level Learning Map, and persistent global journey status.
-- Skills & Certificates and Career Readiness dashboards based on real recorded activity.
-- Separate employer experience with skill filters, local shortlist actions, and explicitly seeded demo candidates.
-- Local/demo leaderboard behavior clearly separated from online competition.
-- Arabic RTL and English LTR interfaces.
-- Installable PWA metadata with Debit & Credit branding.
-
-## Architecture
-
-The application is a Next.js App Router modular monolith using React, TypeScript, Tailwind CSS, Lucide icons, and Vitest. Server-only domain services use PostgreSQL, Prisma and Better Auth for supported authenticated state. Guest learning and unsupported domains retain existing browser repositories; private backups are not server-verified achievements. No paid API, separate backend host, external local package, symlink, or runtime dependency on FINORA is required. Live providers are pending owner configuration.
-
-Key folders:
-
-- `app/` — localized product routes and metadata.
-- `components/` — game shell, Command Center, Learning Map, practice, companies, learning modes, layout, and progress UI.
-- `data/` — real extracted courses, cases, missions, scenarios, Arena tasks, and the educational chart of accounts.
-- `lib/` — the unified game engine, employer filters, learning engines, accounting validation, scoring, storage, progress, and migration.
-- `types/` — education-only domain types.
-- `tests/` — accounting and educational engine tests.
-- `docs/` — technical notes.
-
-## Gameplay Phase B
-
-First Shift is now a reusable accounting work simulation. The player receives three Mizan Trading case files, reviews source and supporting documents, chooses a professional action, posts through the protected accounting engine when appropriate, and receives an event-derived performance review. Versioned case events also project explainable local evidence into the Skill Passport. Chapter 2 remains explicitly locked and non-routable.
-
-Architecture, migration, scoring, evidence rules, QA, artifacts, limitations, and the next recommendation are documented in [`docs/GAMEPLAY-PHASE-B.md`](docs/GAMEPLAY-PHASE-B.md).
-
-Arabic delivery report: [`GAMEPLAY-PHASE-B-REPORT-AR.md`](GAMEPLAY-PHASE-B-REPORT-AR.md).
-
-Gamified Academy architecture and delivery: [`docs/GAMIFIED-ACADEMY-PLATFORM.md`](docs/GAMIFIED-ACADEMY-PLATFORM.md), [`docs/ACADEMY-LEARNING-PATH.md`](docs/ACADEMY-LEARNING-PATH.md), [`docs/SKILLS-CAREER-CV-MAPPING.md`](docs/SKILLS-CAREER-CV-MAPPING.md), and [`GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md`](GAMIFIED-ACADEMY-IMPLEMENTATION-REPORT.md).
-
-Platform review: <https://github.com/AhmedMohamed500/Debit-Credit/pull/3> · Preview: <https://debit-credit-git-codex-540b1c-ahmed-mohameds-projects-c51bc2cc.vercel.app>
-
-Review: <https://github.com/AhmedMohamed500/Debit-Credit/pull/2> · Preview: <https://debit-credit-git-codex-788967-ahmed-mohameds-projects-c51bc2cc.vercel.app>
-
-## Local storage
-
-The canonical player state uses `debit-credit-player-v1`. Detailed module evidence remains in namespaced stores such as `debit-credit-arena-v1`, `debit-credit-missions-v1`, `debit-credit-detective-v1`, `debit-credit-money-flow-v1`, and `debit-credit-progress-v1`. Existing progress is synchronized once into the unified player without deleting module data. The original FINORA migration remains unchanged and never reads or edits operational journals, parties, invoices, or settings.
+Supported authenticated features use the existing cloud backend. Browser-local learning, professional evidence and employer demo data are not automatically cloud-synced or verified achievements. Google and email delivery require separate provider configuration; disabled buttons do not mean these services work.
 
 ## Development
 
-```bash
+```sh
 npm install
 npm run dev
-```
-
-Open `http://localhost:3000/ar` or `http://localhost:3000/en`.
-
-## Quality checks
-
-```bash
-npm run lint
-npm run typecheck
-npm test
-npm run build
-# or all gates
 npm run check
 ```
 
-## Deployment
+Open `http://localhost:3000/ar` or `/en`. See [backend setup](docs/BACKEND-PHASE-1.md) before enabling cloud features. Secrets belong in ignored local environment files or provider settings, never Git.
 
-Production: <https://debit-credit-nine.vercel.app>
+`npm run check` runs lint, TypeScript, unit tests and the production build. Building generates Prisma Client; it does not reset, seed or migrate a database. Database deployment is a separate explicit operation.
 
-Repository: <https://github.com/AhmedMohamed500/Debit-Credit>
+## Project map
 
-No paid service is required.
+- `app/`: localized routes, API handlers and active styles.
+- `components/`: current UI and learning modules.
+- `lib/`, `data/`, `types/`: accounting rules, educational content, storage and server domains.
+- `prisma/`: schema and versioned migrations.
+- `tests/`, `scripts/`: automated checks and local QA runners.
+- `docs/`: current guides; [archived reports](docs/archive/reports/README.md) retain historical release records.
+- `archive/`: frozen unused landing implementations, excluded from runtime tooling.
+- `artifacts/`: ignored local screenshots, QA outputs and isolated test databases; not published.
+
+[Routes](docs/ROUTES.md) explains current navigation and compatibility. Protected accounting systems, player storage keys and historical bookmarks are retained. Older reports describe their release date, not necessarily today's deployment.
+
+## Product documentation
+
+[Curriculum](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md) · [First Shift](docs/GAMEPLAY-PHASE-B.md) · [Skill Passport](docs/PROFESSIONAL-EVIDENCE-PIPELINE.md) · [Backend](docs/BACKEND-PHASE-1.md) · [Signup → login → home](docs/SIGNUP-SIGNIN-HOME-AR.md)
+
+Production is hosted on Vercel. Render fallback configuration exists but no Render deployment is live; its account currently requires a payment method. No paid service or database reset is authorized by this organization work.

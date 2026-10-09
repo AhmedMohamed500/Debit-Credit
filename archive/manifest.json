@@ -1,0 +1,42 @@
+{
+  "description": "Frozen historical implementations; SHA-256 normalizes CRLF to LF.",
+  "files": [
+    {
+      "original": "components/platform/landing-sections.tsx",
+      "archive": "archive/ui/landing-sections.tsx",
+      "sha256": "6cea5fd8e772d66030898105dabebcd25fb9638a1f04e82376d0d390a3d191d3"
+    },
+    {
+      "original": "components/landing/product-landing.tsx",
+      "archive": "archive/ui/product-landing.tsx",
+      "sha256": "44503f2cdbe468ec4eb99cd12f96595c9a3bf036138b77181f2259e633868293"
+    },
+    {
+      "original": "app/landing-v2.css",
+      "archive": "archive/styles/landing-v2.css",
+      "sha256": "dce3dc5e2cbdac32b0ac55c5924a812447ef4da5c1e55cef75c9dfa20110e117"
+    },
+    {
+      "original": "app/landing-v3.css",
+      "archive": "archive/styles/landing-v3.css",
+      "sha256": "1ea24f00f97afeab862ad270f2d9fd4d19f82081dc9ed9d2b5d0a6829188df14"
+    },
+    {
+      "original": "app/landing-v4.css",
+      "archive": "archive/styles/landing-v4.css",
+      "sha256": "0df1ce433dc8d4ad3fbfcf83e4f9c5dc821c2e71e4245ce105cdc73e05596107"
+    }
+  ],
+  "styleAudit": [
+    {
+      "file": "app/landing-v2.css",
+      "removedRules": 147,
+      "retainedRules": 1
+    },
+    {
+      "file": "app/landing-v3.css",
+      "removedRules": 182,
+      "retainedRules": 6
+    }
+  ]
+}

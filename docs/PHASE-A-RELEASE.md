@@ -58,7 +58,7 @@ Browser-only Playwright verification also passed:
 - Nature of Accounts search, categories, selection, local pane scrolling, mobile list/detail tabs and return context passed.
 - Widths 360, 390, 768, 1280 and 1440, plus 1906×890 and 1877×953, reported no page-wide horizontal overflow.
 
-Detailed visual evidence is in [UI-AUDIT.md](./UI-AUDIT.md). The two exact-size after captures are [Nature of Accounts](../artifacts/phase-a-after/nature-ar-1906x890.png) and [First Day intro](../artifacts/phase-a-after/first-day-intro-ar-1877x953.png). Representative mobile captures are [account guide at 390×844](../artifacts/phase-a-after/manual-en-390.png) and [First Day intro at 390×844](../artifacts/phase-a-after/intro-ar-390.png).
+Detailed visual evidence is in [UI-AUDIT.md](UI-AUDIT.md). The two exact-size after captures are [Nature of Accounts](../artifacts/phase-a-after/nature-ar-1906x890.png) and [First Day intro](../artifacts/phase-a-after/first-day-intro-ar-1877x953.png). Representative mobile captures are [account guide at 390×844](../artifacts/phase-a-after/manual-en-390.png) and [First Day intro at 390×844](../artifacts/phase-a-after/intro-ar-390.png).
 
 ## Remaining limits
 

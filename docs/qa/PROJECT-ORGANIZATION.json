@@ -1,0 +1,17 @@
+{
+  "reviewed": "2026-10-10",
+  "routeAndVisualChecks": 59,
+  "locales": ["ar", "en"],
+  "widths": [1440, 390],
+  "themes": ["light", "dark"],
+  "visualDifferencePercent": 0,
+  "uncaughtBrowserErrors": 0,
+  "credentialsSubmitted": false,
+  "databaseTouched": false,
+  "trackedArtifactsRemoved": 344,
+  "historicalQaScriptsPreserved": 19,
+  "legacyCssRulesRemoved": 329,
+  "protectedAccountingSourceUnchanged": true,
+  "fullCheck": "pass: lint, TypeScript, 534 tests across 62 files and production build",
+  "productionPublication": "pending"
+}

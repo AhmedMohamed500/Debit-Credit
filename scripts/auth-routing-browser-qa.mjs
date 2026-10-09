@@ -15,7 +15,11 @@ const base = production
   ? "https://debit-credit-nine.vercel.app"
   : "http://localhost:3111";
 const output = path.resolve(
-  redesign ? "artifacts/auth-redesign" : "artifacts/auth-routing-regression",
+  process.argv.includes("--signup-signin-home")
+    ? "artifacts/auth-signin-home"
+    : redesign
+      ? "artifacts/auth-redesign"
+      : "artifacts/auth-routing-regression",
 );
 const temporary = path.resolve("artifacts/backend-phase-1/tmp/auth-routing");
 const results = [],
@@ -301,11 +305,11 @@ try {
       if (
         redesign &&
         !production &&
-        locale === "en" &&
-        viewport.width === 1920
+        ((locale === "en" && viewport.width === 1920) || viewport.width === 390)
       ) {
-        // Both locales share localhost's IP. Respect the existing 10/minute
-        // login protection: wait for its idle window, never reset/disable it.
+        // Both locales share localhost's IP. Signup now requires an additional
+        // explicit login: let the 10/minute window expire before the fifth
+        // viewport and the next locale, without resetting/disabling protection.
         console.log("Waiting for the unchanged local auth rate-limit window");
         for (let part = 0; part < 3; part++)
           await new Promise((resolve) => setTimeout(resolve, 22000));
@@ -345,8 +349,7 @@ try {
       await page.waitForURL(`**/${locale}/signup?**`);
       record(
         label + " Landing CTA -> existing localized signup",
-        new URL(page.url()).searchParams.get("next") ===
-          `/${locale}/onboarding`,
+        new URL(page.url()).searchParams.get("next") === `/${locale}`,
       );
       await page.locator('[name="confirm"]').waitFor();
       await checkAuthUI(page, label + "-signup", ar, true);
@@ -368,8 +371,7 @@ try {
       await page.locator('[name="email"]').waitFor();
       record(
         label + " Signup -> Login preserves safe destination",
-        new URL(page.url()).searchParams.get("next") ===
-          `/${locale}/onboarding`,
+        new URL(page.url()).searchParams.get("next") === `/${locale}`,
       );
       await checkAuthUI(page, label + "-login", ar, false);
       await capture(
@@ -463,12 +465,29 @@ try {
                 .locator(".auth-email-form")
                 .getAttribute("aria-busy")) === "true",
           );
-        await page.waitForURL(`**/${locale}/onboarding`);
+        if (signup) {
+          await page.waitForURL(`**/${locale}/login?**`);
+          record(label + " Email signup -> separate localized sign-in form");
+          record(
+            label + " Signup leaves session unauthenticated",
+            (await (
+              await context.request.get(base + "/api/auth/get-session")
+            ).json()) === null,
+          );
+          record(
+            label + " Signup does not put credentials in redirect URL",
+            !page.url().includes(email) && !page.url().includes(password),
+          );
+          await page.locator('[name="email"]').fill(email);
+          await page.locator('[name="password"]').fill(password);
+          await page.locator('.auth-email-form button[type="submit"]').click();
+        }
+        await page.waitForURL(`**/${locale}`);
         record(
           label +
             (signup
-              ? " Email signup -> authenticated onboarding"
-              : " Signup -> Login -> authenticated onboarding"),
+              ? " Email signup -> sign-in -> authenticated homepage"
+              : " Login -> authenticated homepage"),
         );
         await page.goto(base + "/" + locale);
         await page
@@ -520,8 +539,8 @@ try {
         }
         await page.locator('[name="password"]').fill(password);
         await page.locator('.auth-email-form button[type="submit"]').click();
-        await page.waitForURL(`**/${locale}/onboarding`);
-        record(label + " Email login -> authenticated onboarding");
+        await page.waitForURL(`**/${locale}`);
+        record(label + " Email login -> authenticated homepage");
         const cookies = await context.cookies();
         record(
           label + " Session remains HttpOnly",

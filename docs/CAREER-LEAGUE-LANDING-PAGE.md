@@ -319,6 +319,6 @@ The Career Readiness and Skill Passport numbers in the marketing composition are
 
 ## Relationship to the project reports
 
-- The complete implementation boundary is recorded in [`COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md`](../COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md).
+- The complete implementation boundary is recorded in [`COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md`](archive/reports/COMPLETE-CAREER-GAME-IMPLEMENTATION-REPORT.md).
 - The level 0–8 curriculum is recorded in [`docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md`](COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md).
-- Career League implementation history is recorded in [`CAREER-LEAGUE-IMPLEMENTATION-REPORT.md`](../CAREER-LEAGUE-IMPLEMENTATION-REPORT.md).
+- Career League implementation history is recorded in [`CAREER-LEAGUE-IMPLEMENTATION-REPORT.md`](archive/reports/CAREER-LEAGUE-IMPLEMENTATION-REPORT.md).

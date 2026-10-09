@@ -39,6 +39,7 @@
   ],
   "exclude": [
     "node_modules",
-    "artifacts/backend-phase-1/tmp"
+    "artifacts",
+    "archive"
   ]
 }

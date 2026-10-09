@@ -15,15 +15,16 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; registered?: string }>;
 }) {
   const { locale } = await params,
-    { next } = await searchParams;
+    { next, registered } = await searchParams;
   return (
     <AuthForm
       locale={locale}
       signup={false}
-      next={next ?? `/${locale}/onboarding`}
+      next={next ?? `/${locale}`}
+      registered={registered === "1"}
       enabled={backendConfigured()}
       google={backendConfigured() && googleConfigured()}
       email={emailConfigured()}

@@ -84,6 +84,20 @@ check(
     })
   ).status === 200,
 );
+check(
+  "signup requires separate sign-in",
+  (await a.call("/api/v1/me")).status === 401 &&
+    (await b.call("/api/v1/me")).status === 401,
+);
+for (const [client, email] of [
+  [a, "qa-a@phase1.test"],
+  [b, "qa-b@phase1.test"],
+])
+  check(
+    "separate email sign-in",
+    (await client.call("/api/auth/sign-in/email", "POST", { email, password }))
+      .status === 200,
+  );
 const meA = (await a.call("/api/v1/me")).value,
   meB = (await b.call("/api/v1/me")).value;
 check(

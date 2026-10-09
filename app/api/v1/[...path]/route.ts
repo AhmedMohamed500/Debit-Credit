@@ -41,7 +41,7 @@ import {
   usersQuery,
   competitionOverview,
 } from "@/lib/server/admin/service";
-import { emailConfigured } from "@/lib/server/security/env";
+import { emailConfigured, googleConfigured } from "@/lib/server/security/env";
 import { bankSubmission, submitBank } from "@/lib/server/cases/bank";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -74,7 +74,7 @@ async function handle(
           },
           profile: await ownProfile(user.id),
           capabilities: {
-            google: !!process.env.GOOGLE_CLIENT_ID,
+            google: googleConfigured(),
             email: emailConfigured(),
           },
         };

@@ -2,7 +2,11 @@ import "server-only";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { db } from "../db/client";
-import { configuration, emailConfigured } from "../security/env";
+import {
+  configuration,
+  emailConfigured,
+  googleConfigured,
+} from "../security/env";
 import { bootstrapUser } from "../users/service";
 import { sendEmail } from "./email";
 function createAuth() {
@@ -54,16 +58,15 @@ function createAuth() {
           },
         }
       : {}),
-    socialProviders:
-      process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-        ? {
-            google: {
-              clientId: process.env.GOOGLE_CLIENT_ID,
-              clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-              prompt: "select_account",
-            },
-          }
-        : {},
+    socialProviders: googleConfigured()
+      ? {
+          google: {
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            prompt: "select_account",
+          },
+        }
+      : {},
     account: { accountLinking: { enabled: false } },
     user: {
       additionalFields: {

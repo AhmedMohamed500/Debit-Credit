@@ -12,11 +12,6 @@ export function configuration() {
     !/^http:\/\/(localhost|127\.0\.0\.1)(:|$)/.test(origin)
   )
     throw new Error("HTTPS_REQUIRED");
-  if (
-    Boolean(process.env.GOOGLE_CLIENT_ID) !==
-    Boolean(process.env.GOOGLE_CLIENT_SECRET)
-  )
-    throw new Error("GOOGLE_CONFIGURATION_INCOMPLETE");
   return { databaseURL, secret, baseURL: origin };
 }
 export const backendConfigured = () =>
@@ -27,3 +22,6 @@ export const backendConfigured = () =>
   );
 export const emailConfigured = () =>
   Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM);
+// Optional OAuth setup must not block the database or email/password login.
+export const googleConfigured = () =>
+  Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);

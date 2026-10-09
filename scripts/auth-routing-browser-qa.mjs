@@ -277,7 +277,9 @@ try {
       `${base}${result.pathname}: HTTP ${result.status}, not locale rewritten`,
     );
   browser = await chromium.launch({
-    executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+    executablePath:
+      process.env.CHROME_EXECUTABLE ||
+      "C:/Program Files/Google/Chrome/Application/chrome.exe",
     headless: true,
     env: { ...process.env, TEMP: temporary, TMP: temporary },
     args: ["--disable-background-networking", "--no-first-run"],

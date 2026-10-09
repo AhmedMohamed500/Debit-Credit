@@ -1,0 +1,40 @@
+name: Production auth read-only QA
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'AhmedMohamed500/Debit-Credit' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+      - run: npm ci --no-audit --no-fund
+      - name: Production Better Auth handler must be configured
+        run: |
+          node --input-type=module -e '
+          import assert from "node:assert/strict";
+          const response = await fetch("https://debit-credit-nine.vercel.app/api/auth/get-session");
+          assert.equal(response.status, 200);
+          assert.equal(await response.json(), null);
+          console.log("PASS: configured anonymous production auth handler");'
+      - name: Arabic and English desktop/mobile route and UI checks (no signup)
+        env:
+          CHROME_EXECUTABLE: /usr/bin/google-chrome
+        run: node scripts/auth-routing-browser-qa.mjs --production --redesign
+      - name: Publish non-sensitive QA summary only
+        run: |
+          node --input-type=module -e '
+          import {readFile, appendFile} from "node:fs/promises";
+          const result=JSON.parse(await readFile("artifacts/auth-redesign/production-qa.json","utf8"));
+          console.log(JSON.stringify({checks:result.checks,errors:result.errors,productionEmailLogin:result.productionEmailLogin,googleLogin:result.googleLogin}));
+          await appendFile(process.env.GITHUB_STEP_SUMMARY, "## Production read-only auth QA\n\nChecks: "+result.checks+"\n\nNo new users or credential submissions. Google OAuth not tested.\n");'

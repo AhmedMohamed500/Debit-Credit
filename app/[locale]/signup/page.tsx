@@ -1,5 +1,9 @@
 import { AuthForm } from "@/components/cloud/auth-form";
-import { backendConfigured, emailConfigured } from "@/lib/server/security/env";
+import {
+  backendConfigured,
+  emailConfigured,
+  googleConfigured,
+} from "@/lib/server/security/env";
 import type { Locale } from "@/types";
 export const metadata = {
   title: "Create account",
@@ -21,11 +25,7 @@ export default async function Page({
       signup
       next={next ?? `/${locale}/onboarding`}
       enabled={backendConfigured()}
-      google={
-        backendConfigured() &&
-        !!process.env.GOOGLE_CLIENT_ID &&
-        !!process.env.GOOGLE_CLIENT_SECRET
-      }
+      google={backendConfigured() && googleConfigured()}
       email={emailConfigured()}
     />
   );

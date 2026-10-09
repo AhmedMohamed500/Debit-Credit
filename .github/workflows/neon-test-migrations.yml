@@ -1,0 +1,41 @@
+name: Isolated Neon test migrations
+
+on:
+  push:
+    branches: [codex/neon-test-migrations]
+    paths:
+      - .github/workflows/neon-test-migrations.yml
+      - scripts/neon-test-*.mjs
+      - scripts/neon-test-safety.ts
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: isolated-neon-test-migrations
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    if: github.repository == 'AhmedMohamed500/Debit-Credit' && github.ref == 'refs/heads/codex/neon-test-migrations'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: neon-auth-test
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+      - name: Install locked dependencies (no database secrets in this step)
+        run: npm ci --no-audit --no-fund
+      - name: Test isolation and secret redaction guards
+        run: node node_modules/vitest/vitest.mjs run tests/neon-test-safety.test.ts --maxWorkers=2
+      - name: Apply existing migrations and verify with the application client
+        env:
+          DATABASE_DRIVER: neon
+          DATABASE_URL: ${{ secrets.NEON_TEST_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.NEON_TEST_DIRECT_URL }}
+        run: node --conditions=react-server --import tsx scripts/neon-test-cloud-migrate.mjs

@@ -20,6 +20,7 @@ Signup does not start a session. Login preserves a safe internal destination; ot
 | `/auth/continue` | Safe post-auth redirect gate: validated personal CV details before the requested destination. |
 | `/career` | Career hub and readiness. |
 | `/career-profile` | Signed-in profile for every persona: Profile, Courses, Progress and Certifications tabs; private certificate images, links to evidence and English CV; noindex. Guest view remains compatible. |
+| `/portfolio/<token>` | Real owner-selected public professional profile: explicit enable/revoke, opaque token, optional name/socials/availability/accepted-work summary and up to three selected simulations. No private contacts, photos or credentials; no-store/noindex. |
 | `/employers` | Current employer demo entry. Candidates are demo data, not real applicants. |
 | `/companies` | Existing legacy employer/game view, retained for compatibility. |
 | `/leaderboard` | Guest/demo view; authenticated users redirect to `/competition`. |

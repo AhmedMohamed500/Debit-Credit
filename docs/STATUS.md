@@ -14,6 +14,8 @@ Reviewed: 2026-10-10. This file supersedes historical release claims in archived
 
 ## Current release work
 
+The career profile now includes private social preferences, up to three pinned server-accepted training workpapers, an automatic task-based capability summary, English PNG achievement cards, self-reported internship/work availability and an explicitly enabled, field-selected professional profile link with local QR generation and revocation. Contact details, photos, certificates and private courses remain excluded from shared HTML/RSC. The initial artifacts cover the server-graded introductory unit, not unverified local gameplay or claimed employment. See [showcase delivery](CAREER-SHOWCASE-AR.md) for verified release results and limitations.
+
 First Shift now has a single professional briefing and one explicit desk action instead of a giant poster, duplicate journey panel and repeated start/manager gates. A shared in-game header connects foundations, profile, skill evidence and the English CV; language switching stays in the same mission. Existing city art, cases, drafts, posting safeguards and ledger-review prerequisites are preserved. See [First Shift navigation redesign](CONNECTED-FIRST-SHIFT-AR.md).
 
 The signed-in career profile now has the reference-style petrol/teal/gold dashboard for all four personas, private external-course CRUD and certificate image upload/view/removal. Images preserve document aspect ratio, are re-encoded without location metadata, and are excluded from progress backups, public previews, competitions and ATS CVs. Uploaded credentials remain self-reported, not verified skill evidence. See [member profile delivery](MEMBER-PROFILE-AR.md).

@@ -9,6 +9,7 @@ import { chromium } from "playwright-core";
 import sharp from "sharp";
 import { completeStudentDetails } from "./student-qa-helpers.mjs";
 import { memberProfileQa } from "./member-profile-qa.mjs";
+import { careerShowcaseQa } from "./career-showcase-qa.mjs";
 const base = "http://localhost:3114", output = path.resolve("artifacts/student-cv"), temporary = path.join(output, "tmp"), results = [], errors = [];
 let app, database, browser, previousAccount;
 function record(name, condition = true) { assert.ok(condition, name); results.push(name); console.log("PASS", name); }
@@ -188,6 +189,7 @@ try {
     await page.goto(`${base}/${locale}/career-profile`); await page.locator('.member-portrait img').waitFor();
     record(label + " profile photo fills entire portrait inside its decorative border", await page.locator('.member-portrait .photo-circle').evaluate(frame => { const a=frame.getBoundingClientRect(), b=frame.querySelector('img').getBoundingClientRect(); return Math.abs(a.width-b.width)<1 && Math.abs(a.height-b.height)<1; }));
     await screenshot(page, label + "-career-profile"); await checkLayout(page, label + " career profile");
+    await careerShowcaseQa({ page, context, base, locale, label, api, record, screenshot, checkLayout });
     await memberProfileQa({ page, context, base, locale, label, api, record, screenshot, checkLayout });
     await page.goto(`${base}/${locale}/career-profile/cv`); await page.locator('.professional-cv').waitFor(); await screenshot(page, label + "-cv"); await checkLayout(page, label + " CV");
     const cvText = await page.locator('.professional-cv').innerText(); record(label + " CV includes personal details and accounting outcomes", cvText.includes("Student CV Fixture") && cvText.includes("+20 100 123 4567") && cvText.includes("trial balance"));

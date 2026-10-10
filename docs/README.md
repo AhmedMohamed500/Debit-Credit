@@ -4,6 +4,8 @@ Start here rather than treating every past release report as today's status.
 
 ## Current entry points
 
+- [Social profiles, accepted-work showcase, achievement cards and controlled sharing](CAREER-SHOWCASE-AR.md)
+
 - [Connected First Shift briefing and in-game navigation](CONNECTED-FIRST-SHIFT-AR.md)
 - [Unified member profile, private courses and certificate images](MEMBER-PROFILE-AR.md)
 

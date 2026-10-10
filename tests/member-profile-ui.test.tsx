@@ -10,6 +10,7 @@ import { createDefaultProfile } from "@/lib/career/repository";
 import { initialState } from "@/lib/campaign/director";
 import { calculatePassport } from "@/lib/career/evidence";
 import { MemberProfile } from "@/components/career/member-profile";
+import { defaultShowcase } from "@/lib/career/showcase";
 const fixture = vi.hoisted(() => ({ owner: "alice", request: vi.fn() }));
 vi.mock("@/components/cloud/session-boundary", () => ({
   useCloudIdentity: () => ({
@@ -46,7 +47,9 @@ beforeEach(() => {
   window.history.replaceState(null, "", "/");
   fixture.request.mockReset();
   fixture.request.mockImplementation(async (route: string) =>
-    route === "me/student-unit"
+    route === "me/showcase"
+      ? { revision: 0, settings: defaultShowcase(), token: null, name: "Alice Accountant", works: [] }
+      : route === "me/student-unit"
       ? { data: { accepted: [] } }
       : { revision: 0, courses: [], certificates: [] },
   );

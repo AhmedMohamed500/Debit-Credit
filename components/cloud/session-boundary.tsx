@@ -33,6 +33,7 @@ export function CloudSessionBoundary({
   enabled: boolean;
 }) {
   const pathname = usePathname(),
+    publicProfile = /^\/(ar|en)\/portfolio\//.test(pathname),
     accountHome = pathname === `/${locale}`,
     privatePath =
       /^\/(ar|en)\/(student|onboarding|bootcamp|game|career-profile|career-league|career|profile|leaderboard|competition|account)(\/|$)/.test(
@@ -48,6 +49,12 @@ export function CloudSessionBoundary({
     [status, setStatus] = useState("ready"),
     [busy, setBusy] = useState(false);
   const load = useCallback(async () => {
+    if (publicProfile) {
+      setIdentity(null);
+      setLoadedPath(pathname);
+      setReady(true);
+      return;
+    }
     if (!enabled) {
       try {
         new CloudCacheRepository().restoreGuest();
@@ -98,7 +105,7 @@ export function CloudSessionBoundary({
         );
       }
     }
-  }, [enabled, privatePath, accountHome, ar, locale, pathname]);
+  }, [enabled, privatePath, publicProfile, accountHome, ar, locale, pathname]);
   useEffect(() => {
     void load();
   }, [load]);
@@ -108,7 +115,7 @@ export function CloudSessionBoundary({
     return () => window.removeEventListener("app-sync-status", handler);
   }, []);
   useEffect(() => {
-    if (!identity || !ready || loadedPath !== pathname) return;
+    if (publicProfile || !identity || !ready || loadedPath !== pathname) return;
     const beat = () => {
       if (!document.hidden)
         void requestJSON("me/activity", "POST", {}).catch(() => {});
@@ -116,7 +123,7 @@ export function CloudSessionBoundary({
     beat();
     const interval = setInterval(beat, 60000);
     return () => clearInterval(interval);
-  }, [identity, ready, loadedPath, pathname]);
+  }, [identity, ready, loadedPath, pathname, publicProfile]);
   async function migrate(mode: "merge" | "cloud") {
     if (!legacy || !identity || busy) return;
     setBusy(true);
@@ -145,7 +152,7 @@ export function CloudSessionBoundary({
       setBusy(false);
     }
   }
-  const bar = identity && (
+  const bar = !publicProfile && identity && (
     <div className="cloud-account-bar">
       <span>{identity.profile.displayName}</span>
       <Link href={`/${locale}/account`}>{say("My account", "حسابي")}</Link>
@@ -259,7 +266,7 @@ export function CloudSessionBoundary({
       </Context.Provider>
     );
   return (
-    <Context.Provider value={identity}>
+    <Context.Provider value={publicProfile ? null : identity}>
       {bar}
       {children}
     </Context.Provider>

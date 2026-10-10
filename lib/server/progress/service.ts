@@ -8,10 +8,11 @@ export async function progressFor(userId: string) {
       db().cloudProgress.findMany({
         where: {
           userId,
-          domain: {
-            notIn: ["foundations", "profile-photo", "private-portfolio"],
-            not: { startsWith: "private-certificate/" },
-          },
+          AND: [
+            { domain: { notIn: ["foundations", "profile-photo", "private-portfolio", "private-showcase"] } },
+            { domain: { not: { startsWith: "private-certificate/" } } },
+            { domain: { not: { startsWith: "public-profile/" } } },
+          ],
         },
       }),
       db().skillEvidenceCloud.findMany({

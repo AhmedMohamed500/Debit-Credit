@@ -14,6 +14,6 @@ Reviewed: 2026-10-10. This file supersedes historical release claims in archived
 
 ## Current release work
 
-Signup → separate login → localized home is implemented and locally verified. Production publication must be confirmed by the release record in [organization report](PROJECT-ORGANIZATION-AR.md), not inferred from a successful local build.
+Signup → separate login → required private CV personal setup → localized student home is implemented. Returning users with a validated record skip setup. The introductory student unit has 11 server-graded tasks, cloud-owned evidence and automatically regenerated private CV snapshots, plus browser-local CV versions and text/PDF-print exports. See [student CV release](STUDENT-CV-RELEASE-AR.md) for scope and verified publication results.
 
 Historical reports retain their original conclusions. [Documentation index](README.md) identifies current guides; [routes](ROUTES.md) explains separate profile/account/employer experiences.

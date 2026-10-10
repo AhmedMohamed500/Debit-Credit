@@ -10,6 +10,9 @@ import {
 import { HttpError } from "../security/http";
 import { boundedJSON } from "../security/json";
 import { normalizeSnapshot } from "./snapshots";
+import { applyPersonal, isPersonalRecord } from "@/lib/career/personal";
+import type { CareerProfile } from "@/lib/career/model";
+import { saveAutomaticCloudCv } from "../profiles/cv";
 export const importSchema = z
   .object({
     version: z.literal(1),
@@ -167,21 +170,28 @@ export async function saveBackup(
       });
     if ((row?.revision ?? 0) !== input.revision)
       throw new HttpError(409, "REVISION_CONFLICT");
+    let snapshot = normalizeSnapshot(input.domain, input.data, userId);
+    if (input.domain === "debit-credit-career-profile-v1") {
+      const personal = await tx.cloudProgress.findUnique({ where: { userId_domain: { userId, domain: "student-personal" } } });
+      if (personal && isPersonalRecord(personal.data)) snapshot = applyPersonal(snapshot as CareerProfile, personal.data);
+    }
     // Client backups never produce accepted postings, professional proof or points.
-    return tx.cloudProgress.upsert({
+    const next = await tx.cloudProgress.upsert({
       where: { userId_domain: { userId, domain } },
       create: {
         userId,
         domain,
-        data: json(normalizeSnapshot(input.domain, input.data, userId)),
+        data: json(snapshot),
         revision: 1,
         provenance: "LOCAL_BACKUP",
       },
       update: {
-        data: json(normalizeSnapshot(input.domain, input.data, userId)),
+        data: json(snapshot),
         revision: { increment: 1 },
         provenance: "LOCAL_BACKUP",
       },
     });
+    if (["debit-credit-career-profile-v1", "debit-credit-cv-preferences-v1"].includes(input.domain)) await saveAutomaticCloudCv(tx, userId);
+    return next;
   });
 }

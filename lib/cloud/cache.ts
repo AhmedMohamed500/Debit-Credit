@@ -16,8 +16,10 @@ import {
   SKILL_EVIDENCE_KEY,
   createDefaultProfile,
   CAREER_PROFILE_KEY,
+  refreshAutomaticCv,
 } from "@/lib/career/repository";
 import type { CloudIdentity, CloudProgress } from "./runtime";
+import { applyPersonal, isPersonalRecord } from "@/lib/career/personal";
 import { readDrafts } from "./outbox";
 const OWNER = "app-cache-owner",
   GUEST = "app-guest-preserved",
@@ -170,7 +172,13 @@ export class CloudCacheRepository {
       p.localCandidateId = identity.user.id;
       localStorage.setItem(CAREER_PROFILE_KEY, JSON.stringify(p));
     }
+    const personal = progress.domains.find(row => row.domain === "student-personal");
+    if (personal && isPersonalRecord(personal.data)) {
+      const profile = new BrowserCareerProfileRepository().get() ?? createDefaultProfile();
+      localStorage.setItem(CAREER_PROFILE_KEY, JSON.stringify(applyPersonal(profile, personal.data)));
+    }
     localStorage.setItem(OWNER, identity.user.id);
+    refreshAutomaticCv();
     localStorage.setItem(
       "debit-credit-player-sync-v1",
       new Date().toISOString(),

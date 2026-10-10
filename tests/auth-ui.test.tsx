@@ -91,7 +91,7 @@ describe("real auth UI contract", () => {
   it("does not add a second navigation when the installed client handles a confirmed login redirect", async () => {
     auth.login.mockResolvedValue({
       error: null,
-      data: { redirect: true, url: "/en" },
+      data: { redirect: true, url: "/en/auth/continue?next=%2Fen" },
     });
     render(<AuthForm {...props} signup={false} />);
     fireEvent.change(screen.getByLabelText("Email"), {
@@ -107,7 +107,7 @@ describe("real auth UI contract", () => {
       expect(screen.getByRole("button", { name: "Sign in" })).toBeEnabled(),
     );
     expect(auth.login).toHaveBeenCalledWith(
-      expect.objectContaining({ callbackURL: "/en" }),
+      expect.objectContaining({ callbackURL: "/en/auth/continue?next=%2Fen" }),
     );
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(auth.replace).not.toHaveBeenCalled();
@@ -316,7 +316,7 @@ describe("real auth UI contract", () => {
     await waitFor(() =>
       expect(auth.social).toHaveBeenCalledWith({
         provider: "google",
-        callbackURL: "/en",
+        callbackURL: "/en/auth/continue?next=%2Fen",
       }),
     );
     expect(screen.getByRole("alert")).toHaveTextContent(

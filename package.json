@@ -15,6 +15,7 @@
     "test:backend-browser": "node scripts/backend-browser-qa.mjs",
     "test:auth-routes": "node scripts/auth-route-smoke.mjs",
     "test:auth-browser": "node scripts/auth-routing-browser-qa.mjs",
+    "test:student-browser": "node scripts/student-cv-browser-qa.mjs",
     "build": "node node_modules/next/dist/bin/next build",
     "start": "node node_modules/next/dist/bin/next start",
     "lint": "node node_modules/eslint/bin/eslint.js . --max-warnings=0",

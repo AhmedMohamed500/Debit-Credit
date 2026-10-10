@@ -8,6 +8,7 @@ import EmbeddedPostgres from "embedded-postgres";
 import { chromium } from "playwright-core";
 import pg from "pg";
 import { auditAuthRoutes } from "./auth-route-smoke.mjs";
+import { completeStudentDetails } from "./student-qa-helpers.mjs";
 
 const production = process.argv.includes("--production");
 const redesign = process.argv.includes("--redesign");
@@ -482,6 +483,11 @@ try {
           await page.locator('[name="password"]').fill(password);
           await page.locator('.auth-email-form button[type="submit"]').click();
         }
+        if (signup) {
+          await page.waitForURL(`**/${locale}/student-profile?**`);
+          record(label + " first sign-in requires private CV personal details");
+          await completeStudentDetails(page, locale);
+        }
         await page.waitForURL(`**/${locale}`);
         record(
           label +
@@ -494,9 +500,8 @@ try {
           .getByRole("button", { name: ar ? "خروج" : "Sign out", exact: true })
           .waitFor();
         record(
-          label + " authenticated CTA uses onboarding",
-          (await starts.first().getAttribute("href")) ===
-            `/${locale}/onboarding`,
+          label + " authenticated homepage opens student curriculum",
+          await page.locator(`a[href="/${locale}/student"]`).isVisible(),
         );
         // We are already on the landing URL. waitForURL alone would resolve
         // before signOut's asynchronous full-document navigation happened.

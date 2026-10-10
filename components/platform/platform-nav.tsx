@@ -32,6 +32,7 @@ export function PlatformNav({
     [open, setOpen] = useState(false);
   const main: [string, LucideIcon, string, string][] = [
     ["", Home, "الرئيسية", "Home"],
+    ["/student", FileText, "منهج الطالب", "Student curriculum"],
     ["/career-league/map", Route, "مساري المهني", "My Career"],
     ["/game", Gamepad2, "العب", "Play"],
     ["/career-profile/skills", ShieldCheck, "المهارات", "Skills"],

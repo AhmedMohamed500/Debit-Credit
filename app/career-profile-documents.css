@@ -6,3 +6,5 @@
 .assessment-panel .empty-assessment>svg{color:#b98219}
 .assessment-panel .empty-assessment p{margin:4px 0 0;color:#667d91;font-size:13px}
 @media(max-width:600px){.career-documents{display:grid;padding:19px 16px}.career-actions{display:grid}.career-actions a{width:100%}}
+.professional-cv>header{display:block}.professional-cv address{display:flex;flex-wrap:wrap;gap:6px 16px;text-align:start;margin-top:10px}.professional-cv .cv-skills{display:block}.professional-cv .cv-skills>span{display:block;margin:5px 0}.professional-cv section p,.professional-cv address,.professional-cv li{overflow-wrap:anywhere}.professional-cv section ul{padding-inline-start:22px}.professional-cv li{margin:7px 0;line-height:1.7}
+@media print{.cloud-account-bar{display:none!important}.professional-cv>header{display:block!important}.professional-cv .cv-skills{display:block!important}.professional-cv{width:auto!important;min-height:0!important;padding:0!important}.professional-cv>section{break-inside:auto}.professional-cv h2,.professional-cv h3{break-after:avoid}.professional-cv li,.professional-cv section p{break-inside:avoid}@page{size:A4;margin:12mm}}

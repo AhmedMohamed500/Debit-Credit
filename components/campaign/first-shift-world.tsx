@@ -72,9 +72,8 @@ export function FirstShiftMissionHub({locale, state, inactive, pendingDocuments,
 
   return <section className="shift-home fsh-shell" dir={ar ? 'rtl' : 'ltr'} inert={inactive}>
     <header className="fsh-topbar">
-      <Link className="fsh-brand" href={`/${locale}`} aria-label="Debit & Credit · Home"><span className="fsh-brand-mark" aria-hidden="true">D<span>&</span>C</span><span>Debit &amp; Credit<small>by Money Coder</small></span></Link>
       <div className="fsh-location"><span className="fsh-live-dot" />MIZAN TRADING<span>/</span><small>{say('FINANCE OFFICE', 'مكتب الحسابات')}</small></div>
-      <div className="fsh-header-tools"><span><Zap aria-hidden="true" />{state.xp} XP</span><SimulationSound locale={locale} /><Link href={`/${ar ? 'en' : 'ar'}/game/first-shift`} aria-label={say('Switch to Arabic', 'التبديل للإنجليزية')}>{ar ? 'EN' : 'AR'}</Link></div>
+      <div className="fsh-header-tools"><span><Zap aria-hidden="true" />{state.xp} XP</span><SimulationSound locale={locale} /></div>
     </header>
 
     <main className="fsh-world">

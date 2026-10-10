@@ -141,11 +141,25 @@ try {
     await page.goto(`${base}/${locale}`); await page.locator('.student-next-action a').waitFor();
     record(label + " home resumes real next stage", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/game/first-shift`);
     await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/game/first-shift`);
-    await page.getByRole('button', {name:/START STORY|ابدأ القصة/}).click();
-    await page.getByRole('button', {name:/ENTER COMPANY|ادخل الشركة/}).click();
-    await page.getByRole('button', {name:/SHOW ME THE DESK|ورّيني المكتب/}).click();
+    await page.locator('.shift-briefing').waitFor();
+    record(label + " First Shift removes oversized global journey bar", await page.locator('.student-journey-bar').count() === 0);
+    record(label + " one integrated shift navigation", await page.locator('.shift-navigation').count() === 1);
+    record(label + " no giant cinematic poster or unavailable video placeholder", await page.locator('.fd-cinema-bg, .fd-poster-fallback, .shift-briefing video').count() === 0);
+    await screenshot(page, label + "-shift-briefing"); await checkLayout(page, label + " shift briefing");
+    record(label + " one primary desk action is visible in the first viewport", await page.locator('.shift-briefing-action button').evaluate(button => { const r=button.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }));
+    await page.setViewportSize({ width: 320, height: 844 });
+    await checkLayout(page, label + " narrow 320px shift briefing");
+    await page.setViewportSize(viewport);
+    await page.locator('.shift-career-menu summary').click();
+    record(label + " connected English CV link", await page.locator('.shift-career-menu a[href$="/cv"]').getAttribute('href') === `/${locale}/career-profile/cv`);
+    record(label + " locale switch stays on the same mission", await page.locator('.shift-language').getAttribute('href') === `/${locale === 'ar' ? 'en' : 'ar'}/game/first-shift`);
+    await page.locator('.shift-career-menu summary').click();
+    await page.getByRole('button', {name:/Open my desk|افتح مكتبي/}).click();
     await page.locator('.fsh-shell').waitFor(); await screenshot(page, label + "-first-shift-handoff"); await checkLayout(page, label + " First Shift handoff");
-    record(label + " First Shift is current stage not another start", await page.locator('.student-journey-steps [aria-current="step"]').getAttribute('href') === `/${locale}/game/first-shift`);
+    await page.locator('.shift-language').click(); await page.waitForURL(`**/${locale === 'ar' ? 'en' : 'ar'}/game/first-shift`); await page.locator('.fsh-shell').waitFor();
+    await page.locator('.shift-language').click(); await page.waitForURL(`**/${locale}/game/first-shift`); await page.locator('.fsh-shell').waitFor();
+    record(label + " switching language preserves entered desk and accepted foundations", await page.locator('.shift-briefing').count() === 0 && (await (await api(context, "me/student-unit")).json()).data.accepted.length === 11);
+    record(label + " First Shift is current stage not another start", (await page.locator('.shift-breadcrumb [aria-current="page"]').innerText()).includes(locale === 'ar' ? 'أول وردية' : 'First Shift'));
     if(locale === 'en' && viewport.width === 1440) {
       for(const [title,debit,credit,amount] of [['Supplier Invoice','equipment','suppliers','100000'],['Customer Receipt','bank','customers','75000'],['Office Expense','officeExpense','cash','2500']]) {
         await page.getByRole('button',{name:`${title} · Open document`,exact:true}).click();
@@ -163,9 +177,9 @@ try {
       await page.getByRole('button',{name:'Journal · Review',exact:true}).click(); await page.getByRole('button',{name:'Close',exact:true}).click();
       await page.getByRole('button',{name:'Ledger · Open document',exact:true}).click(); await page.getByRole('button',{name:'Close',exact:true}).click();
       await page.getByRole('button',{name:'RETURN TO MIZAN DESK',exact:true}).click();
-      await page.locator('.student-next-action a').waitFor();
-      record(label + " reviewed First Shift hands off to skills", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/career-profile/skills`);
-      await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/career-profile/skills`);
+      await page.locator('.fsh-next-task a').waitFor();
+      record(label + " reviewed First Shift hands off to skills", await page.locator('.fsh-next-task a').getAttribute('href') === `/${locale}/career-profile/skills`);
+      await page.locator('.fsh-next-task a').click(); await page.waitForURL(`**/${locale}/career-profile/skills`);
       await page.locator('.student-next-action a').waitFor();
       record(label + " skills hands off to English CV", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/career-profile/cv`);
       await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/career-profile/cv`);

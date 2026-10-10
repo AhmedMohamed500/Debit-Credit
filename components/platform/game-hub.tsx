@@ -25,10 +25,12 @@ import type {PlacementResult} from '@/lib/placement/model';
 import {BeginnerCareerWorld} from './beginner-career-world';
 import {StudentGameLink} from '@/components/student/student-game-link';
 import {ProfilePhoto} from '@/components/career/profile-photo';
+import {StudentJourneyHome,useStudentJourney} from '@/components/student/student-journey';
 
 type IconType=typeof Gamepad2;
 
 export function GameHub({locale}:{locale:Locale}){
+ const studentJourney=useStudentJourney();
  const ar=locale==='ar',say=(en:string,a:string)=>ar?a:en,Arrow=ar?ArrowLeft:ArrowRight;
  const {state}=useGame(),player=usePlayer(),progress=firstDayProgress(state),company=firstDayCompany(state),performance=projectShiftPerformance(state),done=progress.completed.length;
  const [careerState,setCareerState]=useState<CareerLeagueState>(()=>createCareerLeagueState()),[candidateId,setCandidateId]=useState('local-player'),[savedEvidence,setSavedEvidence]=useState<SkillEvidence[]>([]),[diagnostic,setDiagnostic]=useState<PlacementResult|null>(null);
@@ -41,6 +43,7 @@ export function GameHub({locale}:{locale:Locale}){
  const railIcons:Record<GameDestinationId,IconType>={'game-hub':Gamepad2,inbox:Inbox,missions:ClipboardCheck,journal:BookMarked,ledger:BookOpen,'trial-balance':BarChart3,'financial-statements':FileBarChart,'nature-of-accounts':FileText,'skill-passport':ShieldCheck,career:BriefcaseBusiness,leaderboard:Star,academy:BookOpen};
  const zoneIcons:Record<MizanZoneId,IconType>={suppliers:WalletCards,customers:Users,bank:Landmark,logistics:Truck,'month-end':ClipboardCheck};
  const visibleSkills=passport.filter(item=>item.status!=='unassessed').slice(0,4);
+ if(studentJourney)return <StudentJourneyHome locale={locale}/>;
  if(careerState.persona==='student'&&careerState.placementRecommendation===1)return <BeginnerCareerWorld locale={locale} careerState={careerState} gameState={state} player={player}/>;
  return <main className="platform-page command-game"><PlatformNav locale={locale}/><StudentGameLink locale={locale}/><section className="command-shell">
   <aside className="command-rail" aria-label={say('Game navigation','تنقل اللعبة')}><div className="command-rail-company"><Building2/><span><b>Mizan Trading</b><small>{say('Accounting simulation','محاكاة محاسبية')}</small></span></div><nav>{railIds.map((id,index)=>{const item=destination(id),Icon=railIcons[id];return <Link className={index===0?'active':''} href={localizedPath(locale,item.path)} key={id}><Icon/><span>{item.label[locale]}</span>{id==='inbox'&&company.pendingDocuments>0?<em>{company.pendingDocuments}</em>:null}</Link>})}</nav><Link className="command-rail-settings" href={`/${locale}/profile`}><Settings/>{say('Settings','الإعدادات')}</Link><blockquote>“{say('Better accountants build brighter companies.','محاسبون أفضل يبنون شركات أقوى.')}”</blockquote></aside>

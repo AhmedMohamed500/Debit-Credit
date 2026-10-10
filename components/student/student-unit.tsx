@@ -296,6 +296,9 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
                           "تحميل ورقة العمل المتوافقة مع Excel بصيغة CSV",
                         )}
                       </button>
+                      <Link className="student-start-mission" href={`/${locale}/game/first-shift`}>
+                        {say("Next: apply your foundations in the first shift", "التالي: طبّق الأساس في أول وردية")}
+                      </Link>
                     </>
                   ) : (
                     progress &&
@@ -340,6 +343,7 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
                               result.evidence,
                             );
                             setProgress(result);
+                            window.dispatchEvent(new Event("student-progress-changed"));
                             setNotice(
                               result.correct
                                 ? say(

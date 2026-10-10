@@ -4,6 +4,8 @@ Start here rather than treating every past release report as today's status.
 
 ## Current entry points
 
+- [Comprehensive Arabic project history, architecture and handoff](PROJECT-MASTER-HANDOFF-AR.md)
+- [Connected student journey and full-frame profile photo](CONNECTED-STUDENT-JOURNEY-AR.md)
 - [Current status and provider limitations](STATUS.md)
 - [Student curriculum and automatic private ATS CV](STUDENT-CV-RELEASE-AR.md)
 - [English CV, private profile photo and game-integrated student desk](STUDENT-GAME-PHOTO-CV-AR.md)

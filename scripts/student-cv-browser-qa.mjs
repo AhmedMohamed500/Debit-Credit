@@ -35,6 +35,7 @@ try {
   browser = await chromium.launch({ executablePath: process.env.CHROME_EXECUTABLE || "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true, env: { ...process.env, TEMP: temporary, TMP: temporary }, args: ["--disable-background-networking", "--no-first-run"] });
   const answers = [{ action: "hold-duplicate" }, { debit: "cash", credit: "capital", amount: "100000" }, { debit: "equipment", credit: "cash", amount: "20000" }, { debit: "inventory", credit: "payable", amount: "15000" }, { debit: "receivable", credit: "revenue", amount: "12000" }, { debit: "cash", credit: "receivable", amount: "7000" }, { debit: "rent", credit: "cash", amount: "3000" }, { amount: "84000" }, { debitTotal: "127000", creditTotal: "127000" }, { action: "reclassify-equipment" }, { formula: "=SUM(C2:C9)", differenceFormula: "=C10-D10" }];
   for (const locale of ["ar", "en"]) for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+    let resumeRoute = `/${locale}/game/first-shift`;
     const label = locale + "-" + viewport.width, context = await browser.newContext({ viewport }), page = await context.newPage();
     page.on("pageerror", error => errors.push(error.message)); page.on("dialog", dialog => dialog.accept());
     const email = `student-${randomUUID()}@fixture.test`, password = randomBytes(18).toString("base64url");
@@ -65,8 +66,12 @@ try {
     record(label + " stale photo revision rejected", (await api(context, "me/photo", "PUT", { revision: 0, image: null })).status() === 409);
     record(label + " photo owner injection rejected", (await api(context, "me/photo", "PUT", { revision: photo.revision, image: null, userId: "another-user" })).status() === 400);
     record(label + " photo excluded from general progress backup", !(await (await api(context, "me/progress")).text()).includes(photo.data.image));
-    await completeStudentDetails(page); await page.waitForURL(`**/${locale}`); await page.locator('.student-game-link a').waitFor();
+    await completeStudentDetails(page); await page.waitForURL(`**/${locale}`); await page.locator('.student-next-action a').waitFor();
     record(label + " saved setup -> authenticated home"); await screenshot(page, label + "-home"); await checkLayout(page, label + " home");
+    record(label + " journey home uses readable scoped typography and themed background", await page.locator('.student-journey-page').evaluate(element => {
+      const styles=getComputedStyle(element), parent=getComputedStyle(element.parentElement), root=getComputedStyle(document.documentElement);
+      return styles.fontFamily.includes('Arial') && parent.backgroundColor === root.getPropertyValue('--background').trim().replace('#f3f8fd','rgb(243, 248, 253)');
+    }));
     const personal = await (await api(context, "me/personal")).json(); record(label + " details persisted privately", personal.data.email === email && personal.data.details.phone === "+20 100 123 4567");
     const identity = await (await api(context, "me")).json();
     if (previousAccount) {
@@ -78,7 +83,9 @@ try {
     const leaderboard = await (await api(context, "competition/leaderboard")).text();
     record(label + " leaderboard contains no private contact data", !leaderboard.includes(email) && !leaderboard.includes("+20 100 123 4567"));
     record(label + " stale personal revision rejected", (await api(context, "me/personal", "PUT", { revision: 0, details: personal.data.details })).status() === 409);
-    await page.locator('.student-game-link a').click(); await page.waitForURL(`**/${locale}/game/student`);
+    record(label + " one next step points to foundations", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/game/student`);
+    record(label + " no competing old training start", await page.locator('.student-game-link').count() === 0);
+    await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/game/student`);
     await page.locator('.student-start-mission').waitFor(); await screenshot(page, label + "-city"); await checkLayout(page, label + " city");
     await page.locator('.student-start-mission').click(); await page.locator('input[name="action"]').first().waitFor();
     await page.waitForLoadState("networkidle"); await page.screenshot({ path: path.join(output, label + "-source-workbench.png") });
@@ -129,6 +136,43 @@ try {
     record(label + " replay adds no duplicate evidence", (await (await api(context, "me/progress")).json()).evidence.length === count);
     const downloadEvent = page.waitForEvent("download"); await page.getByRole("button", { name: /Download Excel-compatible|تحميل ورقة العمل/ }).click(); const download = await downloadEvent; const csv = await readFile(await download.path(), "utf8");
     record(label + " real workpaper export matches accepted ledger", csv.includes("Cash,Unit1,84000,0") && csv.includes("=SUM(C2:C9)") && !csv.includes(email));
+    record(label + " completed foundations hands off to First Shift", await page.locator('.student-card a[href$="/game/first-shift"]').count() === 1);
+    await page.goto(`${base}/${locale}`); await page.locator('.student-next-action a').waitFor();
+    record(label + " home resumes real next stage", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/game/first-shift`);
+    await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/game/first-shift`);
+    await page.getByRole('button', {name:/START STORY|ابدأ القصة/}).click();
+    await page.getByRole('button', {name:/ENTER COMPANY|ادخل الشركة/}).click();
+    await page.getByRole('button', {name:/SHOW ME THE DESK|ورّيني المكتب/}).click();
+    await page.locator('.fsh-shell').waitFor(); await screenshot(page, label + "-first-shift-handoff"); await checkLayout(page, label + " First Shift handoff");
+    record(label + " First Shift is current stage not another start", await page.locator('.student-journey-steps [aria-current="step"]').getAttribute('href') === `/${locale}/game/first-shift`);
+    if(locale === 'en' && viewport.width === 1440) {
+      for(const [title,debit,credit,amount] of [['Supplier Invoice','equipment','suppliers','100000'],['Customer Receipt','bank','customers','75000'],['Office Expense','officeExpense','cash','2500']]) {
+        await page.getByRole('button',{name:`${title} · Open document`,exact:true}).click();
+        for(const tab of await page.getByRole('tab').all()) await tab.click();
+        for(const button of await page.locator('.acw-match-list').getByRole('button',{name:'Matches',exact:true}).all()) await button.click();
+        await page.getByRole('combobox',{name:'Account line 1',exact:true}).selectOption(debit);
+        await page.getByRole('spinbutton',{name:'Debit line 1',exact:true}).fill(amount);
+        await page.getByRole('combobox',{name:'Account line 2',exact:true}).selectOption(credit);
+        await page.getByRole('spinbutton',{name:'Credit line 2',exact:true}).fill(amount);
+        await page.locator('.acw-decision .action-post').click();
+        await page.getByRole('heading',{name:`${title} resolved`,exact:true}).waitFor();
+        await page.getByRole('button',{name:'File in Processed · return to desk',exact:true}).click();
+      }
+      record(label + " three accepted cases do not bypass ledger review", await page.getByRole('progressbar',{name:'Shift progress'}).getAttribute('aria-valuenow') === '4');
+      await page.getByRole('button',{name:'Journal · Review',exact:true}).click(); await page.getByRole('button',{name:'Close',exact:true}).click();
+      await page.getByRole('button',{name:'Ledger · Open document',exact:true}).click(); await page.getByRole('button',{name:'Close',exact:true}).click();
+      await page.getByRole('button',{name:'RETURN TO MIZAN DESK',exact:true}).click();
+      await page.locator('.student-next-action a').waitFor();
+      record(label + " reviewed First Shift hands off to skills", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/career-profile/skills`);
+      await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/career-profile/skills`);
+      await page.locator('.student-next-action a').waitFor();
+      record(label + " skills hands off to English CV", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/career-profile/cv`);
+      await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/career-profile/cv`);
+      resumeRoute = `/${locale}/career-profile/skills`;
+    }
+    await page.goto(`${base}/${locale}/career-profile`); await page.locator('.career-avatar img').waitFor();
+    record(label + " profile photo fills entire existing frame", await page.locator('.career-avatar').evaluate(frame => { const a=frame.getBoundingClientRect(), b=frame.querySelector('img').getBoundingClientRect(); return Math.abs(a.width-b.width)<1 && Math.abs(a.height-b.height)<1; }));
+    await screenshot(page, label + "-career-profile"); await checkLayout(page, label + " career profile");
     await page.goto(`${base}/${locale}/career-profile/cv`); await page.locator('.professional-cv').waitFor(); await screenshot(page, label + "-cv"); await checkLayout(page, label + " CV");
     const cvText = await page.locator('.professional-cv').innerText(); record(label + " CV includes personal details and accounting outcomes", cvText.includes("Student CV Fixture") && cvText.includes("+20 100 123 4567") && cvText.includes("trial balance"));
     record(label + " CV is English LTR even on Arabic site and contains no photo", !/[\u0600-\u06ff]/u.test(cvText) && await page.locator('.professional-cv').getAttribute("lang") === "en" && await page.locator('.professional-cv').getAttribute("dir") === "ltr" && await page.locator('.professional-cv img').count() === 0);
@@ -147,7 +191,8 @@ try {
     record(label + " private CV data not visible after logout", !(await page.locator('body').innerText()).includes("+20 100 123 4567"));
     if (viewport.width === 1440) {
       await page.goto(`${base}/${locale}/login`); await page.locator('[name="email"]').fill(email); await page.locator('[name="password"]').fill(password); await page.locator('.auth-email-form button[type="submit"]').click();
-      await page.waitForURL(`**/${locale}`); await page.locator('.student-game-link a').waitFor(); record(label + " returning sign-in skips completed setup");
+      await page.waitForURL(`**/${locale}`); await page.locator('.student-next-action a').waitFor(); record(label + " returning sign-in skips completed setup");
+      record(label + " returning sign-in resumes saved next stage without losing foundations", await page.locator('.student-next-action a').getAttribute('href') === resumeRoute);
       await page.goto(`${base}/${locale}/student`); await page.getByRole("heading", { name: locale === "ar" ? "أنهيت الوحدة" : "Unit completed" }).waitFor(); record(label + " completed training restored in a new sign-in session");
     }
     const other = await browser.newContext({ viewport }); record(label + " separate browser cannot read personal records", (await api(other, "me/personal")).status() === 401); await other.close(); await context.close();

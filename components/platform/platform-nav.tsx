@@ -19,6 +19,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-provider";
 import type { Locale } from "@/types";
+import { useStudentJourney } from "@/components/student/student-journey";
 
 export function PlatformNav({
   locale,
@@ -30,7 +31,14 @@ export function PlatformNav({
   const ar = locale === "ar",
     path = usePathname(),
     [open, setOpen] = useState(false);
-  const main: [string, LucideIcon, string, string][] = [
+  const guided = Boolean(useStudentJourney());
+  const main: [string, LucideIcon, string, string][] = guided ? [
+    ["", Home, "رحلتي", "My journey"],
+    ["/game/student", Gamepad2, "مكتب التدريب", "Training desk"],
+    ["/career-profile/skills", ShieldCheck, "مهاراتي", "My skills"],
+    ["/career-profile/cv", FileText, "الـCV الإنجليزي", "English CV"],
+    ["/career-profile", CircleUserRound, "ملفي", "My profile"],
+  ] : [
     ["", Home, "الرئيسية", "Home"],
     ["/game/student", Gamepad2, "مكتب تدريب الطالب", "Student training desk"],
     ["/career-league/map", Route, "مساري المهني", "My Career"],

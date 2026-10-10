@@ -39,7 +39,6 @@ try {
         "student",
         "game/student",
         "student-profile",
-        "career-profile",
         "auth/continue",
       ]) {
         // Next may begin streaming a 200 shell before a protected-page redirect.
@@ -57,6 +56,12 @@ try {
           ),
         );
       }
+      // Career Profile intentionally retains its existing browser-local guest
+      // preview. Only signed-in owners get the new private member dashboard.
+      await page.goto(`${base}/${locale}/career-profile`);
+      await page.locator('.career-app .career-identity').waitFor();
+      record(`${locale}-${width} guest profile remains compatible without private certificate controls`, await page.locator('.member-profile, .member-certificate-dialog').count() === 0);
+      record(`${locale}-${width} guest profile fits viewport`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
       await context.close();
     }
   for (const destination of ["me/personal", "me/student-unit", "me/cv", "me/photo", "me/portfolio", "me/certificates/00000000-0000-4000-8000-000000000000"]) {

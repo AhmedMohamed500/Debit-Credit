@@ -33,6 +33,7 @@ export function CloudSessionBoundary({
   enabled: boolean;
 }) {
   const pathname = usePathname(),
+    accountHome = pathname === `/${locale}`,
     privatePath =
       /^\/(ar|en)\/(student|onboarding|bootcamp|game|career-profile|career-league|career|profile|leaderboard|competition|account)(\/|$)/.test(
         pathname,
@@ -41,6 +42,7 @@ export function CloudSessionBoundary({
     say = (en: string, a: string) => (ar ? a : en);
   const [identity, setIdentity] = useState<CloudIdentity | null>(null),
     [ready, setReady] = useState(false),
+    [loadedPath, setLoadedPath] = useState(""),
     [error, setError] = useState(""),
     [legacy, setLegacy] = useState<LegacySnapshot | null>(null),
     [status, setStatus] = useState("ready"),
@@ -51,6 +53,7 @@ export function CloudSessionBoundary({
         new CloudCacheRepository().restoreGuest();
       } catch {}
       configureCloud(null);
+      setLoadedPath(pathname);
       setReady(true);
       return;
     }
@@ -64,7 +67,8 @@ export function CloudSessionBoundary({
         return;
       }
       const cache = new CloudCacheRepository();
-      if (!privatePath) {
+      if (!privatePath && !accountHome) {
+        setLoadedPath(pathname);
         setReady(true);
         return;
       }
@@ -77,12 +81,14 @@ export function CloudSessionBoundary({
       cache.hydrate(me, progress);
       configureCloud(me.user.id, progress);
       setLegacy(null);
+      setLoadedPath(pathname);
       setReady(true);
     } catch (e) {
       if (e instanceof CloudFailure && e.status === 401) {
         new CloudCacheRepository().restoreGuest();
         configureCloud(null);
         setIdentity(null);
+        setLoadedPath(pathname);
         setReady(true);
       } else {
         setError(
@@ -92,7 +98,7 @@ export function CloudSessionBoundary({
         );
       }
     }
-  }, [enabled, privatePath, ar, locale, pathname]);
+  }, [enabled, privatePath, accountHome, ar, locale, pathname]);
   useEffect(() => {
     void load();
   }, [load]);
@@ -102,7 +108,7 @@ export function CloudSessionBoundary({
     return () => window.removeEventListener("app-sync-status", handler);
   }, []);
   useEffect(() => {
-    if (!identity || !ready) return;
+    if (!identity || !ready || loadedPath !== pathname) return;
     const beat = () => {
       if (!document.hidden)
         void requestJSON("me/activity", "POST", {}).catch(() => {});
@@ -110,7 +116,7 @@ export function CloudSessionBoundary({
     beat();
     const interval = setInterval(beat, 60000);
     return () => clearInterval(interval);
-  }, [identity, ready]);
+  }, [identity, ready, loadedPath, pathname]);
   async function migrate(mode: "merge" | "cloud") {
     if (!legacy || !identity || busy) return;
     setBusy(true);
@@ -126,6 +132,7 @@ export function CloudSessionBoundary({
       new CloudCacheRepository().hydrate(identity, progress);
       configureCloud(identity.user.id, progress);
       setLegacy(null);
+      setLoadedPath(pathname);
       setReady(true);
     } catch {
       setError(
@@ -195,7 +202,7 @@ export function CloudSessionBoundary({
       </button>
     </div>
   );
-  if (privatePath && !ready)
+  if ((privatePath || (accountHome && identity)) && (!ready || loadedPath !== pathname))
     return (
       <Context.Provider value={identity}>
         {bar}

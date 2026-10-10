@@ -37,6 +37,7 @@ try {
       });
       for (const destination of [
         "student",
+        "game/student",
         "student-profile",
         "auth/continue",
       ]) {
@@ -57,7 +58,7 @@ try {
       }
       await context.close();
     }
-  for (const destination of ["me/personal", "me/student-unit", "me/cv"]) {
+  for (const destination of ["me/personal", "me/student-unit", "me/cv", "me/photo"]) {
     const response = await fetch(base + "/api/v1/" + destination, {
       redirect: "manual",
     });

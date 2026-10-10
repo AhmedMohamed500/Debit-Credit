@@ -9,6 +9,7 @@ import {
 } from "@/lib/cloud/runtime";
 import { authClient } from "@/lib/auth/client";
 import type { Locale } from "@/types";
+import { ProfilePhoto } from "@/components/career/profile-photo";
 export function CloudAccount({ locale }: { locale: Locale }) {
   const identity = useCloudIdentity(),
     ar = locale === "ar",
@@ -29,6 +30,7 @@ export function CloudAccount({ locale }: { locale: Locale }) {
     <main className="cloud-page" dir={ar ? "rtl" : "ltr"}>
       <section className="cloud-card cloud-state">
         <h1>{say("My cloud account", "حسابي السحابي")}</h1>
+        <ProfilePhoto locale={locale} editable name={profile.displayName} />
         <p>
           {say(
             "Your email is private. Your public competition identity uses only your name, handle and avatar.",

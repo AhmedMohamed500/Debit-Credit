@@ -9,6 +9,7 @@ import {firstShiftMissionProgress} from '@/lib/campaign/first-shift-hub';
 import type {GameState} from '@/lib/campaign/model';
 import type {Locale} from '@/types';
 import {SimulationSound} from './simulation-sound';
+import {StudentGameLink} from '@/components/student/student-game-link';
 
 type Props = {
   locale: Locale;
@@ -77,6 +78,7 @@ export function FirstShiftMissionHub({locale, state, inactive, pendingDocuments,
     </header>
 
     <main className="fsh-world">
+      <StudentGameLink locale={locale}/>
       <div ref={panorama} className="fsh-city-panorama" role="region" aria-label={say('Explore the accounting city', 'استكشف مدينة المحاسبة')} tabIndex={0}>
         <div className="fsh-city-stage">
           <Image className="fsh-artwork" src="/game/first-shift-world-art.png" alt="" fill priority unoptimized sizes="100vw" />

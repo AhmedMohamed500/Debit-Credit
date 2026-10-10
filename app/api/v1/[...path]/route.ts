@@ -48,6 +48,8 @@ import { personalCommand } from "@/lib/career/personal";
 import { studentFor, submitStudent } from "@/lib/server/progress/student";
 import { studentCommand } from "@/lib/student/unit";
 import { automaticCvFor } from "@/lib/server/profiles/cv";
+import { photoFor, savePhoto } from "@/lib/server/profiles/photo";
+import { photoCommand } from "@/lib/career/photo";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 async function handle(
@@ -86,6 +88,10 @@ async function handle(
         };
       case "GET me/personal":
         return personalFor(user.id);
+      case "GET me/photo":
+        return photoFor(user.id);
+      case "PUT me/photo":
+        return savePhoto(user.id, await body(request, photoCommand));
       case "GET me/cv":
         return automaticCvFor(user.id);
       case "PUT me/personal":

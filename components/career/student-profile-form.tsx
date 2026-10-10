@@ -3,12 +3,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { requestJSON, CloudFailure } from "@/lib/cloud/runtime";
 import {
-  personalSchema,
+  personalWriteSchema as personalSchema,
   type PersonalRecord,
   type PersonalDetails,
 } from "@/lib/career/personal";
 import type { Locale } from "@/types";
 import "@/app/student.css";
+import { ProfilePhoto } from "./profile-photo";
 
 export function StudentProfileForm({
   locale,
@@ -73,6 +74,13 @@ export function StudentProfileForm({
             "البيانات خاصة بحسابك. لا نطلب رقمًا قوميًّا أو تاريخ ميلاد أو صورة أو عنوانًا تفصيليًّا. المحاكاة ليست وظيفة فعلية، وتوافق ATS لا يضمن القبول.",
           )}
         </p>
+        <ProfilePhoto locale={locale} editable name={details?.fullName ?? ""} />
+        <p>
+          {say(
+            "Your CV is in English. Enter your name, location, education, languages and actual experience in English; we do not invent translations of your personal details.",
+            "الـCV بالإنجليزي. اكتب الاسم والمكان والتعليم واللغات والخبرة الحقيقية بالإنجليزي؛ لا نختلق ترجمة لبياناتك الشخصية.",
+          )}
+        </p>
         <form
           onSubmit={async (event) => {
             event.preventDefault();
@@ -112,8 +120,8 @@ export function StudentProfileForm({
             if (!result.success) {
               setError(
                 say(
-                  "Check the required fields, phone number, year and links.",
-                  "راجع الحقول المطلوبة ورقم الهاتف والسنة والروابط.",
+                  "Enter CV details in English and check the required fields, phone number, year and links.",
+                  "اكتب بيانات CV بالإنجليزي وراجع الحقول المطلوبة ورقم الهاتف والسنة والروابط.",
                 ),
               );
               return;

@@ -6,18 +6,19 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import EmbeddedPostgres from "embedded-postgres";
 import { chromium } from "playwright-core";
+import sharp from "sharp";
 import { completeStudentDetails } from "./student-qa-helpers.mjs";
 const base = "http://localhost:3114", output = path.resolve("artifacts/student-cv"), temporary = path.join(output, "tmp"), results = [], errors = [];
 let app, database, browser, previousAccount;
 function record(name, condition = true) { assert.ok(condition, name); results.push(name); console.log("PASS", name); }
 function done(child) { return new Promise((resolve, reject) => { child.once("error", reject); child.once("exit", code => code === 0 ? resolve() : reject(new Error("QA child failed"))); }); }
 async function api(context, route, method = "GET", data) { return context.request.fetch(base + "/api/v1/" + route, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) }); }
-async function screenshot(page, label) { await page.evaluate(() => document.fonts.ready); await page.screenshot({ path: path.join(output, label + ".png"), fullPage: true }); }
+async function screenshot(page, label) { await page.waitForLoadState("networkidle"); await page.evaluate(async () => { await document.fonts.ready; await Promise.all(Array.from(document.images).filter(image => image.getClientRects().length > 0).map(image => image.complete ? Promise.resolve() : new Promise(resolve => { const finish = () => { clearTimeout(timeout); resolve(); }; const timeout = setTimeout(finish, 3000); image.addEventListener("load", finish, { once: true }); image.addEventListener("error", finish, { once: true }); }))); }); await page.screenshot({ path: path.join(output, label + ".png"), fullPage: true }); }
 async function checkLayout(page, label) { record(label + " no horizontal overflow", await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)); }
 try {
   await mkdir(temporary, { recursive: true });
   const manifest = JSON.parse(await readFile(".next/server/app-paths-manifest.json", "utf8"));
-  for (const route of ["/[locale]/student/page", "/[locale]/student-profile/page", "/[locale]/login/page", "/[locale]/signup/page", "/api/auth/[...all]/route"]) record("Production route " + route, Object.hasOwn(manifest, route));
+  for (const route of ["/[locale]/student/page", "/[locale]/game/student/page", "/[locale]/student-profile/page", "/[locale]/login/page", "/[locale]/signup/page", "/api/auth/[...all]/route"]) record("Production route " + route, Object.hasOwn(manifest, route));
   const databaseDir = path.join(temporary, "postgres");
   database = new EmbeddedPostgres({ databaseDir, user: "postgres", password: "student-local-fixture-only", port: 55434, persistent: true, createPostgresUser: false, postgresFlags: ["-h", "127.0.0.1"], onLog: () => {}, onError: () => {} });
   if (!existsSync(path.join(databaseDir, "PG_VERSION"))) await database.initialise();
@@ -51,31 +52,49 @@ try {
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
     record(label + " dark setup uses readable themed surfaces", await page.locator('.student-card').evaluate(element => getComputedStyle(element).backgroundColor !== "rgb(255, 255, 255)" && getComputedStyle(element).backgroundColor !== getComputedStyle(element).color));
     await screenshot(page, label + "-setup-dark"); await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
-    await completeStudentDetails(page); await page.waitForURL(`**/${locale}`); await page.locator(`a[href="/${locale}/student"]`).waitFor();
+    const photoInput = page.locator('.photo-editor input[type="file"]');
+    await page.waitForFunction(() => document.querySelector('.photo-editor input[type="file"]')?.disabled === false);
+    record(label + " new account cannot see a previous student's photo", (await (await api(context, "me/photo")).json()).data === null);
+    const fixturePhoto = await sharp({ create: { width: 900, height: 600, channels: 3, background: "#246bc9" } }).jpeg().withMetadata({ orientation: 6 }).toBuffer();
+    await photoInput.setInputFiles({ name: "student-fixture.jpg", mimeType: "image/jpeg", buffer: fixturePhoto });
+    await page.getByRole("status").filter({ hasText: /Profile photo saved|الصورة اتحفظت/ }).waitFor();
+    const photo = await (await api(context, "me/photo")).json();
+    const photoMeta = await sharp(Buffer.from(photo.data.image.split(",")[1], "base64")).metadata();
+    record(label + " real upload cropped 512 square and stripped EXIF", photo.data.width === 512 && photo.data.height === 512 && photoMeta.format === "webp" && !photoMeta.exif);
+    record(label + " corrupt image rejected by server", (await api(context, "me/photo", "PUT", { revision: photo.revision, image: "data:image/png;base64,AAAA" })).status() === 400);
+    record(label + " stale photo revision rejected", (await api(context, "me/photo", "PUT", { revision: 0, image: null })).status() === 409);
+    record(label + " photo owner injection rejected", (await api(context, "me/photo", "PUT", { revision: photo.revision, image: null, userId: "another-user" })).status() === 400);
+    record(label + " photo excluded from general progress backup", !(await (await api(context, "me/progress")).text()).includes(photo.data.image));
+    await completeStudentDetails(page); await page.waitForURL(`**/${locale}`); await page.locator('.student-game-link a').waitFor();
     record(label + " saved setup -> authenticated home"); await screenshot(page, label + "-home"); await checkLayout(page, label + " home");
     const personal = await (await api(context, "me/personal")).json(); record(label + " details persisted privately", personal.data.email === email && personal.data.details.phone === "+20 100 123 4567");
     const identity = await (await api(context, "me")).json();
     if (previousAccount) {
       record(label + " query cannot select another account's personal data", (await (await api(context, "me/personal?userId=" + previousAccount)).json()).data.email === email);
+      record(label + " query cannot select another student's photo", (await (await api(context, "me/photo?userId=" + previousAccount)).json()).data.image === photo.data.image);
       record(label + " stale cross-account context rejected", (await context.request.get(base + "/api/v1/me/cv", { headers: { "X-Account-Context": previousAccount } })).status() === 409);
     }
     previousAccount = identity.user.id;
     const leaderboard = await (await api(context, "competition/leaderboard")).text();
     record(label + " leaderboard contains no private contact data", !leaderboard.includes(email) && !leaderboard.includes("+20 100 123 4567"));
     record(label + " stale personal revision rejected", (await api(context, "me/personal", "PUT", { revision: 0, details: personal.data.details })).status() === 409);
-    await page.locator(`a[href="/${locale}/student"]`).click(); await page.locator('select[name="action"]').waitFor();
-    await page.locator('select[name="action"]').selectOption("post-both"); await page.locator('.student-card form button').click(); await page.getByRole("status").filter({ hasText: locale === "ar" ? "غير مقبولة" : "Not accepted" }).waitFor();
+    await page.locator('.student-game-link a').click(); await page.waitForURL(`**/${locale}/game/student`);
+    await page.locator('.student-start-mission').waitFor(); await screenshot(page, label + "-city"); await checkLayout(page, label + " city");
+    await page.locator('.student-start-mission').click(); await page.locator('input[name="action"]').first().waitFor();
+    await page.waitForLoadState("networkidle"); await page.screenshot({ path: path.join(output, label + "-source-workbench.png") });
+    record(label + " game opens student workbench instead of standalone quiz", await page.getByRole("dialog").isVisible() && await page.locator('.student-work-inbox').isVisible());
+    await page.locator('input[name="action"][value="post-both"]').check(); await page.locator('.student-card form button[type="submit"]').click(); await page.getByRole("status").filter({ hasText: locale === "ar" ? "غير مقبولة" : "Not accepted" }).waitFor();
     let cloud = await (await api(context, "me/progress")).json(); record(label + " wrong response produces no CV evidence", cloud.evidence.length === 0);
     record(label + " future step locked", (await api(context, "me/student-unit", "POST", { revision: 1, step: "worksheet", answer: { formula: "=SUM(C2:C9)", differenceFormula: "=C10-D10" } })).status() === 409);
     for (let index = 0; index < answers.length; index++) {
-      for (const [name, value] of Object.entries(answers[index])) { const field = page.locator(`[name="${name}"]`); if (name === "debit" || name === "credit" || name === "action") await field.selectOption(value); else await field.fill(value); }
-      await page.locator('.student-card form button').click();
+      for (const [name, value] of Object.entries(answers[index])) { const field = page.locator(`[name="${name}"]`); if (name === "action") await page.locator(`input[name="action"][value="${value}"]`).check(); else if (name === "debit" || name === "credit") await field.selectOption(value); else await field.fill(value); }
+      await page.locator('.student-card form button[type="submit"]').click();
       await page.getByRole("status").filter({ hasText: locale === "ar" ? "مقبولة ومحفوظة" : "Accepted and saved" }).waitFor();
       record(label + " task " + (index + 1) + " accepted");
       if (index === 1) { const history = await page.evaluate(() => JSON.parse(localStorage.getItem("debit-credit-cv-history-v1") ?? "{}").items); record(label + " CV updated without opening or clicking generate", history?.at(-1)?.plainText.includes("owner capital contribution")); }
       if (index === 7) { await screenshot(page, label + "-trial-balance"); await checkLayout(page, label + " task"); }
     }
-    await page.getByRole("heading", { name: locale === "ar" ? "أنهيت الوحدة" : "Unit completed" }).waitFor();
+    await page.getByRole("dialog").getByRole("heading", { name: locale === "ar" ? "أنهيت الوحدة" : "Unit completed" }).waitFor();
     const completed = await (await api(context, "me/student-unit")).json(); record(label + " all tasks persisted", completed.data.accepted.length === 11 && !!completed.data.completedAt);
     cloud = await (await api(context, "me/progress")).json(); const count = cloud.evidence.length;
     const savedCv = await (await api(context, "me/cv")).json();
@@ -88,17 +107,24 @@ try {
     const downloadEvent = page.waitForEvent("download"); await page.getByRole("button", { name: /Download Excel-compatible|تحميل ورقة العمل/ }).click(); const download = await downloadEvent; const csv = await readFile(await download.path(), "utf8");
     record(label + " real workpaper export matches accepted ledger", csv.includes("Cash,Unit1,84000,0") && csv.includes("=SUM(C2:C9)") && !csv.includes(email));
     await page.goto(`${base}/${locale}/career-profile/cv`); await page.locator('.professional-cv').waitFor(); await screenshot(page, label + "-cv"); await checkLayout(page, label + " CV");
-    const cvText = await page.locator('.professional-cv').innerText(); record(label + " CV includes personal details and accounting outcomes", cvText.includes("Student CV Fixture") && cvText.includes("+20 100 123 4567") && /trial balance|ميزان مراجعة/.test(cvText));
+    const cvText = await page.locator('.professional-cv').innerText(); record(label + " CV includes personal details and accounting outcomes", cvText.includes("Student CV Fixture") && cvText.includes("+20 100 123 4567") && cvText.includes("trial balance"));
+    record(label + " CV is English LTR even on Arabic site and contains no photo", !/[\u0600-\u06ff]/u.test(cvText) && await page.locator('.professional-cv').getAttribute("lang") === "en" && await page.locator('.professional-cv').getAttribute("dir") === "ltr" && await page.locator('.professional-cv img').count() === 0);
     const textDownloadEvent = page.waitForEvent("download"); await page.getByRole("button", { name: /Plain Text CV|سيرة نصية/ }).click(); const textDownload = await textDownloadEvent, text = await readFile(await textDownload.path(), "utf8");
     record(label + " ATS export has standard text headings and supported keywords", text.includes("ACCOUNTING SIMULATION EXPERIENCE") && text.includes("Journal Entries") && text.includes("2028") && text.includes(email));
     record(label + " ATS export does not invent certification or employment", !/Certified|CPA|CMA|employed at Mizan/i.test(text));
     await page.emulateMedia({ media: "print" }); record(label + " PDF uses single column", await page.locator('.professional-cv>header').evaluate(element => getComputedStyle(element).display === "block")); record(label + " print hides account controls", await page.locator('.cloud-account-bar').evaluate(element => getComputedStyle(element).display === "none")); await page.emulateMedia({ media: "screen" });
     await page.reload(); await page.locator('.professional-cv').waitFor(); record(label + " CV restored after reload", (await page.locator('.professional-cv').innerText()).includes("Student CV Fixture"));
+    await page.goto(`${base}/${locale}/profile`); await page.locator('.photo-editor img').waitFor();
+    record(label + " uploaded photo restored in game profile", await page.locator('.photo-editor img').getAttribute("src") === photo.data.image);
+    await page.getByRole("button", { name: /Remove photo|إزالة الصورة/ }).click(); await page.locator('.photo-editor img').waitFor({ state: "detached" });
+    await page.reload(); await page.waitForFunction(() => document.querySelector('.photo-editor input[type="file"]')?.disabled === false);
+    record(label + " photo removal persists after reload", (await (await api(context, "me/photo")).json()).data === null);
     await page.locator('.cloud-account-bar button').click(); await page.waitForURL(`**/${locale}`); record(label + " signed-out personal API protected", (await api(context, "me/personal")).status() === 401);
+    record(label + " signed-out photo API protected", (await api(context, "me/photo")).status() === 401);
     record(label + " private CV data not visible after logout", !(await page.locator('body').innerText()).includes("+20 100 123 4567"));
     if (viewport.width === 1440) {
       await page.goto(`${base}/${locale}/login`); await page.locator('[name="email"]').fill(email); await page.locator('[name="password"]').fill(password); await page.locator('.auth-email-form button[type="submit"]').click();
-      await page.waitForURL(`**/${locale}`); await page.locator(`a[href="/${locale}/student"]`).waitFor(); record(label + " returning sign-in skips completed setup");
+      await page.waitForURL(`**/${locale}`); await page.locator('.student-game-link a').waitFor(); record(label + " returning sign-in skips completed setup");
       await page.goto(`${base}/${locale}/student`); await page.getByRole("heading", { name: locale === "ar" ? "أنهيت الوحدة" : "Unit completed" }).waitFor(); record(label + " completed training restored in a new sign-in session");
     }
     const other = await browser.newContext({ viewport }); record(label + " separate browser cannot read personal records", (await api(other, "me/personal")).status() === 401); await other.close(); await context.close();

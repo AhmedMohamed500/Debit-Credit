@@ -145,9 +145,9 @@ export function buildCv(
     role = roleCatalog[targetRoleId].label;
   return {
     targetRoleId,
-    headline: profile.headline || `Accounting candidate — ${role.en}`,
+    headline: (/[\u0600-\u06ff]/u.test(profile.headline) ? "" : profile.headline) || `Accounting candidate — ${role.en}`,
     summary:
-      profile.summary ||
+      (/[\u0600-\u06ff]/u.test(profile.summary) ? "" : profile.summary) ||
       (skills.length
         ? `Accounting candidate targeting ${role.en}, with introductory accounting practice in ${
             skills

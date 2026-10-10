@@ -63,6 +63,22 @@ beforeEach(() => {
   fixture.request.mockResolvedValue({ data: { accepted: [] } });
 });
 describe("Account-safe student journey guidance", () => {
+  it.each(["ar", "en"] as const)(
+    "does not duplicate the journey panel inside the %s first-shift workspace",
+    async (locale) => {
+      fixture.path = `/${locale}/game/first-shift`;
+      const { container } = render(
+        <StudentJourneyProvider locale={locale}>
+          <p>Integrated shift workspace</p>
+        </StudentJourneyProvider>,
+      );
+      await waitFor(() => expect(fixture.request).toHaveBeenCalled());
+      expect(container.querySelector(".student-journey-bar")).toBeNull();
+      expect(
+        screen.getByText("Integrated shift workspace"),
+      ).toBeInTheDocument();
+    },
+  );
   it("shows one primary next link and puts optional activities behind a disclosure", async () => {
     render(view());
     expect(

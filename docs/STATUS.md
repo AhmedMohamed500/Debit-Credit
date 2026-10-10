@@ -14,6 +14,8 @@ Reviewed: 2026-10-10. This file supersedes historical release claims in archived
 
 ## Current release work
 
+First Shift now has a single professional briefing and one explicit desk action instead of a giant poster, duplicate journey panel and repeated start/manager gates. A shared in-game header connects foundations, profile, skill evidence and the English CV; language switching stays in the same mission. Existing city art, cases, drafts, posting safeguards and ledger-review prerequisites are preserved. See [First Shift navigation redesign](CONNECTED-FIRST-SHIFT-AR.md).
+
 The signed-in career profile now has the reference-style petrol/teal/gold dashboard for all four personas, private external-course CRUD and certificate image upload/view/removal. Images preserve document aspect ratio, are re-encoded without location metadata, and are excluded from progress backups, public previews, competitions and ATS CVs. Uploaded credentials remain self-reported, not verified skill evidence. See [member profile delivery](MEMBER-PROFILE-AR.md).
 
 Signup → separate login → required private CV personal setup → localized student home is implemented. Returning users with a validated record skip setup. The introductory student unit has 11 server-graded tasks, cloud-owned evidence and automatically regenerated private CV snapshots, plus browser-local CV versions and text/PDF-print exports. See [student CV release](STUDENT-CV-RELEASE-AR.md) for scope and verified publication results.

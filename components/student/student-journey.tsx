@@ -264,6 +264,7 @@ function StudentJourneyBar() {
     [
       `/${locale}`,
       `/${locale}/game`,
+      `/${locale}/game/first-shift`,
       `/${locale}/student-profile`,
       `/${locale}/career-profile`,
     ].includes(pathname)

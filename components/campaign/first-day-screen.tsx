@@ -8,9 +8,10 @@ import Link from 'next/link';
 import { useEffect,useRef,useState } from 'react';
 import {BriefcaseBusiness,ChevronRight,Coins,LockKeyhole,Trophy,X,Zap} from 'lucide-react';
 import { CinematicChapterIntro } from './cinematic-chapter-intro';
+import { FirstShiftNavigation } from './first-shift-navigation';
 import { AccountingCaseWorkspace } from './first-day-case-workbench';
 import {FirstShiftMissionHub} from './first-shift-world';
-import { firstDayIntro,storyCharacters } from '@/lib/campaign/first-day-story';
+import { firstDayIntro } from '@/lib/campaign/first-day-story';
 import { accountLabel,closeFirstDayDocument,completeFirstDayIntro,enterFirstDayDesk,FIRST_DAY_INTRO_VERSION,firstDayCompany,firstDayDocuments,firstDayProgress,markFirstDayCompletionSeen,saveFirstDayDraft,selectFirstDayDocument,submitFirstDayDocument,type FirstDayDocumentId } from '@/lib/campaign/first-day';
 import { useGame } from '@/lib/campaign/store';
 import type { GameState } from '@/lib/campaign/model';
@@ -28,9 +29,8 @@ export function FirstDayScreen({locale}:{locale:Locale}){
  useEffect(()=>{if(!processedAnimation)return;const timer=window.setTimeout(()=>setProcessedAnimation(null),1350);return()=>window.clearTimeout(timer);},[processedAnimation]);
  useEffect(()=>{if(!ready||restored.current)return;restored.current=true;if(progress.selected)setActive(progress.selected);},[ready,progress.selected]);
  if(!ready)return <div className="first-day-loading">{say('Preparing your first day…','بنجهّز أول يوم ليك…')}</div>;
- if(progress.introVersion<FIRST_DAY_INTRO_VERSION)return <CinematicChapterIntro chapter={firstDayIntro} locale={locale} variant="intro" onComplete={()=>change(completeFirstDayIntro)} onSkip={()=>{}}/>;
- if(!progress.deskEntered)return <ManagerBriefing locale={locale} onContinue={()=>change(enterFirstDayDesk)}/>;
- if(progress.rewarded&&firstShiftMissionProgress(state).ledgerComplete&&!progress.completionSeen&&!active&&!processedAnimation&&!tool)return <ShiftComplete locale={locale} state={state} onContinue={()=>change(markFirstDayCompletionSeen)}/>;
+ if(progress.introVersion<FIRST_DAY_INTRO_VERSION||!progress.deskEntered)return <><FirstShiftNavigation locale={locale}/><CinematicChapterIntro chapter={firstDayIntro} locale={locale} variant="intro" onComplete={()=>change(current=>enterFirstDayDesk(completeFirstDayIntro(current)))}/></>;
+ if(progress.rewarded&&firstShiftMissionProgress(state).ledgerComplete&&!progress.completionSeen&&!active&&!processedAnimation&&!tool)return <><FirstShiftNavigation locale={locale}/><ShiftComplete locale={locale} state={state} onContinue={()=>change(markFirstDayCompletionSeen)}/></>;
  const doc=firstDayDocuments.find(item=>item.id===active);
  const openDocument=(id:FirstDayDocumentId)=>{window.dispatchEvent(new CustomEvent('debit-credit-sound-event',{detail:{type:'paper-open',documentId:id}}));change(current=>selectFirstDayDocument(current,id));setActive(id);};
  const closeDocument=()=>{change(closeFirstDayDocument);setActive(null);if(queuedProcessed){setProcessedAnimation(queuedProcessed);setQueuedProcessed(null);}};
@@ -40,15 +40,11 @@ export function FirstDayScreen({locale}:{locale:Locale}){
  const chooseFieldMatch=(id:FirstDayDocumentId,fieldId:string,verdict:CaseMatchVerdict)=>{let accepted=false;change(current=>{const result=recordCaseFieldMatch(current,id,fieldId,verdict);accepted=result.accepted;return result.state});return accepted};
  const askKareem=(id:FirstDayDocumentId)=>{let count=0;change(current=>{const next=requestCaseManagerHelp(current,id);count=caseworkState(next).cases[id].managerHelpCount;return next});return count};
  return <div className="first-day shift-scene fsh-active" dir={ar?'rtl':'ltr'}>
+  <div inert={!!doc||!!tool}><FirstShiftNavigation locale={locale}/></div>
   <FirstShiftMissionHub locale={locale} state={state} inactive={!!doc||!!tool} pendingDocuments={company.pendingDocuments} ledgerErrors={company.ledgerErrors} processedAnimation={processedAnimation} onOpenCase={openDocument} onOpenJournal={()=>setTool("journal")} onOpenLedger={()=>{change(markFirstShiftLedgerReviewed);setTool("ledger")}} onOpenCalculator={()=>setTool("calculator")}/>
   {doc&&<AccountingCaseWorkspace key={doc.id} locale={locale} doc={doc} caseDefinition={getFirstShiftCase(doc.id)!} runtime={casework.cases[doc.id]} performance={projectCasePerformance(state,doc.id)} completed={progress.completed.includes(doc.id)} completedIds={progress.completed} initialDraft={progress.drafts[doc.id]} initialHint={progress.draftHints[doc.id]} pendingAfter={company.pendingDocuments} ledgerErrors={company.ledgerErrors} clock={caseClock(state)} gameXp={state.xp} onClose={closeDocument} onSelectCase={openDocument} onDraftChange={(draft,hintUsed)=>change(current=>saveFirstDayDraft(current,doc.id,draft,hintUsed))} onInspect={documentId=>inspectEvidence(doc.id,documentId)} onMatch={(fieldId,verdict)=>chooseFieldMatch(doc.id,fieldId,verdict)} onAction={action=>chooseCaseAction(doc.id,action)} onHelp={()=>askKareem(doc.id)} onSubmit={(draft,hints)=>submit(doc.id,draft,hints)}/>}
   {tool&&<DeskTool tool={tool} locale={locale} state={state} onClose={()=>setTool(null)}/>}
  </div>;
-}
-
-function ManagerBriefing({locale,onContinue}:{locale:Locale;onContinue:()=>void}){
- const ar=locale==='ar',say=(en:string,a:string)=>ar?a:en,manager=storyCharacters['finance-manager'];
- return <section className="fd-manager-scene" dir={ar?'rtl':'ltr'}><Image src="/game/first-day-cinematic.png" fill priority sizes="100vw" alt=""/><div className="fd-manager-scene-shade"/><div className="fd-briefing-card"><header><b>OK</b><span><strong>{manager.name[locale]}</strong><small>{manager.role[locale]}</small></span></header><h1>{say('Welcome to Mizan Trading.','أهلًا بيك في ميزان للتجارة.')}</h1><p>{say('Today is your first day. Three transactions from yesterday still need to be recorded. Inspect each source, decide what changed, and keep the books balanced.','النهارده أول يوم ليك. عندنا ٣ معاملات من امبارح لسه محتاجة تتسجل. افحص كل مستند، قرر إيه اللي اتغيّر، وخلي الدفاتر متوازنة.')}</p><button onClick={onContinue}>{say('SHOW ME THE DESK','ورّيني المكتب')}<ChevronRight/></button></div><div className="fd-briefing-caption"><small>{say('8:45 AM · FINANCE OFFICE','٨:٤٥ صباحًا · الإدارة المالية')}</small><b>{say('Your decisions change the company.','قراراتك تغيّر حالة الشركة.')}</b></div></section>;
 }
 
 function ShiftComplete({locale,state,onContinue}:{locale:Locale;state:GameState;onContinue:()=>void}){

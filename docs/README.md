@@ -4,6 +4,7 @@ Start here rather than treating every past release report as today's status.
 
 ## Current entry points
 
+- [Connected First Shift briefing and in-game navigation](CONNECTED-FIRST-SHIFT-AR.md)
 - [Unified member profile, private courses and certificate images](MEMBER-PROFILE-AR.md)
 
 - [Comprehensive Arabic project history, architecture and handoff](PROJECT-MASTER-HANDOFF-AR.md)

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { X, Check } from "lucide-react";
 import { StudentCity, studentStops } from "./student-city";
 import { StudentSourceFile } from "./student-source-file";
+import { StudentWorksheet } from "./student-worksheet";
 import { requestJSON, CloudFailure } from "@/lib/cloud/runtime";
 import { BrowserSkillEvidenceRepository } from "@/lib/career/repository";
 import type { SkillEvidence } from "@/lib/career/model";
@@ -151,7 +152,7 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
           ref={dialog}
           hidden={!workspaceOpen}
           inert={!workspaceOpen}
-          className="student-workbench"
+          className={`student-workbench ${step === "worksheet" ? "student-computer-desk" : ""}`}
           role="dialog"
           aria-modal="true"
           aria-label={say(
@@ -232,10 +233,15 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
               <main className="student-page" dir={ar ? "rtl" : "ltr"}>
                 <section className="student-card">
                   <h1>
-                    {say(
-                      "Unit 1: Source documents to books",
-                      "الوحدة الأولى: من المستند إلى الدفاتر",
-                    )}
+                    {step === "worksheet"
+                      ? say(
+                          "Office computer · Trial balance workbook",
+                          "كمبيوتر المكتب · ملف ميزان المراجعة",
+                        )
+                      : say(
+                          "Unit 1: Source documents to books",
+                          "الوحدة الأولى: من المستند إلى الدفاتر",
+                        )}
                   </h1>
                   <details className="student-assumptions">
                     <summary>
@@ -583,90 +589,64 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
                           </>
                         )}
                         {step === "worksheet" && (
-                          <>
-                            <h2>
-                              {say(
-                                "Basic spreadsheet workpaper",
-                                "ورقة العمل الأساسية للجداول",
-                              )}
-                            </h2>
-                            <p>
-                              {say(
-                                "Rows 2–9 contain eight account balances. Column C is debit; D is credit. Row 10 is totals. Write a SUM formula for C10, then a debit-minus-credit formula for C11. This checks basic formula knowledge, not Excel proficiency certification.",
-                                "الصفوف 2–9 بها أرصدة الحسابات الثمانية. العمود C مدين وD دائن. الصف 10 للإجماليات. اكتب صيغة SUM للخلية C10 ثم فرق المدين ناقص الدائن في C11. هذا فحص معرفة صيغ أساسية وليس توثيقًا لإتقان Excel.",
-                              )}
-                            </p>
-                            <div className="student-fields">
-                              <label>
-                                C10
-                                <input
-                                  dir="ltr"
-                                  name="formula"
-                                  required
-                                  maxLength={80}
-                                />
-                              </label>
-                              <label>
-                                C11
-                                <input
-                                  dir="ltr"
-                                  name="differenceFormula"
-                                  required
-                                  maxLength={80}
-                                />
-                              </label>
-                            </div>
-                          </>
+                          <StudentWorksheet
+                            locale={locale}
+                            balances={balances}
+                            busy={busy}
+                          />
                         )}
-                        <button type="submit" disabled={busy}>
-                          {busy
-                            ? say("Checking…", "جارٍ الفحص…")
-                            : say(
-                                "Submit accounting work",
-                                "سلّم الشغل للمراجعة",
-                              )}
-                        </button>
+                        {step !== "worksheet" && (
+                          <button type="submit" disabled={busy}>
+                            {busy
+                              ? say("Checking…", "جارٍ الفحص…")
+                              : say(
+                                  "Submit accounting work",
+                                  "سلّم الشغل للمراجعة",
+                                )}
+                          </button>
+                        )}
                       </form>
                     )
                   )}
                 </section>
-                {accepted.some((id) => id.startsWith("journal-")) && (
-                  <section className="student-card">
-                    <h2>
-                      {say(
-                        "Accepted journal — source trail",
-                        "اليومية المقبولة — تتبّع المصدر",
-                      )}
-                    </h2>
-                    <div className="student-table-wrap">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>{say("Reference", "المرجع")}</th>
-                            <th>{say("Debit", "مدين")}</th>
-                            <th>{say("Credit", "دائن")}</th>
-                            <th>EGP</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {transactions
-                            .filter((row) =>
-                              accepted.includes(`journal-${row.id}`),
-                            )
-                            .map((row) => (
-                              <tr key={row.id}>
-                                <td>{row.reference}</td>
-                                <td>{studentAccounts[row.debit][locale]}</td>
-                                <td>{studentAccounts[row.credit][locale]}</td>
-                                <td>{row.amount.toLocaleString("en")}</td>
-                              </tr>
-                            ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </section>
-                )}
-                {accepted.includes("ledger-cash") && (
+                {step !== "worksheet" &&
+                  accepted.some((id) => id.startsWith("journal-")) && (
+                    <section className="student-card">
+                      <h2>
+                        {say(
+                          "Accepted journal — source trail",
+                          "اليومية المقبولة — تتبّع المصدر",
+                        )}
+                      </h2>
+                      <div className="student-table-wrap">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>{say("Reference", "المرجع")}</th>
+                              <th>{say("Debit", "مدين")}</th>
+                              <th>{say("Credit", "دائن")}</th>
+                              <th>EGP</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {transactions
+                              .filter((row) =>
+                                accepted.includes(`journal-${row.id}`),
+                              )
+                              .map((row) => (
+                                <tr key={row.id}>
+                                  <td>{row.reference}</td>
+                                  <td>{studentAccounts[row.debit][locale]}</td>
+                                  <td>{studentAccounts[row.credit][locale]}</td>
+                                  <td>{row.amount.toLocaleString("en")}</td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  )}
+                {step !== "worksheet" && accepted.includes("ledger-cash") && (
                   <section className="student-card">
                     <h2>{say("Ledger balances", "أرصدة الأستاذ")}</h2>
                     <div className="student-table-wrap">

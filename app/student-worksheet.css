@@ -1,0 +1,326 @@
+.student-computer-launch {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 32px;
+  border: 1px solid #acd1cf;
+  border-radius: 14px;
+  background: linear-gradient(120deg, #ecf7f2, #e8f2fa);
+}
+.student-computer-launch h2 {
+  margin: 8px 0;
+  font-size: 24px;
+}
+.student-computer-launch small {
+  color: #397064;
+  font-weight: 700;
+}
+.student-monitor-preview {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 130px;
+  height: 130px;
+  flex: none;
+  border-radius: 20px;
+  background: #153a38;
+  color: #80ebc8;
+}
+.student-monitor-preview > svg + svg {
+  position: absolute;
+  top: 37px;
+  width: 24px;
+}
+.student-computer-launch button {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+.student-computer {
+  border: 1px solid #496b68;
+  border-radius: 12px;
+  overflow: clip;
+  background: #fff;
+  box-shadow: 0 14px 38px #193b4026;
+  color: #162b36;
+}
+.student-computer-top {
+  background: #174b40;
+  color: #fff;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.student-computer-top > span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 750;
+}
+.student-computer-top small {
+  color: #cce6de;
+  font-weight: 400;
+}
+.student-computer .student-computer-top button {
+  background: #ffffff12;
+  border: 1px solid #90b5a5;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  min-height: 36px;
+  font-size: 12px;
+}
+.student-sheet-assignment {
+  padding: 16px 20px;
+  border-bottom: 1px solid #d5e1de;
+  background: #f3f8f6;
+  font-size: 13px;
+}
+.student-sheet-assignment b {
+  color: #145343;
+}
+.student-sheet-assignment p {
+  margin: 5px 0 0;
+  line-height: 1.65;
+}
+.student-formula-bar {
+  position: sticky;
+  top: var(--student-header-height, 90px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #f5f7f7;
+  border-bottom: 1px solid #c4d1ce;
+}
+.student-formula-bar output {
+  background: #fff;
+  border: 1px solid #b5c6c0;
+  border-radius: 3px;
+  min-width: 60px;
+  padding: 9px;
+  text-align: center;
+  font:
+    700 13px Consolas,
+    monospace;
+}
+.student-formula-bar label {
+  color: #497367;
+  font:
+    italic 700 18px Georgia,
+    serif;
+}
+.student-computer .student-formula-bar input {
+  min-width: 0;
+  min-height: 36px;
+  border-radius: 3px;
+  background: #fff;
+  font:
+    14px Consolas,
+    monospace;
+  padding: 8px;
+}
+.student-formula-bar input[readonly] {
+  color: #667b77;
+}
+.student-sheet-scroll {
+  overflow: auto;
+  max-height: min(510px, 55dvh);
+  max-width: 100%;
+  background: #fff;
+}
+.student-computer .student-sheet-grid {
+  table-layout: fixed;
+  min-width: 620px;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.student-sheet-grid col:first-child {
+  width: 38px;
+}
+.student-sheet-grid col:nth-child(2) {
+  width: 30%;
+}
+.student-sheet-grid col:nth-child(3) {
+  width: 21%;
+}
+.student-computer .student-sheet-grid th,
+.student-computer .student-sheet-grid td {
+  padding: 0;
+  height: 38px;
+  border: 1px solid #d6dedb;
+  text-align: left;
+}
+.student-computer .student-sheet-grid td:nth-child(2),
+.student-computer .student-sheet-grid td:nth-child(3) {
+  padding: 8px 12px;
+}
+.student-computer .student-sheet-grid th {
+  text-align: center;
+  background: #f0f3f2;
+  color: #597168;
+  font-weight: 500;
+}
+.student-computer .student-sheet-grid thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.student-computer .student-sheet-grid .sheet-data-header td {
+  font-weight: 750;
+  color: #fff;
+  background: #226450;
+  padding: 10px 12px;
+}
+.student-computer .student-sheet-grid .sheet-total-row td {
+  background: #ecf4ef;
+  font-weight: 750;
+  border-top: 2px solid #568776;
+}
+.student-computer .student-sheet-grid .sheet-check-row td {
+  background: #f5f8fa;
+}
+.student-computer .student-sheet-grid .sheet-cell {
+  display: block;
+  width: 100%;
+  min-height: 38px;
+  height: 100%;
+  padding: 8px 12px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  text-align: right;
+  background: transparent;
+  color: #253d37;
+  font:
+    13px Consolas,
+    monospace;
+  cursor: pointer;
+}
+.student-computer .student-sheet-grid .sheet-editable {
+  background: #e7f8ef;
+  color: #0f6442;
+  font-weight: 700;
+}
+.student-computer .student-sheet-grid .sheet-cell[data-selected="true"] {
+  box-shadow: inset 0 0 0 2px #178556;
+  background: #def2e7;
+}
+.student-sheet-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  background: #f1f4f3;
+  border-top: 1px solid #cbd8d2;
+}
+.student-sheet-tabs > span {
+  background: #fff;
+  padding: 12px 16px;
+  border-bottom: 3px solid #1d8054;
+  color: #176843;
+  font-weight: 700;
+  font-size: 12px;
+}
+.student-sheet-tabs small {
+  font-size: 11px;
+  color: #536e65;
+}
+.student-sheet-footer {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 18px 20px;
+}
+.student-sheet-mobile-hint {
+  display: none;
+}
+.student-sheet-footer > div {
+  flex: 1;
+  min-width: 180px;
+}
+.student-sheet-footer small {
+  display: block;
+  max-width: 660px;
+  font-size: 11px;
+  color: #5c736a;
+  line-height: 1.65;
+  margin-top: 5px;
+}
+.student-computer .student-sheet-footer button {
+  background: #176c49;
+  font-size: 13px;
+}
+.student-workbench.student-computer-desk
+  .student-page
+  > .student-card:first-child {
+  padding: 20px;
+}
+.student-computer-desk .student-progress {
+  font-size: 12px;
+  margin: 12px 0;
+}
+@media (max-width: 700px) {
+  .student-computer .student-sheet-mobile-hint {
+    display: block;
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 11px;
+    background: #f5f8f7;
+    color: #3e6556;
+    line-height: 1.65;
+  }
+  .student-computer-launch {
+    flex-direction: column;
+    padding: 20px;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .student-monitor-preview {
+    width: 100%;
+    height: 100px;
+  }
+  .student-monitor-preview > svg + svg {
+    top: 22px;
+  }
+  .student-computer-launch h2 {
+    font-size: 20px;
+  }
+  .student-computer-top {
+    padding: 10px;
+  }
+  .student-computer-top small {
+    display: none;
+  }
+  .student-sheet-assignment,
+  .student-sheet-footer {
+    padding: 12px;
+  }
+  .student-formula-bar {
+    gap: 7px;
+    padding: 8px;
+  }
+  .student-sheet-tabs {
+    gap: 8px;
+    padding: 0 8px;
+  }
+  .student-sheet-tabs small {
+    padding: 8px 0;
+  }
+  .student-sheet-footer button {
+    width: 100%;
+  }
+  .student-workbench.student-computer-desk
+    .student-page
+    > .student-card:first-child {
+    padding: 12px;
+  }
+}

@@ -4,6 +4,8 @@ Bilingual accounting career simulation by Money Coder. Next.js App Router, React
 
 [Arabic site](https://debit-credit-nine.vercel.app/ar) · [English site](https://debit-credit-nine.vercel.app/en) · [Documentation](docs/README.md) · [Current status](docs/STATUS.md)
 
+[Comprehensive Arabic project history and handoff](docs/PROJECT-MASTER-HANDOFF-AR.md)
+
 ## User journey
 
 Guests can learn and play with browser-local progress. Email signup creates an account without a session, then opens localized login. Successful login opens `/ar` or `/en`, unless a safe internal destination was requested. The homepage remains the starting point for learning and work.

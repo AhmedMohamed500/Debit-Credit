@@ -7,7 +7,9 @@ import { requestJSON } from "@/lib/cloud/runtime";
 import type { StudentState } from "@/lib/student/unit";
 import type { Locale } from "@/types";
 import "@/app/student-game.css";
+import {useStudentJourney} from "./student-journey";
 export function StudentGameLink({ locale }: { locale: Locale }) {
+  const guided = Boolean(useStudentJourney());
   const identity = useCloudIdentity(),
     owner = identity?.user.id,
     [count, setCount] = useState<number | null>(null),
@@ -16,7 +18,7 @@ export function StudentGameLink({ locale }: { locale: Locale }) {
   useEffect(() => {
     let alive = true;
     setCount(null);
-    if (owner)
+    if (owner && !guided)
       void requestJSON<{ data: StudentState }>("me/student-unit")
         .then((row) => {
           if (alive) setCount(row.data.accepted.length);
@@ -25,7 +27,8 @@ export function StudentGameLink({ locale }: { locale: Locale }) {
     return () => {
       alive = false;
     };
-  }, [owner]);
+  }, [owner, guided]);
+  if(guided)return null;
   return (
     <section
       className="student-game-link"

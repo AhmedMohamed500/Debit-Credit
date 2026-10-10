@@ -424,6 +424,7 @@ try {
           })
           .click();
         await page.waitForURL(`**/${locale}/signup?**`);
+        await page.waitForLoadState("networkidle");
         // Two local fixtures, reused across viewports, respect production auth
         // rate limits without weakening/resetting those limits for this test.
         const signup = !credentials.has(locale);
@@ -443,6 +444,7 @@ try {
             })
             .click();
           await page.waitForURL(`**/${locale}/login?**`);
+          await page.waitForLoadState("networkidle");
         }
         if (signup) await page.locator('[name="name"]').fill("Routing QA");
         await page.locator('[name="email"]').fill(email);
@@ -468,6 +470,7 @@ try {
           );
         if (signup) {
           await page.waitForURL(`**/${locale}/login?**`);
+          await page.waitForLoadState("networkidle");
           record(label + " Email signup -> separate localized sign-in form");
           record(
             label + " Signup leaves session unauthenticated",
@@ -499,9 +502,10 @@ try {
         await page
           .getByRole("button", { name: ar ? "خروج" : "Sign out", exact: true })
           .waitFor();
+        await page.locator('.student-next-action a').waitFor();
         record(
           label + " authenticated homepage opens student curriculum",
-          await page.locator('.student-game-link a').isVisible(),
+          await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/game/student`,
         );
         // We are already on the landing URL. waitForURL alone would resolve
         // before signOut's asynchronous full-document navigation happened.
@@ -526,6 +530,7 @@ try {
             .click();
         await login.click();
         await page.waitForURL(`**/${locale}/login`);
+        await page.waitForLoadState("networkidle");
         record(label + " Logout -> localized landing -> Login");
         await page.locator('[name="email"]').fill(email);
         if (redesign && signup) {

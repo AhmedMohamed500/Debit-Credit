@@ -5,6 +5,7 @@ import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { ProfilePhoto } from "./profile-photo";
 import { activitySummary } from "@/lib/career/activity-summary";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   BriefcaseBusiness,
@@ -195,6 +196,7 @@ function CareerHeader({
   profile: CareerProfile;
 }) {
   const ar = locale === "ar",
+    pathname = usePathname() ?? `/${locale}/career-profile`,
     say = (en: string, a: string) => (ar ? a : en);
   return (
     <header className="career-header">
@@ -206,6 +208,9 @@ function CareerHeader({
         </b>
       </Link>
       <nav>
+        <Link href={`/${locale}`}>
+          {say("My journey", "رحلتي")}
+        </Link>
         <Link href={`/${locale}/career-profile`}>
           {say("Profile", "الملف")}
         </Link>
@@ -225,7 +230,7 @@ function CareerHeader({
             ? say("Open to work", "متاح للعمل")
             : say("Career profile", "ملف مهني")}
         </span>
-        <Link href={`/${ar ? "en" : "ar"}/career-profile`}>
+        <Link href={`/${ar ? "en" : "ar"}${pathname.replace(/^\/(ar|en)/, "")}`}>
           <Languages />
           {ar ? "EN" : "AR"}
         </Link>

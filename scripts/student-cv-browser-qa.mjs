@@ -87,7 +87,30 @@ try {
     let cloud = await (await api(context, "me/progress")).json(); record(label + " wrong response produces no CV evidence", cloud.evidence.length === 0);
     record(label + " future step locked", (await api(context, "me/student-unit", "POST", { revision: 1, step: "worksheet", answer: { formula: "=SUM(C2:C9)", differenceFormula: "=C10-D10" } })).status() === 409);
     for (let index = 0; index < answers.length; index++) {
-      for (const [name, value] of Object.entries(answers[index])) { const field = page.locator(`[name="${name}"]`); if (name === "action") await page.locator(`input[name="action"][value="${value}"]`).check(); else if (name === "debit" || name === "credit") await field.selectOption(value); else await field.fill(value); }
+      if (index === 10) {
+        await page.getByRole("button", { name: /Open office computer|افتح كمبيوتر المكتب/ }).click();
+        await page.getByRole("table", { name: "Trial Balance", exact: true }).waitFor();
+        const formulaBar = page.locator('#student-sheet-formula');
+        record(label + " worksheet is on the office computer with actual accepted cash balance", await page.getByRole("button", { name: "C2: 84,000", exact: true }).isVisible());
+        await page.getByRole("button", { name: /^C10 editable:/ }).click(); await formulaBar.fill("=SUM(C2:C8)");
+        await formulaBar.press("Enter"); await formulaBar.fill("=C10-D10");
+        record(label + " sheet recalculates an incorrect workpaper instead of faking balance", await page.getByRole("button", { name: "C11 editable: -3,000", exact: true }).isVisible());
+        const evidenceBefore = (await (await api(context, "me/progress")).json()).evidence.length;
+        await page.locator('.student-card form button[type="submit"]').click();
+        await page.getByRole("status").filter({ hasText: /Not accepted|غير مقبولة/ }).waitFor();
+        record(label + " incorrect spreadsheet adds no CV evidence", (await (await api(context, "me/student-unit")).json()).data.accepted.length === 10 && (await (await api(context, "me/progress")).json()).evidence.length === evidenceBefore);
+        await page.getByRole("button", { name: /^C10 editable:/ }).click(); await formulaBar.fill(answers[index].formula);
+        await formulaBar.press("Enter"); await formulaBar.fill(answers[index].differenceFormula);
+        record(label + " correct workbook recalculates 127000 totals and zero difference", await page.getByRole("button", { name: "C10 editable: 127,000", exact: true }).isVisible() && await page.getByRole("button", { name: "C11 editable: 0", exact: true }).isVisible());
+        await page.getByRole("button", { name: /^D10:/ }).click(); record(label + " source and prepared totals are read-only", await formulaBar.getAttribute("readonly") !== null);
+        record(label + " formula bar remains visible below desk header while selecting worksheet cells", await formulaBar.evaluate(element => { const bar = element.getBoundingClientRect(), header = document.querySelector('.student-workbench-header').getBoundingClientRect(); return bar.top >= header.bottom - 2 && bar.bottom <= innerHeight; }));
+        await screenshot(page, label + "-office-spreadsheet"); await checkLayout(page, label + " office computer");
+        await page.getByRole("button", { name: /Back to desk|ارجع للمكتب/ }).click();
+        await page.getByRole("button", { name: /Open office computer|افتح كمبيوتر المكتب/ }).click();
+        record(label + " workbook unsent formulas preserved on returning to office desk", await page.getByRole("button", { name: "C10 editable: 127,000", exact: true }).isVisible());
+      } else {
+        for (const [name, value] of Object.entries(answers[index])) { const field = page.locator(`[name="${name}"]`); if (name === "action") await page.locator(`input[name="action"][value="${value}"]`).check(); else if (name === "debit" || name === "credit") await field.selectOption(value); else await field.fill(value); }
+      }
       await page.locator('.student-card form button[type="submit"]').click();
       await page.getByRole("status").filter({ hasText: locale === "ar" ? "مقبولة ومحفوظة" : "Accepted and saved" }).waitFor();
       record(label + " task " + (index + 1) + " accepted");

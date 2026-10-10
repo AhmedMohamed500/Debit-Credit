@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { roleIds, roleCatalog } from "@/lib/career/catalog";
 import type { SkillEvidence, SkillId } from "@/lib/career/model";
+import { normalizeSheetFormula } from "./worksheet";
 
 export const studentAccounts = {
   cash: { en: "Cash", ar: "النقدية" },
@@ -191,9 +192,9 @@ export function gradeStudent(
     correct = answer.action === "reclassify-equipment";
   else if (command.step === "worksheet")
     correct =
-      (answer.formula ?? "").replaceAll(" ", "").toUpperCase() ===
+      normalizeSheetFormula(answer.formula ?? "") ===
         "=SUM(C2:C9)" &&
-      (answer.differenceFormula ?? "").replaceAll(" ", "").toUpperCase() ===
+      normalizeSheetFormula(answer.differenceFormula ?? "") ===
         "=C10-D10";
   const accepted = correct ? [...state.accepted, command.step] : state.accepted;
   return {

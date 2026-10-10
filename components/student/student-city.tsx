@@ -21,7 +21,7 @@ export const studentStops = [
   { start: 1, end: 7, title: { ar: "مكتب القيود", en: "Journal desk" } },
   { start: 7, end: 8, title: { ar: "دفتر الأستاذ", en: "Cash ledger" } },
   { start: 8, end: 10, title: { ar: "ميزان ومراجعة", en: "Trial balance" } },
-  { start: 10, end: 11, title: { ar: "ورقة العمل", en: "Workpaper" } },
+  { start: 10, end: 11, title: { ar: "كمبيوتر المكتب", en: "Office computer" } },
 ];
 export function StudentCity({
   locale,

@@ -1,0 +1,124 @@
+.student-page {
+  max-width: 1120px;
+  margin: auto;
+  padding: 32px 20px;
+  color: var(--text-primary, #122944);
+  min-height: 100dvh;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+.student-page > a {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-weight: 800;
+}
+.student-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #b8cddd);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.student-card h1 {
+  font-size: clamp(25px, 4vw, 38px);
+  line-height: 1.4;
+}
+.student-card p {
+  line-height: 1.85;
+}
+.student-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 24px 0;
+}
+.student-fields label,
+.student-card form > label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 650;
+}
+.student-page input,
+.student-page select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #9db6ce;
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--surface, #fff);
+  color: inherit;
+}
+.student-page input:disabled {
+  opacity: 0.8;
+}
+.student-page input[type="checkbox"] { width: 22px; min-height: 22px; }
+.student-page button,
+.student-primary {
+  display: inline-block;
+  background: #1263cc;
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 20px;
+  min-height: 46px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.student-page button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.student-page [role="alert"] {
+  color: #af2d30;
+}
+.student-progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+}
+.student-document {
+  background: #edf5ff;
+  color: #183653;
+  padding: 18px;
+  border-radius: 12px;
+  margin: 18px 0;
+}
+.student-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+}
+.student-page th,
+.student-page td {
+  padding: 10px;
+  text-align: start;
+  border-bottom: 1px solid #b8cddd;
+}
+.student-table-wrap {
+  overflow: auto;
+}
+.student-page a:focus-visible,
+.student-page button:focus-visible,
+.student-page input:focus-visible,
+.student-page select:focus-visible {
+  outline: 3px solid #e5ad22;
+  outline-offset: 3px;
+}
+.student-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+@media (max-width: 650px) {
+  .student-fields {
+    grid-template-columns: 1fr;
+  }
+  .student-card {
+    padding: 18px;
+  }
+  .student-page {
+    padding: 20px 12px;
+  }
+}

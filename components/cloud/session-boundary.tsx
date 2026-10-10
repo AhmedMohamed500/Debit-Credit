@@ -34,7 +34,7 @@ export function CloudSessionBoundary({
 }) {
   const pathname = usePathname(),
     privatePath =
-      /^\/(ar|en)\/(onboarding|bootcamp|game|career-profile|career-league|career|profile|leaderboard|competition|account)(\/|$)/.test(
+      /^\/(ar|en)\/(student|onboarding|bootcamp|game|career-profile|career-league|career|profile|leaderboard|competition|account)(\/|$)/.test(
         pathname,
       );
   const ar = locale === "ar",
@@ -59,6 +59,10 @@ export function CloudSessionBoundary({
     try {
       const me = await requestJSON<CloudIdentity>("me");
       setIdentity(me);
+      if (privatePath && me.personalComplete === false) {
+        window.location.replace(`/${locale}/student-profile?next=${encodeURIComponent(pathname)}`);
+        return;
+      }
       const cache = new CloudCacheRepository();
       if (!privatePath) {
         setReady(true);
@@ -88,7 +92,7 @@ export function CloudSessionBoundary({
         );
       }
     }
-  }, [enabled, privatePath, ar]);
+  }, [enabled, privatePath, ar, locale, pathname]);
   useEffect(() => {
     void load();
   }, [load]);

@@ -7,6 +7,7 @@ import type {
 import type { CareerLeagueState } from "@/lib/career-league/model";
 import { readDrafts, writeDrafts, type PendingDraft } from "./outbox";
 export type CloudIdentity = {
+  personalComplete?: boolean;
   user: {
     id: string;
     email: string;

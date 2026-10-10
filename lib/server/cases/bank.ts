@@ -1,4 +1,5 @@
 import "server-only";
+import { saveAutomaticCloudCv } from "../profiles/cv";
 import { z } from "zod";
 import { serial, json } from "../db/client";
 import {
@@ -134,6 +135,7 @@ export async function submitBank(
         revision: { increment: 1 },
       },
     });
+    if (work.completedAt && bankReconciliation(work).reconciled) await saveAutomaticCloudCv(tx, userId);
     return { work, replayed: false };
   });
 }

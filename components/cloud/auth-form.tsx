@@ -40,6 +40,7 @@ export function AuthForm({
   const ar = locale === "ar",
     say = (en: string, a: string) => (ar ? a : en),
     destination = safeNext(next, locale),
+    authenticatedDestination = `/${locale}/auth/continue?next=${encodeURIComponent(destination)}`,
     loginURL = `/${locale}/login?next=${encodeURIComponent(destination)}&registered=1`;
   const [operation, setOperation] = useState<
     "email" | "google" | "reset" | null
@@ -109,7 +110,7 @@ export function AuthForm({
           })
         : await authClient.signIn.email({
             ...fields,
-            callbackURL: destination,
+            callbackURL: authenticatedDestination,
           });
       if (result.error) {
         setError(authError(result.error.code));
@@ -125,7 +126,7 @@ export function AuthForm({
       // returns redirect:true. Do not start a second competing navigation.
       const sdkRedirect =
         result.data && "redirect" in result.data && result.data.redirect;
-      if (!sdkRedirect) window.location.assign(destination);
+      if (!sdkRedirect) window.location.assign(new URL(authenticatedDestination, window.location.origin).href);
     } catch {
       setError(connectionError());
     } finally {
@@ -142,7 +143,7 @@ export function AuthForm({
     try {
       const result = await authClient.signIn.social({
         provider: "google",
-        callbackURL: destination,
+        callbackURL: authenticatedDestination,
       });
       if (result.error)
         setError(

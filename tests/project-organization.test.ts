@@ -12,7 +12,13 @@ describe("project organization safeguards", () => {
     (route) => {
       const file = path.join("app", "[locale]", route, "page.tsx");
       expect(existsSync(file)).toBe(true);
-      expect(read(file)).not.toMatch(/\bredirect\s*\(/);
+      if (route === "") {
+        // Home remains public for guests, with the required account setup redirect
+        // only for authenticated users who have no validated personal CV record.
+        expect(read(file)).toMatch(/if \(!user\) return <MarketingLanding/);
+        expect(read(file)).toMatch(/if \(!personal\.data\)/);
+        expect(read(file)).toContain("/student-profile?next=");
+      } else expect(read(file)).not.toMatch(/\bredirect\s*\(/);
       expect(read(file)).not.toMatch(/index\s*:\s*false/);
     },
   );

@@ -5,6 +5,7 @@ Start here rather than treating every past release report as today's status.
 ## Current entry points
 
 - [Current status and provider limitations](STATUS.md)
+- [Student curriculum and automatic private ATS CV](STUDENT-CV-RELEASE-AR.md)
 - [Routes, login journey and compatibility](ROUTES.md)
 - [Project organization and verification](PROJECT-ORGANIZATION-AR.md)
 - [Signup → separate login → home](SIGNUP-SIGNIN-HOME-AR.md)

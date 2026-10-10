@@ -3,6 +3,7 @@ import path from "node:path";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium } from "playwright-core";
 import pg from "pg";
+import { completeStudentDetails } from "./student-qa-helpers.mjs";
 const base = "http://localhost:3110",
   out = path.resolve("artifacts/backend-phase-1"),
   tmp = path.join(out, "tmp");
@@ -70,6 +71,8 @@ async function signUp(p, email, name, locale) {
   await p.locator('[name="email"]').fill(email);
   await p.locator('[name="password"]').fill(password);
   await p.locator('.auth-email-form button[type="submit"]').click();
+  await p.waitForURL(`**/${locale}/student-profile?**`);
+  await completeStudentDetails(p, locale);
   await p.waitForURL(`**/${locale}`);
   await p.goto(`${base}/${locale}/onboarding`);
   await p.locator(".career-entry-personas").waitFor();

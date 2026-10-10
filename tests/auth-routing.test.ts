@@ -85,7 +85,8 @@ describe("auth route deployment contract", () => {
       "utf8",
     );
     expect(source).toContain("authClient.signIn.social");
-    expect(source).toContain("callbackURL: destination");
+    expect(source).toContain("callbackURL: authenticatedDestination");
+    expect(existsSync(path.resolve("app/[locale]/auth/continue/page.tsx"))).toBe(true);
     expect(source).not.toContain("/api/auth/callback/google");
   });
   it.each(["/api/auth/get-session", "/api/auth/callback/google"])(

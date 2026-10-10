@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { queueCloudBackup } from "@/lib/cloud/runtime";
 import { initialState, safeLoad } from "./director";
 import type { GameState } from "./model";
+import { BrowserCareerProfileRepository, BrowserSkillEvidenceRepository } from "@/lib/career/repository";
+import { firstShiftSkillEvidence } from "@/lib/career/evidence";
 export const GAME_KEY = "debit-credit-world-v2";
 const EVENT = "debit-credit-world-updated";
 let memory: GameState | undefined;
@@ -21,6 +23,8 @@ export function changeGame(fn: (s: GameState) => GameState) {
     localStorage.setItem(GAME_KEY, JSON.stringify(s));
     delete s.storageWarning;
     queueCloudBackup(GAME_KEY, s);
+    const profile = new BrowserCareerProfileRepository().get();
+    if (profile) new BrowserSkillEvidenceRepository().merge(firstShiftSkillEvidence(s, profile.localCandidateId));
   } catch {
     s.storageWarning =
       "Storage unavailable: keep this tab open; progress is only in memory.";

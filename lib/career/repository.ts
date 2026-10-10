@@ -1,4 +1,9 @@
 import { queueCloudBackup } from "@/lib/cloud/runtime";
+import { buildCv } from "./cv";
+import { cvToPlainText } from "./ats";
+import { calculatePassport } from "./evidence";
+import { BrowserCvVersionRepository } from "./cv-history";
+import { roleCatalog } from "./catalog";
 import type {
   CareerProfile,
   CvPreferences,
@@ -91,12 +96,14 @@ export class BrowserCareerProfileRepository implements CareerProfileRepository {
     }
   }
   save(profile: CareerProfile) {
-    const next = { ...profile, version: 1, updatedAt: new Date().toISOString() };
-    storage()?.setItem(
-      CAREER_PROFILE_KEY,
-      JSON.stringify(next),
-    );
+    const next = {
+      ...profile,
+      version: 1,
+      updatedAt: new Date().toISOString(),
+    };
+    storage()?.setItem(CAREER_PROFILE_KEY, JSON.stringify(next));
     queueCloudBackup(CAREER_PROFILE_KEY, next);
+    refreshAutomaticCv();
   }
   clear() {
     storage()?.removeItem(CAREER_PROFILE_KEY);
@@ -160,6 +167,7 @@ export class BrowserSkillEvidenceRepository implements SkillEvidenceRepository {
       a.completedAt.localeCompare(b.completedAt),
     );
     storage()?.setItem(SKILL_EVIDENCE_KEY, JSON.stringify(result));
+    refreshAutomaticCv();
     return result;
   }
   clear() {
@@ -178,5 +186,21 @@ export class BrowserCvPreferencesRepository implements CvPreferencesRepository {
   save(value: CvPreferences) {
     storage()?.setItem(CV_PREFERENCES_KEY, JSON.stringify(value));
     queueCloudBackup(CV_PREFERENCES_KEY, value);
+    refreshAutomaticCv();
   }
+}
+export function refreshAutomaticCv() {
+  const profile = new BrowserCareerProfileRepository().get();
+  if (!profile) return;
+  const evidence = new BrowserSkillEvidenceRepository()
+    .getAll()
+    .filter((row) => row.localCandidateId === profile.localCandidateId);
+  const preferredRole =
+    new BrowserCvPreferencesRepository().get()?.targetRoleId ??
+    profile.targetRoleId;
+  const role = Object.hasOwn(roleCatalog, preferredRole)
+    ? preferredRole
+    : "junior-accountant";
+  const cv = buildCv(profile, calculatePassport(evidence), evidence, role);
+  new BrowserCvVersionRepository().save(cv, cvToPlainText(profile, cv));
 }

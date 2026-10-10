@@ -43,6 +43,11 @@ import {
 } from "@/lib/server/admin/service";
 import { emailConfigured, googleConfigured } from "@/lib/server/security/env";
 import { bankSubmission, submitBank } from "@/lib/server/cases/bank";
+import { personalFor, savePersonal } from "@/lib/server/profiles/personal";
+import { personalCommand } from "@/lib/career/personal";
+import { studentFor, submitStudent } from "@/lib/server/progress/student";
+import { studentCommand } from "@/lib/student/unit";
+import { automaticCvFor } from "@/lib/server/profiles/cv";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 async function handle(
@@ -77,7 +82,18 @@ async function handle(
             google: googleConfigured(),
             email: emailConfigured(),
           },
+          personalComplete: Boolean((await personalFor(user.id)).data),
         };
+      case "GET me/personal":
+        return personalFor(user.id);
+      case "GET me/cv":
+        return automaticCvFor(user.id);
+      case "PUT me/personal":
+        return savePersonal(user.id, user.email, await body(request, personalCommand));
+      case "GET me/student-unit":
+        return studentFor(user.id);
+      case "POST me/student-unit":
+        return submitStudent(user.id, await body(request, studentCommand));
       case "GET me/profile":
         return ownProfile(user.id);
       case "PUT me/profile":

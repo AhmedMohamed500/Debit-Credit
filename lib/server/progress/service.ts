@@ -6,7 +6,13 @@ export async function progressFor(userId: string) {
     await Promise.all([
       foundationState(userId),
       db().cloudProgress.findMany({
-        where: { userId, domain: { notIn: ["foundations", "profile-photo"] } },
+        where: {
+          userId,
+          domain: {
+            notIn: ["foundations", "profile-photo", "private-portfolio"],
+            not: { startsWith: "private-certificate/" },
+          },
+        },
       }),
       db().skillEvidenceCloud.findMany({
         where: { userId },

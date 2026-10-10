@@ -108,7 +108,7 @@ export function ProfilePhoto({
         {current?.data?.image ? (
           <Image
             src={current.data.image}
-            alt={say("Student profile photo", "صورة بروفايل الطالب")}
+            alt={say("Profile photo", "صورة البروفايل")}
             width={96}
             height={96}
             unoptimized

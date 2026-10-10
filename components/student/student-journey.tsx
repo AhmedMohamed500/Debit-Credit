@@ -261,9 +261,12 @@ function StudentJourneyBar() {
   if (!context) return null;
   const { locale } = context;
   if (
-    [`/${locale}`, `/${locale}/game`, `/${locale}/student-profile`].includes(
-      pathname,
-    )
+    [
+      `/${locale}`,
+      `/${locale}/game`,
+      `/${locale}/student-profile`,
+      `/${locale}/career-profile`,
+    ].includes(pathname)
   )
     return null;
   return (

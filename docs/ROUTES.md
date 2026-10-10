@@ -19,7 +19,7 @@ Signup does not start a session. Login preserves a safe internal destination; ot
 | `/game/student` | Student training city and accounting workbench; server-graded source documents, journal, ledger, trial balance and spreadsheet tasks. |
 | `/auth/continue` | Safe post-auth redirect gate: validated personal CV details before the requested destination. |
 | `/career` | Career hub and readiness. |
-| `/career-profile` | Professional evidence, skills and CV; noindex. |
+| `/career-profile` | Signed-in profile for every persona: Profile, Courses, Progress and Certifications tabs; private certificate images, links to evidence and English CV; noindex. Guest view remains compatible. |
 | `/employers` | Current employer demo entry. Candidates are demo data, not real applicants. |
 | `/companies` | Existing legacy employer/game view, retained for compatibility. |
 | `/leaderboard` | Guest/demo view; authenticated users redirect to `/competition`. |

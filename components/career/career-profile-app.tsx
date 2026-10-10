@@ -2,6 +2,7 @@
 import "@/app/career-profile.css";
 import "@/app/career-profile-documents.css";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
+import { ProfilePhoto } from "./profile-photo";
 import { activitySummary } from "@/lib/career/activity-summary";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -259,7 +260,7 @@ function Dashboard({
     <div className="career-shell">
       <section className="career-identity">
         <div className="career-avatar">
-          <UserRound />
+          <ProfilePhoto locale={locale} name={profile.fullName} />
         </div>
         <div>
           <small>{say("PLAYER CAREER PROFILE", "الهوية المهنية للاعب")}</small>
@@ -758,6 +759,7 @@ function CareerEditor({
   };
   return (
     <div className="career-shell edit-shell">
+      <ProfilePhoto locale={locale} editable name={profile.fullName}/>
       {account && <p><Link href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile/edit`)}`}>{say("Update account CV details (name, phone, education, languages and links)", "تعديل بيانات CV المحفوظة بالحساب: الاسم والهاتف والتعليم واللغات والروابط")}</Link></p>}
       <section className="career-page-title">
         <small>{say(`STEP ${step} OF 5`, `الخطوة ${step} من 5`)}</small>
@@ -1055,6 +1057,9 @@ function CvView({
     cv = buildCv(profile, passport, evidence, prefs.targetRoleId),
     plainText = cvToPlainText(profile, cv),
     formatChecks = checkAtsFormat(profile, cv);
+  // Document language is independent of the surrounding site language.
+  const documentLocale = "en" as const;
+  const documentCopy = (...[en]: [string, string]) => en;
   useEffect(() => {
     new BrowserCvVersionRepository().save(cv, plainText);
   }, [cv, plainText]);
@@ -1083,6 +1088,8 @@ function CvView({
       <section className="cv-controls">
         <div>
           <small>AUTO CV</small>
+          <p>{say("English CV · one-column, text-based document. Enter personal details and real experience in English; your photo stays on your website profile only.", "CV إنجليزي · عمود واحد ونص قابل للقراءة. اكتب بياناتك وخبرتك الحقيقية بالإنجليزي؛ صورتك تظهر في بروفايل الموقع فقط.")}</p>
+          {/[\u0600-\u06ff]/u.test(JSON.stringify([profile.fullName, profile.country, profile.location, profile.education, profile.experience, profile.languages])) && <p role="note">{say("Some saved personal details are still in Arabic. Update them in English before using this CV. Existing details are preserved; names and qualifications are not automatically translated.", "بعض بياناتك المحفوظة ما زالت بالعربي. عدّلها بالإنجليزي قبل استخدام السيرة. احتفظنا ببياناتك؛ لا نترجم الأسماء والمؤهلات تلقائيًا.")}</p>}
           <h1>{say("Role-based professional CV", "سيرة ذاتية موجهة للدور")}</h1>
           <p>
             {say(
@@ -1128,12 +1135,12 @@ function CvView({
           {say("Export CV data", "تنزيل بيانات CV")}
         </button>
       </section>
-      <article className="professional-cv">
+      <article className="professional-cv" lang="en" dir="ltr">
         <header>
           <div>
-            <h1>{profile.fullName || say("Your Name", "اسمك")}</h1>
+            <h1>{profile.fullName || "Your Name"}</h1>
             <p>{cv.headline}</p>
-            <b>{roleCatalog[cv.targetRoleId].label[locale]}</b>
+            <b>{roleCatalog[cv.targetRoleId].label[documentLocale]}</b>
           </div>
           <address>
             {[profile.email, profile.phone, profile.location, profile.country]
@@ -1143,11 +1150,11 @@ function CvView({
               ))}
           </address>
         </header>
-        <CvSection title={say("Professional Summary", "الملخص المهني")}>
+        <CvSection title={documentCopy("Professional Summary", "الملخص المهني")}>
           <p>{cv.summary}</p>
         </CvSection>
         {profile.education.length > 0 && (
-          <CvSection title={say("Education", "التعليم")}>
+          <CvSection title={documentCopy("Education", "التعليم")}>
             {profile.education.map((e) => (
               <p key={e.id}>
                 <b>
@@ -1160,7 +1167,7 @@ function CvView({
           </CvSection>
         )}
         {profile.experience.length > 0 && (
-          <CvSection title={say("Experience", "الخبرة")}>
+          <CvSection title={documentCopy("Experience", "الخبرة")}>
             {profile.experience.map((e) => (
               <p key={e.id}>
                 <b>
@@ -1168,27 +1175,27 @@ function CvView({
                 </b>
                 <br />
                 {e.description}
-                <br />{e.startDate} — {e.current ? say("Present", "حتى الآن") : e.endDate}
+                <br />{e.startDate} — {e.current ? "Present" : e.endDate}
               </p>
             ))}
           </CvSection>
         )}
         <CvSection
-          title={say("Core Accounting Skills", "المهارات المحاسبية الأساسية")}
+          title={documentCopy("Core Accounting Skills", "المهارات المحاسبية الأساسية")}
         >
           <div className="cv-skills">
             {cv.coreSkills.length ? (
               cv.coreSkills.slice(0, 8).map((s) => (
                 <span key={s.skillId}>
-                  {skillCatalog[s.skillId].label[locale]}{" "}
+                  {skillCatalog[s.skillId].label[documentLocale]}{" "}
                   <small>
-                    {statusCopy[s.status][locale]}
+                    {statusCopy[s.status][documentLocale]}
                   </small>
                 </span>
               ))
             ) : (
               <p>
-                {say(
+                {documentCopy(
                   "No Demonstrated claims yet. Continue building qualifying case evidence.",
                   "لا توجد مهارات مثبتة بعد. استمر في بناء أدلة حالات مؤهلة.",
                 )}
@@ -1198,7 +1205,7 @@ function CvView({
         </CvSection>
         {cv.practiceSkills.length > 0 && (
           <CvSection
-            title={say(
+            title={documentCopy(
               "Accounting Practice & Skills in Development",
               "التدريب المحاسبي والمهارات قيد التطوير",
             )}
@@ -1206,15 +1213,15 @@ function CvView({
             <div className="cv-skills">
               {cv.practiceSkills.slice(0, 8).map((s) => (
                 <span key={s.skillId}>
-                  {skillCatalog[s.skillId].label[locale]}{" "}
-                  <small>{statusCopy[s.status][locale]}</small>
+                  {skillCatalog[s.skillId].label[documentLocale]}{" "}
+                  <small>{statusCopy[s.status][documentLocale]}</small>
                 </span>
               ))}
             </div>
           </CvSection>
         )}
         <CvSection
-          title={say(
+          title={documentCopy(
             "Accounting Simulation Experience",
             "خبرة المحاكاة المحاسبية",
           )}
@@ -1223,33 +1230,33 @@ function CvView({
           {cv.simulationBullets.length ? (
             <ul>
               {cv.simulationBullets.map((item) => (
-                <li key={item.evidenceId}>{ar ? item.textAr : item.text}</li>
+                <li key={item.evidenceId}>{item.text}</li>
               ))}
             </ul>
           ) : (
             <p>
-              {say(
+              {documentCopy(
                 "Complete qualifying Mizan Trading cases to generate evidence-backed experience bullets.",
                 "أكمل حالات مؤهلة في Mizan Trading لتوليد نقاط خبرة مدعومة بالأدلة.",
               )}
             </p>
           )}
           <small>
-            {say(
+            {documentCopy(
               "Practical Simulation · not employment or a verified assessment",
               "محاكاة عملية · ليست خبرة عمل أو تقييمًا موثقًا",
             )}
           </small>
         </CvSection>
-        {(profile.linkedIn || profile.portfolio) && <CvSection title={say("Links", "الروابط")}><p>{[profile.linkedIn, profile.portfolio].filter(Boolean).map(link => <span key={link}>{link}<br/></span>)}</p></CvSection>}
+        {(profile.linkedIn || profile.portfolio) && <CvSection title="Links"><p>{[profile.linkedIn, profile.portfolio].filter(Boolean).map(link => <span key={link}>{link}<br/></span>)}</p></CvSection>}
         {profile.languages.length > 0 && (
-          <CvSection title={say("Languages", "اللغات")}>
+          <CvSection title="Languages">
             <p>{profile.languages.join(" · ")}</p>
           </CvSection>
         )}
         <footer>
           Debit & Credit Skill Passport ·{" "}
-          {say(
+          {documentCopy(
               "Evidence-based training record · not professional certification",
               "سجل تدريب مبني على الأدلة · ليس شهادة مهنية",
           )}

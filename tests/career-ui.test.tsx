@@ -44,6 +44,16 @@ beforeEach(() => localStorage.clear());
 afterEach(cleanup);
 
 describe("Career Profile UI", () => {
+  it("keeps the CV document in English and LTR on an Arabic site, without a profile photo", async () => {
+    seedCareer();
+    const { container } = render(<CareerProfileApp locale="ar" view="cv" />);
+    await screen.findByRole("heading", { name: "Professional Summary" });
+    const cv = container.querySelector(".professional-cv")!;
+    expect(cv).toHaveAttribute("lang", "en"); expect(cv).toHaveAttribute("dir", "ltr");
+    expect(cv.textContent).toContain("Accounting Simulation Experience");
+    expect(cv.textContent).not.toMatch(/[\u0600-\u06ff]/u);
+    expect(cv.querySelector("img")).toBeNull();
+  });
   it("renders the Arabic professional dashboard in RTL with real First Shift evidence", async () => {
     seedCareer();
     const { container } = render(<CareerProfileApp locale="ar" view="dashboard" />);

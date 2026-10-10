@@ -78,6 +78,13 @@ function finish() {
   return { state, evidence };
 }
 describe("Student personal CV setup", () => {
+  it("preserves old personal records while requiring English on new CV detail saves", () => {
+    const arabic = { ...details, fullName: "أحمد محمد" };
+    expect(personalSchema.safeParse(arabic).success).toBe(true);
+    expect(isPersonalRecord({ ...record, details: arabic })).toBe(true);
+    expect(personalCommand.safeParse({ revision: 0, details: arabic }).success).toBe(false);
+    expect(personalCommand.safeParse({ revision: 0, details }).success).toBe(true);
+  });
   beforeEach(() => localStorage.clear());
   it("requires necessary personal and education fields, not invasive attributes", () => {
     expect(personalSchema.safeParse(details).success).toBe(true);

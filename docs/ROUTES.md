@@ -4,7 +4,7 @@ Use resolved `ar` or `en` in URLs, never the filesystem placeholder `[locale]`.
 
 ## Primary journey
 
-`/{locale}` → `/{locale}/signup?next=%2F{locale}` → `/{locale}/login?next=%2F{locale}&registered=1` → `/{locale}/auth/continue` → first-time `/{locale}/student-profile` → `/{locale}` → `/{locale}/student`.
+`/{locale}` → `/{locale}/signup?next=%2F{locale}` → `/{locale}/login?next=%2F{locale}&registered=1` → `/{locale}/auth/continue` → first-time `/{locale}/student-profile` → `/{locale}` (authenticated Game Hub) → `/{locale}/game/student`.
 
 Signup does not start a session. Login preserves a safe internal destination; otherwise it returns home. Auth traffic goes directly to `/api/auth/[...all]`, without a locale prefix. `/api/auth/callback/google` is the callback handler but Google is unavailable until credentials are configured.
 
@@ -12,10 +12,11 @@ Signup does not start a session. Login preserves a safe internal destination; ot
 
 | Path (under `/ar` or `/en`) | Responsibility |
 | --- | --- |
-| `/profile` | Browser-local game/player profile. |
+| `/profile` | Game/player profile; signed-in users can manage their private account photo. |
 | `/account` | Authenticated cloud account settings. |
 | `/student-profile` | Required private CV contact/education setup; session email is authoritative. |
-| `/student` | Server-graded introductory source-document, journal, ledger, trial balance and spreadsheet tasks. |
+| `/student` | Compatibility entry to the student game city; existing saved progress is retained. |
+| `/game/student` | Student training city and accounting workbench; server-graded source documents, journal, ledger, trial balance and spreadsheet tasks. |
 | `/auth/continue` | Safe post-auth redirect gate: validated personal CV details before the requested destination. |
 | `/career` | Career hub and readiness. |
 | `/career-profile` | Professional evidence, skills and CV; noindex. |

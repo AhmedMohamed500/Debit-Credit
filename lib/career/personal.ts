@@ -53,8 +53,15 @@ export const personalSchema = z
   })
   .strict();
 export type PersonalDetails = z.infer<typeof personalSchema>;
+// Existing saved records remain valid. New/updated CV details must be entered
+// in English by their owner; do not guess translations of names or credentials.
+export const personalWriteSchema = personalSchema.refine((details) => !/[\u0600-\u06ff]/u.test(JSON.stringify({
+  fullName: details.fullName, country: details.country, location: details.location,
+  institution: details.institution, degree: details.degree, field: details.field,
+  languages: details.languages, actualExperience: details.actualExperience,
+})), { message: "Enter CV personal details in English." });
 export const personalCommand = z
-  .object({ revision: z.number().int().nonnegative(), details: personalSchema })
+  .object({ revision: z.number().int().nonnegative(), details: personalWriteSchema })
   .strict();
 export type PersonalRecord = {
   details: PersonalDetails;

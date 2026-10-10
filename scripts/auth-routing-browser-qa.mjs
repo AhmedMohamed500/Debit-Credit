@@ -501,7 +501,7 @@ try {
           .waitFor();
         record(
           label + " authenticated homepage opens student curriculum",
-          await page.locator(`a[href="/${locale}/student"]`).isVisible(),
+          await page.locator('.student-game-link a').isVisible(),
         );
         // We are already on the landing URL. waitForURL alone would resolve
         // before signOut's asynchronous full-document navigation happened.

@@ -7,6 +7,7 @@ import { StudentJourneyProvider } from "@/components/student/student-journey";
 export function StudentWorld({children}:{children:ReactNode}) {
   const pathname=usePathname();
   const {state}=useGame();
+  if (/^\/(ar|en)\/portfolio\//.test(pathname)) return <div className="professional-profile-shell">{children}</div>;
  const modern=/^\/(ar|en)\/(student|student-profile|game|academy|account-guide|leaderboard|career|career-profile|career-league|employers|journal|ledger|trial-balance|financial-statements|challenges|profile|account|competition)(\/|$)/.test(pathname);
   const locale=pathname.startsWith('/ar')?'ar':'en';
   if(modern)return <StudentJourneyProvider locale={locale}><div className="new-game-shell">{children}</div></StudentJourneyProvider>;

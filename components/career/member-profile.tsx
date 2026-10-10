@@ -42,6 +42,7 @@ import type {
 } from "@/lib/career/model";
 import type { Locale } from "@/types";
 import { ProfilePhoto } from "./profile-photo";
+import { useShowcase, ShowcaseIdentity, ShowcasePanel } from "./showcase";
 import { useStudentJourney } from "@/components/student/student-journey";
 import "@/app/member-profile.css";
 
@@ -88,6 +89,7 @@ export function MemberProfile({
   const identity = useCloudIdentity(),
     owner = identity?.user.id;
   const journey = useStudentJourney();
+  const showcase = useShowcase(owner);
   const nextRoute =
     journey && !journey.loading && !journey.error
       ? journey.journey.nextRoute
@@ -343,6 +345,7 @@ export function MemberProfile({
               <b>{row.title}</b>
               <small>{row.note}</small>
               <progress
+                data-testid="personal-completeness"
                 max={row.total}
                 value={row.count ?? 0}
                 aria-label={row.title}
@@ -465,6 +468,7 @@ export function MemberProfile({
                   "اكتمال البيانات الشخصية · ليس تقييم مهارات",
                 )}
               </span>
+              <ShowcaseIdentity data={showcase.data} locale={locale} />
             </div>
             <div className="member-hero-art" aria-hidden="true">
               <ChartNoAxesCombined />
@@ -536,6 +540,7 @@ export function MemberProfile({
             <div>
               {tab === "profile" && (
                 <>
+                  <ShowcasePanel controller={showcase} locale={locale} owner={owner} />
                   <section className="member-card">
                     <header>
                       <h2>{say("Your learning journey", "رحلتك في التعلم")}</h2>

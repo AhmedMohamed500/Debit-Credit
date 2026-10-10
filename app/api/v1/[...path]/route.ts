@@ -51,6 +51,8 @@ import { automaticCvFor } from "@/lib/server/profiles/cv";
 import { photoFor, savePhoto } from "@/lib/server/profiles/photo";
 import { photoCommand } from "@/lib/career/photo";
 import { portfolioCommand } from "@/lib/career/portfolio";
+import { showcaseCommand } from "@/lib/career/showcase";
+import { showcaseFor, saveShowcase } from "@/lib/server/profiles/showcase";
 import {
   portfolioFor,
   savePortfolio,
@@ -98,6 +100,10 @@ async function handle(
         return photoFor(user.id);
       case "GET me/portfolio":
         return portfolioFor(user.id);
+      case "GET me/showcase":
+        return showcaseFor(user.id);
+      case "PUT me/showcase":
+        return saveShowcase(user.id, await body(request, showcaseCommand));
       case "PUT me/portfolio":
         return savePortfolio(
           user.id,

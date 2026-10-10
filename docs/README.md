@@ -4,6 +4,8 @@ Start here rather than treating every past release report as today's status.
 
 ## Current entry points
 
+- [Unified member profile, private courses and certificate images](MEMBER-PROFILE-AR.md)
+
 - [Comprehensive Arabic project history, architecture and handoff](PROJECT-MASTER-HANDOFF-AR.md)
 - [Connected student journey and full-frame profile photo](CONNECTED-STUDENT-JOURNEY-AR.md)
 - [Current status and provider limitations](STATUS.md)

@@ -39,6 +39,7 @@ try {
         "student",
         "game/student",
         "student-profile",
+        "career-profile",
         "auth/continue",
       ]) {
         // Next may begin streaming a 200 shell before a protected-page redirect.
@@ -58,7 +59,7 @@ try {
       }
       await context.close();
     }
-  for (const destination of ["me/personal", "me/student-unit", "me/cv", "me/photo"]) {
+  for (const destination of ["me/personal", "me/student-unit", "me/cv", "me/photo", "me/portfolio", "me/certificates/00000000-0000-4000-8000-000000000000"]) {
     const response = await fetch(base + "/api/v1/" + destination, {
       redirect: "manual",
     });

@@ -50,6 +50,12 @@ import { studentCommand } from "@/lib/student/unit";
 import { automaticCvFor } from "@/lib/server/profiles/cv";
 import { photoFor, savePhoto } from "@/lib/server/profiles/photo";
 import { photoCommand } from "@/lib/career/photo";
+import { portfolioCommand } from "@/lib/career/portfolio";
+import {
+  portfolioFor,
+  savePortfolio,
+  certificateFor,
+} from "@/lib/server/profiles/portfolio";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 async function handle(
@@ -90,12 +96,23 @@ async function handle(
         return personalFor(user.id);
       case "GET me/photo":
         return photoFor(user.id);
+      case "GET me/portfolio":
+        return portfolioFor(user.id);
+      case "PUT me/portfolio":
+        return savePortfolio(
+          user.id,
+          await body(request, portfolioCommand, 950_000),
+        );
       case "PUT me/photo":
         return savePhoto(user.id, await body(request, photoCommand));
       case "GET me/cv":
         return automaticCvFor(user.id);
       case "PUT me/personal":
-        return savePersonal(user.id, user.email, await body(request, personalCommand));
+        return savePersonal(
+          user.id,
+          user.email,
+          await body(request, personalCommand),
+        );
       case "GET me/student-unit":
         return studentFor(user.id);
       case "POST me/student-unit":
@@ -151,6 +168,14 @@ async function handle(
         await requireAdmin(request.headers);
         return competitionOverview();
     }
+    if (
+      method === "GET" &&
+      path.length === 3 &&
+      path[0] === "me" &&
+      path[1] === "certificates" &&
+      z.string().uuid().safeParse(path[2]).success
+    )
+      return certificateFor(user.id, path[2]);
     if (
       path[0] === "competition" &&
       path[1] === "matches" &&

@@ -3,6 +3,7 @@ import "@/app/career-profile.css";
 import "@/app/career-profile-documents.css";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { ProfilePhoto } from "./profile-photo";
+import { MemberProfile } from "./member-profile";
 import { activitySummary } from "@/lib/career/activity-summary";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -82,6 +83,7 @@ export function CareerProfileApp({
   skillId?: string;
   slug?: string;
 }) {
+  const identity = useCloudIdentity();
   const ar = locale === "ar",
     say = (en: string, a: string) => (ar ? a : en),
     { state: game, ready: gameReady } = useGame(),
@@ -135,6 +137,15 @@ export function CareerProfileApp({
     cvRepo.save(value);
     setPrefs(value);
   };
+  if (view === "dashboard" && identity)
+    return (
+      <MemberProfile
+        locale={locale}
+        profile={profile}
+        passport={passport}
+        evidence={evidence}
+      />
+    );
   return (
     <main className="career-app" dir={ar ? "rtl" : "ltr"}>
       <CareerHeader locale={locale} profile={profile} />
@@ -208,9 +219,7 @@ function CareerHeader({
         </b>
       </Link>
       <nav>
-        <Link href={`/${locale}`}>
-          {say("My journey", "رحلتي")}
-        </Link>
+        <Link href={`/${locale}`}>{say("My journey", "رحلتي")}</Link>
         <Link href={`/${locale}/career-profile`}>
           {say("Profile", "الملف")}
         </Link>
@@ -230,7 +239,9 @@ function CareerHeader({
             ? say("Open to work", "متاح للعمل")
             : say("Career profile", "ملف مهني")}
         </span>
-        <Link href={`/${ar ? "en" : "ar"}${pathname.replace(/^\/(ar|en)/, "")}`}>
+        <Link
+          href={`/${ar ? "en" : "ar"}${pathname.replace(/^\/(ar|en)/, "")}`}
+        >
           <Languages />
           {ar ? "EN" : "AR"}
         </Link>
@@ -436,7 +447,16 @@ function Dashboard({
         )}
       </section>
       <section className="career-panel simulation">
-        <p><Link href={`/${locale}/student`}>{say("Student unit: Source documents to books", "وحدة الطالب: من المستند إلى الدفاتر")}</Link> · {activitySummary(evidence, "student-unit1/").completed}/11 {say("accepted training tasks", "تاسك تدريبي مقبول")}</p>
+        <p>
+          <Link href={`/${locale}/student`}>
+            {say(
+              "Student unit: Source documents to books",
+              "وحدة الطالب: من المستند إلى الدفاتر",
+            )}
+          </Link>{" "}
+          · {activitySummary(evidence, "student-unit1/").completed}/11{" "}
+          {say("accepted training tasks", "تاسك تدريبي مقبول")}
+        </p>
         <header>
           <div>
             <small>{say("PROFESSIONAL EVIDENCE", "الأدلة المهنية")}</small>
@@ -455,14 +475,14 @@ function Dashboard({
           <span>
             <b>
               {activitySummary(evidence, "first-day/").accuracy ?? "—"}
-              {activitySummary(evidence, "first-day/").accuracy !== null ? "%" : ""}
+              {activitySummary(evidence, "first-day/").accuracy !== null
+                ? "%"
+                : ""}
             </b>
             {say("Evidence accuracy", "دقة الأدلة")}
           </span>
           <span>
-            <b>
-              {activitySummary(evidence, "first-day/").firstAttempt}
-            </b>
+            <b>{activitySummary(evidence, "first-day/").firstAttempt}</b>
             {say("First-attempt documents", "مستندات من أول محاولة")}
           </span>
           <span>
@@ -748,7 +768,18 @@ function CareerEditor({
       <span>{label}</span>
       <input
         type={type}
-        readOnly={Boolean(account && ["fullName", "country", "location", "email", "phone", "linkedIn", "portfolio"].includes(key))}
+        readOnly={Boolean(
+          account &&
+          [
+            "fullName",
+            "country",
+            "location",
+            "email",
+            "phone",
+            "linkedIn",
+            "portfolio",
+          ].includes(key),
+        )}
         value={String(profile[key] ?? "")}
         onChange={(e) =>
           save({
@@ -764,8 +795,19 @@ function CareerEditor({
   };
   return (
     <div className="career-shell edit-shell">
-      <ProfilePhoto locale={locale} editable name={profile.fullName}/>
-      {account && <p><Link href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile/edit`)}`}>{say("Update account CV details (name, phone, education, languages and links)", "تعديل بيانات CV المحفوظة بالحساب: الاسم والهاتف والتعليم واللغات والروابط")}</Link></p>}
+      <ProfilePhoto locale={locale} editable name={profile.fullName} />
+      {account && (
+        <p>
+          <Link
+            href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile/edit`)}`}
+          >
+            {say(
+              "Update account CV details (name, phone, education, languages and links)",
+              "تعديل بيانات CV المحفوظة بالحساب: الاسم والهاتف والتعليم واللغات والروابط",
+            )}
+          </Link>
+        </p>
+      )}
       <section className="career-page-title">
         <small>{say(`STEP ${step} OF 5`, `الخطوة ${step} من 5`)}</small>
         <h1>
@@ -1093,8 +1135,29 @@ function CvView({
       <section className="cv-controls">
         <div>
           <small>AUTO CV</small>
-          <p>{say("English CV · one-column, text-based document. Enter personal details and real experience in English; your photo stays on your website profile only.", "CV إنجليزي · عمود واحد ونص قابل للقراءة. اكتب بياناتك وخبرتك الحقيقية بالإنجليزي؛ صورتك تظهر في بروفايل الموقع فقط.")}</p>
-          {/[\u0600-\u06ff]/u.test(JSON.stringify([profile.fullName, profile.country, profile.location, profile.education, profile.experience, profile.languages])) && <p role="note">{say("Some saved personal details are still in Arabic. Update them in English before using this CV. Existing details are preserved; names and qualifications are not automatically translated.", "بعض بياناتك المحفوظة ما زالت بالعربي. عدّلها بالإنجليزي قبل استخدام السيرة. احتفظنا ببياناتك؛ لا نترجم الأسماء والمؤهلات تلقائيًا.")}</p>}
+          <p>
+            {say(
+              "English CV · one-column, text-based document. Enter personal details and real experience in English; your photo stays on your website profile only.",
+              "CV إنجليزي · عمود واحد ونص قابل للقراءة. اكتب بياناتك وخبرتك الحقيقية بالإنجليزي؛ صورتك تظهر في بروفايل الموقع فقط.",
+            )}
+          </p>
+          {/[\u0600-\u06ff]/u.test(
+            JSON.stringify([
+              profile.fullName,
+              profile.country,
+              profile.location,
+              profile.education,
+              profile.experience,
+              profile.languages,
+            ]),
+          ) && (
+            <p role="note">
+              {say(
+                "Some saved personal details are still in Arabic. Update them in English before using this CV. Existing details are preserved; names and qualifications are not automatically translated.",
+                "بعض بياناتك المحفوظة ما زالت بالعربي. عدّلها بالإنجليزي قبل استخدام السيرة. احتفظنا ببياناتك؛ لا نترجم الأسماء والمؤهلات تلقائيًا.",
+              )}
+            </p>
+          )}
           <h1>{say("Role-based professional CV", "سيرة ذاتية موجهة للدور")}</h1>
           <p>
             {say(
@@ -1110,7 +1173,13 @@ function CvView({
               "فحوص تنسيق حتمية ناجحة · ليست درجة ATS",
             )}
           </small>
-          <p><Link href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile/cv`)}`}>{say("Edit account CV details", "تعديل بيانات CV بالحساب")}</Link></p>
+          <p>
+            <Link
+              href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile/cv`)}`}
+            >
+              {say("Edit account CV details", "تعديل بيانات CV بالحساب")}
+            </Link>
+          </p>
         </div>
         <label>
           {say("CV target role", "الدور المستهدف")}
@@ -1155,7 +1224,9 @@ function CvView({
               ))}
           </address>
         </header>
-        <CvSection title={documentCopy("Professional Summary", "الملخص المهني")}>
+        <CvSection
+          title={documentCopy("Professional Summary", "الملخص المهني")}
+        >
           <p>{cv.summary}</p>
         </CvSection>
         {profile.education.length > 0 && (
@@ -1180,22 +1251,24 @@ function CvView({
                 </b>
                 <br />
                 {e.description}
-                <br />{e.startDate} — {e.current ? "Present" : e.endDate}
+                <br />
+                {e.startDate} — {e.current ? "Present" : e.endDate}
               </p>
             ))}
           </CvSection>
         )}
         <CvSection
-          title={documentCopy("Core Accounting Skills", "المهارات المحاسبية الأساسية")}
+          title={documentCopy(
+            "Core Accounting Skills",
+            "المهارات المحاسبية الأساسية",
+          )}
         >
           <div className="cv-skills">
             {cv.coreSkills.length ? (
               cv.coreSkills.slice(0, 8).map((s) => (
                 <span key={s.skillId}>
                   {skillCatalog[s.skillId].label[documentLocale]}{" "}
-                  <small>
-                    {statusCopy[s.status][documentLocale]}
-                  </small>
+                  <small>{statusCopy[s.status][documentLocale]}</small>
                 </span>
               ))
             ) : (
@@ -1253,7 +1326,20 @@ function CvView({
             )}
           </small>
         </CvSection>
-        {(profile.linkedIn || profile.portfolio) && <CvSection title="Links"><p>{[profile.linkedIn, profile.portfolio].filter(Boolean).map(link => <span key={link}>{link}<br/></span>)}</p></CvSection>}
+        {(profile.linkedIn || profile.portfolio) && (
+          <CvSection title="Links">
+            <p>
+              {[profile.linkedIn, profile.portfolio]
+                .filter(Boolean)
+                .map((link) => (
+                  <span key={link}>
+                    {link}
+                    <br />
+                  </span>
+                ))}
+            </p>
+          </CvSection>
+        )}
         {profile.languages.length > 0 && (
           <CvSection title="Languages">
             <p>{profile.languages.join(" · ")}</p>
@@ -1262,8 +1348,8 @@ function CvView({
         <footer>
           Debit & Credit Skill Passport ·{" "}
           {documentCopy(
-              "Evidence-based training record · not professional certification",
-              "سجل تدريب مبني على الأدلة · ليس شهادة مهنية",
+            "Evidence-based training record · not professional certification",
+            "سجل تدريب مبني على الأدلة · ليس شهادة مهنية",
           )}
         </footer>
       </article>

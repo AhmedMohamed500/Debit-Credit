@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { cloudUser, CloudFailure, requestJSON } from "@/lib/cloud/runtime";
-import { roleCatalog } from "@/lib/career/catalog";
 import { activitySummary } from "@/lib/career/activity-summary";
 import { firstShiftMissionProgress } from "@/lib/campaign/first-shift-hub";
 import { useGame } from "@/lib/campaign/store";
@@ -42,11 +41,24 @@ import type {
 } from "@/lib/career/model";
 import type { Locale } from "@/types";
 import { ProfilePhoto } from "./profile-photo";
-import { useShowcase, ShowcaseIdentity, ShowcasePanel } from "./showcase";
+import { useShowcase, ShowcasePanel } from "./showcase";
+import {
+  CandidateHero,
+  CandidateSkills,
+  ProfessionalOverview,
+} from "./candidate-portfolio";
+import { DiscoverySettings } from "./discovery-settings";
 import { useStudentJourney } from "@/components/student/student-journey";
 import "@/app/member-profile.css";
 
-type Tab = "profile" | "courses" | "progress" | "certifications";
+type Tab =
+  | "profile"
+  | "skills"
+  | "work"
+  | "courses"
+  | "progress"
+  | "certifications"
+  | "cv";
 export async function prepareCertificate(file: File) {
   if (
     !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
@@ -151,7 +163,17 @@ export function MemberProfile({
   }
   useEffect(() => {
     const hash = window.location.hash.slice(1);
-    if (["profile", "courses", "progress", "certifications"].includes(hash))
+    if (
+      [
+        "profile",
+        "skills",
+        "work",
+        "courses",
+        "progress",
+        "certifications",
+        "cv",
+      ].includes(hash)
+    )
       setTab(hash as Tab);
   }, []);
   useEffect(() => {
@@ -307,9 +329,12 @@ export function MemberProfile({
       setBusy(false);
     }
   }
-  function trainingRows() {
+  function trainingRows(timeline = false) {
     return (
-      <div className="member-course-list">
+      <div
+        className={`member-course-list${timeline ? " career-timeline" : ""}`}
+        role={timeline ? "list" : undefined}
+      >
         {[
           {
             title: say(
@@ -337,7 +362,12 @@ export function MemberProfile({
             ),
           },
         ].map((row) => (
-          <Link className="member-course-row" href={row.href} key={row.href}>
+          <Link
+            className="member-course-row"
+            href={row.href}
+            key={row.href}
+            role={timeline ? "listitem" : undefined}
+          >
             <span className="member-course-icon">
               <row.icon size={23} />
             </span>
@@ -378,6 +408,9 @@ export function MemberProfile({
         <Link href={`/${locale}`}>
           <ChartNoAxesCombined />
           Debit & Credit
+        </Link>
+        <Link href={`/${locale}/employer/candidates`}>
+          {say("For employers", "لأصحاب العمل")}
         </Link>
       </header>
       <div className="member-layout">
@@ -438,48 +471,13 @@ export function MemberProfile({
           </p>
         </aside>
         <div className="member-content">
-          <section className="member-hero">
-            <div className="member-portrait">
-              <ProfilePhoto locale={locale} name={profile.fullName} />
-            </div>
-            <div className="member-hero-copy">
-              <small>
-                {say("YOUR ACCOUNTING CAREER", "رحلتك المهنية في المحاسبة")}
-              </small>
-              <h1 dir="auto">
-                {profile.fullName || identity?.profile.displayName}
-              </h1>
-              <p dir="auto">
-                {profile.headline ||
-                  roleCatalog[profile.targetRoleId].label[locale]}
-              </p>
-              <progress
-                max={100}
-                value={completeness}
-                aria-label={say(
-                  "Personal profile completeness",
-                  "اكتمال البيانات الشخصية",
-                )}
-              />
-              <span>
-                {completeness}%{" "}
-                {say(
-                  "personal profile complete · not a skill score",
-                  "اكتمال البيانات الشخصية · ليس تقييم مهارات",
-                )}
-              </span>
-              <ShowcaseIdentity data={showcase.data} locale={locale} />
-            </div>
-            <div className="member-hero-art" aria-hidden="true">
-              <ChartNoAxesCombined />
-              <div className="member-skyline">
-                {[38, 70, 50, 92, 63, 110, 80].map((height, index) => (
-                  <i key={index} style={{ height }} />
-                ))}
-              </div>
-              <Award />
-            </div>
-          </section>
+          <CandidateHero
+            profile={profile}
+            locale={locale}
+            showcase={showcase.data}
+            completeness={completeness}
+            open={() => selectTab("work")}
+          />
           <div className="member-hero-actions">
             <span>
               {[profile.location, profile.country].filter(Boolean).join(" · ")}
@@ -499,7 +497,15 @@ export function MemberProfile({
             aria-label={say("Profile sections", "أقسام البروفايل")}
           >
             {(
-              ["profile", "courses", "progress", "certifications"] as Tab[]
+              [
+                "profile",
+                "skills",
+                "work",
+                "courses",
+                "certifications",
+                "progress",
+                "cv",
+              ] as Tab[]
             ).map((value) => (
               <button
                 key={value}
@@ -508,10 +514,13 @@ export function MemberProfile({
               >
                 {
                   {
-                    profile: say("Profile", "البروفايل"),
+                    profile: say("Overview", "نظرة عامة"),
+                    skills: say("Skills", "المهارات"),
+                    work: say("Practical Work", "الأعمال العملية"),
                     courses: say("Courses", "الكورسات"),
-                    progress: say("Progress", "التقدم"),
+                    progress: say("Career Journey", "الرحلة المهنية"),
                     certifications: say("Certifications", "الشهادات"),
+                    cv: say("CV", "السيرة الذاتية"),
                   }[value]
                 }
               </button>
@@ -540,128 +549,197 @@ export function MemberProfile({
             <div>
               {tab === "profile" && (
                 <>
+                  <ProfessionalOverview
+                    profile={profile}
+                    locale={locale}
+                    portfolio={portfolio}
+                    evidence={evidence}
+                    passport={passport}
+                    showcase={showcase.data}
+                    open={selectTab}
+                  />
+                  <section className="member-card">
+                    <h2>{say("Career journey", "الرحلة المهنية")}</h2>
+                    {trainingRows()}
+                  </section>
+                  <details className="member-card">
+                    <summary>
+                      {say(
+                        "Private profile photo & employer discovery",
+                        "الصورة الخاصة واختيارات الظهور للشركات",
+                      )}
+                    </summary>
+                    <ProfilePhoto
+                      locale={locale}
+                      name={profile.fullName}
+                      editable
+                    />
+                    <DiscoverySettings owner={owner} locale={locale} />
+                  </details>
+                </>
+              )}
+              {tab === "skills" && (
+                <CandidateSkills passport={passport} locale={locale} />
+              )}
+              {tab === "cv" && (
+                <section className="member-card">
+                  <h2>
+                    {say(
+                      "Your compact English CV",
+                      "سيرتك الإنجليزية المختصرة",
+                    )}
+                  </h2>
+                  <p>
+                    {say(
+                      "Current account data, supported evidence and self-reported courses. Up to two A4 pages; no photo, QR or artificial ATS score.",
+                      "بيانات حسابك الحالية وأدلة المهارات والكورسات المضافة. صفحتان A4 كحد أقصى، دون صورة أو QR أو تقييم ATS مختلق.",
+                    )}
+                  </p>
+                  <Link
+                    className="member-primary"
+                    href={`/${locale}/career-profile/cv`}
+                  >
+                    {say(
+                      "Open CV / Print / Save PDF",
+                      "افتح CV / اطبع / احفظ PDF",
+                    )}
+                  </Link>
+                </section>
+              )}
+              {tab === "work" && (
+                <>
                   <ShowcasePanel
                     controller={showcase}
                     locale={locale}
                     owner={owner}
                     role={profile.targetRoleId}
                   />
-                  <section className="member-card">
-                    <header>
-                      <h2>{say("Your learning journey", "رحلتك في التعلم")}</h2>
-                      <button onClick={() => selectTab("courses")}>
-                        {say("All courses", "كل الكورسات")}
-                      </button>
-                    </header>
-                    {trainingRows()}
-                  </section>
-                  <section className="member-card">
-                    <header>
-                      <h2>{say("About you", "نبذة عنك")}</h2>
-                      <span className="member-pill">
-                        {
-                          {
-                            student: say("Student", "طالب"),
-                            "fresh-graduate": say("Graduate", "خريج"),
-                            junior: say("Junior professional", "بداية مهنية"),
-                            mid: say("Working professional", "محترف"),
-                            senior: say(
-                              "Experienced professional",
-                              "خبرة متقدمة",
-                            ),
-                          }[profile.experienceLevel]
-                        }
-                      </span>
-                    </header>
-                    <p>
-                      {profile.summary ||
-                        say(
-                          "Add your professional summary from Edit career details.",
-                          "أضف نبذة مهنية من تعديل البيانات المهنية.",
-                        )}
-                    </p>
-                    <dl className="member-details">
-                      {[
-                        [
-                          say("Email", "الإيميل"),
-                          identity?.user.email || profile.email,
-                        ],
-                        [say("Phone", "التليفون"), profile.phone],
-                        [
-                          say("Location", "المكان"),
-                          [profile.location, profile.country]
-                            .filter(Boolean)
-                            .join(" · "),
-                        ],
-                        [
-                          say("Languages", "اللغات"),
-                          profile.languages.join(" · "),
-                        ],
-                      ].map(([label, value]) => (
-                        <div key={label}>
-                          <dt>{label}</dt>
-                          <dd dir="auto">
-                            {value || say("Not added", "لم تُضف")}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </section>
-                  <section className="member-card">
-                    <h2>
+                  <details className="member-card">
+                    <summary>
                       {say(
-                        "Education & real work experience",
-                        "التعليم والخبرة العملية الفعلية",
+                        "Private career details & editing",
+                        "البيانات المهنية الخاصة وتعديلها",
                       )}
-                    </h2>
-                    {profile.education.map((row) => (
-                      <article className="member-record" key={row.id}>
-                        <GraduationCap />
-                        <div>
-                          <b>
-                            {row.degree} {row.field}
-                          </b>
-                          <p>
-                            {row.institution} · {row.graduationYear}
-                          </p>
-                        </div>
-                      </article>
-                    ))}
-                    {profile.experience.map((row) => (
-                      <article className="member-record" key={row.id}>
-                        <FileText />
-                        <div>
-                          <b>
-                            {row.title} — {row.company}
-                          </b>
-                          <p>
-                            {row.startDate} —{" "}
-                            {row.current
-                              ? say("Present", "حتى الآن")
-                              : row.endDate}
-                          </p>
-                          <p>{row.description}</p>
-                        </div>
-                      </article>
-                    ))}
-                    {!profile.education.length &&
-                      !profile.experience.length && (
-                        <p>
-                          {say(
-                            "No education or work experience added yet.",
-                            "لم تُضف بيانات تعليم أو خبرة بعد.",
+                    </summary>
+                    <section className="member-card">
+                      <header>
+                        <h2>
+                          {say("Your learning journey", "رحلتك في التعلم")}
+                        </h2>
+                        <button onClick={() => selectTab("courses")}>
+                          {say("All courses", "كل الكورسات")}
+                        </button>
+                      </header>
+                      {trainingRows()}
+                    </section>
+                    <section className="member-card">
+                      <header>
+                        <h2>{say("About you", "نبذة عنك")}</h2>
+                        <span className="member-pill">
+                          {
+                            {
+                              student: say("Student", "طالب"),
+                              "fresh-graduate": say("Graduate", "خريج"),
+                              junior: say("Junior professional", "بداية مهنية"),
+                              mid: say("Working professional", "محترف"),
+                              senior: say(
+                                "Experienced professional",
+                                "خبرة متقدمة",
+                              ),
+                            }[profile.experienceLevel]
+                          }
+                        </span>
+                      </header>
+                      <p>
+                        {profile.summary ||
+                          say(
+                            "Add your professional summary from Edit career details.",
+                            "أضف نبذة مهنية من تعديل البيانات المهنية.",
                           )}
-                        </p>
-                      )}
-                  </section>
-                  <section className="member-card">
-                    <h2>{say("Profile photo", "صورة البروفايل")}</h2>
-                    <ProfilePhoto
-                      locale={locale}
-                      name={profile.fullName}
-                      editable
-                    />
-                  </section>
+                      </p>
+                      <dl className="member-details">
+                        {[
+                          [
+                            say("Email", "الإيميل"),
+                            identity?.user.email || profile.email,
+                          ],
+                          [say("Phone", "التليفون"), profile.phone],
+                          [
+                            say("Location", "المكان"),
+                            [profile.location, profile.country]
+                              .filter(Boolean)
+                              .join(" · "),
+                          ],
+                          [
+                            say("Languages", "اللغات"),
+                            profile.languages.join(" · "),
+                          ],
+                        ].map(([label, value]) => (
+                          <div key={label}>
+                            <dt>{label}</dt>
+                            <dd dir="auto">
+                              {value || say("Not added", "لم تُضف")}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </section>
+                    <section className="member-card">
+                      <h2>
+                        {say(
+                          "Education & real work experience",
+                          "التعليم والخبرة العملية الفعلية",
+                        )}
+                      </h2>
+                      {profile.education.map((row) => (
+                        <article className="member-record" key={row.id}>
+                          <GraduationCap />
+                          <div>
+                            <b>
+                              {row.degree} {row.field}
+                            </b>
+                            <p>
+                              {row.institution} · {row.graduationYear}
+                            </p>
+                          </div>
+                        </article>
+                      ))}
+                      {profile.experience.map((row) => (
+                        <article className="member-record" key={row.id}>
+                          <FileText />
+                          <div>
+                            <b>
+                              {row.title} — {row.company}
+                            </b>
+                            <p>
+                              {row.startDate} —{" "}
+                              {row.current
+                                ? say("Present", "حتى الآن")
+                                : row.endDate}
+                            </p>
+                            <p>{row.description}</p>
+                          </div>
+                        </article>
+                      ))}
+                      {!profile.education.length &&
+                        !profile.experience.length && (
+                          <p>
+                            {say(
+                              "No education or work experience added yet.",
+                              "لم تُضف بيانات تعليم أو خبرة بعد.",
+                            )}
+                          </p>
+                        )}
+                    </section>
+                    <section className="member-card">
+                      <h2>{say("Profile photo", "صورة البروفايل")}</h2>
+                      <ProfilePhoto
+                        locale={locale}
+                        name={profile.fullName}
+                        editable
+                      />
+                    </section>
+                  </details>
                 </>
               )}
               {tab === "courses" && (
@@ -897,7 +975,7 @@ export function MemberProfile({
                       "التقدم الناتج عن شغلك",
                     )}
                   </h2>
-                  {trainingRows()}
+                  {trainingRows(true)}
                   <div className="member-stats">
                     <div>
                       <b>{demonstrated}</b>

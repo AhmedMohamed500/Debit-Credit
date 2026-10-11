@@ -190,6 +190,7 @@ try {
     await page.goto(`${base}/${locale}/career-profile`); await page.locator('.member-portrait img').waitFor();
     record(label + " profile photo fills entire portrait inside its decorative border", await page.locator('.member-portrait .photo-circle').evaluate(frame => { const a=frame.getBoundingClientRect(), b=frame.querySelector('img').getBoundingClientRect(); return Math.abs(a.width-b.width)<1 && Math.abs(a.height-b.height)<1; }));
     await screenshot(page, label + "-career-profile"); await checkLayout(page, label + " career profile");
+    await page.locator('.member-tabs').getByRole('button', { name: locale === 'ar' ? 'الأعمال العملية' : 'Practical Work', exact: true }).click();
     await careerShowcaseQa({ page, context, base, locale, label, api, record, screenshot, checkLayout });
     await memberProfileQa({ page, context, base, locale, label, api, record, screenshot, checkLayout });
     await page.goto(`${base}/${locale}/career-profile/cv`); await page.locator('.professional-cv').waitFor(); await screenshot(page, label + "-cv"); await checkLayout(page, label + " CV");

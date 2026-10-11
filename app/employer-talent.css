@@ -1,0 +1,526 @@
+.talent-platform {
+  min-height: 90vh;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  padding-bottom: 30px;
+}
+.talent-platform[dir="rtl"] {
+  font-family: FoundationCairo, Tahoma, Arial, sans-serif;
+}
+.talent-platform * {
+  box-sizing: border-box;
+}
+.talent-platform :is(h1, h2, h3, p) {
+  margin: 0 0 10px;
+}
+.talent-platform a {
+  color: var(--tp-teal);
+  text-decoration: none;
+}
+.talent-platform button {
+  cursor: pointer;
+  font: inherit;
+  color: var(--tp-ink);
+  border: 1px solid var(--tp-line);
+  border-radius: 6px;
+  background: var(--tp-surface);
+  padding: 8px 12px;
+}
+.talent-platform :is(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid #4b9a8b;
+  outline-offset: 3px;
+}
+.talent-platform button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.talent-platform :is(input, select, textarea) {
+  width: 100%;
+  border: 1px solid var(--tp-line);
+  border-radius: 6px;
+  padding: 9px;
+  background: var(--tp-surface);
+  color: var(--tp-ink);
+  font: inherit;
+}
+.talent-platform .talent-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 16px;
+  background: #1e6267;
+  color: white;
+  border-color: #1e6267;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.talent-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--tp-surface);
+  border-bottom: 1px solid var(--tp-line);
+  padding: 15px 25px;
+}
+.talent-nav nav {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.talent-nav nav a {
+  color: var(--tp-ink);
+  font-size: 13px;
+}
+.talent-nav nav a[aria-current] {
+  border-bottom: 2px solid var(--tp-teal);
+}
+.talent-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 800;
+  font-size: 20px;
+  white-space: nowrap;
+}
+.company-name {
+  font-weight: 700;
+  font-size: 13px;
+  max-width: 180px;
+  overflow-wrap: anywhere;
+}
+.company-name small {
+  display: block;
+  font-weight: 400;
+  color: var(--tp-muted);
+  font-size: 10px;
+}
+.talent-hero {
+  max-width: 1680px;
+  margin: 20px auto 0;
+  padding: 30px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(242, 250, 255, 0.98),
+      rgba(242, 250, 255, 0.94) 55%,
+      rgba(242, 250, 255, 0.45)
+    ),
+    url("/game/first-shift-desk-v2.png") center 22% / cover;
+  border: 1px solid var(--tp-line);
+  border-radius: 12px;
+}
+.talent-hero h1 {
+  font-size: clamp(25px, 2.5vw, 38px);
+  font-weight: 800;
+  max-width: 800px;
+}
+.talent-hero > p {
+  max-width: 850px;
+  font-size: 14px;
+}
+.talent-search-form {
+  margin-top: 18px;
+}
+.talent-search-line {
+  display: flex;
+  gap: 8px;
+  padding: 7px;
+  background: var(--tp-surface);
+  border: 1px solid var(--tp-line);
+  border-radius: 8px;
+}
+.talent-search-line > label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.talent-search-line input {
+  border: 0;
+}
+.talent-filters {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.talent-filters label {
+  font-size: 11px;
+  font-weight: 700;
+}
+.talent-filters :is(input, select) {
+  margin-top: 3px;
+  font-size: 12px;
+}
+.talent-split {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.65fr);
+  gap: 16px;
+  max-width: 1680px;
+  margin: auto;
+  align-items: start;
+}
+.talent-split.full-profile {
+  display: block;
+  max-width: 1040px;
+}
+.talent-status {
+  max-width: 1680px;
+  margin: 10px auto;
+  min-height: 20px;
+  color: var(--tp-teal);
+  font-size: 13px;
+}
+.talent-list,
+.talent-preview,
+.talent-preview-placeholder {
+  background: var(--tp-surface);
+  border: 1px solid var(--tp-line);
+  border-radius: 10px;
+  padding: 16px;
+  min-width: 0;
+}
+.talent-list > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.talent-list h2 {
+  font-size: 18px;
+}
+.talent-list > header small {
+  font-size: 10px;
+  color: var(--tp-muted);
+  max-width: 160px;
+}
+.talent-result {
+  display: flex;
+  gap: 8px;
+  align-items: start;
+  border: 1px solid var(--tp-line);
+  border-radius: 9px;
+  padding: 11px;
+  margin-bottom: 11px;
+}
+.talent-result.selected {
+  border-color: #4b9a8b;
+  background: var(--tp-soft);
+}
+.talent-result .candidate-result-open {
+  display: flex;
+  flex: 1;
+  align-items: start;
+  gap: 11px;
+  text-align: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  min-width: 0;
+}
+.talent-result h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.talent-result p {
+  font-size: 12px;
+  margin: 0;
+}
+.talent-result small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--tp-muted);
+  font-size: 10px;
+}
+.talent-portrait {
+  width: 64px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.talent-portrait.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  font-weight: 700;
+  background: var(--tp-soft);
+  color: var(--tp-teal);
+}
+.talent-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 8px 0 3px;
+}
+.talent-chips :is(span, a) {
+  border-radius: 4px;
+  background: var(--tp-soft);
+  padding: 3px 6px;
+  font-size: 10px;
+  color: var(--tp-teal);
+  border: 1px solid var(--tp-line);
+}
+.talent-bookmark {
+  padding: 6px !important;
+}
+.talent-bookmark[aria-pressed="true"] {
+  background: #dcefe9;
+  color: #1e6267;
+}
+.talent-preview-placeholder {
+  padding: 50px 30px;
+  color: var(--tp-muted);
+}
+.preview-heading {
+  display: flex;
+  align-items: start;
+  gap: 14px;
+}
+.preview-heading > div {
+  flex: 1;
+  min-width: 0;
+}
+.preview-heading h2 {
+  font-size: 23px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.preview-heading p {
+  font-size: 13px;
+  margin: 0;
+}
+.preview-heading small {
+  display: block;
+  color: var(--tp-muted);
+}
+.talent-availability {
+  font-size: 11px;
+  color: var(--tp-teal);
+  display: block;
+  margin-top: 5px;
+}
+.preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  align-items: center;
+  margin: 16px 0;
+  font-size: 12px;
+}
+.preview-tabs {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--tp-line);
+  gap: 5px;
+  overflow-x: auto;
+}
+.preview-tabs button {
+  border: 0;
+  border-radius: 0;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+.preview-tabs [aria-current] {
+  border-bottom: 3px solid var(--tp-teal);
+  font-weight: 700;
+  color: var(--tp-teal);
+}
+.preview-body {
+  padding-top: 18px;
+  font-size: 13px;
+}
+.preview-body h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 16px;
+}
+.preview-info {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.preview-info article {
+  background: var(--tp-soft);
+  border-radius: 7px;
+  padding: 12px;
+}
+.preview-info b,
+.preview-info small {
+  display: block;
+  font-size: 12px;
+}
+.preview-line,
+.preview-work {
+  padding: 12px;
+  border: 1px solid var(--tp-line);
+  border-radius: 7px;
+  margin-bottom: 9px;
+}
+.preview-line b,
+.preview-line small {
+  display: block;
+}
+.preview-line progress {
+  width: 85%;
+  height: 8px;
+  accent-color: #4b9a8b;
+}
+.preview-line > span {
+  float: inline-end;
+}
+.preview-work .work-preview {
+  overflow-x: auto;
+}
+.preview-work table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.preview-work :is(td, th) {
+  border: 1px solid var(--tp-line);
+  padding: 7px;
+}
+.recruiter-cv {
+  color: var(--tp-ink);
+  font-family: Arial, sans-serif;
+  padding: 15px;
+  background: var(--tp-soft);
+}
+.recruiter-cv h3 {
+  font-size: 14px;
+}
+.contact-request {
+  margin-top: 18px;
+  border-top: 1px solid var(--tp-line);
+  padding-top: 12px;
+}
+.contact-request textarea {
+  display: block;
+  min-height: 100px;
+  margin: 10px 0;
+}
+.talent-empty {
+  text-align: center;
+  max-width: 700px;
+  padding: 35px 24px;
+  margin: 25px auto;
+}
+.talent-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.talent-pagination button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.company-editor {
+  max-width: 760px;
+  margin: 30px auto;
+  padding: 25px;
+  background: var(--tp-surface);
+  border: 1px solid var(--tp-line);
+  border-radius: 12px;
+}
+.company-editor form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 18px 0;
+}
+.company-editor label {
+  font-size: 13px;
+}
+[data-theme="dark"] .talent-hero {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(12, 35, 50, 0.98),
+      rgba(20, 60, 71, 0.87) 60%,
+      rgba(20, 60, 71, 0.5)
+    ),
+    url("/game/first-shift-desk-v2.png") center 22% / cover;
+}
+@media (max-width: 1720px) {
+  .talent-hero,
+  .talent-split,
+  .talent-status {
+    margin-inline: 20px;
+  }
+}
+@media (max-width: 1100px) {
+  .talent-nav {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 18px;
+  }
+  .talent-filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .talent-split {
+    grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.4fr);
+  }
+  .preview-info {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .talent-hero {
+    padding: 20px;
+    margin: 12px;
+  }
+  .talent-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+  .talent-nav nav {
+    order: 3;
+    width: 100%;
+    flex-basis: 100%;
+    gap: 14px;
+  }
+  .talent-nav .company-name {
+    display: none;
+  }
+  .talent-split {
+    display: block;
+    margin: 12px;
+  }
+  .talent-preview-placeholder {
+    display: none;
+  }
+  .talent-split.has-selection .talent-list {
+    display: none;
+  }
+  .talent-preview {
+    min-height: 70vh;
+    padding: 14px;
+  }
+  .preview-info {
+    grid-template-columns: 1fr;
+  }
+  .talent-status {
+    margin: 8px 12px;
+  }
+  .company-editor {
+    margin: 15px 12px;
+    padding: 20px;
+  }
+  .company-editor form {
+    grid-template-columns: 1fr;
+  }
+  .talent-list > header {
+    align-items: start;
+  }
+}

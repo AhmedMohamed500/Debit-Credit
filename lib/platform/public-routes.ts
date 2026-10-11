@@ -30,5 +30,4 @@ export const publicRoutes = [
   "/career-league/corporate-bridge",
   "/career-league/promotion",
   "/employers",
-  "/employers/talent",
 ] as const;

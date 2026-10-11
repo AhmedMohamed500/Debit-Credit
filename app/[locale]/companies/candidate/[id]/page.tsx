@@ -1,2 +1,2 @@
 import { redirect } from 'next/navigation';
-export default async function Page({params}:{params:Promise<{locale:string}>}){const {locale}=await params;redirect(`/${locale}/companies`);}
+export default async function Page({params}:{params:Promise<{locale:string;id:string}>}){const {locale,id}=await params;redirect(`/${locale}/employer/candidates/${encodeURIComponent(id)}`);}

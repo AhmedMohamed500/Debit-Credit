@@ -15,9 +15,10 @@ import { roleCatalog } from "@/lib/career/catalog";
 import type { Portfolio } from "@/lib/career/portfolio";
 import { applyPersonal, isPersonalRecord } from "@/lib/career/personal";
 import { showcaseSettings } from "@/lib/career/showcase";
+import { refreshDiscovery } from "../talent/service";
 
 // Private derived snapshot, never used as a competition outcome or hiring proof.
-async function derive(
+export async function deriveAccountCv(
   tx: Pick<Transaction, "cloudProgress" | "skillEvidenceCloud">,
   userId: string,
   requestedRole?: string | null,
@@ -105,7 +106,8 @@ async function derive(
   };
 }
 export async function saveAutomaticCloudCv(tx: Transaction, userId: string) {
-  const data = await derive(tx, userId);
+  const data = await deriveAccountCv(tx, userId);
+  await refreshDiscovery(tx, userId);
   if (!data) return;
   const fingerprint = createHash("sha256")
     .update(JSON.stringify(data))
@@ -127,7 +129,7 @@ export async function automaticCvFor(userId: string, role?: string | null) {
   // Backfill old courses in the projection, not with writes/migrations on GET.
   return db().$transaction(
     async (tx) => {
-      const data = await derive(tx, userId, role);
+      const data = await deriveAccountCv(tx, userId, role);
       return data ? { data } : null;
     },
     { isolationLevel: "RepeatableRead" },

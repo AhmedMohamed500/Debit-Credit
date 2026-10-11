@@ -8,8 +8,9 @@ export async function memberProfileQa({ page, context, base, locale, label, api,
   const root = page.locator('.member-profile');
   record(label + " no duplicate journey navigation above the profile", await page.locator('.student-journey-bar').count() === 0);
   record(label + " profile links directly to the next saved journey stage", await page.locator('.member-next a').getAttribute('href') === (label === 'en-1440' ? '/en/career-profile/skills' : `/${locale}/game/first-shift`));
-  record(label + " reference palette stays fixed in either app theme", await root.evaluate(element => { document.documentElement.setAttribute('data-theme', 'dark'); return getComputedStyle(element).backgroundColor === 'rgb(234, 246, 250)'; }));
+  record(label + " dark theme preserves petrol surfaces and readable text", await root.evaluate(element => { document.documentElement.setAttribute('data-theme', 'dark'); const style=getComputedStyle(element); return style.backgroundColor === 'rgb(12, 35, 50)' && style.color !== style.backgroundColor; }));
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+  record(label + " light theme sidebar is white", await page.locator('.member-sidebar').evaluate(element => getComputedStyle(element).backgroundColor === 'rgb(255, 255, 255)'));
   record(label + " large photo not a small circle inside an oversized frame", (await page.locator('.member-portrait img').boundingBox()).width >= 120);
   await page.locator('.member-tabs').getByRole('button', { name: say('Courses', 'الكورسات'), exact: true }).click();
   await page.getByRole('button', { name: say('Add course', 'أضف كورس'), exact: true }).click();

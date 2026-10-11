@@ -112,7 +112,7 @@ async function handle(
       case "PUT me/photo":
         return savePhoto(user.id, await body(request, photoCommand));
       case "GET me/cv":
-        return automaticCvFor(user.id);
+        return automaticCvFor(user.id, new URL(request.url).searchParams.get("role"));
       case "PUT me/personal":
         return savePersonal(
           user.id,

@@ -4,6 +4,7 @@ Start here rather than treating every past release report as today's status.
 
 ## Current entry points
 
+- [Professional profile card and linked two-page English CV](PROFILE-CARD-CV-SYNC-AR.md)
 - [Social profiles, accepted-work showcase, achievement cards and controlled sharing](CAREER-SHOWCASE-AR.md)
 
 - [Connected First Shift briefing and in-game navigation](CONNECTED-FIRST-SHIFT-AR.md)

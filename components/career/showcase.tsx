@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import QRCode from "qrcode";
 import {
@@ -24,6 +23,8 @@ import {
   type PublicShowcase,
 } from "@/lib/career/showcase";
 import type { Locale } from "@/types";
+import type { RoleId } from "@/lib/career/model";
+import { ProfessionalCard } from "./professional-card";
 import "@/app/career-showcase.css";
 
 export function useShowcase(owner: string | undefined) {
@@ -258,10 +259,12 @@ export function ShowcasePanel({
   controller,
   locale,
   owner,
+  role,
 }: {
   controller: Controller;
   locale: Locale;
   owner: string | undefined;
+  role: RoleId;
 }) {
   const { data, busy, error } = controller,
     ar = locale === "ar",
@@ -409,6 +412,14 @@ export function ShowcasePanel({
               )}
         </span>
       </header>
+      <ProfessionalCard
+        owner={owner}
+        data={data}
+        role={role}
+        locale={locale}
+        url={url}
+        qr={qr}
+      />
       <h3>{say("What can I do?", "أنا أقدر أعمل إيه؟")}</h3>
       {data.works.length ? (
         <ul className="showcase-summary">
@@ -698,15 +709,6 @@ export function ShowcasePanel({
       </details>
       {url && (
         <div className="showcase-share">
-          {qr && (
-            <Image
-              src={qr}
-              alt={say("Public profile QR code", "QR البروفايل العام")}
-              width={128}
-              height={128}
-              unoptimized
-            />
-          )}
           <div>
             <h3>
               {say(

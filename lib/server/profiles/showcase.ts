@@ -2,6 +2,8 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { db, json, serial, type Transaction } from "../db/client";
 import { HttpError } from "../security/http";
+import { saveAutomaticCloudCv } from "./cv";
+import { syncPersonalLinks } from "./links";
 import { isPersonalRecord } from "@/lib/career/personal";
 import {
   acceptedWorks,
@@ -116,6 +118,8 @@ export async function saveShowcase(userId: string, command: ShowcaseCommand) {
         data: json({ settings: command.settings, token }),
       },
     });
+    await syncPersonalLinks(tx, userId, command.settings);
+    await saveAutomaticCloudCv(tx, userId);
     return {
       ...current,
       revision: row.revision,

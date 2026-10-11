@@ -50,7 +50,8 @@ describe("Career Profile UI", () => {
     await screen.findByRole("heading", { name: "Professional Summary" });
     const cv = container.querySelector(".professional-cv")!;
     expect(cv).toHaveAttribute("lang", "en"); expect(cv).toHaveAttribute("dir", "ltr");
-    expect(cv.textContent).toContain("Accounting Simulation Experience");
+    expect(cv.textContent).toContain("Accounting Practice");
+    expect(cv.textContent).not.toContain("Complete qualifying");
     expect(cv.textContent).not.toMatch(/[\u0600-\u06ff]/u);
     expect(cv.querySelector("img")).toBeNull();
   });

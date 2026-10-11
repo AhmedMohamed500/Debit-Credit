@@ -3,6 +3,7 @@ import sharp from "sharp";
 import { randomUUID } from "node:crypto";
 import { db, json, serial } from "../db/client";
 import { HttpError } from "../security/http";
+import { saveAutomaticCloudCv } from "./cv";
 import {
   emptyPortfolio,
   PORTFOLIO_LIMIT,
@@ -150,6 +151,7 @@ export async function savePortfolio(
         provenance: "SERVER",
       },
     });
+    await saveAutomaticCloudCv(tx, userId);
     return { ...data, revision: row.revision };
   });
 }

@@ -226,8 +226,8 @@ export function MemberProfile({
     if (!parsed.success) {
       setMessage(
         say(
-          "Enter a course title and provider (2–160 characters).",
-          "اكتب اسم الكورس والجهة من حرفين إلى 160 حرفًا.",
+          "Enter a course title and provider (2–160 characters). Optional CV names must be in English.",
+          "اكتب اسم الكورس والجهة من حرفين إلى 160 حرفًا. أسماء الـCV الاختيارية لازم تكون بالإنجليزي.",
         ),
       );
       return;
@@ -540,7 +540,12 @@ export function MemberProfile({
             <div>
               {tab === "profile" && (
                 <>
-                  <ShowcasePanel controller={showcase} locale={locale} owner={owner} />
+                  <ShowcasePanel
+                    controller={showcase}
+                    locale={locale}
+                    owner={owner}
+                    role={profile.targetRoleId}
+                  />
                   <section className="member-card">
                     <header>
                       <h2>{say("Your learning journey", "رحلتك في التعلم")}</h2>
@@ -693,8 +698,8 @@ export function MemberProfile({
                     </header>
                     <p className="member-note">
                       {say(
-                        "External courses are self-reported, not platform-assessed skills. Up to 20 courses.",
-                        "الكورسات الخارجية مضافة منك، وليست تقييم مهارات من المنصة. حتى 20 كورسًا.",
+                        "Started courses sync to your English CV. If your profile title/provider is Arabic, add the optional English CV names below. Self-reported, not assessed skills. Up to 20 courses.",
+                        "الكورسات اللي بدأت تتحدث في CV الإنجليزي. لو الاسم أو الجهة بالعربي، أضف اسمهم الإنجليزي في الحقول الاختيارية تحت. مضافة منك وليست تقييم مهارات؛ حتى 20 كورسًا.",
                       )}
                     </p>
                     {addingCourse && (
@@ -726,6 +731,30 @@ export function MemberProfile({
                             minLength={2}
                             maxLength={160}
                             defaultValue={editing?.provider}
+                          />
+                        </label>
+                        <label>
+                          {say(
+                            "English course title for CV (optional)",
+                            "اسم الكورس بالإنجليزي للـCV (اختياري)",
+                          )}
+                          <input
+                            name="titleEn"
+                            maxLength={160}
+                            defaultValue={editing?.titleEn}
+                            dir="ltr"
+                          />
+                        </label>
+                        <label>
+                          {say(
+                            "English provider name for CV (optional)",
+                            "اسم جهة التدريب بالإنجليزي للـCV (اختياري)",
+                          )}
+                          <input
+                            name="providerEn"
+                            maxLength={160}
+                            defaultValue={editing?.providerEn}
+                            dir="ltr"
                           />
                         </label>
                         <label>
@@ -809,7 +838,10 @@ export function MemberProfile({
                           </span>
                           {course.notes && <p dir="auto">{course.notes}</p>}
                           <small>
-                            {say("Self-reported course", "كورس مضاف منك")}
+                            {say(
+                              "Self-reported · included in CV when started and written in English",
+                              "مضاف منك · يدخل الـCV عند بدء الدراسة وكتابته بالإنجليزي",
+                            )}
                           </small>
                         </div>
                         <div className="member-record-actions">

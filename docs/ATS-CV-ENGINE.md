@@ -1,5 +1,7 @@
 # Skill Passport → Role → ATS CV Engine
 
+Current signed-in implementation (11 October 2026): [linked compact English CV and profile card](PROFILE-CARD-CV-SYNC-AR.md) supersedes the older output/history descriptions below. Courses and certificate text now join live private account data; standard text/PDF-print exports show a measured maximum of two pages with no photo or QR. Full evidence remains in the passport; the obsolete JSON dump and lengthy per-task transcript are not CV export controls. No ATS score or employment claim is inferred.
+
 Phase A/B integration: the primary navigation now links to the real CV, while the Landing persona choices only preselect Career Entry and cannot create CV claims. Existing simulation bullets remain separate from employment. See [PRODUCT-USER-FLOW.md](PRODUCT-USER-FLOW.md).
 
 ## Phase 2 bank reconciliation addition

@@ -48,10 +48,16 @@ beforeEach(() => {
   fixture.request.mockReset();
   fixture.request.mockImplementation(async (route: string) =>
     route === "me/showcase"
-      ? { revision: 0, settings: defaultShowcase(), token: null, name: "Alice Accountant", works: [] }
+      ? {
+          revision: 0,
+          settings: defaultShowcase(),
+          token: null,
+          name: "Alice Accountant",
+          works: [],
+        }
       : route === "me/student-unit"
-      ? { data: { accepted: [] } }
-      : { revision: 0, courses: [], certificates: [] },
+        ? { data: { accepted: [] } }
+        : { revision: 0, courses: [], certificates: [] },
   );
 });
 describe("Member dashboard", () => {
@@ -81,9 +87,7 @@ describe("Member dashboard", () => {
   );
   it("lets a person enter a course and sends a private revision-controlled command", async () => {
     render(view());
-    fireEvent.click(
-      screen.getByRole("button", { name: "Courses" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Courses" }));
     await waitFor(() =>
       expect(
         screen.getByRole("button", { name: "Add course" }),
@@ -114,9 +118,7 @@ describe("Member dashboard", () => {
   });
   it("exposes Arabic certificate upload with no verification claim", async () => {
     const { container } = render(view("ar"));
-    fireEvent.click(
-      screen.getAllByRole("button", { name: "الشهادات" })[1],
-    );
+    fireEvent.click(screen.getAllByRole("button", { name: "الشهادات" })[1]);
     await waitFor(() =>
       expect(
         screen.getByRole("button", { name: "أضف شهادة" }),
@@ -153,9 +155,7 @@ describe("Member dashboard", () => {
           },
     );
     const { rerender } = render(view());
-    fireEvent.click(
-      screen.getByRole("button", { name: "Courses" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Courses" }));
     await screen.findByText("Alice private course");
     fixture.owner = "bob";
     fixture.request.mockImplementation(() => new Promise(() => {}));

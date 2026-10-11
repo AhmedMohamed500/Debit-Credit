@@ -10,6 +10,7 @@ import { normalizeSnapshot } from "../migration/snapshots";
 import type { CareerProfile } from "@/lib/career/model";
 import type { z } from "zod";
 import { saveAutomaticCloudCv } from "./cv";
+import { syncShowcaseLinks } from "./links";
 export const PERSONAL_DOMAIN = "student-personal";
 export async function personalFor(userId: string) {
   const row = await db().cloudProgress.findUnique({
@@ -73,6 +74,7 @@ export async function savePersonal(
       },
       update: { data: json(profile), revision: { increment: 1 } },
     });
+    await syncShowcaseLinks(tx, userId, record);
     await saveAutomaticCloudCv(tx, userId);
     return { revision: next.revision, data: record };
   });

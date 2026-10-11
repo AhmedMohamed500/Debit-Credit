@@ -4,6 +4,7 @@ import "@/app/career-profile-documents.css";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { ProfilePhoto } from "./profile-photo";
 import { MemberProfile } from "./member-profile";
+import { CvView } from "./compact-cv-view";
 import { activitySummary } from "@/lib/career/activity-summary";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,12 +14,10 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Download,
   Eye,
   FileText,
   Languages,
   Lock,
-  Printer,
   ShieldCheck,
   Sparkles,
   Target,
@@ -43,13 +42,9 @@ import {
   BrowserSkillEvidenceRepository,
   createDefaultProfile,
 } from "@/lib/career/repository";
-import { buildCv, exportCareerData } from "@/lib/career/cv";
-import { checkAtsFormat, cvToPlainText } from "@/lib/career/ats";
-import { BrowserCvVersionRepository } from "@/lib/career/cv-history";
 import type {
   CareerProfile,
   CvPreferences,
-  RoleId,
   SkillEvidence,
   SkillId,
   SkillResult,
@@ -1082,292 +1077,6 @@ function CareerEditor({
         </footer>
       </section>
     </div>
-  );
-}
-function CvView({
-  locale,
-  profile,
-  passport,
-  evidence,
-  prefs,
-  updatePrefs,
-}: {
-  locale: Locale;
-  profile: CareerProfile;
-  passport: SkillResult[];
-  evidence: SkillEvidence[];
-  prefs: CvPreferences;
-  updatePrefs: (p: Partial<CvPreferences>) => void;
-}) {
-  const ar = locale === "ar",
-    say = (en: string, a: string) => (ar ? a : en),
-    cv = buildCv(profile, passport, evidence, prefs.targetRoleId),
-    plainText = cvToPlainText(profile, cv),
-    formatChecks = checkAtsFormat(profile, cv);
-  // Document language is independent of the surrounding site language.
-  const documentLocale = "en" as const;
-  const documentCopy = (...[en]: [string, string]) => en;
-  useEffect(() => {
-    new BrowserCvVersionRepository().save(cv, plainText);
-  }, [cv, plainText]);
-  const download = () => {
-      const blob = new Blob([exportCareerData(profile, cv, evidence)], {
-          type: "application/json",
-        }),
-        url = URL.createObjectURL(blob),
-        a = document.createElement("a");
-      a.href = url;
-      a.download = "debit-credit-career-profile.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    },
-    downloadText = () => {
-      const blob = new Blob([plainText], { type: "text/plain;charset=utf-8" }),
-        url = URL.createObjectURL(blob),
-        a = document.createElement("a");
-      a.href = url;
-      a.download = "debit-credit-ats-cv.txt";
-      a.click();
-      URL.revokeObjectURL(url);
-    };
-  return (
-    <div className="career-shell cv-shell">
-      <section className="cv-controls">
-        <div>
-          <small>AUTO CV</small>
-          <p>
-            {say(
-              "English CV · one-column, text-based document. Enter personal details and real experience in English; your photo stays on your website profile only.",
-              "CV إنجليزي · عمود واحد ونص قابل للقراءة. اكتب بياناتك وخبرتك الحقيقية بالإنجليزي؛ صورتك تظهر في بروفايل الموقع فقط.",
-            )}
-          </p>
-          {/[\u0600-\u06ff]/u.test(
-            JSON.stringify([
-              profile.fullName,
-              profile.country,
-              profile.location,
-              profile.education,
-              profile.experience,
-              profile.languages,
-            ]),
-          ) && (
-            <p role="note">
-              {say(
-                "Some saved personal details are still in Arabic. Update them in English before using this CV. Existing details are preserved; names and qualifications are not automatically translated.",
-                "بعض بياناتك المحفوظة ما زالت بالعربي. عدّلها بالإنجليزي قبل استخدام السيرة. احتفظنا ببياناتك؛ لا نترجم الأسماء والمؤهلات تلقائيًا.",
-              )}
-            </p>
-          )}
-          <h1>{say("Role-based professional CV", "سيرة ذاتية موجهة للدور")}</h1>
-          <p>
-            {say(
-              "Changing the role reorders only your real skills and evidence.",
-              "تغيير الدور يعيد ترتيب مهاراتك وأدلتك الحقيقية فقط.",
-            )}
-          </p>
-          <small>
-            {formatChecks.filter((item) => item.passed).length}/
-            {formatChecks.length}{" "}
-            {say(
-              "deterministic format checks passed · not an ATS score",
-              "فحوص تنسيق حتمية ناجحة · ليست درجة ATS",
-            )}
-          </small>
-          <p>
-            <Link
-              href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile/cv`)}`}
-            >
-              {say("Edit account CV details", "تعديل بيانات CV بالحساب")}
-            </Link>
-          </p>
-        </div>
-        <label>
-          {say("CV target role", "الدور المستهدف")}
-          <select
-            value={prefs.targetRoleId}
-            onChange={(e) =>
-              updatePrefs({ targetRoleId: e.target.value as RoleId })
-            }
-          >
-            {roleIds.map((id) => (
-              <option key={id} value={id}>
-                {roleCatalog[id].label[locale]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button onClick={() => window.print()}>
-          <Printer />
-          {say("Print / Save PDF", "طباعة / حفظ PDF")}
-        </button>
-        <button onClick={downloadText}>
-          <FileText />
-          {say("Plain Text CV", "سيرة نصية")}
-        </button>
-        <button onClick={download}>
-          <Download />
-          {say("Export CV data", "تنزيل بيانات CV")}
-        </button>
-      </section>
-      <article className="professional-cv" lang="en" dir="ltr">
-        <header>
-          <div>
-            <h1>{profile.fullName || "Your Name"}</h1>
-            <p>{cv.headline}</p>
-            <b>{roleCatalog[cv.targetRoleId].label[documentLocale]}</b>
-          </div>
-          <address>
-            {[profile.email, profile.phone, profile.location, profile.country]
-              .filter(Boolean)
-              .map((v) => (
-                <span key={v}>{v}</span>
-              ))}
-          </address>
-        </header>
-        <CvSection
-          title={documentCopy("Professional Summary", "الملخص المهني")}
-        >
-          <p>{cv.summary}</p>
-        </CvSection>
-        {profile.education.length > 0 && (
-          <CvSection title={documentCopy("Education", "التعليم")}>
-            {profile.education.map((e) => (
-              <p key={e.id}>
-                <b>
-                  {e.degree} {e.field && `— ${e.field}`}
-                </b>
-                <br />
-                {e.institution} {e.graduationYear && `· ${e.graduationYear}`}
-              </p>
-            ))}
-          </CvSection>
-        )}
-        {profile.experience.length > 0 && (
-          <CvSection title={documentCopy("Experience", "الخبرة")}>
-            {profile.experience.map((e) => (
-              <p key={e.id}>
-                <b>
-                  {e.title} — {e.company}
-                </b>
-                <br />
-                {e.description}
-                <br />
-                {e.startDate} — {e.current ? "Present" : e.endDate}
-              </p>
-            ))}
-          </CvSection>
-        )}
-        <CvSection
-          title={documentCopy(
-            "Core Accounting Skills",
-            "المهارات المحاسبية الأساسية",
-          )}
-        >
-          <div className="cv-skills">
-            {cv.coreSkills.length ? (
-              cv.coreSkills.slice(0, 8).map((s) => (
-                <span key={s.skillId}>
-                  {skillCatalog[s.skillId].label[documentLocale]}{" "}
-                  <small>{statusCopy[s.status][documentLocale]}</small>
-                </span>
-              ))
-            ) : (
-              <p>
-                {documentCopy(
-                  "No Demonstrated claims yet. Continue building qualifying case evidence.",
-                  "لا توجد مهارات مثبتة بعد. استمر في بناء أدلة حالات مؤهلة.",
-                )}
-              </p>
-            )}
-          </div>
-        </CvSection>
-        {cv.practiceSkills.length > 0 && (
-          <CvSection
-            title={documentCopy(
-              "Accounting Practice & Skills in Development",
-              "التدريب المحاسبي والمهارات قيد التطوير",
-            )}
-          >
-            <div className="cv-skills">
-              {cv.practiceSkills.slice(0, 8).map((s) => (
-                <span key={s.skillId}>
-                  {skillCatalog[s.skillId].label[documentLocale]}{" "}
-                  <small>{statusCopy[s.status][documentLocale]}</small>
-                </span>
-              ))}
-            </div>
-          </CvSection>
-        )}
-        <CvSection
-          title={documentCopy(
-            "Accounting Simulation Experience",
-            "خبرة المحاكاة المحاسبية",
-          )}
-        >
-          <h3>Mizan Trading — Accounting Career Simulation</h3>
-          {cv.simulationBullets.length ? (
-            <ul>
-              {cv.simulationBullets.map((item) => (
-                <li key={item.evidenceId}>{item.text}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>
-              {documentCopy(
-                "Complete qualifying Mizan Trading cases to generate evidence-backed experience bullets.",
-                "أكمل حالات مؤهلة في Mizan Trading لتوليد نقاط خبرة مدعومة بالأدلة.",
-              )}
-            </p>
-          )}
-          <small>
-            {documentCopy(
-              "Practical Simulation · not employment or a verified assessment",
-              "محاكاة عملية · ليست خبرة عمل أو تقييمًا موثقًا",
-            )}
-          </small>
-        </CvSection>
-        {(profile.linkedIn || profile.portfolio) && (
-          <CvSection title="Links">
-            <p>
-              {[profile.linkedIn, profile.portfolio]
-                .filter(Boolean)
-                .map((link) => (
-                  <span key={link}>
-                    {link}
-                    <br />
-                  </span>
-                ))}
-            </p>
-          </CvSection>
-        )}
-        {profile.languages.length > 0 && (
-          <CvSection title="Languages">
-            <p>{profile.languages.join(" · ")}</p>
-          </CvSection>
-        )}
-        <footer>
-          Debit & Credit Skill Passport ·{" "}
-          {documentCopy(
-            "Evidence-based training record · not professional certification",
-            "سجل تدريب مبني على الأدلة · ليس شهادة مهنية",
-          )}
-        </footer>
-      </article>
-    </div>
-  );
-}
-function CvSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section>
-      <h2>{title}</h2>
-      {children}
-    </section>
   );
 }
 function TalentView({

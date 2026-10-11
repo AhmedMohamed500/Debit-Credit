@@ -10,6 +10,7 @@ import sharp from "sharp";
 import { completeStudentDetails } from "./student-qa-helpers.mjs";
 import { memberProfileQa } from "./member-profile-qa.mjs";
 import { careerShowcaseQa } from "./career-showcase-qa.mjs";
+import { compactCvStressQa } from "./compact-cv-stress-qa.mjs";
 const base = "http://localhost:3114", output = path.resolve("artifacts/student-cv"), temporary = path.join(output, "tmp"), results = [], errors = [];
 let app, database, browser, previousAccount;
 function record(name, condition = true) { assert.ok(condition, name); results.push(name); console.log("PASS", name); }
@@ -197,8 +198,15 @@ try {
     const textDownloadEvent = page.waitForEvent("download"); await page.getByRole("button", { name: /Plain Text CV|سيرة نصية/ }).click(); const textDownload = await textDownloadEvent, text = await readFile(await textDownload.path(), "utf8");
     record(label + " ATS export has standard text headings and supported keywords", text.includes("ACCOUNTING SIMULATION EXPERIENCE") && text.includes("Journal Entries") && text.includes("2028") && text.includes(email));
     record(label + " ATS export does not invent certification or employment", !/Certified|CPA|CMA|employed at Mizan/i.test(text));
-    await page.emulateMedia({ media: "print" }); record(label + " PDF uses single column", await page.locator('.professional-cv>header').evaluate(element => getComputedStyle(element).display === "block")); record(label + " print hides account controls", await page.locator('.cloud-account-bar').evaluate(element => getComputedStyle(element).display === "none")); await page.emulateMedia({ media: "screen" });
+    await page.emulateMedia({ media: "print" }); record(label + " PDF uses single column", await page.locator('.professional-cv .cv-page>header').evaluate(element => getComputedStyle(element).display === "block")); record(label + " print hides account controls", await page.locator('.cloud-account-bar').evaluate(element => getComputedStyle(element).display === "none"));
+    record(label + ' print wrapper is white without a full-height background panel',await page.locator('.new-game-shell').evaluate(element=>getComputedStyle(element).backgroundColor==='rgb(255, 255, 255)' && getComputedStyle(element).minHeight==='0px'));
+    record(label + ' measured print layout never exceeds two A4 pages',await page.locator('.cv-page').count() <= 2 && await page.locator('.cv-page').evaluateAll(pages => pages.every(page => page.getBoundingClientRect().height <= 273*96/25.4)));
+    const pdf=await page.pdf({path:path.join(output,label+'-compact-cv.pdf'),preferCSSPageSize:true,printBackground:true});
+    const pageCount=[...pdf.toString('latin1').matchAll(/\/Type\s*\/Page\b/g)].length;
+    record(label + ' real exported PDF has one or two pages',pageCount >=1 && pageCount<=2);
+    await page.emulateMedia({ media: "screen" });
     await page.reload(); await page.locator('.professional-cv').waitFor(); record(label + " CV restored after reload", (await page.locator('.professional-cv').innerText()).includes("Student CV Fixture"));
+    if(locale==='en' && viewport.width===1440) await compactCvStressQa({page,base,locale,label,record,screenshot,output});
     await page.goto(`${base}/${locale}/profile`); await page.locator('.photo-editor img').waitFor();
     record(label + " uploaded photo restored in game profile", await page.locator('.photo-editor img').getAttribute("src") === photo.data.image);
     await page.getByRole("button", { name: /Remove photo|إزالة الصورة/ }).click(); await page.locator('.photo-editor img').waitFor({ state: "detached" });

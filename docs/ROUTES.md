@@ -20,6 +20,7 @@ Signup does not start a session. Login preserves a safe internal destination; ot
 | `/auth/continue` | Safe post-auth redirect gate: validated personal CV details before the requested destination. |
 | `/career` | Career hub and readiness. |
 | `/career-profile` | Signed-in profile for every persona: Profile, Courses, Progress and Certifications tabs; private certificate images, links to evidence and English CV; noindex. Guest view remains compatible. |
+| `/career-profile/cv` | Current English account CV with courses, certificate metadata and supported simulation outcomes; compact single column, at most two measured A4 pages. No photo or QR. |
 | `/portfolio/<token>` | Real owner-selected public professional profile: explicit enable/revoke, opaque token, optional name/socials/availability/accepted-work summary and up to three selected simulations. No private contacts, photos or credentials; no-store/noindex. |
 | `/employers` | Current employer demo entry. Candidates are demo data, not real applicants. |
 | `/companies` | Existing legacy employer/game view, retained for compatibility. |
@@ -27,6 +28,8 @@ Signup does not start a session. Login preserves a safe internal destination; ot
 | `/competition` | Authenticated server-scored competition. |
 
 These pages are not duplicates to merge without a product migration.
+
+The private `GET /api/v1/me/cv?role=<role-id>` derives current account data; GET does not create CV history. Professional card downloads remain in the existing profile, not a fabricated card route. QR uses the explicitly enabled `/portfolio/<token>` link and its existing field selection.
 
 ## Legacy bookmarks
 

@@ -4,10 +4,18 @@ export const PORTFOLIO_LIMIT = 20;
 export const CERTIFICATE_IMAGE_LIMIT = 900_000;
 const title = z.string().trim().min(2).max(160);
 const date = z.string().regex(/^$|^\d{4}-(0[1-9]|1[0-2])$/);
+const englishTitle = z
+  .string()
+  .trim()
+  .max(160)
+  .regex(/^[^\u0600-\u06ff]*$/u)
+  .optional();
 export const courseInput = z
   .object({
     title,
     provider: title,
+    titleEn: englishTitle,
+    providerEn: englishTitle,
     date,
     status: z.enum(["not-started", "in-progress", "completed"]),
     notes: z.string().trim().max(1000),

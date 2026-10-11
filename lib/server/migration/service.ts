@@ -191,7 +191,7 @@ export async function saveBackup(
         provenance: "LOCAL_BACKUP",
       },
     });
-    if (["debit-credit-career-profile-v1", "debit-credit-cv-preferences-v1"].includes(input.domain)) await saveAutomaticCloudCv(tx, userId);
+    if (["debit-credit-career-profile-v1", "debit-credit-cv-preferences-v1", "debit-credit-world-v2"].includes(input.domain)) await saveAutomaticCloudCv(tx, userId);
     return next;
   });
 }

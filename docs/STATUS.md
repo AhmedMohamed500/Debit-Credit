@@ -1,6 +1,6 @@
 # Current project status
 
-Reviewed: 2026-10-10. This file supersedes historical release claims in archived reports.
+Reviewed: 2026-10-11. This file supersedes historical release claims in archived reports.
 
 ## Production and boundaries
 
@@ -13,6 +13,8 @@ Reviewed: 2026-10-10. This file supersedes historical release claims in archived
 - Prior connection timeouts were reachability failures, not proof of a missing route or failed database.
 
 ## Current release work
+
+The professional card now combines the saved account photo, name, role, social links and consent-enabled QR in a downloadable 1600×1100 PNG. The English ATS CV reads live account profile/course/certificate data, preserves existing simulation evidence, synchronizes professional contact links, and curates at most two measured A4 pages with visible omission notices rather than shrinking text. Course English display names are optional; uploads are self-reported, not assessed skills. See [card and CV synchronization](PROFILE-CARD-CV-SYNC-AR.md) for scope and verification; publication must be confirmed separately from the local build.
 
 The career profile now includes private social preferences, up to three pinned server-accepted training workpapers, an automatic task-based capability summary, English PNG achievement cards, self-reported internship/work availability and an explicitly enabled, field-selected professional profile link with local QR generation and revocation. Contact details, photos, certificates and private courses remain excluded from shared HTML/RSC. The initial artifacts cover the server-graded introductory unit, not unverified local gameplay or claimed employment. See [showcase delivery](CAREER-SHOWCASE-AR.md) for verified release results and limitations.
 

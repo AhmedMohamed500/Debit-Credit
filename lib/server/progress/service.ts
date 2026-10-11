@@ -12,6 +12,7 @@ export async function progressFor(userId: string) {
             { domain: { notIn: ["foundations", "profile-photo", "private-portfolio", "private-showcase"] } },
             { domain: { not: { startsWith: "private-certificate/" } } },
             { domain: { not: { startsWith: "public-profile/" } } },
+            { domain: { not: { startsWith: "talent/" } } },
           ],
         },
       }),

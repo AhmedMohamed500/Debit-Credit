@@ -35,6 +35,7 @@ export function CloudSessionBoundary({
   const pathname = usePathname(),
     publicProfile = /^\/(ar|en)\/portfolio\//.test(pathname),
     accountHome = pathname === `/${locale}`,
+    employerPath = /^\/(ar|en)\/employer(\/|$)/.test(pathname),
     privatePath =
       /^\/(ar|en)\/(student|onboarding|bootcamp|game|career-profile|career-league|career|profile|leaderboard|competition|account)(\/|$)/.test(
         pathname,
@@ -74,6 +75,12 @@ export function CloudSessionBoundary({
         return;
       }
       const cache = new CloudCacheRepository();
+      if (employerPath) {
+        configureCloud(me.user.id);
+        setLoadedPath(pathname);
+        setReady(true);
+        return;
+      }
       if (!privatePath && !accountHome) {
         setLoadedPath(pathname);
         setReady(true);
@@ -105,7 +112,7 @@ export function CloudSessionBoundary({
         );
       }
     }
-  }, [enabled, privatePath, publicProfile, accountHome, ar, locale, pathname]);
+  }, [enabled, privatePath, publicProfile, accountHome, employerPath, ar, locale, pathname]);
   useEffect(() => {
     void load();
   }, [load]);
@@ -152,7 +159,7 @@ export function CloudSessionBoundary({
       setBusy(false);
     }
   }
-  const bar = !publicProfile && identity && (
+  const bar = !publicProfile && !employerPath && identity && (
     <div className="cloud-account-bar">
       <span>{identity.profile.displayName}</span>
       <Link href={`/${locale}/account`}>{say("My account", "حسابي")}</Link>

@@ -42,6 +42,15 @@ describe("project organization safeguards", () => {
     }
   });
 
+  it("keeps consent-based employer discovery and shortlist out of public SEO", () => {
+    const urls = sitemap().map(entry => entry.url);
+    expect(publicRoutes).not.toContain("/employers/talent");
+    expect(urls.some(url => /\/(employer|employers\/talent)(\/|$)/.test(url))).toBe(false);
+    expect(read("app/[locale]/employer/layout.tsx")).toMatch(/index:\s*false/);
+    expect(read("app/[locale]/employer/layout.tsx")).toContain("requireUser");
+    expect(read("app/[locale]/employers/talent/page.tsx")).toContain("/employer/candidates");
+  });
+
   it("retains exact historical UI and stylesheet content", () => {
     const manifest = JSON.parse(read("archive/manifest.json"));
     expect(manifest.files).toHaveLength(5);

@@ -8,6 +8,7 @@ import {
 } from "@/lib/career/photo";
 import { db, serial, json } from "../db/client";
 import { HttpError } from "../security/http";
+import { refreshDiscovery } from "../talent/service";
 
 export const PHOTO_DOMAIN = "profile-photo";
 export async function photoFor(userId: string): Promise<ProfilePhoto> {
@@ -79,6 +80,7 @@ export async function savePhoto(
         provenance: "SERVER",
       },
     });
+    await refreshDiscovery(tx, userId);
     return { revision: row.revision, data };
   });
 }

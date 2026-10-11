@@ -53,6 +53,8 @@ import { photoCommand } from "@/lib/career/photo";
 import { portfolioCommand } from "@/lib/career/portfolio";
 import { showcaseCommand } from "@/lib/career/showcase";
 import { showcaseFor, saveShowcase } from "@/lib/server/profiles/showcase";
+import { discoveryCommand, companyInput, talentQuery, shortlistCommand, contactCommand } from "@/lib/talent/model";
+import { discoveryFor, saveDiscovery, employerAccount, saveCompany, searchCandidates, previewCandidate, shortlistFor, mutateShortlist, candidateCv, requestContact, contactInbox } from "@/lib/server/talent/service";
 import {
   portfolioFor,
   savePortfolio,
@@ -79,6 +81,20 @@ async function handle(
     if (method !== "GET")
       await limit(user.id, key, key === "me/progress" ? 120 : 30);
     switch (method + " " + key) {
+      case "GET me/discovery": return discoveryFor(user.id);
+      case "PUT me/discovery": return saveDiscovery(user.id, await body(request, discoveryCommand));
+      case "GET me/contact-requests": return contactInbox(user.id);
+      case "GET employer/account": return employerAccount(user.id);
+      case "PUT employer/company": return saveCompany(user.id, await body(request, companyInput));
+      case "GET employer/candidates": {
+        await limit(user.id, "talent-search", 60);
+        const parsed = talentQuery.safeParse(Object.fromEntries(new URL(request.url).searchParams));
+        if (!parsed.success) throw new HttpError(400, "INVALID_INPUT");
+        return searchCandidates(user.id, parsed.data);
+      }
+      case "GET employer/shortlist": return shortlistFor(user.id);
+      case "PUT employer/shortlist": return mutateShortlist(user.id, await body(request, shortlistCommand));
+      case "POST employer/contact": return requestContact(user.id, await body(request, contactCommand));
       case "GET me":
         return {
           user: {
@@ -173,6 +189,10 @@ async function handle(
       case "GET admin/competition":
         await requireAdmin(request.headers);
         return competitionOverview();
+    }
+    if (method === "GET" && path[0] === "employer" && path[1] === "candidates" && z.string().uuid().safeParse(path[2]).success) {
+      if (path.length === 3) return previewCandidate(user.id, path[2]);
+      if (path.length === 4 && path[3] === "cv") return candidateCv(user.id, path[2]);
     }
     if (
       method === "GET" &&

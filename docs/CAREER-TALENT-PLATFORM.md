@@ -273,4 +273,14 @@ QA الشركات يستخدم قاعدة `talent_utf8_test` المحلية فق
 - `node scripts/student-cv-browser-qa.mjs`: **672 فحصًا ناجحًا**؛ CRUD والصورة والعزل والمحاكاة والكارت وQR والإلغاء والـCV والطباعة محفوظة.
 - `git diff --check`: ناجح.
 - قاعدة بيانات الإنتاج: لم تُعد ضبطها، لم تُضف fixtures، لم تنفذ migrations جديدة.
-- GitHub/Vercel: التحقق من النشر لم يُحسم بعد وقت كتابة نتائج الفحص المحلية؛ لا يُستدل عليه من نجاح البناء.
+- GitHub: [PR #20](https://github.com/AhmedMohamed500/Debit-Credit/pull/20) مدمج في `main`، دون force push.
+- Commit التنفيذ: `0aeb8c4`؛ توثيق وتقرير البروفايل السابق: `3900a79`؛ دمج التطبيق: `95426d743049cf2a90d36ca76e1a9ad4afad8da1`.
+- Vercel Preview: نجاح موثق على `3900a791f94bf756e771a595ae629ba6d1d5b9e2`، Deployment `7001323455`.
+- Vercel Production: نجاح موثق على commit الدمج `95426d743049cf2a90d36ca76e1a9ad4afad8da1`، Deployment `7001354276`، وليس مجرد build محلي.
+- [البروفايل العربي](https://debit-credit-nine.vercel.app/ar/career-profile)، [البروفايل الإنجليزي](https://debit-credit-nine.vercel.app/en/career-profile)، [مدخل الشركات](https://debit-credit-nine.vercel.app/ar/companies)، [البحث المحمي](https://debit-credit-nine.vercel.app/ar/employer/candidates).
+- `node scripts/talent-production-readonly-qa.mjs`: **40 فحصًا ناجحًا** على الموقع الفعلي، real localized login، alias redirects، noindex/no-store، API `401`، Better Auth `200`، sitemap بلا بحث خاص.
+- `node scripts/student-production-readonly-qa.mjs`: **54 فحصًا ناجحًا** على الموقع الفعلي؛ مسارات الطالب وGuest Profile والعزل وعدم الكتابة.
+- `node scripts/auth-routing-browser-qa.mjs --production --redesign`: **160 فحصًا ناجحًا**؛ CTA → Signup → Login، العربي والإنجليزي، desktop/mobile، keyboard/accessibility وعدم وجود runtime errors.
+- مجموع فحوص الإنتاج المذكورة: **254**. كلها قراءة فقط، دون إرسال credentials أو إنشاء حسابات أو fixtures. التسجيل الحقيقي، مهام المرشح وShortlist والتواصل المتكاملة اختُبرت في PostgreSQL المحلي المعزول، وليس على بيانات أشخاص حقيقيين في الإنتاج.
+- Google OAuth: لم يُختبر تسجيل دخول Google؛ callback smoke ليس دليلًا على نجاح OAuth. لم تتغير إعداداته في هذه المهمة.
+- تحديث النتائج النهائي Documentation-only؛ مصدر كود التطبيق المختبر لا يتغير بهذا التحديث، ويظهر الـcommit الخاص به في سجل Git.

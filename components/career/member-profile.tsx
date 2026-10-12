@@ -172,6 +172,17 @@ export function MemberProfile({
     setMessage("");
     window.history.replaceState(null, "", `#${value}`);
   }
+  function openSharing() {
+    selectTab("work");
+    window.setTimeout(() => {
+      const settings =
+        document.querySelector<HTMLDetailsElement>(".showcase-settings");
+      if (settings) {
+        settings.open = true;
+        settings.scrollIntoView?.({ behavior: "smooth", block: "start" });
+      }
+    }, 0);
+  }
   useEffect(() => {
     const hash = window.location.hash.slice(1);
     if (
@@ -182,6 +193,7 @@ export function MemberProfile({
         "courses",
         "progress",
         "certifications",
+        "settings",
         "cv",
       ].includes(hash)
     )
@@ -428,8 +440,14 @@ export function MemberProfile({
             {say("Employers", "أصحاب العمل")}
           </Link>
         </nav>
-        <button className="portfolio-share" onClick={() => selectTab("work")}>
+        <button className="portfolio-share" onClick={openSharing}>
           {say("Share profile", "مشاركة الملف")}
+        </button>
+        <button
+          className="portfolio-discovery"
+          onClick={() => selectTab("settings")}
+        >
+          {say("Employer visibility", "الظهور للشركات")}
         </button>
         <details className="portfolio-menu">
           <summary aria-label={say("Profile actions", "إجراءات البروفايل")}>
@@ -482,7 +500,7 @@ export function MemberProfile({
             locale={locale}
             showcase={showcase.data}
             completeness={completeness}
-            open={() => selectTab("work")}
+            open={openSharing}
           />
           <nav
             className="member-tabs"
@@ -625,6 +643,7 @@ export function MemberProfile({
                     locale={locale}
                     owner={owner}
                     role={profile.targetRoleId}
+                    profile={profile}
                   />
                   <details className="member-card">
                     <summary>

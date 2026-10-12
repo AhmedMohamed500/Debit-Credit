@@ -4,11 +4,15 @@ import Link from "next/link";
 import QRCode from "qrcode";
 import {
   Award,
-  ExternalLink,
   Link2,
   Pin,
   Download,
   BriefcaseBusiness,
+  Linkedin,
+  Github,
+  Facebook,
+  Instagram,
+  Globe,
 } from "lucide-react";
 import { requestJSON, cloudUser, CloudFailure } from "@/lib/cloud/runtime";
 import { roleCatalog, roleIds } from "@/lib/career/catalog";
@@ -23,7 +27,7 @@ import {
   type PublicShowcase,
 } from "@/lib/career/showcase";
 import type { Locale } from "@/types";
-import type { RoleId } from "@/lib/career/model";
+import type { RoleId, CareerProfile } from "@/lib/career/model";
 import { ProfessionalCard } from "./professional-card";
 import "@/app/career-showcase.css";
 
@@ -86,25 +90,46 @@ export function useShowcase(owner: string | undefined) {
 type Controller = ReturnType<typeof useShowcase>;
 export function SocialLinks({
   socials,
+  details = false,
 }: {
   socials: ShowcaseSettings["socials"];
+  details?: boolean;
 }) {
+  const icons = {
+    linkedin: Linkedin,
+    github: Github,
+    facebook: Facebook,
+    instagram: Instagram,
+    website: Globe,
+  };
   return (
     <div className="showcase-socials">
       {socialKeys
         .filter((key) => socials[key])
-        .map((key) => (
-          <a
-            key={key}
-            href={socials[key]}
-            target="_blank"
-            rel="noopener noreferrer"
-            referrerPolicy="no-referrer"
-          >
-            <ExternalLink size={15} />
-            {socialLabels[key]}
-          </a>
-        ))}
+        .map((key) => {
+          const Icon = icons[key];
+          return (
+            <a
+              key={key}
+              href={socials[key]}
+              target="_blank"
+              rel="noopener noreferrer"
+              referrerPolicy="no-referrer"
+            >
+              <Icon size={15} />
+              <span>
+                {socialLabels[key]}
+                {details && (
+                  <small>
+                    {socials[key]
+                      .replace(/^https:\/\/(www\.)?/, "")
+                      .replace(/\/$/, "")}
+                  </small>
+                )}
+              </span>
+            </a>
+          );
+        })}
     </div>
   );
 }
@@ -260,11 +285,13 @@ export function ShowcasePanel({
   locale,
   owner,
   role,
+  profile,
 }: {
   controller: Controller;
   locale: Locale;
   owner: string | undefined;
   role: RoleId;
+  profile: CareerProfile;
 }) {
   const { data, busy, error } = controller,
     ar = locale === "ar",
@@ -419,6 +446,15 @@ export function ShowcasePanel({
         locale={locale}
         url={url}
         qr={qr}
+        profile={profile}
+        onSharing={() => {
+          const settings =
+            document.querySelector<HTMLDetailsElement>(".showcase-settings");
+          if (settings) {
+            settings.open = true;
+            settings.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }}
       />
       <h3>{say("What can I do?", "أنا أقدر أعمل إيه؟")}</h3>
       {data.works.length ? (

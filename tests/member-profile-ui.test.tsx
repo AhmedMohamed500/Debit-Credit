@@ -61,6 +61,13 @@ beforeEach(() => {
   );
 });
 describe("Member dashboard", () => {
+  it("restores the employer privacy settings destination after reload", async () => {
+    window.history.replaceState(null, "", "#settings");
+    render(view());
+    expect(
+      await screen.findByRole("switch", { name: "Visible to employers" }),
+    ).toBeInTheDocument();
+  });
   it.each(["student", "fresh-graduate", "junior", "mid", "senior"] as const)(
     "supports %s profiles with truthful empty progress",
     async (experienceLevel) => {

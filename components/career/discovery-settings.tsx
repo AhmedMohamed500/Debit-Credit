@@ -101,10 +101,7 @@ export function DiscoverySettings({
     }
   }
   const labels: Record<keyof DiscoveryPreferences, [string, string]> = {
-    enabled: [
-      "Visible to employers: share my name, current/target role, work type, availability, evidence summary and simulation work",
-      "الظهور للشركات: مشاركة اسمي ودوري الحالي والمستهدف ونوع العمل والتوفر وملخص الأدلة وأعمال المحاكاة",
-    ],
+    enabled: ["Visible to employers", "الظهور للشركات"],
     photo: ["Share my photo with recruiters", "مشاركة صورتي مع مسؤولي التوظيف"],
     location: ["Share location", "مشاركة المكان"],
     education: ["Share education", "مشاركة التعليم"],
@@ -139,10 +136,18 @@ export function DiscoverySettings({
           ? "موافقة مستقلة عن الرابط العام. خاص افتراضيًا؛ لا يكفي التسجيل أو اختيار متاح للعمل لنشرك. الشركات ذات حساب معلن ذاتيًا وليست موثقة تلقائيًا."
           : "Separate consent from the public share page. Private by default; signup and availability do not publish you. Employer identities are self-reported, not verified."}
       </p>
+      <p className="discovery-help">
+        {ar
+          ? "عند التفعيل يمكن لحسابات الشركات العثور على ملفك المهني في البحث حتى لو الرابط العام وQR مغلقان. لن نعرض بريدك أو هاتفك؛ اختر الصورة والمكان والحقول المسموح بها أدناه."
+          : "When enabled, company accounts can find your professional profile even with public sharing and QR off. Email and phone stay private; choose photo, location and other allowed fields below."}
+      </p>
       <div className="discovery-choices">
         {(Object.keys(labels) as (keyof DiscoveryPreferences)[]).map((key) => (
           <label key={key}>
             <input
+              role={key === "enabled" ? "switch" : undefined}
+              dir={key === "enabled" ? "ltr" : undefined}
+              aria-label={labels[key][ar ? 1 : 0]}
               type="checkbox"
               checked={draft[key]}
               disabled={!record || busy}

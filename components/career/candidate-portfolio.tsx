@@ -67,34 +67,44 @@ export function CareerPass({
   return (
     <aside className="career-pass">
       <small>{ar ? "المعرّف المهني" : "Career ID"}</small>
-      {data?.token ? (
-        <>
-          <b dir="ltr">DC-{data.token.slice(0, 12).toUpperCase()}</b>
-        </>
-      ) : (
-        <b>{ar ? "المشاركة غير مفعّلة" : "Private by default"}</b>
-      )}
-      {qr ? (
-        <Image
-          src={qr}
-          alt={
-            ar
-              ? "QR للرابط العام المختار"
-              : "QR for your selected public profile"
-          }
-          width={116}
-          height={116}
-          unoptimized
-        />
-      ) : (
-        <Shield size={42} aria-hidden="true" />
-      )}
+      <b dir="ltr">
+        {data?.token
+          ? `DC-${data.token.slice(0, 12).toUpperCase()}`
+          : "Debit & Credit"}
+      </b>
+      <div className="career-pass-qr">
+        {qr ? (
+          <Image
+            src={qr}
+            alt={
+              ar
+                ? "QR للرابط العام المختار"
+                : "QR for your selected public profile"
+            }
+            width={116}
+            height={116}
+            unoptimized
+          />
+        ) : (
+          <div className="career-pass-private">
+            <b>{ar ? "المشاركة غير مفعلة" : "Sharing is off"}</b>
+            <small>
+              {ar
+                ? "فعّل رابط المشاركة لإنشاء QR حقيقي"
+                : "Activate your share link to create a real QR"}
+            </small>
+            <button onClick={open}>
+              {ar ? "تفعيل المشاركة" : "Activate sharing"}
+            </button>
+          </div>
+        )}
+      </div>
       {url && (
         <a href={url} target="_blank" rel="noopener noreferrer">
           {ar ? "عرض البروفايل العام" : "View public profile"}
         </a>
       )}
-      <button onClick={open}>{ar ? "مشاركة" : "Share"}</button>
+      {url && <button onClick={open}>{ar ? "مشاركة" : "Share"}</button>}
     </aside>
   );
 }
@@ -345,7 +355,7 @@ export function ProfessionalOverview({
         {showcase && (
           <section className="member-card">
             <h2>{ar ? "روابط مهنية" : "Professional links"}</h2>
-            <SocialLinks socials={showcase.settings.socials} />
+            <SocialLinks socials={showcase.settings.socials} details />
           </section>
         )}
       </aside>

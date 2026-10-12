@@ -6,11 +6,12 @@ export async function memberProfileQa({ page, context, base, locale, label, api,
   const say = (en, ar) => locale === "ar" ? ar : en;
   await page.waitForFunction(() => document.querySelector('.member-feedback button') === null);
   const root = page.locator('.member-profile');
+  await page.locator('.member-tabs').getByRole('button', {name:say('Overview','نظرة عامة'),exact:true}).click();
   record(label + " no duplicate journey navigation above the profile", await page.locator('.student-journey-bar').count() === 0);
-  record(label + " profile links directly to the next saved journey stage", await page.locator('.member-next a').getAttribute('href') === (label === 'en-1440' ? '/en/career-profile/skills' : `/${locale}/game/first-shift`));
+  record(label + " professional next step follows saved journey progress", await page.locator('.candidate-next a').first().getAttribute('href') === (label === 'en-1440' ? '/en/career-profile/skills' : `/${locale}/game/first-shift`));
   record(label + " dark theme preserves petrol surfaces and readable text", await root.evaluate(element => { document.documentElement.setAttribute('data-theme', 'dark'); const style=getComputedStyle(element); return style.backgroundColor === 'rgb(12, 35, 50)' && style.color !== style.backgroundColor; }));
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
-  record(label + " light theme sidebar is white", await page.locator('.member-sidebar').evaluate(element => getComputedStyle(element).backgroundColor === 'rgb(255, 255, 255)'));
+  record(label + " approved professional view has no student sidebar and white thin navigation", await page.locator('.member-sidebar').count() === 0 && await page.locator('.member-top').evaluate(element => getComputedStyle(element).backgroundColor === 'rgb(255, 255, 255)'));
   record(label + " large photo not a small circle inside an oversized frame", (await page.locator('.member-portrait img').boundingBox()).width >= 120);
   await page.locator('.member-tabs').getByRole('button', { name: say('Courses', 'الكورسات'), exact: true }).click();
   await page.getByRole('button', { name: say('Add course', 'أضف كورس'), exact: true }).click();
@@ -38,7 +39,7 @@ export async function memberProfileQa({ page, context, base, locale, label, api,
   await screenshot(page,label+'-cv-with-course');
   await page.goto(`${base}/${locale}/career-profile#courses`);await page.locator('.member-record').getByText('Excel for Accountants',{exact:true}).waitFor();
   await screenshot(page, label + '-profile-courses'); await checkLayout(page, label + ' profile courses');
-  await page.locator('.member-tabs').getByRole('button', { name: say('Certifications', 'الشهادات'), exact: true }).click();
+  await page.locator('.member-tabs').getByRole('button', { name: say('Certificates', 'الشهادات'), exact: true }).click();
   await page.getByRole('button', { name: say('Add certificate', 'أضف شهادة'), exact: true }).click();
   await page.locator('.member-form [name="title"]').fill('Financial Reporting Certificate');
   await page.locator('.member-form [name="issuer"]').fill('Local QA University');

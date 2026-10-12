@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -12,6 +12,13 @@ import {
   Search,
   Shield,
   X,
+  GraduationCap,
+  Award,
+  Calendar,
+  Clock,
+  Languages,
+  ChartNoAxesCombined,
+  MoreHorizontal,
 } from "lucide-react";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { ThemeToggle } from "@/components/platform/theme-provider";
@@ -31,8 +38,10 @@ import {
 import type { CvBlock } from "@/lib/career/compact-cv";
 import type { Locale } from "@/types";
 import { WorkPreview } from "@/components/career/showcase";
+import { SharedCvView } from "@/components/career/shared-cv-view";
 import "@/app/talent-platform.css";
 import "@/app/employer-talent.css";
+import "@/app/reference-implementation.css";
 
 type Filters = {
   q: string;
@@ -65,6 +74,7 @@ export function TalentSearch({
     owner = identity?.user.id,
     ar = locale === "ar",
     say = (en: string, arabic: string) => (ar ? arabic : en);
+  const selectionVersion = useRef(0);
   const [account, setAccount] = useState<{
       owner: string;
       company: Company | null;
@@ -97,6 +107,7 @@ export function TalentSearch({
     setAccount(null);
     setResults(null);
     setSelected(null);
+    selectionVersion.current++;
     setSaved(null);
     setError("");
     if (owner)
@@ -123,6 +134,8 @@ export function TalentSearch({
     if (!owner || !company) return;
     let alive = true;
     setLoading(true);
+    selectionVersion.current++;
+    setBusy(false);
     setResults(null);
     setSelected(null);
     setError("");
@@ -186,19 +199,21 @@ export function TalentSearch({
   }, [owner, company?.id, filters, page, mode, candidateId]);
   async function open(id: string) {
     if (!owner) return;
+    const version = ++selectionVersion.current;
     setSelected(null);
     setBusy(true);
     setError("");
     try {
       const value = await requestJSON<Candidate>("employer/candidates/" + id);
-      if (cloudUser() === owner) setSelected({ owner, candidate: value });
+      if (cloudUser() === owner && selectionVersion.current === version)
+        setSelected({ owner, candidate: value });
     } catch {
-      if (cloudUser() === owner)
+      if (cloudUser() === owner && selectionVersion.current === version)
         setError(
           say("Candidate is no longer available.", "المرشح لم يعد متاحًا."),
         );
     } finally {
-      setBusy(false);
+      if (selectionVersion.current === version) setBusy(false);
     }
   }
   async function toggle(value: Candidate) {
@@ -251,7 +266,7 @@ export function TalentSearch({
     <main className="talent-platform" dir={ar ? "rtl" : "ltr"}>
       <header className="talent-nav">
         <Link className="talent-brand" href={`/${locale}/companies`}>
-          <BriefcaseBusiness size={24} />
+          <ChartNoAxesCombined size={24} />
           Debit & Credit
         </Link>
         <nav>
@@ -261,20 +276,17 @@ export function TalentSearch({
           >
             {say("Candidates", "المرشحون")}
           </Link>
-          <Link
-            href={`/${locale}/employer/shortlist`}
-            aria-current={mode === "shortlist" ? "page" : undefined}
-          >
-            {say("Shortlist", "القائمة المختصرة")}
-          </Link>
+          <button disabled className="nav-disabled">
+            {say("Jobs", "الوظائف")}
+          </button>
+          <button disabled className="nav-disabled">
+            {say("Analytics", "التحليلات")}
+          </button>
           <Link
             href={`/${locale}/employer/company`}
             aria-current={mode === "company" ? "page" : undefined}
           >
             {say("Company profile", "ملف الشركة")}
-          </Link>
-          <Link href={`/${locale}/career-profile`}>
-            {say("My portfolio", "ملفي المهني")}
           </Link>
         </nav>
         <ThemeToggle compact />
@@ -284,6 +296,19 @@ export function TalentSearch({
             <small>{say("Self-reported employer", "شركة معلنة ذاتيًا")}</small>
           </span>
         )}
+        <details className="portfolio-menu">
+          <summary aria-label={say("Employer actions", "إجراءات الشركة")}>
+            <MoreHorizontal size={19} />
+          </summary>
+          <div>
+            <Link href={`/${locale}/employer/shortlist`}>
+              {say("Shortlist", "القائمة المختصرة")}
+            </Link>
+            <Link href={`/${locale}/career-profile`}>
+              {say("My portfolio", "ملفي المهني")}
+            </Link>
+          </div>
+        </details>
       </header>
       {!owner ? (
         <section className="talent-empty">
@@ -322,15 +347,15 @@ export function TalentSearch({
             <h1>
               {mode === "shortlist"
                 ? say("Your candidate shortlist", "قائمتك المختصرة للمرشحين")
-                : say(
-                    "Find Accounting Talent",
-                    "اكتشف المواهب المحاسبية المناسبة",
-                  )}
+                : say("Find the Right Talent", "اعثر على المواهب المناسبة")}
             </h1>
+            {mode !== "shortlist" && (
+              <h1>{say("in Accounting & Finance", "في المحاسبة والمالية")}</h1>
+            )}
             <p>
               {say(
-                "Search students and accountants by practice-supported skills, career level and availability. Only candidates who explicitly opted in appear.",
-                "ابحث عن الطلاب والمحاسبين وفق المهارات المدعومة بالتدريب والمستوى المهني والتوفر. يظهر الموافقون على الاكتشاف فقط.",
+                "Discover candidates through real accounting practice and shared professional profiles.",
+                "اكتشف المرشحين من خلال الممارسة المحاسبية الفعلية والملفات المهنية المشتركة.",
               )}
             </p>
             {mode !== "shortlist" && (
@@ -351,6 +376,36 @@ export function TalentSearch({
                       )}
                       aria-label={say("Search candidates", "البحث عن مرشحين")}
                     />
+                  </label>
+                  <label className="search-location">
+                    <MapPin size={16} />
+                    <select
+                      name="search-location"
+                      aria-label={say("Search location", "مكان البحث")}
+                      value={draft.location}
+                      onChange={(e) =>
+                        setDraft((value) => ({
+                          ...value,
+                          location: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="">
+                        {say("All locations", "كل الأماكن")}
+                      </option>
+                      {[
+                        ...new Set(
+                          [
+                            draft.location,
+                            ...(list?.items.map((row) => row.location) ?? []),
+                          ].filter(Boolean),
+                        ),
+                      ].map((location) => (
+                        <option key={location} value={location}>
+                          {location}
+                        </option>
+                      ))}
+                    </select>
                   </label>
                   <button className="talent-primary" type="submit">
                     {say("Search", "ابحث")}
@@ -382,7 +437,7 @@ export function TalentSearch({
                     ],
                     [
                       "level",
-                      say("Experience level", "مستوى الخبرة"),
+                      say("More filters", "مزيد من الفلاتر"),
                       [
                         ["student", say("Student", "طالب")],
                         ["fresh-graduate", say("Graduate", "خريج")],
@@ -483,7 +538,10 @@ export function TalentSearch({
                         <CandidatePortrait candidate={value} />
                         <div>
                           <h3>{value.name}</h3>
-                          <p>{roleCatalog[value.role].label[locale]}</p>
+                          <p>
+                            {value.currentRole ||
+                              roleCatalog[value.role].label[locale]}
+                          </p>
                           {value.location && (
                             <small>
                               <MapPin size={12} />
@@ -497,15 +555,12 @@ export function TalentSearch({
                               </span>
                             ))}
                           </div>
-                          {overlap.requested > 0 && (
-                            <small>
-                              {overlap.matched} / {overlap.requested}{" "}
-                              {say(
-                                "requested skills supported",
-                                "مهارات مطلوبة مدعومة",
-                              )}
-                            </small>
-                          )}
+                          <span className="talent-match">
+                            {overlap.requested > 0
+                              ? `${overlap.matched}/${overlap.requested}`
+                              : value.skills.length}{" "}
+                            {say("skills", "مهارات")}
+                          </span>
                         </div>
                       </button>
                       <button
@@ -515,7 +570,7 @@ export function TalentSearch({
                         aria-pressed={shortlist.includes(value.id)}
                         onClick={() => void toggle(value)}
                       >
-                        <Bookmark size={18} />
+                        {shortlist.includes(value.id) && <Bookmark size={12} />}
                       </button>
                     </article>
                   );
@@ -524,10 +579,7 @@ export function TalentSearch({
                   <div className="talent-empty">
                     <Search size={32} />
                     <h3>
-                      {say(
-                        "No discoverable candidates",
-                        "لا يوجد مرشحون ظاهرون",
-                      )}
+                      {say("No matching candidates", "لا توجد نتائج مطابقة")}
                     </h3>
                     <p>
                       {say(
@@ -773,33 +825,20 @@ function CandidatePreview({
         <CandidatePortrait candidate={candidate} />
         <div>
           <h2>{candidate.name}</h2>
-          <p>{roleCatalog[candidate.role].label[locale]}</p>
+          <p>
+            {candidate.currentRole || roleCatalog[candidate.role].label[locale]}
+          </p>
           <small>{candidate.location}</small>
-          <span className="talent-availability">
-            {candidate.availability === "internship"
-              ? ar
-                ? "متاح لتدريب"
-                : "Open to internships"
-              : candidate.availability === "work"
-                ? ar
-                  ? "متاح للعمل"
-                  : "Open to work"
-                : ar
-                  ? "التوفر غير معلن للعمل"
-                  : "Not seeking opportunities"}
+          <span className="talent-match">
+            {candidate.skills.length}{" "}
+            {ar ? "مهارات مدعومة" : "supported skills"}
           </span>
         </div>
         <button
-          className="preview-close"
-          onClick={close}
-          aria-label={ar ? "إغلاق المعاينة" : "Close preview"}
+          className="talent-primary preview-shortlist"
+          disabled={busy}
+          onClick={toggle}
         >
-          <X />
-        </button>
-      </header>
-      <div className="preview-actions">
-        <button className="talent-primary" disabled={busy} onClick={toggle}>
-          <Bookmark size={15} />
           {saved
             ? ar
               ? "إزالة من القائمة"
@@ -808,13 +847,17 @@ function CandidatePreview({
               ? "أضف للقائمة المختصرة"
               : "Add to shortlist"}
         </button>
-        <Link href={`/${locale}/employer/candidates/${candidate.id}`}>
-          {ar ? "عرض الملف كاملًا" : "View full profile"}
-        </Link>
-      </div>
+        <button
+          className="preview-close"
+          onClick={close}
+          aria-label={ar ? "إغلاق المعاينة" : "Close preview"}
+        >
+          <X />
+        </button>
+      </header>
       <nav className="preview-tabs">
         {[
-          ["overview", ar ? "نظرة عامة" : "Overview"],
+          ["overview", ar ? "البروفايل" : "Profile"],
           ["skills", ar ? "المهارات" : "Skills"],
           ["projects", ar ? "الأعمال" : "Projects"],
           ["certificates", ar ? "الشهادات" : "Certificates"],
@@ -832,69 +875,146 @@ function CandidatePreview({
       <div className="preview-body">
         {tab === "overview" && (
           <>
-            <h3>
-              {ar ? "نبذة مهنية مدعومة بالأدلة" : "Evidence-supported summary"}
-            </h3>
+            <h3>{ar ? "نبذة" : "About"}</h3>
             <p>{candidate.summary}</p>
-            <h3>{ar ? "المعلومات المشتركة" : "Shared information"}</h3>
+            <h3>{ar ? "المعلومات الأساسية" : "Key Information"}</h3>
             <div className="preview-info">
-              {candidate.education.map((row, i) => (
-                <article key={i}>
-                  <GraduationCapIcon />
-                  <b>{row.institution}</b>
-                  <small>
-                    {row.degree} · {row.field} · {row.graduationYear}
-                  </small>
+              {[
+                [
+                  ar ? "التعليم" : "Education",
+                  candidate.education
+                    .map(
+                      (row) =>
+                        `${row.institution} · ${row.degree} ${row.field}`,
+                    )
+                    .join(" / "),
+                  GraduationCap,
+                ],
+                [
+                  ar ? "التخرج" : "Graduation",
+                  candidate.graduationYear ||
+                    candidate.education[0]?.graduationYear,
+                  Calendar,
+                ],
+                [ar ? "المكان" : "Location", candidate.location, MapPin],
+                [
+                  ar ? "التوفر" : "Availability",
+                  candidate.availability === "work"
+                    ? ar
+                      ? "متاح للعمل"
+                      : "Open to work"
+                    : candidate.availability === "internship"
+                      ? ar
+                        ? "تدريب"
+                        : "Internship"
+                      : ar
+                        ? "غير باحث حاليًا"
+                        : "Not looking",
+                  Clock,
+                ],
+                [
+                  ar ? "نوع العمل" : "Work Type",
+                  candidate.workType,
+                  BriefcaseBusiness,
+                ],
+                [
+                  ar ? "اللغات" : "Languages",
+                  candidate.languages.join(" · "),
+                  Languages,
+                ],
+              ].map(([label, value, Icon]) => {
+                const InfoIcon = Icon as typeof MapPin;
+                return (
+                  <article key={String(label)}>
+                    <InfoIcon />
+                    <div>
+                      <b>{String(label)}</b>
+                      <small>{String(value || "—")}</small>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+            <h3>{ar ? "أبرز المهارات" : "Top Skills"}</h3>
+            {candidate.skills.slice(0, 4).map((row) => (
+              <div className="preview-skill" key={row.skillId}>
+                <span>{skillCatalog[row.skillId].label[locale]}</span>
+                {row.score !== null ? (
+                  <>
+                    <progress
+                      max={100}
+                      value={row.score}
+                      aria-label={skillCatalog[row.skillId].label[locale]}
+                    />
+                    <small>{row.score}%</small>
+                  </>
+                ) : (
+                  <small>{row.status}</small>
+                )}
+              </div>
+            ))}
+            {!candidate.skills.length && (
+              <p>
+                {ar ? "لا توجد أدلة مهارات بعد." : "No skill evidence yet."}
+              </p>
+            )}
+            <h3>
+              {ar
+                ? "عمل مميز (محاكاة تدريبية)"
+                : "Highlighted Project (Simulation)"}
+            </h3>
+            {candidate.works[0] ? (
+              <article className="preview-highlight">
+                <Image
+                  src="/game/first-shift-desk-v2.png"
+                  width={68}
+                  height={58}
+                  alt=""
+                />
+                <div>
+                  <b>{candidate.works[0].title[locale]}</b>
+                  <p>{candidate.works[0].summary[locale]}</p>
+                </div>
+                <button onClick={() => setTab("projects")}>
+                  {ar ? "عرض العمل" : "View project"}
+                </button>
+              </article>
+            ) : (
+              <p>
+                {ar ? "لا توجد أعمال مقبولة بعد." : "No accepted work yet."}
+              </p>
+            )}
+            <h3>
+              {ar
+                ? "الشهادات · مضافة من المرشح"
+                : "Certificates · self-reported"}
+            </h3>
+            <div className="preview-certificates">
+              {candidate.certificates.slice(0, 3).map((row, index) => (
+                <article className="preview-certificate" key={index}>
+                  <Award size={25} />
+                  <div>
+                    <b>{row.title}</b>
+                    <small>
+                      {row.issuer} · {row.date}
+                    </small>
+                  </div>
                 </article>
               ))}
-              {candidate.location && (
-                <article>
-                  <MapPin />
-                  <b>{ar ? "المكان" : "Location"}</b>
-                  <small>{candidate.location}</small>
-                </article>
-              )}
-              {candidate.languages.length > 0 && (
-                <article>
-                  <b>{ar ? "اللغات" : "Languages"}</b>
-                  <small>{candidate.languages.join(" · ")}</small>
-                </article>
-              )}
             </div>
-            <h3>{ar ? "كورسات معلنة ذاتيًا" : "Self-reported courses"}</h3>
-            {candidate.courses.map((row, i) => (
-              <article className="preview-line" key={i}>
-                <b>{row.title}</b>
-                <small>
-                  {row.provider} · {row.date} ·{" "}
-                  {row.status === "completed"
-                    ? ar
-                      ? "مكتمل"
-                      : "Completed"
-                    : ar
-                      ? "جارٍ الدراسة"
-                      : "Started"}
-                </small>
-              </article>
-            ))}
-            {!candidate.courses.length && (
-              <p>{ar ? "لم تتم مشاركة كورسات." : "No courses shared."}</p>
+            {!candidate.certificates.length && (
+              <p>{ar ? "لم تتم مشاركة شهادات." : "No certificates shared."}</p>
             )}
-            <div className="talent-chips">
-              {Object.entries(candidate.socials)
-                .filter(([, value]) => value)
-                .map(([key, value]) => (
-                  <a
-                    key={key}
-                    href={value}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    referrerPolicy="no-referrer"
-                  >
-                    {key}
-                  </a>
-                ))}
-            </div>
+            <footer className="preview-footer">
+              <Link href={`/${locale}/employer/candidates/${candidate.id}`}>
+                {ar ? "عرض البروفايل المشترك" : "View public profile"}
+              </Link>
+              {candidate.cv && (
+                <button className="talent-primary" onClick={() => setTab("cv")}>
+                  {ar ? "تنزيل CV" : "Download CV"}
+                </button>
+              )}
+            </footer>
           </>
         )}
         {tab === "skills" && (
@@ -1007,16 +1127,7 @@ function CandidatePreview({
             </p>
             {candidate.cv ? (
               cv ? (
-                <div className="recruiter-cv" dir="ltr" lang="en">
-                  {cv.map((block) => (
-                    <section key={block.id}>
-                      {block.heading && <h3>{block.heading}</h3>}
-                      {block.lines.map((line, i) => (
-                        <p key={i}>{line}</p>
-                      ))}
-                    </section>
-                  ))}
-                </div>
+                <SharedCvView blocks={cv} />
               ) : (
                 <p>
                   {message || (ar ? "تحميل المعاينة…" : "Loading preview…")}
@@ -1031,7 +1142,7 @@ function CandidatePreview({
             )}
           </>
         )}
-        {candidate.contactRequests && (
+        {candidate.contactRequests && tab !== "overview" && (
           <details className="contact-request">
             <summary>
               {ar
@@ -1060,7 +1171,4 @@ function CandidatePreview({
       </div>
     </section>
   );
-}
-function GraduationCapIcon() {
-  return <BriefcaseBusiness size={19} />;
 }

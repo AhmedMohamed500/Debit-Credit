@@ -75,13 +75,16 @@ describe("Member dashboard", () => {
       expect(
         await screen.findByRole("heading", { name: "Alice Accountant" }),
       ).toBeInTheDocument();
+      expect(
+        screen.getByText(/Profile complete · not readiness/),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/Complete an accounting task/),
+      ).toBeInTheDocument();
+      expect(document.querySelector(".member-sidebar")).toBeNull();
+      expect(document.querySelectorAll(".member-tabs button")).toHaveLength(6);
+      fireEvent.click(screen.getByRole("button", { name: "Career Journey" }));
       await screen.findByText("0/11");
-      expect(
-        screen.getByText(/personal profile complete · not a skill score/),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/Complete your first accounting task/),
-      ).toBeInTheDocument();
       expect(screen.queryByText("75% Complete")).toBeNull();
     },
   );
@@ -118,7 +121,7 @@ describe("Member dashboard", () => {
   });
   it("exposes Arabic certificate upload with no verification claim", async () => {
     const { container } = render(view("ar"));
-    fireEvent.click(screen.getAllByRole("button", { name: "الشهادات" })[1]);
+    fireEvent.click(screen.getByRole("button", { name: "الشهادات" }));
     await waitFor(() =>
       expect(
         screen.getByRole("button", { name: "أضف شهادة" }),

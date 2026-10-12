@@ -1,0 +1,971 @@
+/* Approved reference composition; shared data and evidence semantics are unchanged. */
+.shared-cv-print {
+  display: none;
+}
+.shared-cv-screen {
+  overflow-x: auto;
+  margin-top: 14px;
+}
+@media print {
+  body:has(.shared-cv-print) > :not(.shared-cv-print) {
+    display: none !important;
+  }
+  body:has(.shared-cv-print) {
+    background: white !important;
+  }
+  .shared-cv-print {
+    display: block !important;
+  }
+}
+.member-profile .member-layout {
+  display: block;
+  max-width: 1840px;
+}
+.member-profile .member-content {
+  padding: 0 14px 24px;
+}
+.member-profile .member-top {
+  min-height: 58px;
+  padding: 10px 25px;
+  gap: 24px;
+  direction: ltr;
+  color: #07254b;
+}
+.portfolio-navigation {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+}
+.portfolio-navigation button {
+  padding: 0;
+}
+.portfolio-brand {
+  font-size: 22px;
+}
+.member-profile .portfolio-share {
+  background: #082947;
+  color: white;
+  padding: 8px 20px;
+  font-size: 12px;
+}
+.portfolio-menu {
+  position: relative;
+  z-index: 8;
+}
+.portfolio-menu summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+}
+.portfolio-menu > div {
+  position: absolute;
+  right: 0;
+  top: 28px;
+  background: var(--tp-surface);
+  color: var(--tp-ink);
+  border: 1px solid var(--tp-line);
+  box-shadow: 0 12px 25px #08294720;
+  border-radius: 8px;
+  padding: 12px;
+  width: 240px;
+  display: grid;
+  gap: 10px;
+  font-size: 13px;
+}
+.member-profile .professional-hero {
+  direction: ltr;
+  display: grid;
+  grid-template-columns: 26% minmax(0, 1fr) 190px;
+  gap: 24px;
+  min-height: 300px;
+  padding: 24px 34px 18px 0;
+  border: 0;
+  border-radius: 0 0 10px 10px;
+  background:
+    linear-gradient(90deg, #051b31a8, #062843f5 43%, #052338c7),
+    url("/game/accounting-manual-office-v2.png") right 34% / 145% auto no-repeat
+      #08263e;
+  color: white;
+  overflow: hidden;
+}
+.member-profile .professional-hero .member-portrait {
+  width: 100%;
+  height: 280px;
+  flex-basis: auto;
+  padding: 0;
+  margin: 0;
+  align-self: end;
+  border-radius: 6px;
+  box-shadow: none;
+  background: transparent;
+}
+.member-profile
+  .professional-hero
+  .member-portrait
+  :is(.photo-avatar, .photo-circle) {
+  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+.member-profile .professional-hero .member-portrait .photo-circle {
+  display: block;
+}
+.member-profile .professional-hero .member-portrait img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: 6px;
+  object-fit: cover;
+  object-position: center 25%;
+}
+.member-profile .professional-hero .member-hero-copy :is(h1, p, span, small) {
+  color: white;
+}
+.member-profile .professional-hero .member-hero-copy {
+  direction: ltr;
+  text-align: start;
+}
+.member-profile[dir="rtl"] .professional-hero .member-hero-copy {
+  direction: rtl;
+}
+.member-profile .professional-hero .member-hero-copy h1 {
+  font-size: clamp(26px, 2.15vw, 39px);
+  line-height: 1.15;
+  margin: 0 0 10px;
+}
+.member-profile .professional-hero .candidate-role {
+  font-size: 17px;
+  margin: 0;
+}
+.member-profile .professional-hero .candidate-target-role {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+.member-profile .professional-hero .candidate-summary {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 10px 0 16px;
+  max-width: 620px;
+}
+.member-profile .professional-hero .candidate-location {
+  font-size: 12px;
+  display: flex;
+}
+.member-profile .professional-hero .showcase-identity {
+  display: inline-flex;
+  margin: 8px 0 0;
+}
+.member-profile .professional-hero .showcase-identity:empty {
+  display: none;
+}
+.member-profile .professional-hero .showcase-availability {
+  background: #009e8e;
+  color: white;
+  font-size: 11px;
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+.member-profile .professional-hero .candidate-actions {
+  gap: 12px;
+}
+.member-profile .professional-hero .candidate-actions > :is(a, button) {
+  border: 1px solid #c4d5e9;
+  border-radius: 7px;
+  padding: 7px 14px;
+  font-size: 12px;
+  display: flex;
+  gap: 8px;
+  background: transparent;
+  color: white;
+}
+.member-profile .professional-hero .candidate-actions .member-primary {
+  background: white;
+  color: #06284b;
+}
+.member-profile .professional-hero .showcase-socials {
+  margin: 0;
+  display: flex;
+  gap: 8px;
+}
+.member-profile .professional-hero .showcase-socials a {
+  color: white;
+  background: transparent;
+  border: 0;
+  padding: 5px;
+  font-size: 11px;
+}
+.member-profile .professional-hero .career-pass {
+  background: #ffffff18;
+  color: white;
+  border: 1px solid #87b0c1;
+  border-radius: 10px;
+  padding: 14px;
+  gap: 8px;
+  font-size: 11px;
+  min-height: 208px;
+}
+.member-profile .career-pass b {
+  font-size: 13px;
+}
+.member-profile .career-pass button {
+  color: white;
+}
+.member-profile .member-tabs {
+  direction: ltr;
+  margin: -1px 10px 14px;
+  position: relative;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px #153c4710;
+  min-height: 48px;
+}
+.member-profile .member-tabs button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border-radius: 0;
+  padding: 13px 10px;
+  color: #06284b;
+  background: none;
+  font-size: 13px;
+}
+.member-profile .member-tabs [aria-current] {
+  background: none;
+  border-bottom: 3px solid #063862;
+  color: #06284b;
+}
+.candidate-overview {
+  direction: ltr;
+  grid-template-columns: minmax(250px, 32%) minmax(0, 1fr);
+  gap: 14px;
+  padding: 0 10px;
+}
+.member-profile[dir="rtl"] .candidate-overview > :is(aside, div) {
+  direction: rtl;
+}
+.candidate-main .member-card,
+.candidate-basics .member-card {
+  padding: 14px;
+  margin: 0 0 12px;
+  border: 1px solid #e3edf4;
+  border-radius: 11px;
+  box-shadow: none;
+}
+.candidate-main .member-card h2,
+.candidate-basics .member-card h2 {
+  font-size: 15px;
+  margin: 0 0 10px;
+  color: var(--tp-ink);
+}
+.candidate-basics p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.candidate-basics .member-details {
+  gap: 8px;
+}
+.candidate-basics .member-details :is(dt, dd) {
+  font-size: 12px;
+  margin: 0;
+}
+.candidate-basics .member-details dt {
+  font-weight: 700;
+  color: var(--tp-ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.candidate-basics .member-details dd {
+  padding-inline-start: 24px;
+}
+.candidate-basics .showcase-socials {
+  gap: 8px;
+}
+.candidate-basics .showcase-socials a {
+  font-size: 12px;
+  padding: 6px;
+}
+.candidate-metrics {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.candidate-metrics article {
+  padding: 13px 6px;
+  border: 0;
+  min-height: 105px;
+}
+.candidate-metrics b {
+  font-size: 25px;
+  line-height: 1.4;
+  color: var(--tp-ink);
+}
+.candidate-metrics small {
+  font-size: 11px;
+  line-height: 1.4;
+}
+.candidate-development {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.candidate-development .member-card {
+  min-height: 125px;
+}
+.candidate-target b {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.candidate-target button {
+  background: #e4f3ff;
+  color: #005dcc;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  border-radius: 16px;
+}
+.candidate-next :is(a, button) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 3px 0;
+  color: var(--tp-muted);
+}
+.candidate-skills {
+  gap: 8px;
+}
+.candidate-skills article {
+  position: relative;
+  padding-block: 8px;
+  padding-inline: 34px 8px;
+  background: var(--tp-surface);
+  border-color: #e4edf6;
+}
+.candidate-skills article > svg {
+  position: absolute;
+  inset-inline-start: 8px;
+  top: 9px;
+  color: #008fcf;
+}
+.candidate-skills :is(b, small, span) {
+  font-size: 10px;
+  line-height: 1.4;
+}
+.candidate-skills progress {
+  height: 5px;
+  margin: 4px 0;
+}
+.candidate-work-grid article {
+  display: flex;
+  gap: 9px;
+  padding: 8px;
+  background: var(--tp-surface);
+  min-width: 0;
+}
+.candidate-work-grid .work-thumbnail {
+  width: 58px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+.candidate-work-grid article > div {
+  min-width: 0;
+  flex: 1;
+  position: relative;
+}
+.candidate-work-grid h3 {
+  font-size: 11px;
+  margin: 0 0 5px;
+  line-height: 1.3;
+}
+.candidate-work-grid p {
+  font-size: 10px;
+  margin: 0 0 4px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.candidate-work-grid small,
+.work-skill {
+  font-size: 9px;
+  color: var(--tp-teal);
+  display: block;
+  line-height: 1.4;
+}
+.candidate-work-grid button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 2px;
+  background: #e3f3ff;
+}
+.candidate-certificates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.candidate-certificate-highlight {
+  padding: 8px;
+  margin: 0;
+  gap: 8px;
+  min-width: 0;
+}
+.candidate-certificate-highlight svg {
+  flex-shrink: 0;
+  color: #079d91;
+}
+.candidate-certificate-highlight b {
+  font-size: 11px;
+  display: block;
+  line-height: 1.35;
+}
+.candidate-certificate-highlight small {
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--tp-muted);
+}
+.member-profile .member-card > header {
+  margin-bottom: 10px;
+}
+.member-profile .member-card > header button {
+  font-size: 11px;
+  padding: 0;
+  color: #0070ed;
+}
+.talent-platform .talent-nav {
+  direction: ltr;
+  padding: 10px 22px;
+  min-height: 58px;
+  color: #07254b;
+}
+.talent-platform .talent-nav nav {
+  justify-content: center;
+}
+.talent-nav .nav-disabled {
+  font-size: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.talent-platform .talent-primary {
+  background: #0068ff;
+  border-color: #0068ff;
+}
+.talent-platform .talent-hero {
+  color: white;
+  background:
+    linear-gradient(90deg, #051b31f5, #062843ed 50%, #05233855),
+    url("/game/accounting-manual-office-v2.png") right 34% / 145% auto no-repeat
+      #08263e;
+  margin-top: 0;
+  padding: 30px 28px 18px;
+  min-height: 265px;
+  border: 0;
+  border-radius: 0 0 9px 9px;
+  max-width: 1840px;
+}
+.talent-platform .talent-hero h1 {
+  font-size: clamp(25px, 2.3vw, 38px);
+  line-height: 1.18;
+  max-width: 650px;
+  margin: 0 0 10px;
+}
+.talent-hero > p {
+  font-size: 13px;
+}
+.talent-platform .talent-search-line {
+  background: white;
+  padding: 4px;
+  color: #052c54;
+  border-radius: 6px;
+}
+.talent-search-line .search-location {
+  flex: 0 0 240px;
+  border-inline-start: 1px solid #dfebf3;
+}
+.talent-search-line .search-location select {
+  border: 0;
+  background: white;
+  color: #052c54;
+  font-size: 12px;
+}
+.talent-platform .talent-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  position: static;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.talent-platform .talent-filters label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #a5bbcf;
+  border-radius: 9px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: white;
+  font-weight: 400;
+}
+.talent-platform .talent-filters :is(input, select) {
+  background: transparent;
+  color: white;
+  border: 0;
+  margin: 0;
+  padding: 2px;
+  font-size: 11px;
+  max-width: 160px;
+  height: 24px;
+  width: auto;
+}
+.talent-filters select option {
+  color: #082c49;
+  background: white;
+}
+.talent-filters input {
+  width: 100px;
+}
+.talent-platform .talent-filters input {
+  width: 100px;
+}
+.member-profile .candidate-skills article > span {
+  padding: 0;
+  border: 0;
+  display: block;
+}
+.member-profile .candidate-skills .candidate-evidence-score {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  font-weight: 700;
+  font-size: 10px;
+}
+.member-profile .candidate-skills b {
+  padding-inline-end: 32px;
+}
+.talent-platform .preview-skill progress {
+  appearance: none;
+  border: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #e3eef6;
+}
+.talent-platform .preview-skill progress::-webkit-progress-bar {
+  background: #e3eef6;
+}
+.talent-platform .preview-skill progress::-webkit-progress-value {
+  background: linear-gradient(90deg, #008bde, #00b8a0);
+  border-radius: 8px;
+}
+.shared-cv-screen .cv-typeset p,
+.shared-cv-print .cv-typeset p {
+  margin: 0 !important;
+}
+.shared-cv-screen .cv-typeset :is(h1, h2),
+.shared-cv-print .cv-typeset :is(h1, h2) {
+  margin: 0 0 4px !important;
+}
+.talent-platform .talent-split {
+  direction: ltr;
+  max-width: 1840px;
+  grid-template-columns: minmax(300px, 36%) minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 0;
+}
+.talent-platform[dir="rtl"] .talent-split > section {
+  direction: rtl;
+}
+.talent-platform .talent-status {
+  min-height: 0;
+  margin: 10px 20px;
+}
+.talent-platform :is(.talent-list, .talent-preview) {
+  padding: 14px;
+  border-color: #e3edf4;
+}
+.talent-list > header {
+  margin-bottom: 10px;
+}
+.talent-platform .talent-result {
+  padding: 10px 8px;
+  margin-bottom: 10px;
+  min-height: 108px;
+  position: relative;
+}
+.talent-platform .talent-result.selected {
+  border-color: #0088ff;
+  background: #f2faff;
+}
+.talent-platform .talent-result h3 {
+  font-size: 14px;
+  padding-inline-end: 72px;
+}
+.talent-result .candidate-result-open {
+  gap: 10px;
+}
+.talent-result .talent-portrait {
+  width: 66px;
+  height: 76px;
+}
+.talent-result .talent-bookmark {
+  order: -1;
+  align-self: center;
+  border-radius: 3px;
+  padding: 1px !important;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #0078ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.talent-result .talent-bookmark svg {
+  width: 12px;
+  height: 12px;
+}
+.talent-match {
+  display: inline-flex;
+  background: #d7faf0;
+  color: #087c6c;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+.talent-result .talent-match {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 10px;
+}
+.talent-platform .preview-heading {
+  align-items: center;
+  gap: 14px;
+}
+.preview-heading .talent-portrait {
+  width: 86px;
+  height: 92px;
+}
+.talent-platform .preview-heading h2 {
+  font-size: 21px;
+  margin: 0 0 3px;
+}
+.preview-heading .preview-shortlist {
+  flex: 0 0 auto;
+  font-size: 12px;
+}
+.preview-close {
+  padding: 5px !important;
+  border: 0 !important;
+}
+.talent-platform .preview-tabs {
+  margin-top: 12px;
+}
+.talent-platform .preview-tabs [aria-current] {
+  border-color: #0068ff;
+  color: #005acb;
+}
+.talent-platform .preview-body {
+  padding-top: 0;
+  font-size: 12px;
+}
+.talent-platform .preview-body h3 {
+  font-size: 15px;
+  margin-top: 14px;
+  margin-bottom: 7px;
+}
+.talent-platform .preview-info {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--tp-line);
+}
+.preview-info article {
+  background: none;
+  padding: 0;
+  display: flex;
+  align-items: start;
+  gap: 8px;
+}
+.preview-info svg {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  padding: 4px;
+  background: #edf7ff;
+  border-radius: 6px;
+  color: #072d52;
+}
+.preview-info b {
+  font-size: 10px;
+  color: var(--tp-muted);
+  font-weight: 400;
+}
+.preview-info small {
+  font-size: 11px;
+}
+.preview-skill {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) 1.7fr 38px;
+  gap: 10px;
+  align-items: center;
+  margin: 6px 0;
+}
+.preview-skill progress {
+  width: 100%;
+  height: 7px;
+  accent-color: #00afa3;
+}
+.preview-highlight {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--tp-line);
+  padding: 8px;
+  border-radius: 7px;
+}
+.preview-highlight img {
+  width: 68px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+.preview-highlight div {
+  flex: 1;
+}
+.preview-highlight b {
+  font-size: 12px;
+}
+.preview-highlight p {
+  font-size: 11px;
+  margin: 2px 0;
+}
+.preview-certificates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.preview-certificate {
+  border: 1px solid var(--tp-line);
+  border-radius: 6px;
+  padding: 7px;
+  display: flex;
+  gap: 7px;
+}
+.preview-certificate svg {
+  flex-shrink: 0;
+  color: #008f91;
+}
+.preview-certificate b,
+.preview-certificate small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.preview-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+  font-size: 12px;
+  border-top: 1px solid var(--tp-line);
+  padding-top: 12px;
+}
+[data-theme="dark"] .member-profile .professional-hero,
+[data-theme="dark"] .talent-platform .talent-hero {
+  background:
+    linear-gradient(90deg, #051b31e8, #062843ee 43%, #052338aa),
+    url("/game/accounting-manual-office-v2.png") right 34% / 145% auto no-repeat
+      #08263e;
+}
+[data-theme="dark"] .portfolio-navigation,
+[data-theme="dark"] .member-profile .member-tabs button {
+  color: var(--tp-ink);
+}
+[data-theme="dark"] .talent-result.selected {
+  background: #163747;
+}
+@media (max-width: 1100px) {
+  .portfolio-navigation {
+    gap: 12px;
+  }
+  .member-profile .professional-hero {
+    grid-template-columns: 23% minmax(0, 1fr) 155px;
+    gap: 18px;
+    padding-inline-end: 20px;
+  }
+  .candidate-overview {
+    grid-template-columns: 28% minmax(0, 1fr);
+  }
+  .candidate-skills {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .candidate-work-grid {
+    grid-template-columns: 1fr;
+  }
+  .candidate-metrics {
+    gap: 5px;
+  }
+  .talent-search-line .search-location {
+    flex-basis: 190px;
+  }
+  .preview-heading .preview-shortlist {
+    max-width: 115px;
+  }
+  .preview-info {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .member-profile .member-top {
+    gap: 12px;
+    padding: 10px 12px;
+    flex-wrap: wrap;
+  }
+  .portfolio-brand {
+    flex: 1;
+    font-size: 19px;
+  }
+  .portfolio-navigation {
+    order: 4;
+    flex-basis: 100%;
+    justify-content: start;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .member-profile .member-content {
+    padding: 0 8px 20px;
+  }
+  .member-profile .professional-hero {
+    display: grid;
+    grid-template-columns: 128px minmax(0, 1fr);
+    padding: 18px;
+    min-height: 0;
+    gap: 14px;
+  }
+  .member-profile .professional-hero .member-portrait {
+    height: 146px;
+    align-self: start;
+  }
+  .member-profile .professional-hero .member-hero-copy h1 {
+    font-size: 23px;
+  }
+  .member-profile
+    .professional-hero
+    .member-hero-copy
+    :is(.candidate-role, .candidate-target-role) {
+    font-size: 13px;
+  }
+  .member-profile .professional-hero .career-pass {
+    grid-column: 1/-1;
+    display: flex;
+    min-height: 0;
+    width: 100%;
+    margin: 0;
+  }
+  .career-pass img {
+    width: 100px;
+    height: 100px;
+  }
+  .member-profile .member-tabs {
+    margin: 0 0 12px;
+  }
+  .candidate-overview {
+    display: flex;
+    padding: 0;
+  }
+  .candidate-basics {
+    display: block;
+  }
+  .candidate-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .candidate-development {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .candidate-skills {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .candidate-certificates {
+    grid-template-columns: 1fr;
+  }
+  .talent-platform .talent-nav {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+  .talent-platform .talent-hero {
+    padding: 22px 16px 16px;
+    margin: 0 10px;
+  }
+  .talent-search-line {
+    flex-wrap: wrap;
+  }
+  .talent-search-line > label {
+    flex-basis: 100%;
+  }
+  .talent-search-line .search-location {
+    flex: 1;
+  }
+  .talent-search-line .talent-primary {
+    flex: 0 0 auto;
+  }
+  .talent-platform .talent-filters {
+    gap: 8px;
+  }
+  .talent-platform .talent-split {
+    display: block;
+    margin: 10px;
+  }
+  .talent-platform .preview-heading {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr) 28px;
+    gap: 10px;
+  }
+  .talent-platform .preview-heading > .talent-portrait {
+    grid-column: 1;
+    grid-row: 1;
+    width: 70px;
+    height: 78px;
+  }
+  .talent-platform .preview-heading > div:not(.talent-portrait) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .talent-platform .preview-heading .preview-close {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+  }
+  .talent-platform .preview-heading .preview-shortlist {
+    max-width: none;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: end;
+  }
+  .talent-platform .preview-info {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .preview-certificates {
+    grid-template-columns: 1fr;
+  }
+  .talent-platform .talent-result {
+    min-height: 112px;
+  }
+}

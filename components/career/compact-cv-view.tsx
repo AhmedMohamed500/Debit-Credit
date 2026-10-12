@@ -25,7 +25,7 @@ import type {
 import type { Locale } from "@/types";
 
 type Snapshot = { profile: CareerProfile; cv: CvDocument; compact: CompactCv };
-function Block({ block }: { block: CvBlock }) {
+export function CvBlockView({ block }: { block: CvBlock }) {
   if (block.header)
     return (
       <header>
@@ -264,7 +264,7 @@ export function CvView({
             aria-hidden="true"
           >
             {data.compact.blocks.map((block) => (
-              <Block key={block.id} block={block} />
+              <CvBlockView key={block.id} block={block} />
             ))}
           </div>
           {ready && (
@@ -277,7 +277,7 @@ export function CvView({
               {pages.map((page, index) => (
                 <div className="cv-page" key={index}>
                   {page.map((block) => (
-                    <Block key={block.id} block={block} />
+                    <CvBlockView key={block.id} block={block} />
                   ))}
                   <footer>
                     Page {index + 1} of {pages.length}

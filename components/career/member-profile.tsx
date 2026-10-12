@@ -9,7 +9,7 @@ import {
   ChevronRight,
   FileText,
   GraduationCap,
-  Home,
+  MoreHorizontal,
   LockKeyhole,
   Pencil,
   Plus,
@@ -18,7 +18,14 @@ import {
   X,
 } from "lucide-react";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
-import { cloudUser, CloudFailure, requestJSON } from "@/lib/cloud/runtime";
+import {
+  cloudUser,
+  CloudFailure,
+  requestJSON,
+  configureCloud,
+  pendingBackups,
+} from "@/lib/cloud/runtime";
+import { CloudCacheRepository } from "@/lib/cloud/cache";
 import { activitySummary } from "@/lib/career/activity-summary";
 import { firstShiftMissionProgress } from "@/lib/campaign/first-shift-hub";
 import { useGame } from "@/lib/campaign/store";
@@ -48,8 +55,11 @@ import {
   ProfessionalOverview,
 } from "./candidate-portfolio";
 import { DiscoverySettings } from "./discovery-settings";
+import { ThemeToggle } from "@/components/platform/theme-provider";
+import { authClient } from "@/lib/auth/client";
 import { useStudentJourney } from "@/components/student/student-journey";
 import "@/app/member-profile.css";
+import "@/app/reference-implementation.css";
 
 type Tab =
   | "profile"
@@ -58,6 +68,7 @@ type Tab =
   | "courses"
   | "progress"
   | "certifications"
+  | "settings"
   | "cv";
 export async function prepareCertificate(file: File) {
   if (
@@ -401,75 +412,70 @@ export function MemberProfile({
   return (
     <main className="member-profile" dir={locale === "ar" ? "rtl" : "ltr"}>
       <header className="member-top">
-        <span>
-          <UserRound size={18} />
-          {profile.fullName || identity?.profile.displayName}
-        </span>
-        <Link href={`/${locale}`}>
+        <Link className="portfolio-brand" href={`/${locale}`}>
           <ChartNoAxesCombined />
           Debit & Credit
         </Link>
-        <Link href={`/${locale}/employer/candidates`}>
-          {say("For employers", "لأصحاب العمل")}
-        </Link>
+        <nav
+          className="portfolio-navigation"
+          aria-label={say("Main navigation", "التنقل الرئيسي")}
+        >
+          <Link href={`/${locale}`}>{say("Home", "الرئيسية")}</Link>
+          <Link href={`/${locale}/game`}>{say("Learning", "التعلم")}</Link>
+          <button disabled>{say("Opportunities", "الفرص")}</button>
+          <button disabled>{say("Community", "المجتمع")}</button>
+          <Link href={`/${locale}/employer/candidates`}>
+            {say("Employers", "أصحاب العمل")}
+          </Link>
+        </nav>
+        <button className="portfolio-share" onClick={() => selectTab("work")}>
+          {say("Share profile", "مشاركة الملف")}
+        </button>
+        <details className="portfolio-menu">
+          <summary aria-label={say("Profile actions", "إجراءات البروفايل")}>
+            <MoreHorizontal size={19} />
+          </summary>
+          <div>
+            <Link href={`/${locale}/career-profile/edit`}>
+              {say("Edit career details", "تعديل البيانات المهنية")}
+            </Link>
+            <Link
+              href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile`)}`}
+            >
+              {say("Personal details & experience", "البيانات الشخصية والخبرة")}
+            </Link>
+            <button onClick={() => selectTab("settings")}>
+              {say("Photo & employer discovery", "الصورة والظهور للشركات")}
+            </button>
+            <ThemeToggle compact />
+            <button
+              onClick={async () => {
+                if (
+                  pendingBackups() &&
+                  !window.confirm(
+                    say(
+                      "Some local backups are not synced. Sign out anyway?",
+                      "بعض النسخ المحلية لم تُحفظ سحابيًا. هل تريد الخروج؟",
+                    ),
+                  )
+                )
+                  return;
+                const result = await authClient.signOut();
+                if (!result.error) {
+                  configureCloud(null);
+                  new CloudCacheRepository().restoreGuest();
+                  window.location.assign(
+                    new URL(`/${locale}`, window.location.origin).href,
+                  );
+                }
+              }}
+            >
+              {say("Sign out", "خروج")}
+            </button>
+          </div>
+        </details>
       </header>
       <div className="member-layout">
-        <aside
-          className="member-sidebar"
-          aria-label={say("Profile navigation", "تنقل البروفايل")}
-        >
-          <Link href={`/${locale}`}>
-            <Home />
-            {say("Home", "الرئيسية")}
-          </Link>
-          <button
-            onClick={() => selectTab("profile")}
-            aria-current={tab === "profile" ? "page" : undefined}
-          >
-            <UserRound />
-            {say("My profile", "البروفايل")}
-          </button>
-          <button
-            onClick={() => selectTab("courses")}
-            aria-current={tab === "courses" ? "page" : undefined}
-          >
-            <BookOpen />
-            {say("My courses", "كورساتي")}
-          </button>
-          <button
-            onClick={() => selectTab("progress")}
-            aria-current={tab === "progress" ? "page" : undefined}
-          >
-            <ChartNoAxesCombined />
-            {say("My progress", "تقدمي")}
-          </button>
-          <button
-            onClick={() => selectTab("certifications")}
-            aria-current={tab === "certifications" ? "page" : undefined}
-          >
-            <Award />
-            {say("Certifications", "الشهادات")}
-          </button>
-          <Link href={`/${locale}/game`}>
-            <GraduationCap />
-            {say("Play & learn", "اللعب والتعلم")}
-          </Link>
-          <Link href={`/${locale}/career-profile/cv`}>
-            <FileText />
-            {say("My English CV", "الـCV بالإنجليزي")}
-          </Link>
-          <Link href={`/${locale}/account-guide`}>
-            <BookOpen />
-            {say("Accounting guide", "دليل المحاسبة")}
-          </Link>
-          <p>
-            <LockKeyhole size={16} />
-            {say(
-              "Your personal records and images are private.",
-              "بياناتك وصورك خاصة بحسابك.",
-            )}
-          </p>
-        </aside>
         <div className="member-content">
           <CandidateHero
             profile={profile}
@@ -478,20 +484,6 @@ export function MemberProfile({
             completeness={completeness}
             open={() => selectTab("work")}
           />
-          <div className="member-hero-actions">
-            <span>
-              {[profile.location, profile.country].filter(Boolean).join(" · ")}
-            </span>
-            <Link href={`/${locale}/career-profile/edit`}>
-              <Pencil size={15} />
-              {say("Edit career details", "تعديل البيانات المهنية")}
-            </Link>
-            <Link
-              href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile`)}`}
-            >
-              {say("Personal details & experience", "البيانات الشخصية والخبرة")}
-            </Link>
-          </div>
           <nav
             className="member-tabs"
             aria-label={say("Profile sections", "أقسام البروفايل")}
@@ -504,7 +496,6 @@ export function MemberProfile({
                 "courses",
                 "certifications",
                 "progress",
-                "cv",
               ] as Tab[]
             ).map((value) => (
               <button
@@ -512,6 +503,19 @@ export function MemberProfile({
                 aria-current={tab === value ? "page" : undefined}
                 onClick={() => selectTab(value)}
               >
+                {(() => {
+                  const Icon = {
+                    profile: UserRound,
+                    skills: ChartNoAxesCombined,
+                    work: FileText,
+                    courses: BookOpen,
+                    certifications: Award,
+                    progress: GraduationCap,
+                    cv: FileText,
+                    settings: Pencil,
+                  }[value];
+                  return <Icon size={17} />;
+                })()}
                 {
                   {
                     profile: say("Overview", "نظرة عامة"),
@@ -519,8 +523,9 @@ export function MemberProfile({
                     work: say("Practical Work", "الأعمال العملية"),
                     courses: say("Courses", "الكورسات"),
                     progress: say("Career Journey", "الرحلة المهنية"),
-                    certifications: say("Certifications", "الشهادات"),
+                    certifications: say("Certificates", "الشهادات"),
                     cv: say("CV", "السيرة الذاتية"),
+                    settings: say("Settings", "الإعدادات"),
                   }[value]
                 }
               </button>
@@ -554,32 +559,39 @@ export function MemberProfile({
                     locale={locale}
                     portfolio={portfolio}
                     evidence={evidence}
+                    completeness={completeness}
                     passport={passport}
                     showcase={showcase.data}
+                    nextAction={{
+                      href: nextRoute,
+                      label:
+                        journey && !journey.loading && !journey.error
+                          ? (journey.journey.next?.title[locale] ??
+                            say("Open your learning plan", "افتح خطة التعلم"))
+                          : say("Open your learning plan", "افتح خطة التعلم"),
+                    }}
                     open={selectTab}
                   />
-                  <section className="member-card">
-                    <h2>{say("Career journey", "الرحلة المهنية")}</h2>
-                    {trainingRows()}
-                  </section>
-                  <details className="member-card">
-                    <summary>
-                      {say(
-                        "Private profile photo & employer discovery",
-                        "الصورة الخاصة واختيارات الظهور للشركات",
-                      )}
-                    </summary>
-                    <ProfilePhoto
-                      locale={locale}
-                      name={profile.fullName}
-                      editable
-                    />
-                    <DiscoverySettings owner={owner} locale={locale} />
-                  </details>
                 </>
               )}
               {tab === "skills" && (
                 <CandidateSkills passport={passport} locale={locale} />
+              )}
+              {tab === "settings" && (
+                <section className="member-card">
+                  <h2>
+                    {say(
+                      "Private photo & employer discovery",
+                      "الصورة الخاصة والظهور للشركات",
+                    )}
+                  </h2>
+                  <ProfilePhoto
+                    locale={locale}
+                    name={profile.fullName}
+                    editable
+                  />
+                  <DiscoverySettings owner={owner} locale={locale} />
+                </section>
               )}
               {tab === "cv" && (
                 <section className="member-card">

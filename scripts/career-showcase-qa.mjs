@@ -16,9 +16,9 @@ export async function careerShowcaseQa({ page, context, base, locale, label, api
   for (const id of ['journal', 'cash-ledger', 'trial-balance']) await root.locator(`[name="pin-${id}"]`).check();
   record(label + ' maximum three pinned works enforced on form', await root.locator('[name="pin-worksheet"]').isDisabled());
   await root.getByRole('button', { name: say('Save showcase', 'حفظ المعرض'), exact: true }).click();
-  await page.locator('.showcase-identity a').waitFor();
+  await page.locator('.candidate-actions .showcase-socials a').waitFor();
   record(label + ' social link and internship preference under name', (await page.locator('.showcase-identity').innerText()).includes(say('Available for an internship', 'متاح لتدريب')));
-  record(label + ' hero social links retain accessible petrol contrast', await page.locator('.showcase-identity a').evaluate(link => getComputedStyle(link).color === 'rgb(30, 98, 103)'));
+  record(label + ' hero social links retain accessible contrast on approved navy hero', await page.locator('.candidate-actions .showcase-socials a').evaluate(link => getComputedStyle(link).color === 'rgb(255, 255, 255)'));
   record(label + ' chosen accounting previews exactly three', await root.locator('.showcase-works article').count() === 3);
   const trial = root.locator('.showcase-works article').last();
   record(label + ' achievement action uses the existing teal palette', await trial.locator('button').evaluate(button => getComputedStyle(button).backgroundColor === 'rgb(30, 98, 103)' && getComputedStyle(button).color === 'rgb(255, 255, 255)'));

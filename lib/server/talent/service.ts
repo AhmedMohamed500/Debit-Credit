@@ -134,6 +134,9 @@ async function project(
   return {
     id,
     name: profile.fullName,
+    currentRole: profile.headline,
+    workType: profile.preferredWorkType,
+    graduationYear: preferences.education ? profile.graduationYear : "",
     role: profile.targetRoleId,
     location: preferences.location
       ? [profile.location, profile.country].filter(Boolean).join(", ")
@@ -223,6 +226,8 @@ function savedProjection(
     search: candidate
       ? [
           candidate.name,
+          candidate.currentRole ?? "",
+          candidate.location,
           candidate.role,
           roleCatalog[candidate.role].label.en,
           roleCatalog[candidate.role].label.ar,

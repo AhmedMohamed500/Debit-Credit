@@ -11,8 +11,13 @@ import {
   MapPin,
   Shield,
   Target,
+  ArrowRight,
+  CheckCircle2,
+  ListChecks,
+  Calendar,
+  Clock,
+  Languages,
 } from "lucide-react";
-import { ThemeToggle } from "@/components/platform/theme-provider";
 import { ProfilePhoto } from "./profile-photo";
 import { Availability, SocialLinks } from "./showcase";
 import { roleCatalog, skillCatalog } from "@/lib/career/catalog";
@@ -28,12 +33,10 @@ import "@/app/talent-platform.css";
 
 export function CareerPass({
   data,
-  profile,
   locale,
   open,
 }: {
   data: Showcase | null;
-  profile: CareerProfile;
   locale: Locale;
   open: () => void;
 }) {
@@ -63,20 +66,10 @@ export function CareerPass({
   const ar = locale === "ar";
   return (
     <aside className="career-pass">
-      <small>{ar ? "بطاقتك المهنية" : "CAREER PASS"}</small>
-      <b dir="auto">{profile.fullName}</b>
-      <span>{roleCatalog[profile.targetRoleId].label[locale]}</span>
-      <span dir="auto">
-        {[profile.location, profile.country].filter(Boolean).join(", ")}
-      </span>
+      <small>{ar ? "المعرّف المهني" : "Career ID"}</small>
       {data?.token ? (
         <>
           <b dir="ltr">DC-{data.token.slice(0, 12).toUpperCase()}</b>
-          <small>
-            {ar
-              ? "معرّف مشاركة · ليس رقم الحساب"
-              : "Share identifier · not account ID"}
-          </small>
         </>
       ) : (
         <b>{ar ? "المشاركة غير مفعّلة" : "Private by default"}</b>
@@ -101,9 +94,7 @@ export function CareerPass({
           {ar ? "عرض البروفايل العام" : "View public profile"}
         </a>
       )}
-      <button onClick={open}>
-        {ar ? "الكارت واختيارات المشاركة" : "Card & sharing choices"}
-      </button>
+      <button onClick={open}>{ar ? "مشاركة" : "Share"}</button>
     </aside>
   );
 }
@@ -111,7 +102,6 @@ export function CandidateHero({
   profile,
   locale,
   showcase,
-  completeness,
   open,
 }: {
   profile: CareerProfile;
@@ -128,13 +118,14 @@ export function CandidateHero({
           <ProfilePhoto locale={locale} name={profile.fullName} />
         </div>
         <div className="member-hero-copy">
-          <small>
-            {ar ? "ملفك المهني في المحاسبة" : "ACCOUNTING CAREER PORTFOLIO"}
-          </small>
           <h1 dir="auto">{profile.fullName}</h1>
           <p className="candidate-role">
             {profile.headline ||
               roleCatalog[profile.targetRoleId].label[locale]}
+          </p>
+          <p className="candidate-target-role">
+            {ar ? "أطمح إلى: " : "Aspiring "}
+            {roleCatalog[profile.targetRoleId].label[locale]}
           </p>
           <span className="candidate-location">
             <MapPin size={15} />
@@ -147,7 +138,6 @@ export function CandidateHero({
                 value={showcase.settings.availability}
                 locale={locale}
               />
-              <SocialLinks socials={showcase.settings.socials} />
             </div>
           )}
           <p className="candidate-summary" dir="auto">
@@ -162,26 +152,15 @@ export function CandidateHero({
               href={`/${locale}/career-profile/cv`}
             >
               <FileText size={16} />
-              {ar ? "معاينة CV / حفظ PDF" : "Preview CV / Save PDF"}
+              {ar ? "تنزيل CV" : "Download CV"}
             </Link>
             <button onClick={open}>
-              {ar ? "إدارة المشاركة" : "Manage sharing"}
+              {ar ? "التواصل والمشاركة" : "Contact"}
             </button>
-            <ThemeToggle compact />
+            {showcase && <SocialLinks socials={showcase.settings.socials} />}
           </div>
-          <span className="candidate-completeness">
-            {completeness}%{" "}
-            {ar
-              ? "اكتمال البيانات الشخصية · ليس تقييم مهارات"
-              : "personal profile complete · not a skill score"}
-          </span>
         </div>
-        <CareerPass
-          data={showcase}
-          profile={profile}
-          locale={locale}
-          open={open}
-        />
+        <CareerPass data={showcase} locale={locale} open={open} />
       </section>
     </>
   );
@@ -190,27 +169,32 @@ export function CandidateSkills({
   passport,
   locale,
   limit,
+  onViewAll,
 }: {
   passport: SkillResult[];
   locale: Locale;
   limit?: number;
+  onViewAll?: () => void;
 }) {
   const ar = locale === "ar",
     supported = passport.filter((row) => row.status !== "unassessed");
   return (
     <section className="member-card candidate-skill-section">
-      <h2>
-        <Shield size={18} />
-        {ar ? "مهارات مدعومة بالممارسة" : "Skills supported by practice"}
-      </h2>
-      <p className="member-note">
-        {ar
-          ? "تقييم الدليل التدريبي، وليس نسبة ملاءمة لوظيفة. الكورسات والشهادات المضافة لا تمنح اعتمادًا."
-          : "Evidence scores, not hiring-match percentages. Added courses and certificates do not award assessed skills."}
-      </p>
+      <header>
+        <h2>
+          <Shield size={18} />
+          {ar ? "مهارات مدعومة بالممارسة" : "Skills supported by practice"}
+        </h2>
+        {onViewAll && (
+          <button onClick={onViewAll}>
+            {ar ? "عرض الكل" : "View all skills"}
+          </button>
+        )}
+      </header>
       <div className="candidate-skills">
         {supported.slice(0, limit).map((row) => (
           <article key={row.skillId}>
+            <FileText size={20} aria-hidden="true" />
             <b>{skillCatalog[row.skillId].label[locale]}</b>
             <small>
               {row.status === "verified"
@@ -233,8 +217,15 @@ export function CandidateSkills({
                   max={100}
                   aria-label={skillCatalog[row.skillId].label[locale]}
                 />
-                <span>
-                  {row.score}% {ar ? "تقييم الدليل" : "evidence score"}
+                <span
+                  className="candidate-evidence-score"
+                  title={
+                    ar
+                      ? "تقييم الدليل التدريبي، ليس ملاءمة للتوظيف"
+                      : "Training evidence score, not hiring match"
+                  }
+                >
+                  {row.score}%
                 </span>
               </>
             )}
@@ -256,16 +247,20 @@ export function ProfessionalOverview({
   locale,
   portfolio,
   evidence,
+  completeness,
   passport,
   showcase,
+  nextAction,
   open,
 }: {
   profile: CareerProfile;
   locale: Locale;
   portfolio: Portfolio | null;
   evidence: SkillEvidence[];
+  completeness: number;
   passport: SkillResult[];
   showcase: Showcase | null;
+  nextAction: { href: string; label: string };
   open: (
     tab: "skills" | "work" | "courses" | "certifications" | "progress",
   ) => void;
@@ -311,13 +306,40 @@ export function ProfessionalOverview({
                 [profile.location, profile.country].filter(Boolean).join(", "),
               ],
               [ar ? "نوع العمل" : "Work type", profile.preferredWorkType],
+              [
+                ar ? "التوفر" : "Availability",
+                showcase?.settings.availability.status === "work"
+                  ? ar
+                    ? "متاح للعمل"
+                    : "Open to work"
+                  : showcase?.settings.availability.status === "internship"
+                    ? ar
+                      ? "متاح لتدريب"
+                      : "Internship"
+                    : ar
+                      ? "غير باحث حاليًا"
+                      : "Not looking",
+              ],
               [ar ? "اللغات" : "Languages", profile.languages.join(" · ")],
-            ].map(([label, value]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd dir="auto">{value || "—"}</dd>
-              </div>
-            ))}
+            ].map(([label, value], index) => {
+              const Icon = [
+                GraduationCap,
+                Calendar,
+                MapPin,
+                BriefcaseBusiness,
+                Clock,
+                Languages,
+              ][index];
+              return (
+                <div key={label}>
+                  <dt>
+                    <Icon size={16} />
+                    {label}
+                  </dt>
+                  <dd dir="auto">{value || "—"}</dd>
+                </div>
+              );
+            })}
           </dl>
         </section>
         {showcase && (
@@ -353,9 +375,17 @@ export function ProfessionalOverview({
               Award,
             ],
             [
-              new Set(evidence.map((row) => row.activityId)).size,
-              ar ? "أنشطة تدريبية" : "Practical activities",
+              showcase?.works.length ??
+                new Set(evidence.map((row) => row.activityId)).size,
+              ar ? "أعمال تدريبية" : "Practical projects",
               FileText,
+            ],
+            [
+              `${completeness}%`,
+              ar
+                ? "اكتمال البيانات · لا يقيس التأهيل"
+                : "Profile complete · not readiness",
+              Target,
             ],
           ].map(([count, label, Icon]) => {
             const MetricIcon = Icon as typeof Shield;
@@ -368,59 +398,95 @@ export function ProfessionalOverview({
             );
           })}
         </div>
-        <section className="member-card candidate-target">
-          <h2>
-            <Target size={18} />
-            {ar ? "الهدف المهني" : "Career target"}
-          </h2>
-          <b>{roleCatalog[profile.targetRoleId].label[locale]}</b>
-          <p>
-            {ar
-              ? "مجالات التطوير التالية بناءً على الأدلة المتاحة، وليست حكم توظيف:"
-              : "Next development areas based on available evidence, not a hiring judgment:"}
-          </p>
-          <ul>
-            {gaps.map((id) => (
-              <li key={id}>
-                {skillCatalog[id as keyof typeof skillCatalog].label[locale]}
-              </li>
-            ))}
-          </ul>
-          <button onClick={() => open("progress")}>
-            {ar ? "عرض الرحلة المهنية" : "See career journey"}
-          </button>
-        </section>
-        <CandidateSkills passport={passport} locale={locale} limit={6} />
-        {supported.length > 6 && (
-          <button onClick={() => open("skills")}>
-            {ar ? "عرض كل المهارات المدعومة" : "View all supported skills"}
-          </button>
-        )}
+        <div className="candidate-development">
+          <section className="member-card candidate-target">
+            <h2>
+              <Target size={18} />
+              {ar ? "الهدف المهني" : "Career target"}
+            </h2>
+            <b>{roleCatalog[profile.targetRoleId].label[locale]}</b>
+            <button onClick={() => open("progress")}>
+              {ar ? "عرض خطة التعلم" : "See learning plan"}{" "}
+              <ArrowRight size={14} />
+            </button>
+          </section>
+          <section className="member-card candidate-next">
+            <h2>
+              <ListChecks size={18} />
+              {ar ? "الخطوات التالية" : "Next steps"}
+            </h2>
+            <Link href={nextAction.href}>
+              <CheckCircle2 size={14} />
+              {nextAction.label}
+            </Link>
+            <Link href={`/${locale}/game/bank-reconciliation`}>
+              <CheckCircle2 size={14} />
+              {ar
+                ? "تدرّب على التسوية البنكية"
+                : "Practice bank reconciliation"}
+            </Link>
+            {gaps.length > 0 && (
+              <button onClick={() => open("skills")}>
+                <ArrowRight size={14} />
+                {ar ? "راجع فجوات المهارات" : "Review skill development gaps"}
+              </button>
+            )}
+          </section>
+        </div>
+        <CandidateSkills
+          passport={passport}
+          locale={locale}
+          limit={6}
+          onViewAll={() => open("skills")}
+        />
         <section className="member-card">
           <header>
             <h2>
-              {ar ? "أعمال المحاكاة المحاسبية" : "Accounting simulation work"}
+              <BriefcaseBusiness size={18} />
+              {ar
+                ? "الأعمال العملية والمشروعات (محاكاة)"
+                : "Practical Work & Projects (Simulations)"}
             </h2>
             <button onClick={() => open("work")}>
               {ar ? "عرض الأعمال" : "View work"}
             </button>
           </header>
           <div className="candidate-work-grid">
-            {showcase?.works.slice(0, 3).map((work) => (
-              <article key={work.id}>
-                <FileText size={25} />
-                <h3>{work.title[locale]}</h3>
-                <p>{work.summary[locale]}</p>
-                <small>
-                  {ar
-                    ? "محاكاة تدريبية · مهمة مقبولة"
-                    : "Training simulation · accepted task"}
-                </small>
-                <button onClick={() => open("work")}>
-                  {ar ? "عرض الدليل" : "View evidence"}
-                </button>
-              </article>
-            ))}
+            {showcase?.works
+              .toSorted((a, b) => {
+                const pins = showcase.settings.pinned;
+                const rank = (id: (typeof pins)[number]) =>
+                  pins.includes(id) ? pins.indexOf(id) : pins.length;
+                return rank(a.id) - rank(b.id);
+              })
+              .slice(0, 3)
+              .map((work) => (
+                <article key={work.id}>
+                  <Image
+                    className="work-thumbnail"
+                    src="/game/first-shift-desk-v2.png"
+                    width={64}
+                    height={68}
+                    alt=""
+                  />
+                  <div>
+                    <h3>{work.title[locale]}</h3>
+                    <p>{work.summary[locale]}</p>
+                    <span className="work-skill">{work.skill[locale]}</span>
+                    <small>
+                      {ar
+                        ? "محاكاة تدريبية · مهمة مقبولة"
+                        : "Training simulation · accepted task"}
+                    </small>
+                    <button onClick={() => open("work")}>
+                      <ArrowRight size={14} />
+                      <span className="sr-only">
+                        {ar ? "عرض الدليل" : "View evidence"}
+                      </span>
+                    </button>
+                  </div>
+                </article>
+              ))}
           </div>
           {!showcase?.works.length && (
             <p>
@@ -437,18 +503,22 @@ export function ProfessionalOverview({
               {ar ? "عرض وإدارة" : "View & manage"}
             </button>
           </header>
-          {portfolio?.certificates.slice(0, 3).map((row) => (
-            <article className="candidate-certificate-highlight" key={row.id}>
-              <Award size={23} />
-              <div>
-                <b>{row.title}</b>
-                <small>
-                  {row.issuer} · {row.date} ·{" "}
-                  {ar ? "مضافة منك، غير موثقة" : "Self-reported, not verified"}
-                </small>
-              </div>
-            </article>
-          ))}
+          <div className="candidate-certificates">
+            {portfolio?.certificates.slice(0, 3).map((row) => (
+              <article className="candidate-certificate-highlight" key={row.id}>
+                <Award size={23} />
+                <div>
+                  <b>{row.title}</b>
+                  <small>
+                    {row.issuer} · {row.date} ·{" "}
+                    {ar
+                      ? "مضافة منك، غير موثقة"
+                      : "Self-reported, not verified"}
+                  </small>
+                </div>
+              </article>
+            ))}
+          </div>
           {!portfolio?.certificates.length && (
             <p>{ar ? "لم تضف شهادات بعد." : "No certificates added yet."}</p>
           )}

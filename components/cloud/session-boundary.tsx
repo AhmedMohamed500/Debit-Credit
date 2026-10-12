@@ -71,7 +71,9 @@ export function CloudSessionBoundary({
       const me = await requestJSON<CloudIdentity>("me");
       setIdentity(me);
       if (privatePath && me.personalComplete === false) {
-        window.location.replace(`/${locale}/student-profile?next=${encodeURIComponent(pathname)}`);
+        window.location.replace(
+          `/${locale}/student-profile?next=${encodeURIComponent(pathname)}`,
+        );
         return;
       }
       const cache = new CloudCacheRepository();
@@ -112,7 +114,16 @@ export function CloudSessionBoundary({
         );
       }
     }
-  }, [enabled, privatePath, publicProfile, accountHome, employerPath, ar, locale, pathname]);
+  }, [
+    enabled,
+    privatePath,
+    publicProfile,
+    accountHome,
+    employerPath,
+    ar,
+    locale,
+    pathname,
+  ]);
   useEffect(() => {
     void load();
   }, [load]);
@@ -216,7 +227,10 @@ export function CloudSessionBoundary({
       </button>
     </div>
   );
-  if ((privatePath || (accountHome && identity)) && (!ready || loadedPath !== pathname))
+  if (
+    (privatePath || (accountHome && identity)) &&
+    (!ready || loadedPath !== pathname)
+  )
     return (
       <Context.Provider value={identity}>
         {bar}
@@ -274,7 +288,7 @@ export function CloudSessionBoundary({
     );
   return (
     <Context.Provider value={publicProfile ? null : identity}>
-      {bar}
+      {!/^\/(ar|en)\/career-profile\/?$/.test(pathname) && bar}
       {children}
     </Context.Provider>
   );

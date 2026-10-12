@@ -102,8 +102,8 @@ export function DiscoverySettings({
   }
   const labels: Record<keyof DiscoveryPreferences, [string, string]> = {
     enabled: [
-      "Allow employer discovery of my name, role, evidence summary and simulation work",
-      "أوافق على اكتشاف الشركات لاسمي ودوري وملخص أدلتي وأعمال المحاكاة",
+      "Visible to employers: share my name, current/target role, work type, availability, evidence summary and simulation work",
+      "الظهور للشركات: مشاركة اسمي ودوري الحالي والمستهدف ونوع العمل والتوفر وملخص الأدلة وأعمال المحاكاة",
     ],
     photo: ["Share my photo with recruiters", "مشاركة صورتي مع مسؤولي التوظيف"],
     location: ["Share location", "مشاركة المكان"],
@@ -119,8 +119,8 @@ export function DiscoverySettings({
       "مشاركة بيانات الشهادات فقط، دون الصور أو أرقامها الخاصة",
     ],
     cv: [
-      "Allow a text CV preview with account email/phone removed",
-      "إتاحة معاينة نصية للـCV دون بريد الحساب أو التليفون",
+      "Allow English CV preview / PDF export with account email/phone removed",
+      "إتاحة معاينة CV الإنجليزي وتصديره PDF دون بريد الحساب أو التليفون",
     ],
     contactRequests: [
       "Allow internal recruiter contact requests",

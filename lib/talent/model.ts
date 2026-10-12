@@ -85,6 +85,9 @@ export type TalentQuery = z.infer<typeof talentQuery>;
 export type Candidate = {
   id: string;
   name: string;
+  currentRole?: string;
+  workType?: string;
+  graduationYear?: string;
   role: CareerProfile["targetRoleId"];
   location: string;
   level: CareerProfile["experienceLevel"];

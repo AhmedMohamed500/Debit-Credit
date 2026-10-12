@@ -12,7 +12,7 @@ import {
 import type { Locale } from "@/types";
 import "@/app/profile-photo.css";
 
-async function prepare(file: File) {
+export async function prepareProfilePhoto(file: File) {
   if (
     !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
     file.size > PHOTO_FILE_LIMIT
@@ -27,8 +27,6 @@ async function prepare(file: File) {
     const context = canvas.getContext("2d");
     if (!context) throw new Error("CANVAS_UNAVAILABLE");
     const size = Math.min(bitmap.width, bitmap.height);
-    context.fillStyle = "#fff";
-    context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(
       bitmap,
       (bitmap.width - size) / 2,
@@ -40,7 +38,8 @@ async function prepare(file: File) {
       canvas.width,
       canvas.height,
     );
-    return canvas.toDataURL("image/jpeg", 0.82);
+    // WebP retains the alpha of an uploaded cutout. Never flatten to white.
+    return canvas.toDataURL("image/webp", 0.82);
   } finally {
     bitmap.close();
   }
@@ -157,7 +156,7 @@ export function ProfilePhoto({
                 setBusy(true);
                 setMessage("");
                 try {
-                  await save(await prepare(file));
+                  await save(await prepareProfilePhoto(file));
                 } catch (error) {
                   setMessage(
                     error instanceof CloudFailure && error.status === 409

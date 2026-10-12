@@ -115,6 +115,7 @@ export function SocialLinks({
               target="_blank"
               rel="noopener noreferrer"
               referrerPolicy="no-referrer"
+              aria-label={socialLabels[key]}
             >
               <Icon size={15} />
               <span>

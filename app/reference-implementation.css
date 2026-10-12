@@ -491,6 +491,10 @@
   cursor: pointer;
   list-style: none;
   display: flex;
+  border-radius: 7px;
+  padding: 5px;
+  background: #edf6fb;
+  color: #08264d;
 }
 .portfolio-menu > div {
   position: absolute;
@@ -510,27 +514,27 @@
 .member-profile .professional-hero {
   direction: ltr;
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 168px;
-  gap: 22px;
-  min-height: 250px;
-  padding: 18px 20px 0 18px;
+  grid-template-columns: 28% minmax(0, 1fr) 19%;
+  gap: 12px;
+  min-height: 366px;
+  padding: 20px 26px 0 0;
   border: 0;
   border-radius: 0 0 10px 10px;
   background:
-    linear-gradient(90deg, #051b31a8, #062843f5 43%, #052338c7),
-    url("/game/accounting-manual-office-v2.png") right 34% / 145% auto no-repeat
+    linear-gradient(90deg, #051b3100, #03192bc2 38%, #03192b8a 75%, #051b311a),
+    url("/platform/candidate-reference-office-v1.png") center / cover no-repeat
       #08263e;
   color: white;
   overflow: hidden;
 }
 .member-profile .professional-hero .member-portrait {
   width: 100%;
-  height: 232px;
+  height: 346px;
   flex-basis: auto;
   padding: 0;
   margin: 0;
   align-self: end;
-  border-radius: 6px;
+  border-radius: 0;
   box-shadow: none;
   background: transparent;
 }
@@ -538,21 +542,22 @@
   .professional-hero
   .member-portrait
   :is(.photo-avatar, .photo-circle) {
-  border-radius: 6px;
+  border-radius: 0;
   width: 100%;
   height: 100%;
   background: transparent;
 }
 .member-profile .professional-hero .member-portrait .photo-circle {
   display: block;
+  border: 0;
 }
 .member-profile .professional-hero .member-portrait img {
   width: 100%;
   height: 100%;
   min-height: 0;
-  border-radius: 6px;
-  object-fit: cover;
-  object-position: center top;
+  border-radius: 0;
+  object-fit: contain;
+  object-position: center bottom;
 }
 .member-profile .professional-hero .member-hero-copy :is(h1, p, span, small) {
   color: white;
@@ -565,32 +570,40 @@
   direction: rtl;
 }
 .member-profile .professional-hero .member-hero-copy h1 {
-  font-size: clamp(23px, 1.8vw, 29px);
+  font-size: clamp(23px, 2.2vw, 34px);
   line-height: 1.15;
   margin: 0 0 10px;
 }
 .member-profile .professional-hero .candidate-role {
-  font-size: 14px;
+  font-size: 17px;
   margin: 0;
 }
 .member-profile .professional-hero .candidate-target-role {
-  font-size: 13px;
+  font-size: 16px;
   margin: 0 0 12px;
 }
 .member-profile .professional-hero .candidate-summary {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
   line-height: 1.5;
   margin: 10px 0 16px;
   max-width: 620px;
 }
+.member-profile .professional-hero .candidate-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0;
+}
 .member-profile .professional-hero .candidate-location {
   font-size: 12px;
   display: flex;
+  margin: 0;
 }
 .member-profile .professional-hero .showcase-identity {
   display: inline-flex;
-  margin: 8px 0 0;
+  margin: 0;
 }
 .member-profile .professional-hero .showcase-identity:empty {
   display: none;
@@ -631,8 +644,15 @@
   padding: 5px;
   font-size: 11px;
 }
+.member-profile .professional-hero .showcase-socials a > span {
+  display: none;
+}
+.member-profile .professional-hero .showcase-socials a svg {
+  width: 20px;
+  height: 20px;
+}
 .member-profile .professional-hero .career-pass {
-  background: #ffffff18;
+  background: #b9dcf224;
   color: white;
   border: 1px solid #87b0c1;
   border-radius: 10px;
@@ -640,21 +660,27 @@
   gap: 4px;
   font-size: 10px;
   line-height: 1.25;
-  height: 220px;
-  min-height: 220px;
+  height: 288px;
+  min-height: 288px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   align-self: center;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
+  box-shadow:
+    inset 0 0 22px #a8d0ef15,
+    0 6px 24px #03182a30;
+  backdrop-filter: blur(3px);
 }
 .member-profile .professional-hero .career-pass-qr {
-  min-height: 100px;
+  min-height: 154px;
 }
 .member-profile .professional-hero .career-pass img {
-  width: 100px;
-  height: 100px;
+  width: 154px;
+  height: 154px;
+  max-width: 100%;
+  object-fit: contain;
   flex-shrink: 0;
 }
 .member-profile .career-pass b {
@@ -662,6 +688,22 @@
 }
 .member-profile .career-pass button {
   color: white;
+}
+.member-profile .career-pass-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.member-profile .career-pass-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.member-profile .career-pass-actions :is(a, button) {
+  font-size: 10px;
+  text-decoration: none;
 }
 .member-profile .member-tabs {
   direction: ltr;
@@ -1323,7 +1365,7 @@
     gap: 12px;
   }
   .member-profile .professional-hero {
-    grid-template-columns: 23% minmax(0, 1fr) 155px;
+    grid-template-columns: 26% minmax(0, 1fr) 170px;
     gap: 18px;
     padding-inline-end: 20px;
   }

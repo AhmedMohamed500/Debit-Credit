@@ -17,6 +17,8 @@ import {
   Calendar,
   Clock,
   Languages,
+  Download,
+  Share2,
 } from "lucide-react";
 import { ProfilePhoto } from "./profile-photo";
 import { Availability, SocialLinks } from "./showcase";
@@ -100,11 +102,16 @@ export function CareerPass({
         )}
       </div>
       {url && (
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          {ar ? "عرض البروفايل العام" : "View public profile"}
-        </a>
+        <div className="career-pass-actions">
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            {ar ? "عرض البروفايل العام" : "View public profile"}
+          </a>
+          <button onClick={open}>
+            <Share2 size={12} />
+            {ar ? "مشاركة" : "Share"}
+          </button>
+        </div>
       )}
-      {url && <button onClick={open}>{ar ? "مشاركة" : "Share"}</button>}
     </aside>
   );
 }
@@ -137,19 +144,21 @@ export function CandidateHero({
             {ar ? "أطمح إلى: " : "Aspiring "}
             {roleCatalog[profile.targetRoleId].label[locale]}
           </p>
-          <span className="candidate-location">
-            <MapPin size={15} />
-            {[profile.location, profile.country].filter(Boolean).join(", ") ||
-              (ar ? "لم تضف المكان بعد" : "Location not added")}
-          </span>
-          {showcase && (
-            <div className="showcase-identity">
-              <Availability
-                value={showcase.settings.availability}
-                locale={locale}
-              />
-            </div>
-          )}
+          <div className="candidate-meta">
+            <span className="candidate-location">
+              <MapPin size={15} />
+              {[profile.location, profile.country].filter(Boolean).join(", ") ||
+                (ar ? "لم تضف المكان بعد" : "Location not added")}
+            </span>
+            {showcase && (
+              <div className="showcase-identity">
+                <Availability
+                  value={showcase.settings.availability}
+                  locale={locale}
+                />
+              </div>
+            )}
+          </div>
           <p className="candidate-summary" dir="auto">
             {profile.summary ||
               (ar
@@ -161,13 +170,19 @@ export function CandidateHero({
               className="member-primary"
               href={`/${locale}/career-profile/cv`}
             >
-              <FileText size={16} />
+              <Download size={16} />
               {ar ? "تنزيل CV" : "Download CV"}
             </Link>
-            <button onClick={open}>
-              {ar ? "التواصل والمشاركة" : "Contact"}
-            </button>
-            {showcase && <SocialLinks socials={showcase.settings.socials} />}
+            <button onClick={open}>{ar ? "تواصل" : "Contact"}</button>
+            {showcase && (
+              <SocialLinks
+                socials={{
+                  ...showcase.settings.socials,
+                  facebook: "",
+                  instagram: "",
+                }}
+              />
+            )}
           </div>
         </div>
         <CareerPass data={showcase} locale={locale} open={open} />

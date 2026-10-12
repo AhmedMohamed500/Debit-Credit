@@ -440,15 +440,6 @@ export function MemberProfile({
             {say("Employers", "أصحاب العمل")}
           </Link>
         </nav>
-        <button className="portfolio-share" onClick={openSharing}>
-          {say("Share profile", "مشاركة الملف")}
-        </button>
-        <button
-          className="portfolio-discovery"
-          onClick={() => selectTab("settings")}
-        >
-          {say("Employer visibility", "الظهور للشركات")}
-        </button>
         <details className="portfolio-menu">
           <summary aria-label={say("Profile actions", "إجراءات البروفايل")}>
             <MoreHorizontal size={19} />
@@ -492,6 +483,9 @@ export function MemberProfile({
             </button>
           </div>
         </details>
+        <button className="portfolio-share" onClick={openSharing}>
+          {say("Share profile", "مشاركة الملف")}
+        </button>
       </header>
       <div className="member-layout">
         <div className="member-content">

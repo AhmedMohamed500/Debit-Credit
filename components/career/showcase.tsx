@@ -13,6 +13,7 @@ import {
   Facebook,
   Instagram,
   Globe,
+  CheckCircle2,
 } from "lucide-react";
 import { requestJSON, cloudUser, CloudFailure } from "@/lib/cloud/runtime";
 import { roleCatalog, roleIds } from "@/lib/career/catalog";
@@ -137,22 +138,26 @@ export function SocialLinks({
 export function Availability({
   value,
   locale,
+  compact = false,
 }: {
   value: ShowcaseSettings["availability"];
   locale: Locale;
+  compact?: boolean;
 }) {
   if (value.status === "not-looking") return null;
   return (
     <span className="showcase-availability">
-      <BriefcaseBusiness size={16} />
+      {compact ? <CheckCircle2 size={14} /> : <BriefcaseBusiness size={16} />}
       {value.status === "internship"
         ? locale === "ar"
           ? "متاح لتدريب"
           : "Available for an internship"
         : locale === "ar"
           ? "متاح للعمل"
-          : "Open to work"}{" "}
-      · {roleCatalog[value.role].label[locale]}
+          : compact
+            ? "Open to Opportunities"
+            : "Open to work"}{" "}
+      {!compact && <>· {roleCatalog[value.role].label[locale]}</>}
     </span>
   );
 }

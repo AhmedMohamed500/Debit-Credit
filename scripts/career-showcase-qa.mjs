@@ -16,8 +16,8 @@ export async function careerShowcaseQa({ page, context, base, locale, label, api
   for (const id of ['journal', 'cash-ledger', 'trial-balance']) await root.locator(`[name="pin-${id}"]`).check();
   record(label + ' maximum three pinned works enforced on form', await root.locator('[name="pin-worksheet"]').isDisabled());
   await root.getByRole('button', { name: say('Save showcase', 'حفظ المعرض'), exact: true }).click();
-  await page.locator('.candidate-actions .showcase-socials a').waitFor();
-  record(label + ' social link and internship preference under name', (await page.locator('.showcase-identity').innerText()).includes(say('Available for an internship', 'متاح لتدريب')));
+  await page.locator('.candidate-actions .showcase-socials a[href="https://www.linkedin.com/in/local-qa-fixture"]').waitFor();
+  record(label + ' saved social link and internship preference under English reference identity', (await page.locator('.showcase-identity').innerText()).includes('Available for an internship') && await page.locator('.member-hero-copy').getAttribute('lang')==='en' && await page.locator('.member-hero-copy').getAttribute('dir')==='ltr');
   record(label + ' hero social links retain accessible contrast on approved navy hero', await page.locator('.candidate-actions .showcase-socials a').evaluate(link => getComputedStyle(link).color === 'rgb(255, 255, 255)'));
   record(label + ' chosen accounting previews exactly three', await root.locator('.showcase-works article').count() === 3);
   const trial = root.locator('.showcase-works article').last();

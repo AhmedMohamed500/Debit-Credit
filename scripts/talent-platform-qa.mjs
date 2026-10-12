@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import path from "node:path";
 import { existsSync } from "node:fs";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { randomBytes, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import EmbeddedPostgres from "embedded-postgres";
@@ -72,8 +72,10 @@ try {
   await visibilityPage.getByRole('button',{name:'احفظ اختيارات الاكتشاف',exact:true}).click();await visibilityPage.getByText('تم حفظ موافقتك؛ يمكنك إيقاف الاكتشاف في أي وقت.',{exact:true}).waitFor();
   assert.deepEqual((await json(candidate.context,'me/discovery')).preferences,choices);record('Real candidate UI saves independent employer visibility and allowed fields',true);await visibilityPage.close();
   record("Exactly one opt-in candidate; private users excluded", (await json(a.context, "employer/candidates")).total === 1);
-  const photo = await sharp({ create: { width: 512, height: 512, channels: 3, background: "#4b9a8b" } }).jpeg().toBuffer();
-  await json(candidate.context, "me/photo", "PUT", { revision: 0, image: "data:image/jpeg;base64," + photo.toString("base64") });
+  const ownerPortrait=process.argv.includes('--owner-portrait');
+  const photo = ownerPortrait ? await sharp(await readFile('artifacts/hero-reference/owner-cutout-private.png')).resize(512,512,{fit:'contain',background:{r:0,g:0,b:0,alpha:0}}).webp({quality:78}).toBuffer() : await sharp({ create: { width: 512, height: 512, channels: 3, background: "#4b9a8b" } }).jpeg().toBuffer();
+  await json(candidate.context, "me/photo", "PUT", { revision: 0, image: `data:image/${ownerPortrait?'webp':'jpeg'};base64,` + photo.toString("base64") });
+  if(ownerPortrait)record('Prepared owner portrait retains alpha in the isolated saved photo',(await sharp(Buffer.from((await json(candidate.context,'me/photo')).data.image.split(',')[1],'base64')).metadata()).hasAlpha===true);
   const answers = [{ action: "hold-duplicate" }, { debit: "cash", credit: "capital", amount: "100000" }, { debit: "equipment", credit: "cash", amount: "20000" }, { debit: "inventory", credit: "payable", amount: "15000" }, { debit: "receivable", credit: "revenue", amount: "12000" }, { debit: "cash", credit: "receivable", amount: "7000" }, { debit: "rent", credit: "cash", amount: "3000" }, { amount: "84000" }, { debitTotal: "127000", creditTotal: "127000" }, { action: "reclassify-equipment" }, { formula: "=SUM(C2:C9)", differenceFormula: "=C10-D10" }];
   const steps = ["document-control", "journal-capital", "journal-equipment", "journal-inventory", "journal-service", "journal-receipt", "journal-rent", "ledger-cash", "trial-balance", "classification-error", "worksheet"];
   for (let i = 0; i < steps.length; i++) { const state = await json(candidate.context, "me/student-unit"); const answer = Object.fromEntries(Object.entries(answers[i]).map(([key, value]) => [key, ["amount", "debitTotal", "creditTotal"].includes(key) ? Number(value) : value])); await json(candidate.context, "me/student-unit", "POST", { revision: state.revision, step: steps[i], answer }); record("Accepted local task " + steps[i]); }
@@ -163,7 +165,12 @@ try {
   for (const locale of ["ar", "en"]) for (const width of [1920, 1440, 390]) {
     await profilePage.setViewportSize({ width, height: width === 390 ? 844 : width === 1920 ? 1080 : 900 }); await profilePage.goto(`${base}/${locale}/career-profile`); await profilePage.locator('.candidate-overview').waitFor(); await profilePage.locator('.member-portrait img').waitFor();
     await shot(profilePage, `candidate-profile-${locale}-${width}`); if (locale === "ar" && width === 390) await profilePage.screenshot({ path: path.join(output, "candidate-profile-mobile-ar.png"), fullPage: true });
-    if(width>=1440){const geometry=await profilePage.locator('.professional-hero').evaluate(el=>{const r=el.getBoundingClientRect(),p=el.querySelector('.member-portrait').getBoundingClientRect();return {width:r.width,height:r.height,photoWidth:p.width,photoHeight:p.height};});record('Approved reference hero proportions '+locale+' '+width,geometry.width<=1200&&geometry.width/geometry.height>=3&&geometry.width/geometry.height<=3.4&&geometry.photoWidth/geometry.width>=.25&&geometry.photoWidth/geometry.width<=.3&&geometry.photoHeight<=350);}
+    if(width>=1440){const geometry=await profilePage.locator('.professional-hero').evaluate(el=>{const r=el.getBoundingClientRect(),p=el.querySelector('.member-portrait').getBoundingClientRect();return {width:r.width,height:r.height,photoWidth:p.width,photoHeight:p.height};});record('Approved reference hero proportions '+locale+' '+width,geometry.width<=1200&&geometry.width/geometry.height>=3&&geometry.width/geometry.height<=3.4&&geometry.photoWidth/geometry.width>=.3&&geometry.photoWidth/geometry.width<=.33&&geometry.photoHeight<=350);}
+    record(`candidate-${locale}-${width} hero has canonical saved name, not an empty local profile`,await profilePage.locator('.professional-hero h1').innerText()==='Ahmed Mohamed Ahmed Abdallah');
+    record(`candidate-${locale}-${width} hero identity/actions keep reference LTR on either locale`,await profilePage.locator('.member-hero-copy').evaluate(el=>getComputedStyle(el).direction)==='ltr');
+    record(`candidate-${locale}-${width} hero uses canonical saved location`,(await profilePage.locator('.candidate-location').innerText()).includes('Alexandria'));
+    record(`candidate-${locale}-${width} hero keeps real canonical LinkedIn link`,await profilePage.locator('.candidate-actions a[aria-label="LinkedIn"]').getAttribute('href')==='https://www.linkedin.com/in/qa-fixture');
+    if(locale==='ar'&&width===1440){const heroBox=await profilePage.locator('.professional-hero').boundingBox(),tabsBox=await profilePage.locator('.member-tabs').boundingBox();await profilePage.screenshot({path:path.join(output,'candidate-corrected-header-ar.png'),clip:{x:heroBox.x,y:0,width:heroBox.width,height:tabsBox.y+tabsBox.height}});}
     record(`candidate-${locale}-${width} six professional tabs`, await profilePage.locator('.member-tabs button').count() === 6);
     record(`candidate-${locale}-${width} no old sidebar`, await profilePage.locator('.member-sidebar').count() === 0);
     record(`candidate-${locale}-${width} approved office hero`, (await profilePage.locator('.professional-hero').evaluate(el => getComputedStyle(el).backgroundImage)).includes('candidate-reference-office-v1'));

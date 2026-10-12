@@ -514,7 +514,7 @@
 .member-profile .professional-hero {
   direction: ltr;
   display: grid;
-  grid-template-columns: 28% minmax(0, 1fr) 19%;
+  grid-template-columns: 32% minmax(0, 1fr) 19%;
   gap: 12px;
   min-height: 366px;
   padding: 20px 26px 0 0;
@@ -567,7 +567,8 @@
   text-align: left;
 }
 .member-profile[dir="rtl"] .professional-hero .member-hero-copy {
-  direction: rtl;
+  direction: ltr;
+  text-align: left;
 }
 .member-profile .professional-hero .member-hero-copy h1 {
   font-size: clamp(23px, 2.2vw, 34px);
@@ -588,6 +589,10 @@
   line-height: 1.5;
   margin: 10px 0 16px;
   max-width: 620px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 .member-profile .professional-hero .candidate-meta {
   display: flex;

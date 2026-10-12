@@ -3,7 +3,7 @@ import "@/app/career-profile.css";
 import "@/app/career-profile-documents.css";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { ProfilePhoto } from "./profile-photo";
-import { MemberProfile } from "./member-profile";
+import { AccountMemberProfile } from "./account-member-profile";
 import { CvView } from "./compact-cv-view";
 import { activitySummary } from "@/lib/career/activity-summary";
 import Link from "next/link";
@@ -103,7 +103,7 @@ export function CareerProfileApp({
     setProfile(current);
     setEvidence(synced);
     setPrefs(savedPrefs);
-  }, [game, gameReady]);
+  }, [game, gameReady, identity?.user.id]);
   const save = (patch: Partial<CareerProfile>) =>
     setProfile((current) => {
       if (!current) return current;
@@ -134,9 +134,9 @@ export function CareerProfileApp({
   };
   if (view === "dashboard" && identity)
     return (
-      <MemberProfile
+      <AccountMemberProfile
         locale={locale}
-        profile={profile}
+        owner={identity.user.id}
         passport={passport}
         evidence={evidence}
       />

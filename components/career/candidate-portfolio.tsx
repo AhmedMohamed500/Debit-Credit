@@ -127,43 +127,50 @@ export function CandidateHero({
   completeness: number;
   open: () => void;
 }) {
-  const ar = locale === "ar";
+  const role = roleCatalog[profile.targetRoleId].label;
+  const headline =
+    profile.headline && profile.headline !== role.ar
+      ? profile.headline
+      : role.en;
+  const socials = {
+    linkedin: profile.linkedIn || "",
+    github: "",
+    facebook: "",
+    instagram: "",
+    website: profile.portfolio || "",
+    ...showcase?.settings.socials,
+  };
+  socials.linkedin ||= profile.linkedIn || "";
+  socials.website ||= profile.portfolio || "";
   return (
     <>
       <section className="member-hero professional-hero">
         <div className="member-portrait">
           <ProfilePhoto locale={locale} name={profile.fullName} />
         </div>
-        <div className="member-hero-copy">
+        <div className="member-hero-copy" dir="ltr" lang="en">
           <h1 dir="auto">{profile.fullName}</h1>
-          <p className="candidate-role">
-            {profile.headline ||
-              roleCatalog[profile.targetRoleId].label[locale]}
-          </p>
-          <p className="candidate-target-role">
-            {ar ? "أطمح إلى: " : "Aspiring "}
-            {roleCatalog[profile.targetRoleId].label[locale]}
-          </p>
+          <p className="candidate-role">{headline}</p>
+          <p className="candidate-target-role">Aspiring {role.en}</p>
           <div className="candidate-meta">
             <span className="candidate-location">
               <MapPin size={15} />
               {[profile.location, profile.country].filter(Boolean).join(", ") ||
-                (ar ? "لم تضف المكان بعد" : "Location not added")}
+                "Location not added"}
             </span>
             {showcase && (
               <div className="showcase-identity">
                 <Availability
                   value={showcase.settings.availability}
-                  locale={locale}
+                  locale="en"
+                  compact
                 />
               </div>
             )}
           </div>
           <p className="candidate-summary" dir="auto">
             {profile.summary ||
-              (ar
-                ? "أعمالك التدريبية وأدلة مهاراتك تجمع هنا في ملف مهني واضح. المحاكاة ليست خبرة توظيف."
-                : "Your practical training and skill evidence, brought together in a professional portfolio. Simulation is not employment.")}
+              "Your practical training and skill evidence, brought together in a professional portfolio. Simulation is not employment."}
           </p>
           <div className="candidate-actions">
             <Link
@@ -171,18 +178,18 @@ export function CandidateHero({
               href={`/${locale}/career-profile/cv`}
             >
               <Download size={16} />
-              {ar ? "تنزيل CV" : "Download CV"}
+              Download CV
             </Link>
-            <button onClick={open}>{ar ? "تواصل" : "Contact"}</button>
-            {showcase && (
+            <button onClick={open}>Contact</button>
+            {
               <SocialLinks
                 socials={{
-                  ...showcase.settings.socials,
+                  ...socials,
                   facebook: "",
                   instagram: "",
                 }}
               />
-            )}
+            }
           </div>
         </div>
         <CareerPass data={showcase} locale={locale} open={open} />

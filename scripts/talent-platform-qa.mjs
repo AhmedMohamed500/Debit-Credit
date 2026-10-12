@@ -9,7 +9,7 @@ import EmbeddedPostgres from "embedded-postgres";
 import { Client } from "pg";
 import { chromium } from "playwright-core";
 import sharp from "sharp";
-const base = "http://localhost:3118", output = path.resolve("artifacts/final-career-employer-fix"), temporary = path.resolve("artifacts/talent-platform/tmp"), results = [], errors = [];
+const base = "http://localhost:3118", output = path.resolve(process.argv.includes('--hero-reference') ? "artifacts/hero-reference/qa" : "artifacts/final-career-employer-fix"), temporary = path.resolve("artifacts/talent-platform/tmp"), results = [], errors = [];
 let database, browser, app, sql;
 function record(name, condition = true) { assert.ok(condition, name); results.push(name); console.log("PASS", name); }
 function done(child) { return new Promise((resolve, reject) => { child.once("error", reject); child.once("exit", code => code === 0 ? resolve() : reject(new Error("QA process failed"))); }); }
@@ -163,10 +163,10 @@ try {
   for (const locale of ["ar", "en"]) for (const width of [1920, 1440, 390]) {
     await profilePage.setViewportSize({ width, height: width === 390 ? 844 : width === 1920 ? 1080 : 900 }); await profilePage.goto(`${base}/${locale}/career-profile`); await profilePage.locator('.candidate-overview').waitFor(); await profilePage.locator('.member-portrait img').waitFor();
     await shot(profilePage, `candidate-profile-${locale}-${width}`); if (locale === "ar" && width === 390) await profilePage.screenshot({ path: path.join(output, "candidate-profile-mobile-ar.png"), fullPage: true });
-    if(width>=1440){const geometry=await profilePage.locator('.professional-hero').evaluate(el=>{const r=el.getBoundingClientRect(),p=el.querySelector('.member-portrait').getBoundingClientRect();return {width:r.width,height:r.height,photoWidth:p.width,photoHeight:p.height};});record('Bounded compact hero '+locale+' '+width,geometry.width<=1200&&geometry.height<=300&&geometry.photoWidth<=240&&geometry.photoHeight<=250);}
+    if(width>=1440){const geometry=await profilePage.locator('.professional-hero').evaluate(el=>{const r=el.getBoundingClientRect(),p=el.querySelector('.member-portrait').getBoundingClientRect();return {width:r.width,height:r.height,photoWidth:p.width,photoHeight:p.height};});record('Approved reference hero proportions '+locale+' '+width,geometry.width<=1200&&geometry.width/geometry.height>=3&&geometry.width/geometry.height<=3.4&&geometry.photoWidth/geometry.width>=.25&&geometry.photoWidth/geometry.width<=.3&&geometry.photoHeight<=350);}
     record(`candidate-${locale}-${width} six professional tabs`, await profilePage.locator('.member-tabs button').count() === 6);
     record(`candidate-${locale}-${width} no old sidebar`, await profilePage.locator('.member-sidebar').count() === 0);
-    record(`candidate-${locale}-${width} navy office hero`, (await profilePage.locator('.professional-hero').evaluate(el => getComputedStyle(el).backgroundImage)).includes('accounting-manual-office-v2'));
+    record(`candidate-${locale}-${width} approved office hero`, (await profilePage.locator('.professional-hero').evaluate(el => getComputedStyle(el).backgroundImage)).includes('candidate-reference-office-v1'));
     record(`candidate-${locale}-${width} five real metrics and two development cards`, await profilePage.locator('.candidate-metrics article').count() === 5 && await profilePage.locator('.candidate-development section').count() === 2);
     record(`candidate-${locale}-${width} skill icons and evidence scores do not overlap`, await profilePage.locator('.candidate-skills').evaluate(grid => Array.from(grid.querySelectorAll('article')).every(row => {const icon=row.querySelector('svg'),score=row.querySelector('.candidate-evidence-score');if(!score)return true;const a=icon.getBoundingClientRect(),b=score.getBoundingClientRect();return a.right<=b.left || b.right<=a.left;})));
     record(`candidate-${locale}-${width} activated real Career ID QR`, await profilePage.locator('.career-pass img').count() === 1 && (await profilePage.locator('.career-pass a').getAttribute('href')).startsWith(base+`/${locale}/portfolio/`));

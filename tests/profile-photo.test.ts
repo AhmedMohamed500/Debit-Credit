@@ -74,4 +74,43 @@ describe("Private profile photo validation", () => {
       ),
     ).rejects.toMatchObject({ status: 400 });
   });
+  it("preserves transparent cutout pixels without adding a white background", async () => {
+    const original = await sharp({
+      create: {
+        width: 512,
+        height: 512,
+        channels: 4,
+        background: { r: 0, g: 0, b: 0, alpha: 0 },
+      },
+    })
+      .composite([
+        {
+          input: await sharp({
+            create: {
+              width: 100,
+              height: 100,
+              channels: 4,
+              background: { r: 30, g: 60, b: 90, alpha: 1 },
+            },
+          })
+            .png()
+            .toBuffer(),
+          left: 206,
+          top: 206,
+        },
+      ])
+      .png()
+      .toBuffer();
+    const result = await sanitizePhoto(
+      "data:image/png;base64," + original.toString("base64"),
+    );
+    const output = sharp(Buffer.from(result.split(",")[1], "base64"));
+    expect((await output.metadata()).hasAlpha).toBe(true);
+    const { data, info } = await output
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    expect(data[3]).toBe(0);
+    expect(data[(256 * info.width + 256) * info.channels + 3]).toBe(255);
+  });
 });

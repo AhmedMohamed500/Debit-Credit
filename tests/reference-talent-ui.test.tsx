@@ -44,7 +44,10 @@ const a = candidate(
   "data:image/webp;base64,photo-a",
 );
 const b = candidate("Salma Candidate B", "b", "data:image/webp;base64,photo-b");
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 beforeEach(() => {
   fixture.owner = "recruiter-a";
   fixture.request.mockReset();
@@ -137,5 +140,19 @@ it("clears previous recruiter results when another account context is restoring"
   fixture.request.mockImplementation(() => new Promise(() => {}));
   rerender(<TalentSearch locale="ar" />);
   expect(container.querySelector(".talent-result")).toBeNull();
+  expect(container.querySelector(".talent-preview")).toBeNull();
+});
+it("automatically loads the first real eligible candidate on desktop without inventing a preview", async () => {
+  vi.stubGlobal("matchMedia", () => ({ matches: true }));
+  const { container } = render(<TalentSearch locale="en" />);
+  await waitFor(() =>
+    expect(container.querySelector(".preview-heading img")).toHaveAttribute(
+      "src",
+      a.photo,
+    ),
+  );
+  expect(container.querySelector(".talent-preview")).toHaveTextContent(a.name);
+  expect(fixture.request).toHaveBeenCalledWith("employer/candidates/a");
+  fireEvent.click(container.querySelector(".preview-close")!);
   expect(container.querySelector(".talent-preview")).toBeNull();
 });

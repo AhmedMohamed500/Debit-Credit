@@ -149,7 +149,7 @@ export function TalentSearch({
         : "employer/candidates?" + params;
     void requestJSON<SearchResults>(route)
       .then((data) => {
-        if (alive && cloudUser() === owner)
+        if (alive && cloudUser() === owner) {
           setResults({
             owner,
             data: {
@@ -158,6 +158,27 @@ export function TalentSearch({
               pageSize: data.pageSize ?? 100,
             },
           });
+          if (
+            !candidateId &&
+            mode === "search" &&
+            data.items.length &&
+            window.matchMedia?.("(min-width: 761px)").matches
+          ) {
+            const version = ++selectionVersion.current;
+            void requestJSON<Candidate>(
+              "employer/candidates/" + data.items[0].id,
+            )
+              .then((value) => {
+                if (
+                  alive &&
+                  cloudUser() === owner &&
+                  selectionVersion.current === version
+                )
+                  setSelected({ owner, candidate: value });
+              })
+              .catch(() => {});
+          }
+        }
       })
       .catch(() => {
         if (alive)
@@ -289,7 +310,6 @@ export function TalentSearch({
             {say("Company profile", "ملف الشركة")}
           </Link>
         </nav>
-        <ThemeToggle compact />
         {company && (
           <span className="company-name">
             {company.name}
@@ -301,6 +321,7 @@ export function TalentSearch({
             <MoreHorizontal size={19} />
           </summary>
           <div>
+            <ThemeToggle compact />
             <Link href={`/${locale}/employer/shortlist`}>
               {say("Shortlist", "القائمة المختصرة")}
             </Link>

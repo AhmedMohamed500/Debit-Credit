@@ -9,7 +9,7 @@ import EmbeddedPostgres from "embedded-postgres";
 import { Client } from "pg";
 import { chromium } from "playwright-core";
 import sharp from "sharp";
-const base = "http://localhost:3118", output = path.resolve("artifacts/reference-implementation"), temporary = path.resolve("artifacts/talent-platform/tmp"), results = [], errors = [];
+const base = "http://localhost:3118", output = path.resolve("artifacts/final-career-employer-fix"), temporary = path.resolve("artifacts/talent-platform/tmp"), results = [], errors = [];
 let database, browser, app, sql;
 function record(name, condition = true) { assert.ok(condition, name); results.push(name); console.log("PASS", name); }
 function done(child) { return new Promise((resolve, reject) => { child.once("error", reject); child.once("exit", code => code === 0 ? resolve() : reject(new Error("QA process failed"))); }); }
@@ -29,6 +29,9 @@ async function shot(page, name) {
   await page.waitForLoadState("networkidle"); await page.evaluate(async () => document.fonts.ready);
   record(name + " no overflow", await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
   await page.screenshot({ path: path.join(output, name + ".png"), fullPage: true });
+  const alias=name.match(/^(candidate|employer)-(ar|en)-(1920|1440)$/)?name.replace(/^(candidate|employer)-/,'$1-fixed-'):
+    ({'candidate-mobile-390':'mobile-candidate-ar','employer-mobile-390':'mobile-employer-ar','employer-search-name-result':'employer-real-name-search','employer-search-selected-candidate':'employer-selected-candidate','employer-search-empty-state':'employer-empty-state'})[name];
+  if(alias)await page.screenshot({path:path.join(output,alias+'.png'),fullPage:true});
 }
 try {
   await mkdir(temporary, { recursive: true }); await mkdir(output, { recursive: true });
@@ -50,7 +53,7 @@ try {
   sql = new Client({ connectionString: url }); await sql.connect();
   // Repeated runs remove only consent for this isolated harness's former fixture users.
   await sql.query("DELETE FROM cloud_progress WHERE domain LIKE 'talent/%'");
-  const candidate = await account("Ahmed Mohamed Test"), privateUser = await account("Salma Candidate B"), a = await account("QA Recruiter A"), b = await account("QA Recruiter B");
+  const candidate = await account("Ahmed Mohamed Ahmed Abdallah"), privateUser = await account("Salma Candidate B"), a = await account("QA Recruiter A"), b = await account("QA Recruiter B");
   record("Normal candidate cannot search", (await api(candidate.context, "employer/candidates")).status() === 403);
   record("Normal candidate cannot access shortlist", (await api(candidate.context, "employer/shortlist")).status() === 403);
   record("Forged recruiter privilege rejected", (await api(candidate.context, "employer/company", "PUT", { name: "Fake", recruiter: "Fake", industry: "Accounting", location: "Cairo", website: "", role: "ADMIN" })).status() === 400);
@@ -61,12 +64,16 @@ try {
   const emptyPage = await a.context.newPage(); emptyPage.on("pageerror", error => errors.push(error.message));
   await emptyPage.goto(base + "/ar/employer/candidates"); await emptyPage.getByText("لا توجد نتائج مطابقة", { exact: true }).waitFor(); await shot(emptyPage, "employer-zero-candidates-ar");
   const choices = { ...defaults, enabled: true, photo: true, location: true, education: true, languages: true, courses: true, certificates: true, cv: true, contactRequests: true };
-  await json(candidate.context, "me/discovery", "PUT", { revision: 0, preferences: choices });
+  const cloudProfile = (await json(candidate.context,'me/progress')).domains.find(row => row.domain === 'local-backup/debit-credit-career-profile-v1');
+  await json(candidate.context,'me/progress','PUT',{domain:'debit-credit-career-profile-v1',revision:cloudProfile.revision,data:{...cloudProfile.data,headline:'Junior Accountant',summary:'Accounting trainee developing journal posting, ledger preparation and trial balance controls through practical training. Simulation is not employment.',preferredWorkType:'flexible'}});
+  const visibilityPage=await candidate.context.newPage();await visibilityPage.goto(base+'/ar/career-profile#settings');
+  const visibilitySwitch=visibilityPage.getByRole('switch',{name:'الظهور للشركات',exact:true});await visibilitySwitch.waitFor();record('Employer visibility defaults OFF in the real candidate settings',!await visibilitySwitch.isChecked());
+  for(const [index,key] of Object.keys(defaults).entries())await visibilityPage.locator('.discovery-choices input').nth(index).setChecked(choices[key]);
+  await visibilityPage.getByRole('button',{name:'احفظ اختيارات الاكتشاف',exact:true}).click();await visibilityPage.getByText('تم حفظ موافقتك؛ يمكنك إيقاف الاكتشاف في أي وقت.',{exact:true}).waitFor();
+  assert.deepEqual((await json(candidate.context,'me/discovery')).preferences,choices);record('Real candidate UI saves independent employer visibility and allowed fields',true);await visibilityPage.close();
   record("Exactly one opt-in candidate; private users excluded", (await json(a.context, "employer/candidates")).total === 1);
   const photo = await sharp({ create: { width: 512, height: 512, channels: 3, background: "#4b9a8b" } }).jpeg().toBuffer();
   await json(candidate.context, "me/photo", "PUT", { revision: 0, image: "data:image/jpeg;base64," + photo.toString("base64") });
-  const cloudProfile = (await json(candidate.context,'me/progress')).domains.find(row => row.domain === 'local-backup/debit-credit-career-profile-v1');
-  await json(candidate.context,'me/progress','PUT',{domain:'debit-credit-career-profile-v1',revision:cloudProfile.revision,data:{...cloudProfile.data,headline:'Junior Accountant',summary:'Accounting trainee developing journal posting, ledger preparation and trial balance controls through practical training. Simulation is not employment.',preferredWorkType:'flexible'}});
   const answers = [{ action: "hold-duplicate" }, { debit: "cash", credit: "capital", amount: "100000" }, { debit: "equipment", credit: "cash", amount: "20000" }, { debit: "inventory", credit: "payable", amount: "15000" }, { debit: "receivable", credit: "revenue", amount: "12000" }, { debit: "cash", credit: "receivable", amount: "7000" }, { debit: "rent", credit: "cash", amount: "3000" }, { amount: "84000" }, { debitTotal: "127000", creditTotal: "127000" }, { action: "reclassify-equipment" }, { formula: "=SUM(C2:C9)", differenceFormula: "=C10-D10" }];
   const steps = ["document-control", "journal-capital", "journal-equipment", "journal-inventory", "journal-service", "journal-receipt", "journal-rent", "ledger-cash", "trial-balance", "classification-error", "worksheet"];
   for (let i = 0; i < steps.length; i++) { const state = await json(candidate.context, "me/student-unit"); const answer = Object.fromEntries(Object.entries(answers[i]).map(([key, value]) => [key, ["amount", "debitTotal", "creditTotal"].includes(key) ? Number(value) : value])); await json(candidate.context, "me/student-unit", "POST", { revision: state.revision, step: steps[i], answer }); record("Accepted local task " + steps[i]); }
@@ -78,7 +85,7 @@ try {
   const one = await json(a.context, "employer/candidates"), id = one.items[0].id;
   record("Current source updates photo and accepted skill projection", one.items[0].photo?.startsWith("data:image/webp") && one.items[0].skills.length > 0 && one.items[0].works.length === 4);
   record("No private email, phone, user ID, certificate image or private notes in recruiter response", !JSON.stringify(one).includes(candidate.email) && !JSON.stringify(one).includes(candidate.id) && !JSON.stringify(one).includes("+201001234567") && !JSON.stringify(one).includes("PRIVATE-QA-ID") && !JSON.stringify(one).includes("Private notes"));
-  for (const name of ["Ahmed Mohamed Test", "Ahmed", "Ahmed Mohamed", "Mohamed Test", "  AHMED MOHAMED  "]) record("Real full/partial case-insensitive name search: " + name, (await json(a.context, "employer/candidates?q=" + encodeURIComponent(name))).total === 1);
+  for (const name of ["Ahmed Mohamed Ahmed Abdallah", "Ahmed", "Ahmed Mohamed", "Mohamed Ahmed", "  AHMED MOHAMED  "]) record("Real full/partial case-insensitive name search: " + name, (await json(a.context, "employer/candidates?q=" + encodeURIComponent(name))).total === 1);
   record("Unknown name returns no fake results", (await json(a.context, "employer/candidates?q=ZZZUnknownCandidate")).total === 0);
   record("Human skill label search", (await json(a.context, "employer/candidates?q=Journal%20Entries")).total === 1);
   record("Role filter", (await json(a.context, "employer/candidates?role=junior-accountant")).total === 1);
@@ -101,8 +108,19 @@ try {
   record("Internal request delivered only to candidate inbox", (await json(candidate.context, "me/contact-requests")).items.length === 1 && (await json(b.context, "me/contact-requests")).items.length === 0);
   record("Consent and recruiter domains excluded from progress backups", !(await (await api(candidate.context, "me/progress")).text()).includes("talent/discovery") && !(await (await api(a.context, "me/progress")).text()).includes("talent/company"));
   record("Public sharing remains disabled despite discovery consent", (await json(candidate.context, "me/showcase")).token === null);
+  record('Full-name discovery with public sharing OFF returns the real account',(await json(a.context,'employer/candidates?q='+encodeURIComponent('Ahmed Mohamed Ahmed Abdallah'))).items[0].id===id);
+  const cardPage=await candidate.context.newPage();await cardPage.setViewportSize({width:1440,height:900});await cardPage.goto(base+'/ar/career-profile#work');
+  const careerCard=cardPage.getByTestId('professional-profile-card');await careerCard.locator('.profile-card-portrait img').waitFor();
+  record('Share OFF retains full card identity, links cell and QR cell',await careerCard.locator('.career-card-main').count()===1 && await careerCard.locator('.career-card-links').count()===1 && await careerCard.locator('.card-qr-off').count()===1);
+  record('Share OFF disables PNG without a fake QR',await careerCard.getByRole('button',{name:'تنزيل كارت البروفايل',exact:true}).isDisabled() && await careerCard.locator('.profile-card-body img').count()===0);
+  record('Desktop card keeps the 1600:1100 export aspect ratio',await careerCard.locator('.profile-share-card').evaluate(el=>{const b=el.getBoundingClientRect();return Math.abs(b.width/b.height-1600/1100)<.03;}));
+  await careerCard.screenshot({path:path.join(output,'professional-card-share-off-ar.png')});
+  await careerCard.getByRole('button',{name:'تفعيل المشاركة',exact:true}).click();record('Activate action opens existing sharing settings without automatic publication',await cardPage.locator('.showcase-settings').evaluate(el=>el.open) && (await json(candidate.context,'me/showcase')).token===null);
   const sharing = await json(candidate.context,'me/showcase');
   await json(candidate.context,'me/showcase','PUT',{revision:sharing.revision,action:'publish',settings:{...sharing.settings,pinned:['journal','cash-ledger','trial-balance'],public:{...sharing.settings.public,name:true,works:['journal','cash-ledger','trial-balance']}}});
+  await cardPage.reload();await careerCard.locator('.profile-card-body img').waitFor();await careerCard.screenshot({path:path.join(output,'professional-card-share-on-ar.png')});
+  record('Share ON uses a locally generated real QR', (await careerCard.locator('.profile-card-body img').getAttribute('src')).startsWith('data:image/png;base64,'));
+  const exportEvent=cardPage.waitForEvent('download');await careerCard.getByRole('button',{name:'تنزيل كارت البروفايل',exact:true}).click();const exported=await exportEvent;const exportedPath=await exported.path();const metadata=await sharp(exportedPath).metadata();record('Professional Career Pass PNG is still exactly 1600x1100',metadata.width===1600&&metadata.height===1100&&metadata.format==='png');await exported.saveAs(path.join(output,'professional-card-export.png'));await cardPage.close();
   record('QA Career ID activates only a real local public-share token',(await json(candidate.context,'me/showcase')).token !== null);
   // Many-result fixtures are created ONLY inside this isolated local test database.
   const projection = (await sql.query('SELECT data FROM cloud_progress WHERE "userId"=$1 AND domain=$2', [candidate.id, "talent/discovery"])).rows[0].data;
@@ -120,7 +138,7 @@ try {
     await page.goto(`${base}/${locale}/employer/candidates`); await page.locator('.talent-result').first().waitFor();
     record(`employer-${locale}-${width} filters stay inside navy hero without old white sidebar styling`, await page.locator('.talent-filters').evaluate(el => {const style=getComputedStyle(el);return style.backgroundColor === 'rgba(0, 0, 0, 0)' && style.position === 'static';}));
     const name = `employer-search-${locale}-${width}`; await shot(page, name); if (locale === "ar" && width === 390) await page.screenshot({ path: path.join(output, "employer-search-mobile-ar.png"), fullPage: true });
-    await page.locator('input[name=q]').fill("Ahmed Mohamed Test"); await page.locator('.talent-search-form button[type=submit]').click(); await page.locator('.talent-result').getByText("Ahmed Mohamed Test", { exact: true }).waitFor();
+    await page.locator('input[name=q]').fill("Ahmed Mohamed Ahmed Abdallah"); await page.locator('.talent-search-form button[type=submit]').click(); await page.locator('.talent-result').getByText("Ahmed Mohamed Ahmed Abdallah", { exact: true }).waitFor();
     record(name + " real candidate photo", await page.locator('.talent-result img').getAttribute('src') === one.items[0].photo);
     if (locale === "en" && width === 1440) await shot(page, "employer-search-name-result");
     await page.locator('.candidate-result-open').click(); await page.locator('.talent-preview').waitFor(); await shot(page, `employer-preview-${locale}-${width}`);
@@ -145,12 +163,14 @@ try {
   for (const locale of ["ar", "en"]) for (const width of [1920, 1440, 390]) {
     await profilePage.setViewportSize({ width, height: width === 390 ? 844 : width === 1920 ? 1080 : 900 }); await profilePage.goto(`${base}/${locale}/career-profile`); await profilePage.locator('.candidate-overview').waitFor(); await profilePage.locator('.member-portrait img').waitFor();
     await shot(profilePage, `candidate-profile-${locale}-${width}`); if (locale === "ar" && width === 390) await profilePage.screenshot({ path: path.join(output, "candidate-profile-mobile-ar.png"), fullPage: true });
+    if(width>=1440){const geometry=await profilePage.locator('.professional-hero').evaluate(el=>{const r=el.getBoundingClientRect(),p=el.querySelector('.member-portrait').getBoundingClientRect();return {width:r.width,height:r.height,photoWidth:p.width,photoHeight:p.height};});record('Bounded compact hero '+locale+' '+width,geometry.width<=1200&&geometry.height<=300&&geometry.photoWidth<=240&&geometry.photoHeight<=250);}
     record(`candidate-${locale}-${width} six professional tabs`, await profilePage.locator('.member-tabs button').count() === 6);
     record(`candidate-${locale}-${width} no old sidebar`, await profilePage.locator('.member-sidebar').count() === 0);
     record(`candidate-${locale}-${width} navy office hero`, (await profilePage.locator('.professional-hero').evaluate(el => getComputedStyle(el).backgroundImage)).includes('accounting-manual-office-v2'));
     record(`candidate-${locale}-${width} five real metrics and two development cards`, await profilePage.locator('.candidate-metrics article').count() === 5 && await profilePage.locator('.candidate-development section').count() === 2);
     record(`candidate-${locale}-${width} skill icons and evidence scores do not overlap`, await profilePage.locator('.candidate-skills').evaluate(grid => Array.from(grid.querySelectorAll('article')).every(row => {const icon=row.querySelector('svg'),score=row.querySelector('.candidate-evidence-score');if(!score)return true;const a=icon.getBoundingClientRect(),b=score.getBoundingClientRect();return a.right<=b.left || b.right<=a.left;})));
     record(`candidate-${locale}-${width} activated real Career ID QR`, await profilePage.locator('.career-pass img').count() === 1 && (await profilePage.locator('.career-pass a').getAttribute('href')).startsWith(base+`/${locale}/portfolio/`));
+    record(`candidate-${locale}-${width} Career ID content stays inside its shell`,await profilePage.locator('.career-pass').evaluate(el=>{const box=el.getBoundingClientRect();return Array.from(el.children).every(child=>{const b=child.getBoundingClientRect();return b.top>=box.top-1&&b.bottom<=box.bottom+1;});}));
     if ([1920,1440].includes(width)) await shot(profilePage, `candidate-${locale}-${width}`);
     if (locale === 'ar' && width === 390) await shot(profilePage, 'candidate-mobile-390');
     await profilePage.evaluate(() => document.documentElement.dataset.theme = "dark"); record(`candidate-${locale}-${width} dark surface`, await profilePage.locator('.member-profile').evaluate(el => getComputedStyle(el).backgroundColor === 'rgb(12, 35, 50)')); record(`candidate-${locale}-${width} dark social link contrast`, await profilePage.locator('.candidate-basics .showcase-socials a').first().evaluate(el => { const style = getComputedStyle(el); const luminance = value => { const channels = value.match(/\d+/g).slice(0, 3).map(Number).map(n => { const s = n / 255; return s <= .04045 ? s / 12.92 : ((s + .055) / 1.055) ** 2.4; }); return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722; }; const a = luminance(style.color), b = luminance(style.backgroundColor); return (Math.max(a, b) + .05) / (Math.min(a, b) + .05) >= 4.5; })); await shot(profilePage, `candidate-profile-${locale}-${width}-dark`);
@@ -170,10 +190,10 @@ try {
   }
   await isolationPage.locator('input[name=q]').fill('ZZZUnknownCandidate'); await isolationPage.locator('.talent-search-form button[type=submit]').click(); await isolationPage.getByText('No matching candidates',{exact:true}).waitFor(); await shot(isolationPage,'employer-search-empty-state');
   const personalBefore = await json(candidate.context,'me/personal');
-  await json(candidate.context,'me/personal','PUT',{revision:personalBefore.revision,details:{...personal('Ahmed Mohamed Test Updated'),location:'Cairo'}});
-  const updated = await json(a.context,'employer/candidates?q=Ahmed%20Mohamed%20Test%20Updated');
+  await json(candidate.context,'me/personal','PUT',{revision:personalBefore.revision,details:{...personal('Ahmed Mohamed Ahmed Abdallah Updated'),location:'Cairo'}});
+  const updated = await json(a.context,'employer/candidates?q='+encodeURIComponent('Ahmed Mohamed Ahmed Abdallah Updated'));
   record('Saved canonical name/location update is immediately searchable',updated.total === 1 && updated.items[0].location === 'Cairo, Egypt');
-  record('Selected preview derives same updated canonical profile',(await json(a.context,'employer/candidates/'+id)).name === 'Ahmed Mohamed Test Updated');
+  record('Selected preview derives same updated canonical profile',(await json(a.context,'employer/candidates/'+id)).name === 'Ahmed Mohamed Ahmed Abdallah Updated');
   const photoBefore = await json(candidate.context,'me/photo');
   await json(candidate.context,'me/photo','PUT',{revision:photoBefore.revision,image:'data:image/jpeg;base64,'+photoB.toString('base64')});
   record('Replacing canonical photo immediately refreshes search projection',(await json(a.context,'employer/candidates?q=Ahmed')).items[0].photo !== one.items[0].photo);
@@ -193,7 +213,7 @@ try {
   record('Legacy canonical Arabic name query preserves stored spelling',(await json(a.context,'employer/candidates?q='+encodeURIComponent('سلمى'))).items[0].name === 'سلمى محاسبة');
   let consent = await json(candidate.context, "me/discovery");
   await json(candidate.context, "me/discovery", "PUT", { revision: consent.revision, preferences: { ...choices, enabled: false } });
-  record("Revocation removes candidate from search", (await json(a.context, "employer/candidates?q=Ahmed%20Mohamed%20Test")).total === 0);
+  record("Revocation removes candidate from search", (await json(a.context, "employer/candidates?q="+encodeURIComponent('Ahmed Mohamed Ahmed Abdallah'))).total === 0);
   record("Revocation blocks direct preview and CV", (await api(a.context, "employer/candidates/" + id)).status() === 404 && (await api(a.context, "employer/candidates/" + id + "/cv")).status() === 404);
   record("Revocation removes saved candidate from shortlist", (await json(a.context, "employer/shortlist")).items.length === 0);
   record("Private candidate never exposed", (await api(a.context, "employer/candidates/" + privateUser.id)).status() === 404);

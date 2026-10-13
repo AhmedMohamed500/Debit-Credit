@@ -19,6 +19,14 @@ import {
   Languages,
   Download,
   Share2,
+  ChartNoAxesColumnIncreasing,
+  TrendingUp,
+  Trophy,
+  BookOpen,
+  Landmark,
+  Calculator,
+  Table2,
+  Link2,
 } from "lucide-react";
 import { ProfilePhoto } from "./profile-photo";
 import { Availability, SocialLinks } from "./showcase";
@@ -29,9 +37,27 @@ import type {
   SkillResult,
 } from "@/lib/career/model";
 import type { Portfolio } from "@/lib/career/portfolio";
-import type { Showcase } from "@/lib/career/showcase";
+import { safeSocial, type Showcase, type WorkId } from "@/lib/career/showcase";
 import type { Locale } from "@/types";
 import "@/app/talent-platform.css";
+
+const skillIcons = {
+  "accounting-fundamentals": Calculator,
+  "account-classification": Table2,
+  "debit-credit": ChartNoAxesColumnIncreasing,
+  "journal-entries": BookOpen,
+  "ledger-posting": BookOpen,
+  "trial-balance": Table2,
+  "bank-reconciliation": Landmark,
+  "cash-treasury": Landmark,
+  "financial-statements": TrendingUp,
+};
+const workThumbnails: Record<WorkId, string> = {
+  journal: "/game/first-shift-desk-v2.png",
+  "cash-ledger": "/game/accounting-manual-office-v2.png",
+  "trial-balance": "/game/accounting-manual-book.png",
+  worksheet: "/game/first-shift-desk-v2.png",
+};
 
 export function CareerPass({
   data,
@@ -224,45 +250,49 @@ export function CandidateSkills({
         )}
       </header>
       <div className="candidate-skills">
-        {supported.slice(0, limit).map((row) => (
-          <article key={row.skillId}>
-            <FileText size={20} aria-hidden="true" />
-            <b>{skillCatalog[row.skillId].label[locale]}</b>
-            <small>
-              {row.status === "verified"
-                ? ar
-                  ? "موثقة حسب قواعد الدليل"
-                  : "Verified under evidence rules"
-                : row.status === "demonstrated"
+        {supported.slice(0, limit).map((row) => {
+          const Icon =
+            skillIcons[row.skillId as keyof typeof skillIcons] || FileText;
+          return (
+            <article key={row.skillId}>
+              <Icon size={20} aria-hidden="true" />
+              <b>{skillCatalog[row.skillId].label[locale]}</b>
+              <small>
+                {row.status === "verified"
                   ? ar
-                    ? "تم إثباتها"
-                    : "Demonstrated"
-                  : ar
-                    ? "تم التدريب"
-                    : "Practiced"}{" "}
-              · {row.evidenceCount} {ar ? "دليل" : "evidence"}
-            </small>
-            {row.score !== null && (
-              <>
-                <progress
-                  value={row.score}
-                  max={100}
-                  aria-label={skillCatalog[row.skillId].label[locale]}
-                />
-                <span
-                  className="candidate-evidence-score"
-                  title={
-                    ar
-                      ? "تقييم الدليل التدريبي، ليس ملاءمة للتوظيف"
-                      : "Training evidence score, not hiring match"
-                  }
-                >
-                  {row.score}%
-                </span>
-              </>
-            )}
-          </article>
-        ))}
+                    ? "موثقة حسب قواعد الدليل"
+                    : "Verified under evidence rules"
+                  : row.status === "demonstrated"
+                    ? ar
+                      ? "تم إثباتها"
+                      : "Demonstrated"
+                    : ar
+                      ? "تم التدريب"
+                      : "Practiced"}{" "}
+                · {row.evidenceCount} {ar ? "دليل" : "evidence"}
+              </small>
+              {row.score !== null && (
+                <>
+                  <progress
+                    value={row.score}
+                    max={100}
+                    aria-label={skillCatalog[row.skillId].label[locale]}
+                  />
+                  <span
+                    className="candidate-evidence-score"
+                    title={
+                      ar
+                        ? "تقييم الدليل التدريبي، ليس ملاءمة للتوظيف"
+                        : "Training evidence score, not hiring match"
+                    }
+                  >
+                    {row.score}%
+                  </span>
+                </>
+              )}
+            </article>
+          );
+        })}
       </div>
       {!supported.length && (
         <p>
@@ -302,6 +332,23 @@ export function ProfessionalOverview({
     gaps = Object.keys(roleCatalog[profile.targetRoleId].skills)
       .filter((id) => !supported.some((row) => row.skillId === id))
       .slice(0, 3);
+  const required = Object.keys(roleCatalog[profile.targetRoleId].skills);
+  const covered = required.filter((id) =>
+    supported.some((row) => row.skillId === id),
+  ).length;
+  const socials = {
+    linkedin: "",
+    github: "",
+    facebook: "",
+    instagram: "",
+    website: "",
+    ...showcase?.settings.socials,
+  };
+  if (!socials.linkedin && safeSocial("linkedin", profile.linkedIn))
+    socials.linkedin = profile.linkedIn;
+  if (!socials.website && safeSocial("website", profile.portfolio))
+    socials.website = profile.portfolio;
+  const hasSocials = Object.values(socials).some(Boolean);
   return (
     <div className="candidate-overview">
       <aside className="candidate-basics">
@@ -322,7 +369,7 @@ export function ProfessionalOverview({
             <GraduationCap size={18} />
             {ar ? "المعلومات الأساسية" : "Basic information"}
           </h2>
-          <dl className="member-details">
+          <dl className="member-details candidate-detail-list">
             {[
               [
                 ar ? "التعليم" : "Education",
@@ -337,7 +384,17 @@ export function ProfessionalOverview({
                 ar ? "المكان" : "Location",
                 [profile.location, profile.country].filter(Boolean).join(", "),
               ],
-              [ar ? "نوع العمل" : "Work type", profile.preferredWorkType],
+              [
+                ar ? "نوع العمل" : "Work type",
+                ar
+                  ? {
+                      onsite: "حضوري",
+                      hybrid: "هجين",
+                      remote: "عن بُعد",
+                      flexible: "مرن",
+                    }[profile.preferredWorkType]
+                  : profile.preferredWorkType,
+              ],
               [
                 ar ? "التوفر" : "Availability",
                 showcase?.settings.availability.status === "work"
@@ -374,12 +431,21 @@ export function ProfessionalOverview({
             })}
           </dl>
         </section>
-        {showcase && (
-          <section className="member-card">
-            <h2>{ar ? "روابط مهنية" : "Professional links"}</h2>
-            <SocialLinks socials={showcase.settings.socials} details />
-          </section>
-        )}
+        <section className="member-card">
+          <h2>
+            <Link2 size={18} />
+            {ar ? "روابط مهنية" : "Professional links"}
+          </h2>
+          {hasSocials ? (
+            <SocialLinks socials={socials} details />
+          ) : (
+            <p className="candidate-empty-note">
+              {ar
+                ? "أضف روابطك من إعدادات التواصل والمشاركة."
+                : "Add your links in contact and sharing settings."}
+            </p>
+          )}
+        </section>
       </aside>
       <div className="candidate-main">
         <div className="candidate-metrics">
@@ -387,45 +453,64 @@ export function ProfessionalOverview({
             [
               supported.length,
               ar ? "مهارات مدعومة" : "Supported skills",
-              Shield,
+              ChartNoAxesColumnIncreasing,
             ],
             [
               portfolio
                 ? portfolio.courses.filter((row) => row.status === "completed")
                     .length
                 : "—",
-              ar
-                ? "كورسات مكتملة · مضافة منك"
-                : "Completed courses · self-reported",
-              GraduationCap,
+              ar ? "كورسات مكتملة" : "Completed courses",
+              TrendingUp,
             ],
             [
               portfolio?.certificates.length ?? "—",
-              ar
-                ? "شهادات مضافة · غير موثقة"
-                : "Certificates added · self-reported",
+              ar ? "شهادات مضافة" : "Certificates added",
               Award,
             ],
             [
               showcase?.works.length ??
                 new Set(evidence.map((row) => row.activityId)).size,
               ar ? "أعمال تدريبية" : "Practical projects",
-              FileText,
+              Trophy,
             ],
             [
               `${completeness}%`,
-              ar
-                ? "اكتمال البيانات · لا يقيس التأهيل"
-                : "Profile complete · not readiness",
+              ar ? "اكتمال البروفايل" : "Profile strength",
               Target,
             ],
-          ].map(([count, label, Icon]) => {
+          ].map(([count, label, Icon], index) => {
             const MetricIcon = Icon as typeof Shield;
             return (
-              <article key={String(label)}>
-                <MetricIcon size={22} />
+              <article
+                key={String(label)}
+                data-metric={index}
+                title={
+                  index === 1 || index === 2
+                    ? ar
+                      ? "مضاف منك، ليس توثيقًا من المنصة"
+                      : "Self-reported, not platform verified"
+                    : index === 4
+                      ? ar
+                        ? "اكتمال البيانات · لا يقيس التأهيل"
+                        : "Profile complete · not readiness"
+                      : undefined
+                }
+              >
+                {index !== 4 && <MetricIcon size={22} aria-hidden="true" />}
                 <b>{String(count)}</b>
                 <small>{String(label)}</small>
+                {index === 4 && (
+                  <progress
+                    value={completeness}
+                    max={100}
+                    aria-label={
+                      ar
+                        ? "اكتمال البيانات، ليس التأهيل"
+                        : "Profile completion, not readiness"
+                    }
+                  />
+                )}
               </article>
             );
           })}
@@ -437,6 +522,28 @@ export function ProfessionalOverview({
               {ar ? "الهدف المهني" : "Career target"}
             </h2>
             <b>{roleCatalog[profile.targetRoleId].label[locale]}</b>
+            <div
+              className="candidate-target-coverage"
+              title={
+                ar
+                  ? "تغطية المهارات بالممارسة، ليست تقييمًا للتأهيل"
+                  : "Practiced skill coverage, not job readiness"
+              }
+            >
+              <progress
+                value={covered}
+                max={required.length}
+                aria-label={
+                  ar
+                    ? "تغطية مهارات الهدف بالممارسة"
+                    : "Target skill practice coverage"
+                }
+              />
+              <small>
+                {covered}/{required.length}{" "}
+                {ar ? "مهارات مُمارسة" : "skills practiced"}
+              </small>
+            </div>
             <button onClick={() => open("progress")}>
               {ar ? "عرض خطة التعلم" : "See learning plan"}{" "}
               <ArrowRight size={14} />
@@ -496,26 +603,29 @@ export function ProfessionalOverview({
                 <article key={work.id}>
                   <Image
                     className="work-thumbnail"
-                    src="/game/first-shift-desk-v2.png"
-                    width={64}
-                    height={68}
+                    src={workThumbnails[work.id]}
+                    width={256}
+                    height={320}
                     alt=""
                   />
                   <div>
                     <h3>{work.title[locale]}</h3>
                     <p>{work.summary[locale]}</p>
-                    <span className="work-skill">{work.skill[locale]}</span>
-                    <small>
-                      {ar
-                        ? "محاكاة تدريبية · مهمة مقبولة"
-                        : "Training simulation · accepted task"}
+                    <small className="work-simulation-label">
+                      {ar ? "محاكاة تدريبية" : "Training simulation"}
                     </small>
-                    <button onClick={() => open("work")}>
-                      <ArrowRight size={14} />
-                      <span className="sr-only">
-                        {ar ? "عرض الدليل" : "View evidence"}
+                    <div className="candidate-work-footer">
+                      <span className="candidate-accepted">
+                        <CheckCircle2 size={11} />
+                        {ar ? "مقبولة" : "Accepted"}
                       </span>
-                    </button>
+                      <button onClick={() => open("work")}>
+                        <ArrowRight size={14} />
+                        <span className="sr-only">
+                          {ar ? "عرض الدليل" : "View evidence"}
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </article>
               ))}
@@ -530,29 +640,38 @@ export function ProfessionalOverview({
         </section>
         <section className="member-card">
           <header>
-            <h2>{ar ? "الشهادات" : "Certificates"}</h2>
+            <h2>
+              <GraduationCap size={18} />
+              {ar ? "الشهادات" : "Certificates"}
+            </h2>
             <button onClick={() => open("certifications")}>
               {ar ? "عرض وإدارة" : "View & manage"}
             </button>
           </header>
           <div className="candidate-certificates">
             {portfolio?.certificates.slice(0, 3).map((row) => (
-              <article className="candidate-certificate-highlight" key={row.id}>
+              <article
+                className="candidate-certificate-highlight"
+                key={row.id}
+                title={
+                  ar ? "مضافة منك، غير موثقة" : "Self-reported, not verified"
+                }
+              >
                 <Award size={23} />
                 <div>
                   <b>{row.title}</b>
+                  <small>{row.issuer}</small>
                   <small>
-                    {row.issuer} · {row.date} ·{" "}
-                    {ar
-                      ? "مضافة منك، غير موثقة"
-                      : "Self-reported, not verified"}
+                    {row.date} · {ar ? "مضافة منك" : "Self-reported"}
                   </small>
                 </div>
               </article>
             ))}
           </div>
           {!portfolio?.certificates.length && (
-            <p>{ar ? "لم تضف شهادات بعد." : "No certificates added yet."}</p>
+            <p className="candidate-empty-note">
+              {ar ? "لم تضف شهادات بعد." : "No certificates added yet."}
+            </p>
           )}
         </section>
       </div>

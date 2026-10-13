@@ -1,0 +1,539 @@
+/* The supplied two-panel reference uses a fixed physical reading order.
+   Keep localized labels, real evidence and consent unchanged. No hero rules. */
+.member-profile .reference-overview,
+.talent-platform .reference-talent-panels {
+  font-family: Arial, Tahoma, sans-serif;
+  line-height: 1.4;
+}
+.member-profile[dir="rtl"] .reference-overview,
+.talent-platform[dir="rtl"] .reference-talent-panels {
+  font-family: FoundationCairo, Tahoma, Arial, sans-serif;
+}
+.member-profile[dir="rtl"]
+  .reference-overview
+  .candidate-detail-list
+  :is(dt, dd),
+.member-profile[dir="rtl"] .reference-overview .candidate-skills b,
+.talent-platform[dir="rtl"] .reference-talent-panels .preview-info small {
+  font-size: 11px;
+}
+.member-profile[dir] .reference-overview > :is(aside, div),
+.member-profile[dir] .reference-overview .candidate-development > section,
+.talent-platform[dir] .reference-talent-panels > section {
+  direction: ltr;
+  text-align: left;
+}
+.reference-overview :is(.candidate-main, .candidate-basics) .member-card {
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 9px;
+}
+.reference-overview :is(.candidate-main, .candidate-basics) h2 {
+  font-size: 13px;
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+.reference-overview .candidate-basics p {
+  font-size: 11px;
+  line-height: 1.45;
+  margin-bottom: 0;
+}
+.reference-overview .candidate-detail-list {
+  gap: 5px;
+}
+.reference-overview .candidate-detail-list > div {
+  min-height: 32px;
+  padding-left: 30px;
+}
+.reference-overview .candidate-detail-list :is(dt, dd) {
+  text-align: left;
+  font-size: 10px;
+}
+.reference-overview .candidate-detail-list dt svg {
+  width: 24px;
+  height: 26px;
+  padding: 5px;
+}
+.reference-overview .showcase-socials a {
+  direction: ltr;
+  padding: 2px 0;
+  gap: 8px;
+}
+.reference-overview .candidate-metrics {
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.reference-overview .candidate-metrics article {
+  min-height: 82px;
+  padding: 8px 5px;
+}
+.reference-overview .candidate-metrics svg {
+  width: 19px;
+  height: 19px;
+}
+.reference-overview .candidate-metrics b {
+  font-size: 22px;
+  line-height: 1.25;
+}
+.reference-overview .candidate-metrics small {
+  font-size: 10px;
+  line-height: 1.3;
+}
+.reference-overview .candidate-development {
+  gap: 8px;
+}
+.reference-overview .candidate-development .member-card {
+  min-height: 106px;
+}
+.reference-overview .candidate-target-coverage {
+  direction: ltr;
+}
+.reference-overview .candidate-target-coverage progress {
+  width: 65%;
+}
+.reference-overview .candidate-skills {
+  direction: ltr;
+  gap: 6px;
+}
+.reference-overview .candidate-skills article {
+  padding: 7px 7px 7px 35px;
+  min-height: 48px;
+}
+.reference-overview .candidate-skills article > svg {
+  left: 5px;
+  right: auto;
+  top: 9px;
+}
+.reference-overview .candidate-skills b {
+  text-align: left;
+  padding-right: 30px;
+  padding-left: 0;
+}
+.reference-overview .candidate-skills .candidate-evidence-score {
+  right: 6px;
+  left: auto;
+  top: 7px;
+}
+.reference-overview .candidate-skills progress {
+  margin-top: 7px;
+  direction: ltr;
+}
+/* Keep the detailed evidence caption accessible without crowding the six-tile overview. */
+.reference-overview .candidate-skills small {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.reference-overview .candidate-work-grid {
+  direction: ltr;
+}
+.reference-overview .candidate-work-grid .work-thumbnail {
+  width: 46px;
+  height: 66px;
+}
+.reference-overview .candidate-work-grid p {
+  -webkit-line-clamp: 2;
+  font-size: 9px;
+}
+.reference-overview .candidate-certificates {
+  direction: ltr;
+}
+.reference-overview .candidate-certificate-highlight small {
+  display: block;
+  font-size: 9px;
+}
+
+.talent-platform .reference-talent-panels {
+  max-width: 1200px;
+  width: calc(100% - 32px);
+  margin: 0 auto;
+  gap: 12px;
+  grid-template-columns: minmax(280px, 36%) minmax(0, 1fr);
+  align-items: start;
+}
+.talent-platform .reference-talent-panels.full-profile {
+  grid-template-columns: minmax(0, 1fr);
+}
+.reference-talent-panels :is(.talent-list, .talent-preview) {
+  padding: 12px;
+  border-radius: 9px;
+}
+.reference-talent-panels .talent-list > header {
+  margin-bottom: 8px;
+}
+.reference-talent-panels .talent-list h2 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+.reference-talent-panels .talent-list > header small {
+  font-size: 9px;
+  padding: 5px 8px;
+  border: 1px solid var(--tp-line);
+  border-radius: 5px;
+  background: var(--tp-soft);
+}
+.talent-platform .reference-talent-panels .talent-result {
+  direction: ltr;
+  padding: 8px;
+  min-height: 90px;
+  margin-bottom: 8px;
+  gap: 7px;
+  align-items: center;
+}
+.reference-talent-panels .candidate-result-open {
+  align-items: center;
+  gap: 8px;
+}
+.reference-talent-panels .candidate-result-open > div {
+  flex: 1;
+  min-width: 0;
+}
+.talent-platform .reference-talent-panels .talent-result h3 {
+  font-size: 12px;
+  line-height: 1.3;
+  padding-right: 68px;
+  padding-left: 0;
+  text-align: left;
+}
+.reference-talent-panels .talent-result p {
+  font-size: 10px;
+  margin: 2px 0;
+}
+.reference-talent-panels .talent-result small {
+  font-size: 9px;
+}
+.reference-talent-panels .talent-result .talent-portrait {
+  width: 52px;
+  height: 60px;
+  border-radius: 5px;
+}
+.reference-talent-panels .talent-result .talent-match {
+  left: auto;
+  right: 8px;
+  top: 8px;
+  font-size: 9px;
+  padding: 3px 5px;
+}
+.reference-talent-panels .talent-chips {
+  margin-top: 6px;
+  gap: 4px;
+}
+.reference-talent-panels .talent-chips span {
+  font-size: 9px;
+  padding: 2px 5px;
+  background: #edf6ff;
+  border: 0;
+  color: #0877cd;
+}
+.talent-platform .reference-talent-panels .preview-heading {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr) auto;
+  gap: 8px 10px;
+  align-items: center;
+}
+.reference-talent-panels .preview-heading > .talent-portrait {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 70px;
+  height: 76px;
+  border-radius: 5px;
+}
+.reference-talent-panels .preview-heading > div:not(.talent-portrait) {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+.talent-platform .reference-talent-panels .preview-heading h2 {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: left;
+}
+.reference-talent-panels .preview-heading p {
+  font-size: 11px;
+  line-height: 1.3;
+}
+.reference-talent-panels .preview-heading small {
+  font-size: 10px;
+}
+.reference-talent-panels .preview-heading .preview-location {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.reference-talent-panels .preview-heading .talent-match {
+  margin-top: 5px;
+  font-size: 10px;
+  padding: 3px 6px;
+}
+.reference-talent-panels .preview-heading .preview-action-menu {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  align-self: start;
+  background: var(--tp-soft);
+  position: relative;
+  border-radius: 5px;
+}
+.preview-action-menu summary {
+  list-style: none;
+  display: flex;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.preview-action-menu summary::-webkit-details-marker {
+  display: none;
+}
+.preview-action-menu summary:focus-visible {
+  outline: 3px solid #008bd4;
+  outline-offset: 2px;
+}
+.preview-action-menu[open] .preview-close {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 2;
+  width: max-content;
+  padding: 8px 10px !important;
+  background: var(--tp-surface);
+  box-shadow: 0 3px 12px #123c4733;
+  border: 1px solid var(--tp-line) !important;
+  font-size: 11px;
+}
+.talent-platform .reference-talent-panels .preview-heading .preview-shortlist {
+  grid-column: 3;
+  grid-row: 2;
+  font-size: 10px;
+  padding: 7px 9px;
+  min-height: 30px;
+}
+.reference-talent-panels .preview-tabs {
+  margin-top: 10px;
+  direction: ltr;
+}
+.reference-talent-panels .preview-tabs button {
+  padding: 8px 10px;
+  font-size: 11px;
+}
+.reference-talent-panels .preview-body {
+  font-size: 11px;
+  line-height: 1.4;
+}
+.reference-talent-panels .preview-section {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--tp-line);
+}
+.talent-platform .reference-talent-panels .preview-section h3 {
+  font-size: 13px;
+  margin: 0 0 7px;
+  line-height: 1.3;
+}
+.reference-talent-panels .preview-section > p {
+  font-size: 11px;
+  line-height: 1.4;
+  margin: 0;
+  text-align: left;
+}
+.reference-talent-panels .preview-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+.reference-talent-panels .preview-section-heading h3 {
+  margin: 0 !important;
+}
+.reference-talent-panels .preview-section-heading button {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #0075ed;
+  font-size: 10px;
+}
+.reference-talent-panels .preview-info {
+  padding: 0;
+  gap: 10px 8px;
+  border: 0;
+  direction: ltr;
+}
+.reference-talent-panels .preview-info article {
+  gap: 7px;
+  min-width: 0;
+}
+.reference-talent-panels .preview-info article > div {
+  min-width: 0;
+}
+.reference-talent-panels .preview-info b {
+  font-size: 9px;
+}
+.reference-talent-panels .preview-info small {
+  font-size: 10px;
+  line-height: 1.35;
+}
+.reference-talent-panels .preview-skill {
+  grid-template-columns: minmax(100px, 1fr) minmax(0, 1.4fr) 32px;
+  gap: 8px;
+  margin: 7px 0;
+  direction: ltr;
+  font-size: 11px;
+}
+.reference-talent-panels .preview-practice-status {
+  grid-column: 2 / -1;
+  color: var(--tp-muted);
+  font-size: 10px;
+}
+.reference-talent-panels .preview-highlight {
+  padding: 7px;
+  gap: 8px;
+  background: var(--tp-surface);
+}
+.reference-talent-panels .preview-highlight img {
+  width: 66px;
+  height: 62px;
+}
+.reference-talent-panels
+  .preview-highlight
+  > div:not(.preview-project-actions) {
+  min-width: 0;
+}
+.reference-talent-panels .preview-highlight b {
+  font-size: 11px;
+}
+.reference-talent-panels .preview-highlight p {
+  font-size: 10px;
+  line-height: 1.35;
+  margin: 3px 0 0;
+}
+.reference-talent-panels .preview-project-actions {
+  flex: 0 0 auto;
+  display: grid;
+  justify-items: end;
+  gap: 7px;
+}
+.reference-talent-panels .preview-project-actions button {
+  padding: 5px 7px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: #e5f3ff;
+  border: 0;
+  color: #0070ed;
+}
+.reference-talent-panels .preview-accepted {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9px;
+  border-radius: 6px;
+  color: #00795a;
+  background: #d8f9ef;
+  padding: 3px 5px;
+}
+.reference-talent-panels .preview-certificates {
+  gap: 6px;
+}
+.reference-talent-panels .preview-certificate {
+  padding: 6px;
+  gap: 5px;
+}
+.reference-talent-panels .preview-certificate svg {
+  background: #e5f9ee;
+  color: #009d6b;
+  border-radius: 4px;
+  padding: 3px;
+}
+.reference-talent-panels .preview-certificate:nth-child(2) svg {
+  color: #0878eb;
+  background: #edf5ff;
+}
+.reference-talent-panels .preview-certificate:nth-child(3) svg {
+  color: #f33860;
+  background: #fff0f3;
+}
+.reference-talent-panels .preview-certificate :is(b, small) {
+  font-size: 9px;
+  line-height: 1.35;
+}
+.reference-talent-panels .preview-footer {
+  margin-top: 0;
+  border-top: 0;
+  font-size: 10px;
+}
+
+@media (max-width: 1100px) {
+  .talent-platform .reference-talent-panels {
+    grid-template-columns: minmax(250px, 35%) minmax(0, 1fr);
+  }
+  .reference-talent-panels .preview-heading h2 {
+    font-size: 15px;
+  }
+  .talent-platform
+    .reference-talent-panels
+    .preview-heading
+    .preview-shortlist {
+    max-width: 110px;
+  }
+}
+@media (max-width: 760px) {
+  .talent-platform .reference-talent-panels {
+    display: block;
+    width: calc(100% - 20px);
+    margin: 10px;
+  }
+  .reference-overview .candidate-work-grid .work-thumbnail {
+    width: 52px;
+    height: 72px;
+  }
+  .talent-platform .reference-talent-panels .preview-heading {
+    grid-template-columns: 62px minmax(0, 1fr) 24px;
+  }
+  .reference-talent-panels .preview-heading > .talent-portrait {
+    width: 62px;
+    height: 70px;
+    grid-row: 1;
+  }
+  .reference-talent-panels .preview-heading > div:not(.talent-portrait) {
+    grid-row: 1;
+  }
+  .talent-platform
+    .reference-talent-panels
+    .preview-heading
+    .preview-shortlist {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    justify-self: end;
+    max-width: none;
+  }
+  .reference-talent-panels .preview-info {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .reference-talent-panels .preview-highlight {
+    flex-wrap: wrap;
+  }
+  .reference-talent-panels .preview-project-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .reference-talent-panels .preview-certificates {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .reference-talent-panels .talent-result {
+    transition:
+      border-color 0.15s,
+      background-color 0.15s;
+  }
+}

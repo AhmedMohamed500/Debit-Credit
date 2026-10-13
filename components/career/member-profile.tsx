@@ -60,6 +60,7 @@ import { authClient } from "@/lib/auth/client";
 import { useStudentJourney } from "@/components/student/student-journey";
 import "@/app/member-profile.css";
 import "@/app/reference-implementation.css";
+import "@/app/reference-profile-panels.css";
 
 type Tab =
   | "profile"

@@ -83,7 +83,7 @@ describe("Member dashboard", () => {
         await screen.findByRole("heading", { name: "Alice Accountant" }),
       ).toBeInTheDocument();
       expect(
-        screen.getByText(/Profile complete · not readiness/),
+        screen.getByTitle(/Profile complete · not readiness/),
       ).toBeInTheDocument();
       expect(
         screen.getByText(/Complete an accounting task/),

@@ -9,7 +9,7 @@ import EmbeddedPostgres from "embedded-postgres";
 import { Client } from "pg";
 import { chromium } from "playwright-core";
 import sharp from "sharp";
-const base = "http://localhost:3118", output = path.resolve(process.argv.includes('--hero-reference') ? "artifacts/hero-reference/qa" : "artifacts/final-career-employer-fix"), temporary = path.resolve("artifacts/talent-platform/tmp"), results = [], errors = [];
+const base = "http://localhost:3118", output = path.resolve(process.argv.includes('--overview-reference') ? "artifacts/overview-reference/qa" : process.argv.includes('--hero-reference') ? "artifacts/hero-reference/qa" : "artifacts/final-career-employer-fix"), temporary = path.resolve("artifacts/talent-platform/tmp"), results = [], errors = [];
 let database, browser, app, sql;
 function record(name, condition = true) { assert.ok(condition, name); results.push(name); console.log("PASS", name); }
 function done(child) { return new Promise((resolve, reject) => { child.once("error", reject); child.once("exit", code => code === 0 ? resolve() : reject(new Error("QA process failed"))); }); }
@@ -175,6 +175,13 @@ try {
     record(`candidate-${locale}-${width} no old sidebar`, await profilePage.locator('.member-sidebar').count() === 0);
     record(`candidate-${locale}-${width} approved office hero`, (await profilePage.locator('.professional-hero').evaluate(el => getComputedStyle(el).backgroundImage)).includes('candidate-reference-office-v1'));
     record(`candidate-${locale}-${width} five real metrics and two development cards`, await profilePage.locator('.candidate-metrics article').count() === 5 && await profilePage.locator('.candidate-development section').count() === 2);
+    record(`candidate-${locale}-${width} canonical social link in compact sidebar`, await profilePage.locator('.candidate-basics a[aria-label="LinkedIn"]').getAttribute('href') === 'https://www.linkedin.com/in/qa-fixture');
+    record(`candidate-${locale}-${width} six compact information rows`, await profilePage.locator('.candidate-detail-list > div').count() === 6);
+    if(width>=1440) {
+      record(`candidate-${locale}-${width} reference physical metric and development order`, await profilePage.locator('.candidate-overview').evaluate(el=>{const metrics=Array.from(el.querySelectorAll('.candidate-metrics article')).map(row=>row.getBoundingClientRect().x);return metrics.every((x,i)=>i===0||x>metrics[i-1])&&el.querySelector('.candidate-target').getBoundingClientRect().x<el.querySelector('.candidate-next').getBoundingClientRect().x;}));
+      record(`candidate-${locale}-${width} information rows are compact`, await profilePage.locator('.candidate-detail-list').evaluate(el=>el.getBoundingClientRect().height<280));
+      await profilePage.locator('.candidate-overview').screenshot({path:path.join(output,`overview-${locale}-${width}.png`)});
+    }
     record(`candidate-${locale}-${width} skill icons and evidence scores do not overlap`, await profilePage.locator('.candidate-skills').evaluate(grid => Array.from(grid.querySelectorAll('article')).every(row => {const icon=row.querySelector('svg'),score=row.querySelector('.candidate-evidence-score');if(!score)return true;const a=icon.getBoundingClientRect(),b=score.getBoundingClientRect();return a.right<=b.left || b.right<=a.left;})));
     record(`candidate-${locale}-${width} activated real Career ID QR`, await profilePage.locator('.career-pass img').count() === 1 && (await profilePage.locator('.career-pass a').getAttribute('href')).startsWith(base+`/${locale}/portfolio/`));
     record(`candidate-${locale}-${width} Career ID content stays inside its shell`,await profilePage.locator('.career-pass').evaluate(el=>{const box=el.getBoundingClientRect();return Array.from(el.children).every(child=>{const b=child.getBoundingClientRect();return b.top>=box.top-1&&b.bottom<=box.bottom+1;});}));

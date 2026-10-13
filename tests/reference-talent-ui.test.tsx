@@ -153,6 +153,55 @@ it("automatically loads the first real eligible candidate on desktop without inv
   );
   expect(container.querySelector(".talent-preview")).toHaveTextContent(a.name);
   expect(fixture.request).toHaveBeenCalledWith("employer/candidates/a");
+  fireEvent.click(container.querySelector(".preview-action-menu summary")!);
   fireEvent.click(container.querySelector(".preview-close")!);
   expect(container.querySelector(".talent-preview")).toBeNull();
+});
+it("groups the reference preview, prioritizes scored evidence, and connects View all", async () => {
+  const detail: Candidate = {
+    ...a,
+    skills: [
+      {
+        skillId: "accounting-fundamentals",
+        status: "practiced",
+        score: null,
+        evidenceCount: 1,
+      },
+      {
+        skillId: "debit-credit",
+        status: "demonstrated",
+        score: 84,
+        evidenceCount: 3,
+      },
+      {
+        skillId: "account-classification",
+        status: "demonstrated",
+        score: 91,
+        evidenceCount: 4,
+      },
+    ],
+  };
+  const handler = fixture.request.getMockImplementation()!;
+  fixture.request.mockImplementation((route: string, ...args: unknown[]) =>
+    route === "employer/candidates/a"
+      ? Promise.resolve(detail)
+      : handler(route, ...args),
+  );
+  const { container } = render(<TalentSearch locale="ar" />);
+  await screen.findByRole("heading", { name: "المرشحون (2)" });
+  fireEvent.click(container.querySelector(".candidate-result-open")!);
+  await waitFor(() =>
+    expect(container.querySelectorAll(".preview-section")).toHaveLength(5),
+  );
+  expect(container.querySelector(".reference-talent-panels")).toHaveAttribute(
+    "dir",
+    "ltr",
+  );
+  expect(container.querySelector(".preview-skill")).toHaveTextContent("84%");
+  expect(container.querySelectorAll(".preview-skill progress")).toHaveLength(2);
+  fireEvent.click(container.querySelector(".preview-section-heading button")!);
+  expect(container.querySelectorAll(".preview-line")).toHaveLength(3);
+  expect(container.querySelector(".talent-preview")).not.toHaveTextContent(
+    "78% Match",
+  );
 });

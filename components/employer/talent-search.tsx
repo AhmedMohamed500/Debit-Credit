@@ -11,7 +11,7 @@ import {
   MapPin,
   Search,
   Shield,
-  X,
+  CheckCircle2,
   GraduationCap,
   Award,
   Calendar,
@@ -42,6 +42,7 @@ import { SharedCvView } from "@/components/career/shared-cv-view";
 import "@/app/talent-platform.css";
 import "@/app/employer-talent.css";
 import "@/app/reference-implementation.css";
+import "@/app/reference-profile-panels.css";
 
 type Filters = {
   q: string;
@@ -526,7 +527,8 @@ export function TalentSearch({
             {loading && say("Searching…", "جارٍ البحث…")}
           </div>
           <div
-            className={`talent-split ${candidate ? "has-selection" : ""} ${mode === "candidate" ? "full-profile" : ""}`}
+            className={`talent-split reference-talent-panels ${candidate ? "has-selection" : ""} ${mode === "candidate" ? "full-profile" : ""}`}
+            dir="ltr"
           >
             {mode !== "candidate" && (
               <section className="talent-list">
@@ -534,12 +536,7 @@ export function TalentSearch({
                   <h2>
                     {say("Candidates", "المرشحون")} ({list?.total ?? "—"})
                   </h2>
-                  <small>
-                    {say(
-                      "Recently updated · no invented match score",
-                      "الأحدث تحديثًا · بدون تقييم ملاءمة مختلق",
-                    )}
-                  </small>
+                  <small>{say("Recently updated", "الأحدث تحديثًا")}</small>
                 </header>
                 {list?.items.map((value) => {
                   const overlap = requirementOverlap(
@@ -558,7 +555,7 @@ export function TalentSearch({
                       >
                         <CandidatePortrait candidate={value} />
                         <div>
-                          <h3>{value.name}</h3>
+                          <h3 dir="auto">{value.name}</h3>
                           <p>
                             {value.currentRole ||
                               roleCatalog[value.role].label[locale]}
@@ -570,11 +567,14 @@ export function TalentSearch({
                             </small>
                           )}
                           <div className="talent-chips">
-                            {value.skills.slice(0, 3).map((skill) => (
+                            {value.skills.slice(0, 2).map((skill) => (
                               <span key={skill.skillId}>
                                 {skillCatalog[skill.skillId].label[locale]}
                               </span>
                             ))}
+                            {value.skills.length > 2 && (
+                              <span>+{value.skills.length - 2}</span>
+                            )}
                           </div>
                           <span className="talent-match">
                             {overlap.requested > 0
@@ -845,11 +845,16 @@ function CandidatePreview({
       <header className="preview-heading">
         <CandidatePortrait candidate={candidate} />
         <div>
-          <h2>{candidate.name}</h2>
+          <h2 dir="auto">{candidate.name}</h2>
           <p>
             {candidate.currentRole || roleCatalog[candidate.role].label[locale]}
           </p>
-          <small>{candidate.location}</small>
+          {candidate.location && (
+            <small className="preview-location">
+              <MapPin size={12} />
+              {candidate.location}
+            </small>
+          )}
           <span className="talent-match">
             {candidate.skills.length}{" "}
             {ar ? "مهارات مدعومة" : "supported skills"}
@@ -868,13 +873,14 @@ function CandidatePreview({
               ? "أضف للقائمة المختصرة"
               : "Add to shortlist"}
         </button>
-        <button
-          className="preview-close"
-          onClick={close}
-          aria-label={ar ? "إغلاق المعاينة" : "Close preview"}
-        >
-          <X />
-        </button>
+        <details className="preview-action-menu">
+          <summary aria-label={ar ? "إجراءات المرشح" : "Candidate actions"}>
+            <MoreHorizontal size={16} />
+          </summary>
+          <button className="preview-close" onClick={close}>
+            {ar ? "إغلاق المعاينة" : "Close preview"}
+          </button>
+        </details>
       </header>
       <nav className="preview-tabs">
         {[
@@ -896,136 +902,185 @@ function CandidatePreview({
       <div className="preview-body">
         {tab === "overview" && (
           <>
-            <h3>{ar ? "نبذة" : "About"}</h3>
-            <p>{candidate.summary}</p>
-            <h3>{ar ? "المعلومات الأساسية" : "Key Information"}</h3>
-            <div className="preview-info">
-              {[
-                [
-                  ar ? "التعليم" : "Education",
-                  candidate.education
-                    .map(
-                      (row) =>
-                        `${row.institution} · ${row.degree} ${row.field}`,
-                    )
-                    .join(" / "),
-                  GraduationCap,
-                ],
-                [
-                  ar ? "التخرج" : "Graduation",
-                  candidate.graduationYear ||
-                    candidate.education[0]?.graduationYear,
-                  Calendar,
-                ],
-                [ar ? "المكان" : "Location", candidate.location, MapPin],
-                [
-                  ar ? "التوفر" : "Availability",
-                  candidate.availability === "work"
-                    ? ar
-                      ? "متاح للعمل"
-                      : "Open to work"
-                    : candidate.availability === "internship"
+            <section className="preview-section preview-about">
+              <h3>{ar ? "نبذة" : "About"}</h3>
+              <p dir="auto">{candidate.summary}</p>
+            </section>
+            <section className="preview-section">
+              <h3>{ar ? "المعلومات الأساسية" : "Key Information"}</h3>
+              <div className="preview-info">
+                {[
+                  [
+                    ar ? "التعليم" : "Education",
+                    candidate.education
+                      .map(
+                        (row) =>
+                          `${row.institution} · ${row.degree} ${row.field}`,
+                      )
+                      .join(" / "),
+                    GraduationCap,
+                  ],
+                  [
+                    ar ? "التخرج" : "Graduation",
+                    candidate.graduationYear ||
+                      candidate.education[0]?.graduationYear,
+                    Calendar,
+                  ],
+                  [ar ? "المكان" : "Location", candidate.location, MapPin],
+                  [
+                    ar ? "التوفر" : "Availability",
+                    candidate.availability === "work"
                       ? ar
-                        ? "تدريب"
-                        : "Internship"
-                      : ar
-                        ? "غير باحث حاليًا"
-                        : "Not looking",
-                  Clock,
-                ],
-                [
-                  ar ? "نوع العمل" : "Work Type",
-                  candidate.workType,
-                  BriefcaseBusiness,
-                ],
-                [
-                  ar ? "اللغات" : "Languages",
-                  candidate.languages.join(" · "),
-                  Languages,
-                ],
-              ].map(([label, value, Icon]) => {
-                const InfoIcon = Icon as typeof MapPin;
-                return (
-                  <article key={String(label)}>
-                    <InfoIcon />
-                    <div>
-                      <b>{String(label)}</b>
-                      <small>{String(value || "—")}</small>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-            <h3>{ar ? "أبرز المهارات" : "Top Skills"}</h3>
-            {candidate.skills.slice(0, 4).map((row) => (
-              <div className="preview-skill" key={row.skillId}>
-                <span>{skillCatalog[row.skillId].label[locale]}</span>
-                {row.score !== null ? (
-                  <>
-                    <progress
-                      max={100}
-                      value={row.score}
-                      aria-label={skillCatalog[row.skillId].label[locale]}
-                    />
-                    <small>{row.score}%</small>
-                  </>
-                ) : (
-                  <small>{row.status}</small>
-                )}
+                        ? "متاح للعمل"
+                        : "Open to work"
+                      : candidate.availability === "internship"
+                        ? ar
+                          ? "تدريب"
+                          : "Internship"
+                        : ar
+                          ? "غير باحث حاليًا"
+                          : "Not looking",
+                    Clock,
+                  ],
+                  [
+                    ar ? "نوع العمل" : "Work Type",
+                    ar
+                      ? (
+                          {
+                            onsite: "حضوري",
+                            hybrid: "هجين",
+                            remote: "عن بُعد",
+                            flexible: "مرن",
+                          } as Record<string, string>
+                        )[candidate.workType || ""] || candidate.workType
+                      : candidate.workType,
+                    BriefcaseBusiness,
+                  ],
+                  [
+                    ar ? "اللغات" : "Languages",
+                    candidate.languages.join(" · "),
+                    Languages,
+                  ],
+                ].map(([label, value, Icon]) => {
+                  const InfoIcon = Icon as typeof MapPin;
+                  return (
+                    <article key={String(label)}>
+                      <InfoIcon />
+                      <div>
+                        <b>{String(label)}</b>
+                        <small>{String(value || "—")}</small>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
-            ))}
-            {!candidate.skills.length && (
-              <p>
-                {ar ? "لا توجد أدلة مهارات بعد." : "No skill evidence yet."}
-              </p>
-            )}
-            <h3>
-              {ar
-                ? "عمل مميز (محاكاة تدريبية)"
-                : "Highlighted Project (Simulation)"}
-            </h3>
-            {candidate.works[0] ? (
-              <article className="preview-highlight">
-                <Image
-                  src="/game/first-shift-desk-v2.png"
-                  width={68}
-                  height={58}
-                  alt=""
-                />
-                <div>
-                  <b>{candidate.works[0].title[locale]}</b>
-                  <p>{candidate.works[0].summary[locale]}</p>
-                </div>
-                <button onClick={() => setTab("projects")}>
-                  {ar ? "عرض العمل" : "View project"}
+            </section>
+            <section className="preview-section">
+              <header className="preview-section-heading">
+                <h3>{ar ? "أبرز المهارات" : "Top Skills"}</h3>
+                <button onClick={() => setTab("skills")}>
+                  {ar ? "عرض الكل" : "View all skills"}
+                  <ChevronRight size={12} />
                 </button>
-              </article>
-            ) : (
-              <p>
-                {ar ? "لا توجد أعمال مقبولة بعد." : "No accepted work yet."}
-              </p>
-            )}
-            <h3>
-              {ar
-                ? "الشهادات · مضافة من المرشح"
-                : "Certificates · self-reported"}
-            </h3>
-            <div className="preview-certificates">
-              {candidate.certificates.slice(0, 3).map((row, index) => (
-                <article className="preview-certificate" key={index}>
-                  <Award size={25} />
+              </header>
+              {candidate.skills
+                .toSorted(
+                  (a, b) => Number(b.score !== null) - Number(a.score !== null),
+                )
+                .slice(0, 4)
+                .map((row) => (
+                  <div className="preview-skill" key={row.skillId}>
+                    <span>{skillCatalog[row.skillId].label[locale]}</span>
+                    {row.score !== null ? (
+                      <>
+                        <progress
+                          max={100}
+                          value={row.score}
+                          aria-label={skillCatalog[row.skillId].label[locale]}
+                        />
+                        <small>{row.score}%</small>
+                      </>
+                    ) : (
+                      <small className="preview-practice-status">
+                        {ar
+                          ? "ممارسة دون تقييم كافٍ"
+                          : "Practice · insufficient assessment"}
+                      </small>
+                    )}
+                  </div>
+                ))}
+              {!candidate.skills.length && (
+                <p>
+                  {ar ? "لا توجد أدلة مهارات بعد." : "No skill evidence yet."}
+                </p>
+              )}
+            </section>
+            <section className="preview-section">
+              <h3>
+                {ar
+                  ? "عمل مميز (محاكاة تدريبية)"
+                  : "Highlighted Project (Simulation)"}
+              </h3>
+              {candidate.works[0] ? (
+                <article className="preview-highlight">
+                  <Image
+                    src="/game/first-shift-desk-v2.png"
+                    width={256}
+                    height={192}
+                    alt=""
+                  />
                   <div>
-                    <b>{row.title}</b>
-                    <small>
-                      {row.issuer} · {row.date}
-                    </small>
+                    <b>{candidate.works[0].title[locale]}</b>
+                    <p>{candidate.works[0].summary[locale]}</p>
+                  </div>
+                  <div className="preview-project-actions">
+                    <span className="preview-accepted">
+                      <CheckCircle2 size={11} />
+                      {ar ? "مقبول" : "Accepted"}
+                    </span>
+                    <button onClick={() => setTab("projects")}>
+                      {ar ? "عرض العمل" : "View project"}
+                      <ChevronRight size={12} />
+                    </button>
                   </div>
                 </article>
-              ))}
-            </div>
-            {!candidate.certificates.length && (
-              <p>{ar ? "لم تتم مشاركة شهادات." : "No certificates shared."}</p>
-            )}
+              ) : (
+                <p>
+                  {ar ? "لا توجد أعمال مقبولة بعد." : "No accepted work yet."}
+                </p>
+              )}
+            </section>
+            <section className="preview-section">
+              <header className="preview-section-heading">
+                <h3>
+                  {ar
+                    ? "الشهادات · مضافة من المرشح"
+                    : "Certificates · self-reported"}
+                </h3>
+                <button onClick={() => setTab("certificates")}>
+                  {ar ? "عرض الكل" : "View all"}
+                  <ChevronRight size={12} />
+                </button>
+              </header>
+              <div className="preview-certificates">
+                {candidate.certificates.slice(0, 3).map((row, index) => (
+                  <article className="preview-certificate" key={index}>
+                    <Award size={25} />
+                    <div>
+                      <b>{row.title}</b>
+                      <small>
+                        {row.issuer} · {row.date}
+                      </small>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              {!candidate.certificates.length && (
+                <p>
+                  {ar ? "لم تتم مشاركة شهادات." : "No certificates shared."}
+                </p>
+              )}
+            </section>
             <footer className="preview-footer">
               <Link href={`/${locale}/employer/candidates/${candidate.id}`}>
                 {ar ? "عرض البروفايل المشترك" : "View public profile"}

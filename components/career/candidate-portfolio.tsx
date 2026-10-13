@@ -350,7 +350,7 @@ export function ProfessionalOverview({
     socials.website = profile.portfolio;
   const hasSocials = Object.values(socials).some(Boolean);
   return (
-    <div className="candidate-overview">
+    <div className="candidate-overview reference-overview" dir="ltr">
       <aside className="candidate-basics">
         <section className="member-card">
           <h2>

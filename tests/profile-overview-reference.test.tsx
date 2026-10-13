@@ -71,6 +71,10 @@ describe("Compact reference profile overview", () => {
   it("keeps the five reference metrics ordered and truthful", () => {
     const { container } = view();
     const metrics = container.querySelectorAll(".candidate-metrics article");
+    expect(container.querySelector(".reference-overview")).toHaveAttribute(
+      "dir",
+      "ltr",
+    );
     expect(
       Array.from(metrics, (el) => el.querySelector("b")?.textContent),
     ).toEqual(["0", "0", "0", "0", "50%"]);

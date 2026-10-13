@@ -9,7 +9,9 @@ import EmbeddedPostgres from "embedded-postgres";
 import { Client } from "pg";
 import { chromium } from "playwright-core";
 import sharp from "sharp";
-const base = "http://localhost:3118", output = path.resolve(process.argv.includes('--overview-reference') ? "artifacts/overview-reference/qa" : process.argv.includes('--hero-reference') ? "artifacts/hero-reference/qa" : "artifacts/final-career-employer-fix"), temporary = path.resolve("artifacts/talent-platform/tmp"), results = [], errors = [];
+const panelsReference = process.argv.includes('--panels-reference');
+const appPort = panelsReference ? 3128 : 3118, pgPort = panelsReference ? 55448 : 55438;
+const base = `http://localhost:${appPort}`, output = path.resolve(panelsReference ? "artifacts/reference-panels/qa" : process.argv.includes('--overview-reference') ? "artifacts/overview-reference/qa" : process.argv.includes('--hero-reference') ? "artifacts/hero-reference/qa" : "artifacts/final-career-employer-fix"), temporary = path.resolve(panelsReference ? "artifacts/reference-panels/tmp" : "artifacts/talent-platform/tmp"), results = [], errors = [];
 let database, browser, app, sql;
 function record(name, condition = true) { assert.ok(condition, name); results.push(name); console.log("PASS", name); }
 function done(child) { return new Promise((resolve, reject) => { child.once("error", reject); child.once("exit", code => code === 0 ? resolve() : reject(new Error("QA process failed"))); }); }
@@ -36,16 +38,16 @@ async function shot(page, name) {
 try {
   await mkdir(temporary, { recursive: true }); await mkdir(output, { recursive: true });
   const databaseDir = path.join(temporary, "postgres");
-  database = new EmbeddedPostgres({ databaseDir, user: "postgres", password: "local-talent-fixture-only", port: 55438, persistent: true, createPostgresUser: false, postgresFlags: ["-h", "127.0.0.1"], onLog: () => {}, onError: () => {} });
+  database = new EmbeddedPostgres({ databaseDir, user: "postgres", password: "local-talent-fixture-only", port: pgPort, persistent: true, createPostgresUser: false, postgresFlags: ["-h", "127.0.0.1"], onLog: () => {}, onError: () => {} });
   if (!existsSync(path.join(databaseDir, "PG_VERSION"))) await database.initialise();
   await database.start();
   const starter = database.getPgClient(); await starter.connect();
   if (!(await starter.query("SELECT 1 FROM pg_database WHERE datname='talent_utf8_test'")).rowCount) await starter.query("CREATE DATABASE talent_utf8_test ENCODING 'UTF8' LC_COLLATE 'C' LC_CTYPE 'C' TEMPLATE template0");
   await starter.end();
-  const url = "postgresql://postgres:local-talent-fixture-only@127.0.0.1:55438/talent_utf8_test";
+  const url = `postgresql://postgres:local-talent-fixture-only@127.0.0.1:${pgPort}/talent_utf8_test`;
   const env = { ...process.env, APP_BUILD_DIR: ".next", DATABASE_DRIVER: "postgres", DATABASE_URL: url, DIRECT_URL: url, BETTER_AUTH_SECRET: randomBytes(32).toString("hex"), BETTER_AUTH_URL: base, GOOGLE_CLIENT_ID: "", GOOGLE_CLIENT_SECRET: "", RESEND_API_KEY: "", EMAIL_FROM: "", ADMIN_EMAILS: "" };
   await done(spawn(process.execPath, ["node_modules/prisma/build/index.js", "migrate", "deploy"], { env, stdio: "ignore", windowsHide: true }));
-  app = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-H", "127.0.0.1", "-p", "3118"], { env, stdio: "ignore", windowsHide: true });
+  app = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-H", "127.0.0.1", "-p", String(appPort)], { env, stdio: "ignore", windowsHide: true });
   let ready = false;
   for (let i = 0; i < 100; i++) { try { if ((await fetch(base + "/api/auth/get-session")).status === 200) { ready = true; break; } } catch {} await new Promise(resolve => setTimeout(resolve, 300)); }
   assert.ok(ready, "Local server starts");
@@ -144,6 +146,13 @@ try {
     record(name + " real candidate photo", await page.locator('.talent-result img').getAttribute('src') === one.items[0].photo);
     if (locale === "en" && width === 1440) await shot(page, "employer-search-name-result");
     await page.locator('.candidate-result-open').click(); await page.locator('.talent-preview').waitFor(); await shot(page, `employer-preview-${locale}-${width}`);
+    record(name + ' reference preview keeps five separated sections',await page.locator('.preview-section').count()===5);
+    record(name + ' reference detail stays LTR with localized labels',await page.locator('.talent-preview').evaluate(el=>getComputedStyle(el).direction)==='ltr');
+    if(width>=1440){
+      record(name + ' compact result card',await page.locator('.talent-result').first().evaluate(el=>el.getBoundingClientRect().height<=130));
+      record(name + ' fixed portrait, identity, action order',await page.locator('.preview-heading').evaluate(el=>{const photo=el.querySelector('.talent-portrait').getBoundingClientRect(),name=el.querySelector('h2').getBoundingClientRect(),action=el.querySelector('.preview-shortlist').getBoundingClientRect();return photo.right<=name.left&&name.right<=action.left+1;}));
+      await page.locator('.reference-talent-panels').screenshot({path:path.join(output,`employer-panels-${locale}-${width}.png`)});
+    }
     if (width === 390) record(name + ' mobile candidate name is not squeezed between actions', (await page.locator('.preview-heading h2').boundingBox()).width >= 140);
     if (locale === "ar" && width === 1440) await page.screenshot({ path: path.join(output, "employer-candidate-preview-ar.png"), fullPage: true });
     if ([1920,1440].includes(width)) await shot(page, `employer-${locale}-${width}`);
@@ -158,7 +167,7 @@ try {
     }
     record(name + " truthful simulation labels without game currency", !(await page.locator('.talent-preview').innerText()).match(/\bXP\b|coins|78% Match/));
     if (width === 390) record(name + " mobile preview replaces list", !(await page.locator('.talent-list').isVisible()));
-    await page.locator('.preview-close').click(); record(name + " close restores list", await page.locator('.talent-list').isVisible());
+    await page.locator('.preview-action-menu summary').click(); await page.locator('.preview-close').click(); record(name + " close restores list", await page.locator('.talent-list').isVisible());
     await page.evaluate(() => document.documentElement.dataset.theme = "dark"); record(name + " dark contrast", await page.locator('.talent-list').evaluate(el => getComputedStyle(el).backgroundColor !== getComputedStyle(el).color)); await shot(page, name + "-dark"); await page.close();
   }
   const profilePage = await candidate.context.newPage(); profilePage.on("pageerror", error => errors.push(error.message));
@@ -177,6 +186,7 @@ try {
     record(`candidate-${locale}-${width} five real metrics and two development cards`, await profilePage.locator('.candidate-metrics article').count() === 5 && await profilePage.locator('.candidate-development section').count() === 2);
     record(`candidate-${locale}-${width} canonical social link in compact sidebar`, await profilePage.locator('.candidate-basics a[aria-label="LinkedIn"]').getAttribute('href') === 'https://www.linkedin.com/in/qa-fixture');
     record(`candidate-${locale}-${width} six compact information rows`, await profilePage.locator('.candidate-detail-list > div').count() === 6);
+    record(`candidate-${locale}-${width} fixed reference basics order`,await profilePage.locator('.candidate-basics').evaluate(el=>getComputedStyle(el).direction==='ltr'));
     if(width>=1440) {
       record(`candidate-${locale}-${width} reference physical metric and development order`, await profilePage.locator('.candidate-overview').evaluate(el=>{const metrics=Array.from(el.querySelectorAll('.candidate-metrics article')).map(row=>row.getBoundingClientRect().x);return metrics.every((x,i)=>i===0||x>metrics[i-1])&&el.querySelector('.candidate-target').getBoundingClientRect().x<el.querySelector('.candidate-next').getBoundingClientRect().x;}));
       record(`candidate-${locale}-${width} information rows are compact`, await profilePage.locator('.candidate-detail-list').evaluate(el=>el.getBoundingClientRect().height<280));

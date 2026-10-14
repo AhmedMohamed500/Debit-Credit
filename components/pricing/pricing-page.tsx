@@ -280,34 +280,44 @@ export function PricingPage({ locale }: { locale: Locale }) {
           role="group"
           aria-label={t.billingLabel}
         >
-          <span
-            className="pricing-saving"
-            title={
-              ar
-                ? `التوفير ${ANNUAL_SAVING_EGP} جنيه مقابل 12 شهرًا`
-                : `Save EGP ${ANNUAL_SAVING_EGP} versus 12 monthly payments`
-            }
-          >
-            {t.save}
-          </span>
-          <div className="pricing-billing__segments">
-            <button
-              type="button"
-              data-billing="annual"
-              aria-pressed={billing === "annual"}
-              onClick={() => setBilling("annual")}
+          <div className="pricing-billing__controls">
+            <span
+              className="pricing-saving"
+              data-active={billing === "annual"}
+              title={
+                ar
+                  ? `التوفير ${ANNUAL_SAVING_EGP} جنيه مقابل 12 شهرًا`
+                  : `Save EGP ${ANNUAL_SAVING_EGP} versus 12 monthly payments`
+              }
             >
-              {t.annual}
-            </button>
-            <button
-              type="button"
-              data-billing="monthly"
-              aria-pressed={billing === "monthly"}
-              onClick={() => setBilling("monthly")}
-            >
-              {t.monthly}
-            </button>
+              {billing === "annual" ? t.save : t.monthlyFlexibility}
+            </span>
+            <div className="pricing-billing__segments">
+              <button
+                type="button"
+                data-billing="annual"
+                aria-pressed={billing === "annual"}
+                onClick={() => setBilling("annual")}
+              >
+                {t.annual}
+              </button>
+              <button
+                type="button"
+                data-billing="monthly"
+                aria-pressed={billing === "monthly"}
+                onClick={() => setBilling("monthly")}
+              >
+                {t.monthly}
+              </button>
+            </div>
           </div>
+          <p className="pricing-billing__selection" role="status" aria-live="polite">
+            {t.selectedPlan}: <strong>{billing === "annual" ? t.annualTitle : t.monthlyTitle}</strong>
+            <span aria-hidden="true"> · </span>
+            {billing === "annual"
+              ? `${ANNUAL_PRICE_EGP} ${t.currency} ${t.perYear}`
+              : `${MONTHLY_PRICE_EGP} ${t.currency} ${t.perMonth}`}
+          </p>
         </div>
 
         <div className="pricing-grid" dir="ltr">
@@ -354,6 +364,9 @@ export function PricingPage({ locale }: { locale: Locale }) {
               <div>
                 <h2>{t.monthlyTitle}</h2>
                 <p>{t.monthlySubtitle}</p>
+                {billing === "monthly" && (
+                  <span className="pricing-card__selected">{t.selectedPlan}</span>
+                )}
               </div>
               <span className="pricing-card__icon">
                 <GraduationCap />
@@ -390,6 +403,9 @@ export function PricingPage({ locale }: { locale: Locale }) {
               <div>
                 <h2>{t.annualTitle}</h2>
                 <p>{t.annualSubtitle}</p>
+                {billing === "annual" && (
+                  <span className="pricing-card__selected">{t.selectedPlan}</span>
+                )}
               </div>
               <span className="pricing-card__icon">
                 <Crown />

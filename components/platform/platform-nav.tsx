@@ -8,6 +8,7 @@ import {
   Gamepad2,
   Home,
   Menu,
+  CreditCard,
   Route,
   ShieldCheck,
   Trophy,
@@ -32,25 +33,33 @@ export function PlatformNav({
     path = usePathname(),
     [open, setOpen] = useState(false);
   const guided = Boolean(useStudentJourney());
-  const main: [string, LucideIcon, string, string][] = guided ? [
-    ["", Home, "رحلتي", "My journey"],
-    ["/game/student", Gamepad2, "مكتب التدريب", "Training desk"],
-    ["/career-profile/skills", ShieldCheck, "مهاراتي", "My skills"],
-    ["/career-profile/cv", FileText, "الـCV الإنجليزي", "English CV"],
-    ["/career-profile", CircleUserRound, "ملفي", "My profile"],
-  ] : [
-    ["", Home, "الرئيسية", "Home"],
-    ["/game/student", Gamepad2, "مكتب تدريب الطالب", "Student training desk"],
-    ["/career-league/map", Route, "مساري المهني", "My Career"],
-    ["/game", Gamepad2, "العب", "Play"],
-    ["/career-profile/skills", ShieldCheck, "المهارات", "Skills"],
-    ["/leaderboard", Trophy, "المنافسة", "Competition"],
-    ["/career-profile/cv", FileText, "السيرة الذاتية", "CV"],
-    ["/profile", CircleUserRound, "الملف", "Profile"],
-  ];
+  const main: [string, LucideIcon, string, string][] = guided
+    ? [
+        ["", Home, "رحلتي", "My journey"],
+        ["/game/student", Gamepad2, "مكتب التدريب", "Training desk"],
+        ["/career-profile/skills", ShieldCheck, "مهاراتي", "My skills"],
+        ["/career-profile/cv", FileText, "الـCV الإنجليزي", "English CV"],
+        ["/career-profile", CircleUserRound, "ملفي", "My profile"],
+      ]
+    : [
+        ["", Home, "الرئيسية", "Home"],
+        [
+          "/game/student",
+          Gamepad2,
+          "مكتب تدريب الطالب",
+          "Student training desk",
+        ],
+        ["/career-league/map", Route, "مساري المهني", "My Career"],
+        ["/game", Gamepad2, "العب", "Play"],
+        ["/career-profile/skills", ShieldCheck, "المهارات", "Skills"],
+        ["/leaderboard", Trophy, "المنافسة", "Competition"],
+        ["/career-profile/cv", FileText, "السيرة الذاتية", "CV"],
+        ["/profile", CircleUserRound, "الملف", "Profile"],
+      ];
   const items: [string, LucideIcon, string, string][] = marketing
     ? [
         [`/${locale}`, Home, "الرئيسية", "Home"],
+        [`/${locale}/pricing`, CreditCard, "التسعير", "Pricing"],
         ["#how", Workflow, "كيف يعمل؟", "How it works"],
         ["#audience", BriefcaseBusiness, "لمن المنصة؟", "For you"],
         ["#journey", Route, "رحلتك المهنية", "Career journey"],

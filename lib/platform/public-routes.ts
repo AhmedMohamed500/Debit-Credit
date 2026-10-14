@@ -2,6 +2,7 @@
 // Each entry must have a physical App Router page; guarded by organization tests.
 export const publicRoutes = [
   "",
+  "/pricing",
   "/onboarding",
   "/bootcamp",
   "/game",

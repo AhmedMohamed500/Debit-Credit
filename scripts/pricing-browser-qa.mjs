@@ -5,8 +5,8 @@ import path from "node:path";
 import { chromium } from "playwright-core";
 import sharp from "sharp";
 
-const port = 3138;
-const base = `http://127.0.0.1:${port}`;
+const port = Number(process.env.PRICING_QA_PORT ?? 3139);
+const base = process.env.PRICING_QA_BASE_URL ?? `http://127.0.0.1:${port}`;
 const output = path.resolve("artifacts/pricing-reference/qa");
 const sizes = [
   { width: 1920, height: 1080 },
@@ -26,7 +26,8 @@ function record(name, condition) {
 
 async function ready() {
   for (let i = 0; i < 80; i++) {
-    if (server.exitCode !== null) throw new Error("Pricing QA server exited");
+    if (server && server.exitCode !== null)
+      throw new Error("Pricing QA server exited");
     try {
       const response = await fetch(`${base}/ar/pricing`);
       if (response.ok) return;
@@ -50,18 +51,19 @@ try {
     RESEND_API_KEY: "",
     NEXT_TELEMETRY_DISABLED: "1",
   };
-  server = spawn(
-    process.execPath,
-    [
-      "node_modules/next/dist/bin/next",
-      "start",
-      "-H",
-      "127.0.0.1",
-      "-p",
-      String(port),
-    ],
-    { env, windowsHide: true, stdio: "ignore" },
-  );
+  if (!process.env.PRICING_QA_BASE_URL)
+    server = spawn(
+      process.execPath,
+      [
+        "node_modules/next/dist/bin/next",
+        "start",
+        "-H",
+        "127.0.0.1",
+        "-p",
+        String(port),
+      ],
+      { env, windowsHide: true, stdio: "ignore" },
+    );
   await ready();
   browser = await chromium.launch({
     executablePath:
@@ -114,6 +116,7 @@ try {
         };
         return {
           cards: cards.map(rect),
+          billing: rect(document.querySelector(".pricing-billing")),
           actions: cards.map((card) =>
             rect(card.querySelector(".pricing-card__action")),
           ),
@@ -121,6 +124,10 @@ try {
         };
       });
       record(`${label} no horizontal overflow`, !metrics.overflow);
+      record(
+        `${label} billing does not overlap cards`,
+        metrics.billing.bottom <= metrics.cards[0].y - 6,
+      );
       if (viewport.width >= 1440) {
         record(
           `${label} equal card widths`,
@@ -170,11 +177,24 @@ try {
       if (viewport.width === 1440 && locale === "ar") {
         await page.locator('[data-billing="monthly"]').click();
         record(
-          "billing switches without hiding plans",
+          "monthly billing updates visible plan and emphasis",
           (await page.locator(".pricing-card").count()) === 4 &&
             (await page
               .locator('[data-billing="monthly"]')
-              .getAttribute("aria-pressed")) === "true",
+              .getAttribute("aria-pressed")) === "true" &&
+            (await page.locator(".pricing-billing__selection").innerText()).includes("129") &&
+            (await page.locator(".pricing-saving").getAttribute("data-active")) === "false" &&
+            (await page.locator('[data-card="monthly"]').getAttribute("class")).includes("is-emphasized") &&
+            !(await page.locator('[data-card="annual"]').getAttribute("class")).includes("is-emphasized"),
+        );
+        await page.screenshot({ path: path.join(output, "ar-1440-monthly.png") });
+        await page.locator('[data-billing="annual"]').click();
+        record(
+          "annual billing restores savings and selected plan",
+          (await page.locator(".pricing-billing__selection").innerText()).includes("899") &&
+            (await page.locator(".pricing-saving").getAttribute("data-active")) === "true" &&
+            (await page.locator('[data-card="annual"]').getAttribute("class")).includes("is-emphasized") &&
+            !(await page.locator('[data-card="monthly"]').getAttribute("class")).includes("is-emphasized"),
         );
         await page.locator('[data-audience="company"]').click();
         record(

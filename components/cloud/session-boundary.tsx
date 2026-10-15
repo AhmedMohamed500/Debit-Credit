@@ -35,6 +35,7 @@ export function CloudSessionBoundary({
   const pathname = usePathname(),
     publicProfile = /^\/(ar|en)\/portfolio\//.test(pathname),
     pricingPath = /^\/(ar|en)\/pricing\/?$/.test(pathname),
+    accountSettingsPath = pathname === `/${locale}/account`,
     accountHome = pathname === `/${locale}`,
     employerPath = /^\/(ar|en)\/employer(\/|$)/.test(pathname),
     privatePath =
@@ -171,7 +172,7 @@ export function CloudSessionBoundary({
       setBusy(false);
     }
   }
-  const bar = !publicProfile && !pricingPath && !employerPath && identity && (
+  const bar = !publicProfile && !pricingPath && !employerPath && !accountSettingsPath && identity && (
     <div className="cloud-account-bar">
       <span>{identity.profile.displayName}</span>
       <Link href={`/${locale}/account`}>{say("My account", "حسابي")}</Link>

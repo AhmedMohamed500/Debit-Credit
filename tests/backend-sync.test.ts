@@ -37,6 +37,16 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe("account-scoped cloud draft recovery", () => {
+  it("does not carry a prior account's saved or conflict badge into the next account", () => {
+    configureCloud("account-a", progress());
+    notifySync("saved");
+    configureCloud("account-b", progress());
+    expect(currentSyncStatus()).toBe("ready");
+    notifySync("conflict");
+    configureCloud(null);
+    configureCloud("account-a", progress());
+    expect(currentSyncStatus()).toBe("ready");
+  });
   it("ignores an old account's in-flight core response after an account switch", async () => {
     let finish!: (value: Response) => void;
     const fetcher = vi

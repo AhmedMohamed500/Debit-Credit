@@ -267,6 +267,7 @@ function StudentJourneyBar() {
       `/${locale}/game/first-shift`,
       `/${locale}/student-profile`,
       `/${locale}/career-profile`,
+      `/${locale}/account`,
     ].includes(pathname)
   )
     return null;

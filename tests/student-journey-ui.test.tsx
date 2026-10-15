@@ -64,6 +64,39 @@ beforeEach(() => {
 });
 describe("Account-safe student journey guidance", () => {
   it.each(["ar", "en"] as const)(
+    "keeps the %s account settings route free of the learning journey overlay",
+    (locale) => {
+      fixture.path = `/${locale}/account`;
+      const { container } = render(
+        <StudentJourneyProvider locale={locale}>
+          <main>Account settings content</main>
+        </StudentJourneyProvider>,
+      );
+      expect(screen.getByText("Account settings content")).toBeVisible();
+      expect(container.querySelector(".student-journey-bar")).toBeNull();
+      expect(
+        screen.queryByRole("navigation", {
+          name:
+            locale === "ar" ? "مكانك في الرحلة" : "Your place in the journey",
+        }),
+      ).toBeNull();
+    },
+  );
+  it("preserves the journey overlay on a learning route", async () => {
+    fixture.path = "/en/bootcamp";
+    render(
+      <StudentJourneyProvider locale="en">
+        <main>Learning content</main>
+      </StudentJourneyProvider>,
+    );
+    expect(screen.getByText("Learning content")).toBeVisible();
+    expect(
+      await screen.findByRole("navigation", {
+        name: "Your place in the journey",
+      }),
+    ).toBeVisible();
+  });
+  it.each(["ar", "en"] as const)(
     "does not duplicate the journey panel inside the %s first-shift workspace",
     async (locale) => {
       fixture.path = `/${locale}/game/first-shift`;

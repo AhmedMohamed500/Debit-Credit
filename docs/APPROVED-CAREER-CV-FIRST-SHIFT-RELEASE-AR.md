@@ -57,7 +57,7 @@
 | `STUDENT_CV_QA_SKIP_LEGACY_PRINT=1` مع `node scripts/student-cv-browser-qa.mjs` وبيئة PostgreSQL محلية معزولة | 696/696 فحصًا ناجحًا، بلا أخطاء JavaScript في المتصفح ولا استخدام لبيانات الإنتاج؛ شمل إنشاء الحساب ثم الدخول المنفصل، الحفظ، الصورة، تدريب الطالب، أول وردية، جواز المهارات، الملف والـCV، الكورسات والشهادات، تنزيل PDF/DOCX الفعلي، تسجيل الخروج وعزل حساب آخر |
 | معاينة A4 على 1920/1440/1024/390 بالعربية والإنجليزية | تحقق آلي من عدم تجاوز الصفحة أو عرض المعاينة الافتراضية، ومراجعة لقطات 1440 و390 بصريًا: الاسم والعناوين الإنجليزية ظاهرة بالكامل بعد إصلاح اتجاه التمرير والتكبير التلقائي |
 
-توجد لقطات «أول وردية» في `artifacts/first-shift-approved-qa/` محليًا (ومنها `ar-1440-office.png` و`ar-390-workbench.png`). وُثّقت لقطات البروفايل والـCV في `artifacts/student-cv/`، منها `ar-1440-profile-overview-approved.png` و`ar-career-cv-1440.png` و`ar-career-cv-390.png` ومثيلاتها الإنجليزية، مع ملفات `ar-1440-server-cv.pdf` و`.docx` المنزّلة من زر الموقع. مجلد `artifacts` غير متتبع ولا يحتوي على بيانات إنتاج.
+اللقطات الأربع التي يمكن مراجعتها في GitHub مأخوذة من حساب اختباري وبيانات محاكاة فقط: [الملف المهني](screenshots/career-profile-ar-1440.png)، [استوديو الـCV](screenshots/ats-cv-ar-1440.png)، [مكتب أول وردية](screenshots/first-shift-office-ar-1440.png)، [مساحة القيد](screenshots/first-shift-workbench-ar-1440.png). وتوجد بقية لقطات المقاسات واللغتين وملفات PDF/DOCX المنزّلة محليًا في `artifacts/student-cv/` و`artifacts/first-shift-approved-qa/`؛ مجلد `artifacts` غير متتبع ولا يحتوي على بيانات إنتاج.
 
 ### حدود التحقق والصدق
 

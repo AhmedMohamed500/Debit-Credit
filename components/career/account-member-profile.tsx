@@ -1,8 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useEffect, useState, type ReactNode } from "react";
 import { cloudUser, requestJSON } from "@/lib/cloud/runtime";
 import type {
   CareerProfile,
+  CvPreferences,
   SkillEvidence,
   SkillResult,
 } from "@/lib/career/model";
@@ -11,43 +13,57 @@ import { MemberProfile } from "./member-profile";
 
 // Owner-only view reads the same canonical projection as the CV. A cached guest
 // profile is not a source for an authenticated person's name or personal fields.
-export function AccountMemberProfile({
+export type AccountCareerProjection = {
+  profile: CareerProfile;
+  cv: { summary: string; targetRoleId?: CvPreferences["targetRoleId"] };
+  evidence: SkillEvidence[];
+  passport: SkillResult[];
+};
+
+export function AccountCareerData({
   owner,
   locale,
-  evidence,
-  passport,
+  children,
 }: {
   owner: string;
   locale: Locale;
-  evidence: SkillEvidence[];
-  passport: SkillResult[];
+  children: (data: AccountCareerProjection) => ReactNode;
 }) {
   const [saved, setSaved] = useState<{
     owner: string;
-    profile: CareerProfile;
+    data: AccountCareerProjection;
   } | null>(null);
   const [failure, setFailure] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(0);
   useEffect(() => {
     let alive = true;
     setFailure(null);
-    void requestJSON<{
-      data: { profile: CareerProfile; cv: { summary: string } };
-    } | null>("me/cv")
+    void requestJSON<{ data: AccountCareerProjection } | null>("me/cv")
       .then((result) => {
-        const profile = result?.data?.profile;
-        if (!profile?.fullName?.trim()) throw new Error("PROFILE_UNAVAILABLE");
+        const data = result?.data;
+        if (
+          !data?.profile ||
+          !Array.isArray(data.evidence) ||
+          !Array.isArray(data.passport)
+        )
+          throw new Error("PROFILE_UNAVAILABLE");
         if (alive && cloudUser() === owner)
           setSaved({
             owner,
-            profile: {
-              ...profile,
-              summary: profile.summary || result?.data.cv.summary || "",
+            data: {
+              ...data,
+              profile: {
+                ...data.profile,
+                summary: data.profile.summary || data.cv.summary || "",
+              },
             },
           });
       })
       .catch(() => {
-        if (alive && cloudUser() === owner) setFailure(owner);
+        if (alive && cloudUser() === owner) {
+          setSaved(null);
+          setFailure(owner);
+        }
       });
     return () => {
       alive = false;
@@ -65,15 +81,7 @@ export function AccountMemberProfile({
       window.removeEventListener("app-sync-status", synced);
     };
   }, []);
-  if (saved?.owner === owner)
-    return (
-      <MemberProfile
-        locale={locale}
-        profile={saved.profile}
-        evidence={evidence}
-        passport={passport}
-      />
-    );
+  if (saved?.owner === owner) return <>{children(saved.data)}</>;
   return (
     <main className="career-loading" dir={locale === "ar" ? "rtl" : "ltr"}>
       {failure === owner ? (
@@ -95,5 +103,35 @@ export function AccountMemberProfile({
         </p>
       )}
     </main>
+  );
+}
+
+export function AccountMemberProfile({
+  owner,
+  locale,
+}: {
+  owner: string;
+  locale: Locale;
+}) {
+  return (
+    <AccountCareerData owner={owner} locale={locale}>
+      {({ profile, evidence, passport }) =>
+        profile.fullName.trim() ? (
+          <MemberProfile
+            locale={locale}
+            profile={profile}
+            evidence={evidence}
+            passport={passport}
+          />
+        ) : (
+          <main className="career-loading" dir={locale === "ar" ? "rtl" : "ltr"}>
+            <div role="status">
+              <p>{locale === "ar" ? "اسمك الكامل لم يُضف إلى بيانات حسابك بعد. أكمل بياناتك المحفوظة لتظهر في الملف المهني والـCV." : "Your full name has not been added to your account yet. Complete your saved details before your career profile and CV can show it."}</p>
+              <Link href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile`)}`}>{locale === "ar" ? "أكمل بيانات الحساب" : "Complete account details"}</Link>
+            </div>
+          </main>
+        )
+      }
+    </AccountCareerData>
   );
 }

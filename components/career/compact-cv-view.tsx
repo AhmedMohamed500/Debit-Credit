@@ -1,56 +1,38 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Printer, FileText, RefreshCw } from "lucide-react";
+import { FileDown, FileText, Minus, Plus, Printer, RefreshCw } from "lucide-react";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { cloudUser, requestJSON } from "@/lib/cloud/runtime";
 import { roleCatalog, roleIds } from "@/lib/career/catalog";
 import { buildCv } from "@/lib/career/cv";
-import {
-  compactCv,
-  blocksText,
-  paginateCv,
-  type CompactCv,
-  type CvBlock,
-} from "@/lib/career/compact-cv";
+import { compactCv, blocksText, paginateCv, type CompactCv, type CvBlock } from "@/lib/career/compact-cv";
+import { scoreCvReadiness, type CvReadiness } from "@/lib/career/ats";
 import { BrowserCvVersionRepository } from "@/lib/career/cv-history";
-import type {
-  CareerProfile,
-  CvDocument,
-  CvPreferences,
-  RoleId,
-  SkillEvidence,
-  SkillResult,
-} from "@/lib/career/model";
+import { ProfilePhoto } from "./profile-photo";
+import type { CareerProfile, CvDocument, CvPreferences, RoleId, SkillEvidence, SkillResult } from "@/lib/career/model";
 import type { Locale } from "@/types";
 
-type Snapshot = { profile: CareerProfile; cv: CvDocument; compact: CompactCv };
+type Snapshot = { profile: CareerProfile; cv: CvDocument; compact: CompactCv; readiness: CvReadiness };
+type Format = "pdf" | "docx" | "txt";
+const arabicDimension: Record<CvReadiness["dimensions"][number]["id"], string> = {
+  format: "تنسيق قابل للقراءة",
+  contact: "بيانات التواصل",
+  english: "اكتمال المحتوى الإنجليزي",
+  summary: "الملخص المهني",
+  education: "التعليم",
+  skills: "مهارات مدعومة بأدلة",
+  "practical-work": "خبرة فعلية أو محاكاة واضحة",
+  learning: "تعلم محفوظ ذو صلة",
+};
+
 export function CvBlockView({ block }: { block: CvBlock }) {
   if (block.header)
-    return (
-      <header>
-        <h1>{block.lines[0]}</h1>
-        <p>{block.lines[1]}</p>
-        <address>{block.lines[2]}</address>
-      </header>
-    );
-  return (
-    <section>
-      {block.heading && <h2>{block.heading}</h2>}
-      {block.lines.map((line, index) => (
-        <p key={index}>{line}</p>
-      ))}
-    </section>
-  );
+    return <header><h1>{block.lines[0]}</h1><p>{block.lines[1]}</p><address>{block.lines[2]}</address></header>;
+  return <section>{block.heading && <h2>{block.heading}</h2>}{block.lines.map((line, index) => <p key={index}>{line}</p>)}</section>;
 }
-export function CvView({
-  locale,
-  profile,
-  passport,
-  evidence,
-  prefs,
-  updatePrefs,
-}: {
+
+export function CvView({ locale, profile, passport, evidence, prefs, updatePrefs }: {
   locale: Locale;
   profile: CareerProfile;
   passport: SkillResult[];
@@ -59,235 +41,188 @@ export function CvView({
   updatePrefs: (p: Partial<CvPreferences>) => void;
 }) {
   const owner = useCloudIdentity()?.user.id;
-  const say = (en: string, ar: string) => (locale === "ar" ? ar : en);
-  const [saved, setSaved] = useState<{
-    owner: string;
-    role: RoleId;
-    data: Snapshot;
-  } | null>(null);
-  const [error, setError] = useState(false),
-    [refresh, setRefresh] = useState(0);
-  const [layout, setLayout] = useState<{
-    key: string;
-    pages: CvBlock[][];
-    omitted: number;
-  } | null>(null);
+  const say = (en: string, ar: string) => locale === "ar" ? ar : en;
+  const [saved, setSaved] = useState<{ owner: string; role: RoleId; data: Snapshot } | null>(null);
+  const [refresh, setRefresh] = useState(0);
+  const [error, setError] = useState(false);
+  const [layout, setLayout] = useState<{ key: string; pages: CvBlock[][]; omitted: number } | null>(null);
+  const [pageIndex, setPageIndex] = useState(0);
+  // Fit the physical A4 sheet on first display; manual zoom may then scroll.
+  const [zoom, setZoom] = useState<number | null>(null);
+  const [fitZoom, setFitZoom] = useState(70);
+  const [busy, setBusy] = useState<Format | null>(null);
+  const [downloadError, setDownloadError] = useState("");
   const measure = useRef<HTMLDivElement>(null);
+  const previewScroll = useRef<HTMLDivElement>(null);
+  const pageRefs = useRef<Array<HTMLDivElement | null>>([]);
   const local = useMemo(() => {
     const cv = buildCv(profile, passport, evidence, prefs.targetRoleId);
-    return { profile, cv, compact: compactCv(profile, cv) };
+    const compact = compactCv(profile, cv);
+    return { profile, cv, compact, readiness: scoreCvReadiness(profile, cv, compact) };
   }, [profile, passport, evidence, prefs.targetRoleId]);
+
   useEffect(() => {
     let alive = true;
     setError(false);
-    if (owner)
-      void requestJSON<{ data: Snapshot } | null>(
-        `me/cv?role=${encodeURIComponent(prefs.targetRoleId)}`,
-      )
-        .then((result) => {
-          if (!result?.data?.compact?.blocks) throw new Error("CV_UNAVAILABLE");
-          if (alive && cloudUser() === owner)
-            setSaved({ owner, role: prefs.targetRoleId, data: result.data });
-        })
-        .catch(() => {
-          if (alive) setError(true);
-        });
-    return () => {
-      alive = false;
-    };
+    setDownloadError("");
+    if (owner) void requestJSON<{ data: Snapshot } | null>(`me/cv?role=${encodeURIComponent(prefs.targetRoleId)}`)
+      .then((result) => {
+        if (!result?.data?.compact?.blocks || !result.data.readiness) throw new Error("CV_UNAVAILABLE");
+        if (alive && cloudUser() === owner) setSaved({ owner, role: prefs.targetRoleId, data: result.data });
+      })
+      .catch(() => { if (alive) setError(true); });
+    return () => { alive = false; };
   }, [owner, prefs.targetRoleId, refresh]);
   useEffect(() => {
     const reload = () => setRefresh((value) => value + 1);
-    const synced = (event: Event) => {
-      if ((event as CustomEvent).detail === "saved") reload();
-    };
+    const synced = (event: Event) => { if ((event as CustomEvent).detail === "saved") reload(); };
     window.addEventListener("focus", reload);
     window.addEventListener("app-sync-status", synced);
-    return () => {
-      window.removeEventListener("focus", reload);
-      window.removeEventListener("app-sync-status", synced);
-    };
+    return () => { window.removeEventListener("focus", reload); window.removeEventListener("app-sync-status", synced); };
   }, []);
-  const data = owner
-    ? saved?.owner === owner && saved.role === prefs.targetRoleId
-      ? saved.data
-      : null
-    : local;
+
+  const data = owner ? saved?.owner === owner && saved.role === prefs.targetRoleId ? saved.data : null : local;
   const key = JSON.stringify(data?.compact.blocks ?? []);
   useEffect(() => {
     let alive = true;
     void (document.fonts?.ready ?? Promise.resolve()).then(() => {
       if (!alive || !measure.current || !data) return;
-      const elements = Array.from(measure.current.children) as HTMLElement[];
-      // Reserve 8mm for the page counter and print rounding.
-      const maxHeight = (265 * 96) / 25.4;
-      const result = paginateCv(
-        data.compact.blocks,
-        elements.map((element) => element.getBoundingClientRect().height),
-        maxHeight,
-      );
+      const nodes = Array.from(measure.current.children) as HTMLElement[];
+      const result = paginateCv(data.compact.blocks, nodes.map((node) => node.getBoundingClientRect().height), (265 * 96) / 25.4);
       setLayout({ key, ...result });
+      setPageIndex(0);
     });
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, [key, data]);
   const ready = layout?.key === key;
   const pages = ready ? layout.pages : [];
+  useEffect(() => {
+    const container = previewScroll.current;
+    if (!ready || !container) return;
+    const updateFit = () => {
+      const style = getComputedStyle(container);
+      const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      // CSS A4 width: 210 mm at 96 px/in. Leave breathing room for borders.
+      const pageWidth = (210 * 96) / 25.4;
+      const available = container.clientWidth - padding - 4;
+      setFitZoom(Math.max(20, Math.min(100, Math.floor((available / pageWidth) * 100))));
+    };
+    updateFit();
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", updateFit);
+      return () => window.removeEventListener("resize", updateFit);
+    }
+    const observer = new ResizeObserver(updateFit);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [ready]);
+  const displayZoom = zoom ?? fitZoom;
   const text = blocksText(pages.flat());
   useEffect(() => {
-    if (data && ready) new BrowserCvVersionRepository().save(data.cv, text);
-  }, [data, ready, text]);
-  const download = () => {
-    const url = URL.createObjectURL(
-      new Blob([text], { type: "text/plain;charset=utf-8" }),
-    );
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "accounting-ats-cv.txt";
-    anchor.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 10000);
-  };
-  return (
-    <div className="career-shell cv-shell compact-cv-shell">
-      <section className="cv-controls">
-        <div>
-          <small>AUTO CV · ENGLISH · ATS</small>
-          <h1>
-            {say("Your concise professional CV", "سيرتك المهنية المختصرة")}
-          </h1>
-          <p>
-            {say(
-              "Profile details, courses, certificates and accepted accounting tasks stay connected. One reading column; maximum two A4 pages. No photo, QR, scores or task transcript in the CV.",
-              "البيانات والكورسات والشهادات والتاسكات المقبولة مرتبطة بالبروفايل. عمود واحد وصفحتان A4 كحد أقصى، من غير صورة أو QR أو درجات أو قائمة تاسكات طويلة.",
-            )}
-          </p>
-          {ready && (
-            <p role="status">
-              {pages.length}/2 {say("pages", "صفحات")}
-              {data!.compact.omitted + layout.omitted > 0 &&
-                ` · ${data!.compact.omitted + layout.omitted} ${say("additional records remain on your profile; the CV shows a concise selection.", "سجلات إضافية محفوظة في البروفايل؛ السيرة تعرض اختيارًا مختصرًا.")}`}
-            </p>
-          )}
-          {data &&
-            (data.compact.needsEnglish > 0 ||
-              /[\u0600-\u06ff]/u.test(
-                JSON.stringify([
-                  data.profile.fullName,
-                  data.profile.location,
-                  data.profile.country,
-                ]),
-              )) && (
-              <p role="note">
-                {say(
-                  "Some profile records need English names/titles. They are preserved on your profile; untranslated course/experience records are not included. Edit them in English; we do not invent translations.",
-                  "بعض البيانات تحتاج أسماء وعناوين بالإنجليزي. محفوظة بالبروفايل؛ الكورسات والخبرات غير المترجمة لا تدخل السيرة. عدّلها بالإنجليزي؛ لا نختلق ترجمة.",
-                )}
-              </p>
-            )}
-          <p>
-            <Link
-              href={`/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile/cv`)}`}
-            >
-              {say("Edit account CV details", "تعديل بيانات CV بالحساب")}
-            </Link>
-            {" · "}
-            <Link href={`/${locale}/career-profile#courses`}>
-              {say("Edit profile courses", "تعديل كورسات البروفايل")}
-            </Link>
-          </p>
-        </div>
-        <label>
-          {say("CV target role", "الدور المستهدف")}
-          <select
-            value={prefs.targetRoleId}
-            onChange={(event) =>
-              updatePrefs({ targetRoleId: event.target.value as RoleId })
-            }
-          >
-            {roleIds.map((role) => (
-              <option key={role} value={role}>
-                {roleCatalog[role].label[locale]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button
-          disabled={!ready || !pages.length || error}
-          onClick={() => window.print()}
-        >
-          <Printer />
-          {say("Print / Save PDF", "طباعة / حفظ PDF")}
-        </button>
-        <button disabled={!ready || error} onClick={download}>
-          <FileText />
-          {say("Plain Text CV", "سيرة نصية")}
-        </button>
-        {owner && (
-          <button
-            onClick={() => {
-              setSaved(null);
-              setRefresh((value) => value + 1);
-            }}
-          >
-            <RefreshCw />
-            {say("Refresh from profile", "تحديث من البروفايل")}
-          </button>
-        )}
-      </section>
-      {data && error && (
-        <p role="alert">
-          {say(
-            "Could not refresh your account CV. Export is disabled until refresh succeeds.",
-            "تعذّر تحديث CV الحساب. التنزيل متوقف لحد ما ينجح التحديث.",
-          )}
-        </p>
-      )}
-      {!data && (
-        <p role="status">
-          {error
-            ? say(
-                "Could not load your account CV. Retry; no private data was replaced.",
-                "تعذّر تحميل CV الحساب. حاول ثانية؛ لم نستبدل بياناتك.",
-              )
-            : say(
-                "Loading current profile and courses…",
-                "جارٍ تحميل البروفايل والكورسات الحالية…",
-              )}
-        </p>
-      )}
-      {data && (
-        <>
-          <div
-            ref={measure}
-            className="cv-measure cv-typeset"
-            aria-hidden="true"
-          >
-            {data.compact.blocks.map((block) => (
-              <CvBlockView key={block.id} block={block} />
-            ))}
+    // Signed-in CV history is owned by the server, not global browser storage.
+    if (!owner && data && ready) new BrowserCvVersionRepository().save(data.cv, text);
+  }, [owner, data, ready, text]);
+  const needsEnglish = Boolean(data && (data.compact.needsEnglish || /[\u0600-\u06ff]/u.test(data.compact.plainText)));
+  // Never offer a server download containing blocks that this browser omitted
+  // from the two-page preview. Normal compact selection is shared by both.
+  const exportReady = Boolean(ready && pages.length && layout?.omitted === 0 && data?.profile.fullName.trim() && data?.profile.email.trim() && !needsEnglish && !error);
+  const personalHref = `/${locale}/student-profile?next=${encodeURIComponent(`/${locale}/career-profile/cv`)}`;
+
+  async function download(format: Format) {
+    if (!exportReady || busy) return;
+    setBusy(format);
+    setDownloadError("");
+    try {
+      let blob: Blob;
+      let filename = `accounting-ats-cv.${format}`;
+      if (owner) {
+        const response = await fetch(`/api/v1/me/cv/export?format=${format}&role=${encodeURIComponent(prefs.targetRoleId)}`, {
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: { "X-Account-Context": owner },
+        });
+        if (!response.ok || cloudUser() !== owner) throw new Error("EXPORT_FAILED");
+        blob = await response.blob();
+        if (cloudUser() !== owner) throw new Error("ACCOUNT_CHANGED");
+        filename = response.headers.get("content-disposition")?.match(/filename="([a-z0-9-]+\.(?:pdf|docx|txt))"/i)?.[1] ?? filename;
+      } else {
+        if (format !== "txt") throw new Error("ACCOUNT_REQUIRED");
+        blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      }
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch {
+      setDownloadError(say("Download failed. Refresh the saved profile and retry.", "تعذّر التنزيل. حدّث بيانات البروفايل المحفوظة وحاول ثانية."));
+    } finally { setBusy(null); }
+  }
+  function selectPage(index: number) {
+    const next = Math.min(Math.max(index, 0), pages.length - 1);
+    setPageIndex(next);
+    pageRefs.current[next]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  return <main className="career-shell cv-shell compact-cv-shell ats-studio" dir={locale === "ar" ? "rtl" : "ltr"}>
+    <section className="cv-controls ats-studio-intro">
+      <div><small>ENGLISH CV · ATS-FRIENDLY FORMAT</small><h1>{say("Your connected professional CV", "سيرتك المهنية المرتبطة ببروفايلك")}</h1>
+        <p>{say("Saved profile details, courses, certificates and accepted practice feed this CV automatically. Readiness is our transparent checklist, not an employer ATS score.", "بياناتك والكورسات والشهادات والتدريب المقبول تغذي السيرة تلقائيًا. الجاهزية قائمة فحص واضحة، وليست درجة من نظام توظيف.")}</p>
+        {ready && <p role="status">{pages.length} {say("A4 pages", "صفحة A4")}{data!.compact.omitted + layout.omitted > 0 && ` · ${data!.compact.omitted + layout.omitted} ${say("saved records are outside this concise CV", "سجل محفوظ خارج السيرة المختصرة")}`}</p>}
+      </div>
+      <label>{say("Target accounting role", "الدور المحاسبي المستهدف")}<select value={prefs.targetRoleId} onChange={(event) => updatePrefs({ targetRoleId: event.target.value as RoleId })}>{roleIds.map((role) => <option key={role} value={role}>{roleCatalog[role].label[locale]}</option>)}</select></label>
+    </section>
+    {needsEnglish && <p className="ats-studio-warning" role="note">{say("Some records need English names or titles. Edit them; no translation is invented.", "بعض البيانات تحتاج أسماء أو عناوين إنجليزية. عدّلها؛ مش هنخترع ترجمة.")} <Link href={personalHref}>{say("Edit CV details", "تعديل بيانات السيرة")}</Link></p>}
+    {ready && layout.omitted > 0 && <p className="ats-studio-warning" role="alert">{say("The two-page preview cannot fit every selected CV item. Downloads are paused until you shorten long profile entries and refresh.", "المعاينة من صفحتين مش قادرة تعرض كل العناصر المختارة. التنزيل متوقف لحد ما تختصر البيانات الطويلة وتحدّث السيرة.")} <Link href={personalHref}>{say("Edit profile", "تعديل البروفايل")}</Link></p>}
+    {error && <p className="ats-studio-warning" role="alert">{say("Could not confirm the latest saved CV. Downloads are paused until refresh succeeds.", "تعذّر التأكد من آخر نسخة محفوظة. التنزيل متوقف لحد ما ينجح التحديث.")}</p>}
+    {!data ? <section className="ats-studio-empty" role="status"><h2>{error ? say("Saved CV unavailable", "السيرة المحفوظة غير متاحة الآن") : say("Loading saved CV…", "جارٍ تحميل السيرة المحفوظة…")}</h2><p>{say("No sample achievements are shown.", "لا نعرض إنجازات تجريبية.")}</p><Link href={personalHref}>{say("Complete profile", "أكمل البروفايل")}</Link></section> : <>
+      <div ref={measure} className="cv-measure cv-typeset" aria-hidden="true">{data.compact.blocks.map((block) => <CvBlockView key={block.id} block={block} />)}</div>
+      <div className="ats-studio-grid">
+        <aside className="ats-studio-profile">
+          <div className="ats-studio-photo"><ProfilePhoto locale={locale} name={data.profile.fullName} /></div>
+          <small>{say("Professional profile", "البروفايل المهني")}</small>
+          <h2>{data.profile.fullName || say("Name not added", "لم تضف الاسم")}</h2>
+          <p>{roleCatalog[data.cv.targetRoleId].label[locale]}</p>
+          <p>{[data.profile.location, data.profile.country].filter(Boolean).join(" · ")}</p>
+          <dl>
+            <div><dt>{say("Supported skills", "مهارات مدعومة")}</dt><dd>{data.cv.skills.length}</dd></div>
+            <div><dt>{say("Simulation outcomes in CV", "نتائج محاكاة في السيرة")}</dt><dd>{data.compact.blocks.filter((b) => b.id.startsWith("simulation-")).length}</dd></div>
+            <div><dt>{say("Courses in CV", "كورسات في السيرة")}</dt><dd>{data.compact.blocks.filter((b) => b.id.startsWith("course-")).length}</dd></div>
+          </dl>
+          <p className="ats-studio-disclaimer">{say("Training simulations are not employment. Your photo stays on the website, not in the CV.", "المحاكاة التدريبية ليست خبرة عمل. صورتك تظهر هنا فقط، مش داخل الـCV.")}</p>
+          <Link href={personalHref}>{say("Edit personal details", "تعديل البيانات الشخصية")}</Link>
+          <Link href={`/${locale}/career-profile#courses`}>{say("Manage courses and certificates", "إدارة الكورسات والشهادات")}</Link>
+          <Link href={`/${locale}/career-profile/skills`}>{say("View Skill Passport", "عرض جواز المهارات")}</Link>
+        </aside>
+        <section className="ats-studio-preview" aria-label={say("CV preview", "معاينة السيرة")}>
+          <div className="ats-studio-preview-toolbar cv-controls">
+            <div><small>ATS CV · ENGLISH · A4</small><h2>{say("Document preview", "معاينة المستند")}</h2></div>
+            <div className="ats-studio-page-controls"><button type="button" disabled={pageIndex === 0} onClick={() => selectPage(pageIndex - 1)} aria-label={say("Previous page", "الصفحة السابقة")}>−</button><span>{ready ? `${pageIndex + 1} / ${pages.length}` : "…"}</span><button type="button" disabled={pageIndex >= pages.length - 1} onClick={() => selectPage(pageIndex + 1)} aria-label={say("Next page", "الصفحة التالية")}>+</button></div>
+            <div className="ats-studio-zoom-controls"><button type="button" disabled={displayZoom <= 20} onClick={() => setZoom(Math.max(20, displayZoom - 10))} aria-label={say("Zoom out", "تصغير")}><Minus size={16} /></button><output>{displayZoom}%</output><button type="button" disabled={displayZoom >= 110} onClick={() => setZoom(Math.min(110, displayZoom + 10))} aria-label={say("Zoom in", "تكبير")}><Plus size={16} /></button></div>
           </div>
-          {ready && (
-            <article
-              className="professional-cv cv-typeset"
-              lang="en"
-              dir="ltr"
-              data-pages={pages.length}
-            >
-              {pages.map((page, index) => (
-                <div className="cv-page" key={index}>
-                  {page.map((block) => (
-                    <CvBlockView key={block.id} block={block} />
-                  ))}
-                  <footer>
-                    Page {index + 1} of {pages.length}
-                  </footer>
-                </div>
-              ))}
-            </article>
-          )}
-        </>
-      )}
-    </div>
-  );
+          {ready && <div ref={previewScroll} className="ats-studio-preview-scroll" dir="ltr"><article className="professional-cv cv-typeset" lang="en" dir="ltr" data-pages={pages.length} style={{ "--ats-zoom": displayZoom / 100 } as React.CSSProperties}>{pages.map((page, index) => <div className="cv-page" key={index} ref={(node) => { pageRefs.current[index] = node; }}>{page.map((block) => <CvBlockView key={block.id} block={block} />)}<footer>Page {index + 1} of {pages.length}</footer></div>)}</article></div>}
+        </section>
+        <aside className="ats-studio-readiness">
+          <small>{say("CV READINESS · NOT HIRING ODDS", "جاهزية السيرة · ليست فرصة توظيف")}</small>
+          <h2>{say("CV readiness", "جاهزية السيرة")}</h2>
+          <div className="ats-studio-score" role="status" style={{ "--ats-score": data.readiness.score } as React.CSSProperties}><strong>{data.readiness.score}%</strong><meter min={0} max={100} value={data.readiness.score} /></div>
+          <p>{say("A deterministic checklist of document structure and factual completeness. No external ATS or employer has scored it.", "قائمة فحص ثابتة للتنسيق واكتمال المحتوى الحقيقي. لم يقيّمها نظام توظيف أو شركة خارجية.")}</p>
+          <p className="ats-studio-format-status">{data.readiness.formatChecksPassed}/{data.readiness.formatChecksTotal} {say("format checks passed", "فحوص تنسيق مستوفاة")}</p>
+          <div className="ats-studio-breakdown">{data.readiness.dimensions.map((dimension) => <div key={dimension.id}><div><b>{locale === "ar" ? arabicDimension[dimension.id] : dimension.label}</b><span>{dimension.points}/{dimension.max}</span></div><meter min={0} max={dimension.max} value={dimension.points} />{dimension.points < dimension.max && dimension.fixHref && <Link href={`/${locale}${dimension.fixHref}`}>{say("Improve this", "حسّن النقطة دي")}</Link>}</div>)}</div>
+          <div className="ats-studio-download cv-controls">
+            <button type="button" disabled={!owner || !exportReady || Boolean(busy)} onClick={() => void download("pdf")}><FileDown size={18} />{busy === "pdf" ? say("Preparing…", "جارٍ التجهيز…") : say("Download PDF", "تحميل PDF")}</button>
+            <button type="button" disabled={!owner || !exportReady || Boolean(busy)} onClick={() => void download("docx")}><FileText size={18} />{busy === "docx" ? say("Preparing…", "جارٍ التجهيز…") : say("Download Word", "تحميل Word")}</button>
+            <button type="button" disabled={!exportReady || Boolean(busy)} onClick={() => void download("txt")}><FileText size={16} />{say("Download plain text", "تحميل نسخة نصية")}</button>
+            <button type="button" disabled={!exportReady} onClick={() => window.print()}><Printer size={16} />{say("Print / Save as PDF", "طباعة / حفظ كـPDF")}</button>
+            {owner && <button type="button" onClick={() => { setSaved(null); setRefresh((value) => value + 1); }}><RefreshCw size={16} />{say("Refresh saved sources", "تحديث البيانات المحفوظة")}</button>}
+          </div>
+          {downloadError && <p role="alert">{downloadError}</p>}
+          {!owner && <p>{say("Sign in to download private PDF and Word files.", "سجّل دخولك لتنزيل PDF وWord من بيانات حسابك.")}</p>}
+        </aside>
+      </div>
+    </>}
+  </main>;
 }

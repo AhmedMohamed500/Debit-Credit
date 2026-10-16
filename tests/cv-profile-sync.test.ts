@@ -169,6 +169,8 @@ describe("Server-owned live CV projection", () => {
     expect(
       result?.data.cv.evidence.some((row) => row.missionId === "first-day"),
     ).toBe(true);
+    expect(result?.data.evidence.some((row) => row.missionId === "first-day")).toBe(true);
+    expect(result?.data.passport.length).toBeGreaterThan(0);
     expect(
       result?.data.cv.skills.some((row) => row.status === "verified"),
     ).toBe(false);
@@ -186,6 +188,8 @@ describe("Server-owned live CV projection", () => {
     expect(value?.data.plainText).toContain("Excel Accounting");
     expect(value?.data.plainText).toContain("In progress");
     expect(await automaticCvFor("bob")).toBeNull();
+    expect(value?.data.evidence).toEqual([]);
+    expect(value?.data.passport.every((skill) => skill.status === "unassessed")).toBe(true);
     expect(store.versions).toEqual([]);
     expect(JSON.stringify(value)).not.toContain("data:image");
   });

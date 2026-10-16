@@ -1,0 +1,143 @@
+/* The website studio may be visual; the downloadable ATS documents stay plain. */
+.career-approved .ats-studio {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 30px;
+  color: #0c315d;
+  background: transparent;
+}
+.career-approved .ats-studio-grid {
+  display: grid;
+  grid-template-columns: minmax(215px, .86fr) minmax(400px, 1.5fr) minmax(250px, .91fr);
+  align-items: start;
+  gap: 14px;
+  direction: ltr;
+}
+.career-approved .ats-studio-grid > * { min-width: 0; }
+.career-approved[dir="rtl"] .ats-studio-grid > * { direction: rtl; }
+.career-approved .ats-studio-profile,
+.career-approved .ats-studio-preview,
+.career-approved .ats-studio-readiness {
+  min-width: 0;
+  border: 1px solid #d8e8f5;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 6px 21px #0b376010;
+}
+.career-approved .ats-studio-profile,
+.career-approved .ats-studio-readiness { padding: 16px; }
+.career-approved .ats-studio-preview { padding: 12px; background: #f9fcff; }
+.career-approved .ats-studio :is(h1, h2, h3) { color: #082e5d; }
+.career-approved .ats-studio :is(button, select, a):focus-visible { outline: 3px solid #28acc9; outline-offset: 2px; }
+.career-approved .ats-studio .cv-controls { margin: 0; }
+.career-approved .ats-studio .professional-cv { max-width: none; }
+.career-approved .ats-studio-intro {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 0 0 14px;
+  padding: 14px 18px;
+  border: 1px solid #d8e8f5;
+  border-radius: 13px;
+  background: #fff;
+}
+.career-approved .ats-studio-intro > div { min-width: min(100%, 400px); flex: 1; }
+.career-approved .ats-studio-intro h1 { margin: 3px 0 4px; font-size: clamp(20px, 2vw, 27px); }
+.career-approved .ats-studio-intro p { max-width: 750px; margin: 0 0 3px; font-size: 12px; line-height: 1.55; }
+.career-approved .ats-studio-intro label { width: min(100%, 235px); }
+.career-approved .ats-studio-warning,
+.career-approved .ats-studio-empty { margin: 0 0 12px; padding: 13px 16px; border: 1px solid #f3d38c; border-radius: 10px; color: #624800; background: #fff8e8; font-size: 13px; }
+.career-approved .ats-studio-empty { min-height: 230px; border-color: #d8e8f5; color: #28577b; background: #fff; }
+.career-approved .ats-studio-warning a,
+.career-approved .ats-studio-empty a { color: #075ca7; text-decoration: underline; }
+.career-approved .ats-studio-profile { display: grid; justify-items: start; gap: 8px; }
+.career-approved .ats-studio-profile > small,
+.career-approved .ats-studio-readiness > small { color: #18849e; font-size: 10px; font-weight: 850; letter-spacing: .08em; }
+.career-approved .ats-studio-profile h2 { margin: 0; overflow-wrap: anywhere; font-size: 21px; line-height: 1.28; }
+.career-approved .ats-studio-profile > p { margin: 0; color: #43647f; font-size: 12px; line-height: 1.5; }
+.career-approved .ats-studio-photo { width: 102px; height: 102px; margin-bottom: 5px; overflow: hidden; border: 4px solid #daeffb; border-radius: 50%; background: #d6e8f4; }
+.career-approved .ats-studio-photo :is(.profile-photo, .photo-circle) { width: 100%; height: 100%; border: 0; border-radius: 50%; }
+.career-approved .ats-studio-photo img { width: 100%; height: 100%; object-fit: cover; }
+.career-approved .ats-studio-profile dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; width: 100%; margin: 8px 0; }
+.career-approved .ats-studio-profile dl div { display: grid; align-content: center; gap: 2px; min-height: 68px; padding: 7px 4px; border: 1px solid #d7e8f4; border-radius: 8px; background: #f3faff; text-align: center; }
+.career-approved .ats-studio-profile dt { grid-row: 2; color: #53728e; font-size: 10px; line-height: 1.2; }
+.career-approved .ats-studio-profile dd { grid-row: 1; margin: 0; color: #0e4c87; font-size: 20px; font-weight: 850; }
+.career-approved .ats-studio-profile .ats-studio-disclaimer { width: 100%; padding: 10px; border-left: 3px solid #178e92; border-radius: 7px; color: #365a73; background: #eef8f8; }
+.career-approved .ats-studio-profile > a { width: 100%; padding: 9px 10px; border: 1px solid #cfe4f2; border-radius: 8px; color: #0b5f9f; background: #f2faff; font-size: 12px; font-weight: 750; }
+.career-approved .ats-studio-profile > a:hover { border-color: #76b6de; background: #e3f4ff; }
+.career-approved .ats-studio-preview-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 0 0 10px;
+}
+.career-approved .ats-studio-preview-toolbar > div:first-child { flex: 1 0 100%; }
+.career-approved .ats-studio-preview-toolbar h2 { margin: 2px 0; font-size: 17px; }
+.career-approved .ats-studio-page-controls,
+.career-approved .ats-studio-zoom-controls { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 34px; padding: 3px 5px; border: 1px solid #cde5f4; border-radius: 8px; background: #f2f9ff; font-size: 12px; font-weight: 750; }
+.career-approved .ats-studio-page-controls button,
+.career-approved .ats-studio-zoom-controls button { min-height: 27px; padding: 3px 8px; border: 0; background: #fff; }
+.career-approved .ats-studio-page-controls button:disabled,
+.career-approved .ats-studio-zoom-controls button:disabled { opacity: .4; }
+.career-approved .ats-studio-preview-scroll { max-width: 100%; max-height: min(950px, 75vh); overflow: auto; padding: 12px 5px 4px; border: 1px solid #e0edf5; border-radius: 9px; background: #edf5fa; direction: ltr; scrollbar-width: thin; }
+.career-approved .ats-studio-preview-scroll .professional-cv { width: 210mm; margin: 0 auto; zoom: var(--ats-zoom); }
+.career-approved .ats-studio-preview-scroll .cv-page { margin-bottom: 16px; box-shadow: 0 8px 22px #102f4a20; }
+.career-approved .ats-studio-readiness h2 { margin: 4px 0 10px; font-size: 20px; }
+.career-approved .ats-studio-readiness > p { margin: 9px 0; color: #4a6b83; font-size: 12px; line-height: 1.5; }
+.career-approved .ats-studio-score { position: relative; display: grid; place-items: center; width: 145px; height: 145px; margin: 12px auto 6px; border-radius: 50%; background: conic-gradient(#079b8b calc(var(--ats-score, 0) * 1%), #d2e8e5 0); }
+.career-approved .ats-studio-score::before { position: absolute; inset: 11px; border-radius: 50%; background: #f6fbff; content: ""; }
+.career-approved .ats-studio-score strong { position: relative; color: #0b5b82; font-size: 31px; line-height: 1; }
+.career-approved .ats-studio-score meter { position: relative; width: 88px; height: 10px; }
+.career-approved .ats-studio-format-status { padding: 8px 10px; border-radius: 7px; color: #087963 !important; background: #e8f8f3; font-weight: 750; }
+.career-approved .ats-studio-breakdown { display: grid; gap: 9px; margin: 14px 0; }
+.career-approved .ats-studio-breakdown > div { padding-bottom: 9px; border-bottom: 1px solid #e0ebf3; }
+.career-approved .ats-studio-breakdown > div > div { display: flex; justify-content: space-between; gap: 9px; font-size: 11px; }
+.career-approved .ats-studio-breakdown b { font-weight: 750; }
+.career-approved .ats-studio-breakdown meter { width: 100%; height: 10px; }
+.career-approved .ats-studio-breakdown a { color: #0a6fb5; font-size: 11px; font-weight: 700; }
+.career-approved .ats-studio-readiness .ats-studio-download { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; padding-top: 12px; border-top: 1px solid #dceaf4; }
+.career-approved .ats-studio-readiness .ats-studio-download button { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 7px; border: 1px solid #bdddf0; border-radius: 8px; color: #075087; background: #eef8ff; font-size: 11px; font-weight: 800; }
+.career-approved .ats-studio-readiness .ats-studio-download button:nth-child(1) { border-color: #0b69b8; color: #fff; background: #0b69b8; }
+.career-approved .ats-studio-readiness .ats-studio-download button:nth-child(2) { border-color: #087f8d; color: #fff; background: #087f8d; }
+.career-approved .ats-studio-readiness .ats-studio-download button:nth-child(n+3) { grid-column: span 2; }
+.career-approved .ats-studio-readiness .ats-studio-download button:disabled { opacity: .45; cursor: not-allowed; }
+[data-theme="dark"] .career-approved .ats-studio { color: #eaf5ff; }
+[data-theme="dark"] .career-approved .ats-studio :is(.ats-studio-profile, .ats-studio-preview, .ats-studio-readiness) { border-color: #315876; background: #122c46; }
+[data-theme="dark"] .career-approved .ats-studio :is(h1, h2, h3) { color: #eaf5ff; }
+[data-theme="dark"] .career-approved .ats-studio .professional-cv :is(h1, h2, h3) { color: #143c47; }
+[data-theme="dark"] .career-approved .ats-studio-intro { border-color: #315876; background: #122c46; }
+[data-theme="dark"] .career-approved .ats-studio :is(.ats-studio-profile > p, .ats-studio-readiness > p) { color: #bad1e2; }
+[data-theme="dark"] .career-approved .ats-studio-profile dl div,
+[data-theme="dark"] .career-approved .ats-studio-profile > a,
+[data-theme="dark"] .career-approved .ats-studio-preview-scroll,
+[data-theme="dark"] .career-approved .ats-studio-score { border-color: #315876; color: #eaf5ff; background: #173855; }
+[data-theme="dark"] .career-approved .ats-studio-profile dd,
+[data-theme="dark"] .career-approved .ats-studio-score strong { color: #d9f5ff; }
+[data-theme="dark"] .career-approved .ats-studio-score::before { background: #173855; }
+@media (max-width: 1050px) {
+  .career-approved .ats-studio-grid { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.5fr); }
+  .career-approved .ats-studio-readiness { grid-column: 1 / -1; }
+}
+@media (max-width: 720px) {
+  .career-approved .ats-studio-grid { display: flex; flex-direction: column; }
+  .career-approved .ats-studio-grid > * { width: 100%; }
+  .career-approved .ats-studio-profile,
+  .career-approved .ats-studio-readiness { padding: 14px; }
+}
+@media print {
+  .career-approved .ats-studio-grid { display: block; }
+  .career-approved .ats-studio-profile,
+  .career-approved .ats-studio-readiness,
+  .career-approved .ats-studio-preview-toolbar { display: none !important; }
+  .career-approved .ats-studio-preview { border: 0; padding: 0; background: white; box-shadow: none; }
+  .career-approved .ats-studio { padding: 0; background: white; }
+  .career-approved .ats-studio-intro,
+  .career-approved .ats-studio-warning { display: none !important; }
+  .career-approved .ats-studio-preview-scroll { max-height: none; overflow: visible; padding: 0; border: 0; background: white; }
+  .career-approved .ats-studio-preview-scroll .professional-cv { zoom: 1 !important; }
+}

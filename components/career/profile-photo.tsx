@@ -48,10 +48,12 @@ export function ProfilePhoto({
   locale,
   editable = false,
   name = "",
+  compact = false,
 }: {
   locale: Locale;
   editable?: boolean;
   name?: string;
+  compact?: boolean;
 }) {
   const identity = useCloudIdentity(),
     owner = identity?.user.id;
@@ -101,7 +103,7 @@ export function ProfilePhoto({
   const current = loadedOwner === owner ? saved : null;
   return (
     <div
-      className={`profile-photo ${editable ? "photo-editor" : "photo-avatar"}`}
+      className={`profile-photo ${editable ? `photo-editor${compact ? " photo-editor-compact" : ""}` : "photo-avatar"}`}
     >
       <span className="photo-circle">
         {current?.data?.image ? (
@@ -128,16 +130,18 @@ export function ProfilePhoto({
       {editable && (
         <div>
           <b>
-            {say(
-              "Your profile photo (optional)",
-              "صورتك على البروفايل (اختياري)",
-            )}
+            {say("Your profile photo (optional)", "صورتك على البروفايل (اختياري)")}
           </b>
           <p>
-            {say(
-              "Square 512 × 512. JPG, PNG or WebP, up to 5 MB. Center-cropped; location metadata removed. Private to your account; not published in competitions or added to the CV.",
-              "مربع 512 × 512. JPG أو PNG أو WebP حتى 5MB. قصّ من المنتصف وإزالة بيانات الموقع. خاصة بحسابك، ولا تُنشر بالمنافسات أو تُضاف للـCV.",
-            )}
+            {compact
+              ? say(
+                  "512 × 512 · JPG, PNG or WebP · up to 5 MB. Shown on your profile, optional on a share card; not in your ATS CV.",
+                  "512 × 512 · JPG أو PNG أو WebP · حتى 5MB. تظهر في بروفايلك، واختيارية بكارت المشاركة؛ ليست ضمن الـCV.",
+                )
+              : say(
+                  "Square 512 × 512. JPG, PNG or WebP, up to 5 MB. Center-cropped; location metadata removed. Private to your account; not published in competitions or added to the CV.",
+                  "مربع 512 × 512. JPG أو PNG أو WebP حتى 5MB. قصّ من المنتصف وإزالة بيانات الموقع. خاصة بحسابك، ولا تُنشر بالمنافسات أو تُضاف للـCV.",
+                )}
           </p>
           <label className="photo-upload">
             <Camera size={18} />

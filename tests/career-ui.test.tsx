@@ -73,6 +73,7 @@ describe("Career Profile UI", () => {
     expect(screen.getByText("Journal Entries")).toBeInTheDocument();
     expect(screen.getAllByText("Demonstrated").length).toBeGreaterThan(0);
     expect(screen.queryByText("Verified", { selector: ".passport-row em" })).toBeNull();
+    expect(screen.getByRole("link", { name: /Review English CV/ })).toHaveAttribute("href", "/en/career-profile/cv");
   });
 
   it("explains a Skill Passport record with its case, attempts, assistance, and reviewed evidence", async () => {

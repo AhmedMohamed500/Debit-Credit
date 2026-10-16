@@ -6,14 +6,16 @@ export async function memberProfileQa({ page, context, base, locale, label, api,
   const say = (en, ar) => locale === "ar" ? ar : en;
   await page.waitForFunction(() => document.querySelector('.member-feedback button') === null);
   const root = page.locator('.member-profile');
-  await page.locator('.member-tabs').getByRole('button', {name:say('Overview','نظرة عامة'),exact:true}).click();
+  await page.locator('.career-approved-tabs').getByRole('link', {name:say('Overview','نظرة عامة'),exact:true}).click();
   record(label + " no duplicate journey navigation above the profile", await page.locator('.student-journey-bar').count() === 0);
   record(label + " professional next step follows saved journey progress", await page.locator('.candidate-next a').first().getAttribute('href') === (label === 'en-1440' ? '/en/career-profile/skills' : `/${locale}/game/first-shift`));
-  record(label + " dark theme preserves petrol surfaces and readable text", await root.evaluate(element => { document.documentElement.setAttribute('data-theme', 'dark'); const style=getComputedStyle(element); return style.backgroundColor === 'rgb(12, 35, 50)' && style.color !== style.backgroundColor; }));
+  record(label + " dark theme preserves readable career surfaces", await page.locator('.career-approved').evaluate(element => { document.documentElement.setAttribute('data-theme', 'dark'); const style=getComputedStyle(element); return style.backgroundColor !== 'rgb(255, 255, 255)' && style.color !== style.backgroundColor; }));
+  await screenshot(page, label + '-profile-overview-dark'); await checkLayout(page, label + ' profile overview dark');
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
-  record(label + " approved professional view has no student sidebar and white thin navigation", await page.locator('.member-sidebar').count() === 0 && await page.locator('.member-top').evaluate(element => getComputedStyle(element).backgroundColor === 'rgb(255, 255, 255)'));
-  record(label + " large photo not a small circle inside an oversized frame", (await page.locator('.member-portrait img').boundingBox()).width >= 120);
-  await page.locator('.member-tabs').getByRole('button', { name: say('Courses', 'الكورسات'), exact: true }).click();
+  record(label + " approved profile has one white navbar and one navy career sidebar", await page.locator('.member-sidebar:visible, .member-top:visible, .student-journey-bar:visible').count() === 0 && await page.locator('.career-approved-header').evaluate(element => getComputedStyle(element).backgroundColor === 'rgb(255, 255, 255)') && await page.locator('.career-approved-sidebar:visible').count() <= 1);
+  record(label + " genuine profile photo fills its visible frame", await page.locator('.approved-overview-identity .member-portrait img').evaluate(element => { const photo=element.getBoundingClientRect(), frame=element.closest('.member-portrait').getBoundingClientRect(); return photo.width >= frame.width - 2 && photo.height >= frame.height - 2; }));
+  await screenshot(page, label + '-profile-overview-approved'); await checkLayout(page, label + ' profile overview approved');
+  await page.locator('.career-approved-tabs').getByRole('link', { name: say('Courses', 'الكورسات'), exact: true }).click();
   await page.getByRole('button', { name: say('Add course', 'أضف كورس'), exact: true }).click();
   await page.locator('.member-form [name="title"]').fill('Excel for Accountants');
   await page.locator('.member-form [name="provider"]').fill('Local QA University');
@@ -37,9 +39,34 @@ export async function memberProfileQa({ page, context, base, locale, label, api,
   await page.goto(`${base}/${locale}/career-profile/cv`);await page.locator('.professional-cv').waitFor();
   record(label + ' CV page uses current account course and professional link', (await page.locator('.professional-cv').innerText()).includes('Excel for Accountants') && (await page.locator('.professional-cv').innerText()).includes('local-qa-fixture'));
   await screenshot(page,label+'-cv-with-course');
+  if (label.endsWith('1440')) {
+    const originalViewport = page.viewportSize();
+    for (const viewport of [{width:1920,height:1080},{width:1440,height:900},{width:1024,height:900},{width:390,height:844}]) {
+      await page.setViewportSize(viewport);
+      const caption = `${locale}-career-cv-${viewport.width}`;
+      await screenshot(page, caption);
+      await checkLayout(page, caption);
+      const previewFit = await page.locator('.ats-studio-preview-scroll').evaluate(element => ({
+        scroll: element.scrollWidth,
+        visible: element.clientWidth,
+      }));
+      record(caption + ' default A4 preview fits without clipping its left edge', previewFit.scroll <= previewFit.visible + 2);
+      record(caption + ' PDF, Word and readiness controls are visible', await page.getByRole('button', {name:say('Download PDF','تحميل PDF')}).isVisible() && await page.getByRole('button', {name:say('Download Word','تحميل Word')}).isVisible() && await page.locator('.ats-studio-score strong').isVisible());
+      if (viewport.width >= 1440) {
+        const document = await page.locator('.ats-studio-preview').boundingBox(), readiness = await page.locator('.ats-studio-readiness').boundingBox();
+        record(caption + ' readiness sits physically right of the CV preview', readiness.x >= document.x + document.width - 1);
+      }
+      if (viewport.width === 1440 || viewport.width === 390) {
+        await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+        await screenshot(page, caption + '-dark'); await checkLayout(page, caption + ' dark');
+        await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+      }
+    }
+    await page.setViewportSize(originalViewport);
+  }
   await page.goto(`${base}/${locale}/career-profile#courses`);await page.locator('.member-record').getByText('Excel for Accountants',{exact:true}).waitFor();
   await screenshot(page, label + '-profile-courses'); await checkLayout(page, label + ' profile courses');
-  await page.locator('.member-tabs').getByRole('button', { name: say('Certificates', 'الشهادات'), exact: true }).click();
+  await page.locator('.career-approved-tabs').getByRole('link', { name: say('Certificates', 'الشهادات'), exact: true }).click();
   await page.getByRole('button', { name: say('Add certificate', 'أضف شهادة'), exact: true }).click();
   await page.locator('.member-form [name="title"]').fill('Financial Reporting Certificate');
   await page.locator('.member-form [name="issuer"]').fill('Local QA University');
@@ -96,7 +123,7 @@ export async function memberProfileQa({ page, context, base, locale, label, api,
   await page.getByRole('heading', { name: 'Financial Reporting Certificate', exact: true }).waitFor({ state: 'detached' });
   record(label + ' certificate removal deletes its private image', (await api(context, 'me/certificates/' + certificate.id)).status() === 404);
   record(label + ' certificate removal also updates CV',!(await (await api(context,'me/cv')).json()).data.plainText.includes('Financial Reporting Certificate'));
-  await page.locator('.member-tabs').getByRole('button', { name: say('Courses', 'الكورسات'), exact: true }).click();
+  await page.locator('.career-approved-tabs').getByRole('link', { name: say('Courses', 'الكورسات'), exact: true }).click();
   await page.getByRole('button', { name: `${say('Remove', 'حذف')} Excel for Accountants`, exact: true }).click();
   await page.getByText('Excel for Accountants', { exact: true }).waitFor({ state: 'detached' });
   record(label + ' course removal persists', (await (await api(context, 'me/portfolio')).json()).courses.length === 0);

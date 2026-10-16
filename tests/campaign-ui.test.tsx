@@ -140,15 +140,14 @@ describe("Chapter 1 cinematic First Day UI", () => {
       deskEntered: true,
     });
   });
-  it("preserves the boy in the city, its five portals, and the connected workbench", () => {
+  it("shows the approved accounting office, five real mission stages, and the connected workbench", () => {
     const { container } = render(<GameApp locale="en" />);
     enterShift();
     expect(
       screen.getByRole("heading", { name: "Your first shift." }),
     ).toBeInTheDocument();
-    expect(container.querySelector(".fsh-artwork")).toHaveAttribute(
-      "src",
-      "/game/first-shift-world-art.png",
+    expect(container.querySelector(".fsh-artwork")?.getAttribute("src")).toContain(
+      "first-shift-approved-office.png",
     );
     expect(
       screen.getByRole("region", { name: "Mizan accounting system" }),
@@ -157,6 +156,10 @@ describe("Chapter 1 cinematic First Day UI", () => {
       screen.getByRole("progressbar", { name: "Shift progress" }),
     ).toHaveAttribute("aria-valuenow", "0");
     expect(document.querySelectorAll(".fsh-portal")).toHaveLength(5);
+    expect(
+      screen.getByRole("group", { name: "Office work zones" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Simulated accounting work, not employment")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Customer Receipt · Locked" }),
     ).toBeDisabled();
@@ -169,9 +172,15 @@ describe("Chapter 1 cinematic First Day UI", () => {
     expect(
       screen.getByRole("dialog", { name: "Supplier Invoice" }),
     ).toHaveTextContent("INV-1048");
+    expect(screen.queryByRole("combobox", { name: "Evidence line 1" })).toBeNull();
+    expect(container.querySelector(".acw-journal-labels")).not.toHaveTextContent("Evidence");
+    expect(container.querySelectorAll(".acw-journal-row select")).toHaveLength(2);
+    expect(screen.getByRole("region", { name: "Document viewer" })).toHaveTextContent("INV-1048");
     expect(
       screen.getByRole("heading", { name: "Work inbox" }),
     ).toBeInTheDocument();
+    expect(screen.queryByText("09:15")).toBeNull();
+    expect(screen.getByRole("region", { name: "Document viewer" })).toHaveTextContent("12 Mar 2024");
     expect(
       screen.getByRole("heading", { name: "Manager instructions" }),
     ).toBeInTheDocument();
@@ -247,6 +256,7 @@ describe("Chapter 1 cinematic First Day UI", () => {
     expect(
       screen.getByRole("region", { name: "Document viewer" }),
     ).toHaveTextContent("GRN-771");
+    expect(screen.getByRole("region", { name: "Document viewer" })).not.toHaveTextContent("2026/10/14");
   });
   it("rejects an unbalanced workpaper without accepting a ledger entry", () => {
     render(<GameApp locale="en" />);
@@ -264,7 +274,7 @@ describe("Chapter 1 cinematic First Day UI", () => {
     });
     choosePosting(/Post the liability/);
     expect(document.querySelector(".acw-feedback")).toHaveTextContent(
-      "equal debit and credit totals",
+      "total debits must equal total credits",
     );
     expect(readGame().journal).toHaveLength(0);
   });

@@ -4,6 +4,7 @@ import { db, json, type Transaction } from "../db/client";
 import { normalizeSnapshot } from "../migration/snapshots";
 import { buildCv } from "@/lib/career/cv";
 import { compactCv } from "@/lib/career/compact-cv";
+import { scoreCvReadiness } from "@/lib/career/ats";
 import {
   calculatePassport,
   firstShiftSkillEvidence,
@@ -86,7 +87,8 @@ export async function deriveAccountCv(
       [...projected, ...recorded].map((item) => [item.evidenceId, item]),
     ).values(),
   ];
-  const cv = buildCv(profile, calculatePassport(evidence), evidence, role);
+  const passport = calculatePassport(evidence);
+  const cv = buildCv(profile, passport, evidence, role);
   const compact = compactCv(
     profile,
     cv,
@@ -101,16 +103,21 @@ export async function deriveAccountCv(
     templateVersion: 2,
     profile,
     cv,
+    passport,
+    evidence,
     compact,
     plainText: compact.plainText,
+    readiness: scoreCvReadiness(profile, cv, compact),
   };
 }
 export async function saveAutomaticCloudCv(tx: Transaction, userId: string) {
   const data = await deriveAccountCv(tx, userId);
   await refreshDiscovery(tx, userId);
   if (!data) return;
+  // Version the visible document, not mutable timestamps or private source
+  // metadata. Re-saving the same facts must not create an identical CV version.
   const fingerprint = createHash("sha256")
-    .update(JSON.stringify(data))
+    .update(JSON.stringify({ role: data.cv.targetRoleId, text: data.plainText }))
     .digest("hex");
   const latest = await tx.cvVersionCloud.findFirst({
     where: { userId },

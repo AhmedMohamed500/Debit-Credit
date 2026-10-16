@@ -180,6 +180,36 @@
   line-height: 1.8;
   color: #587580;
 }
+/* The saved pre-shift briefing remains the first step. Its visual language now
+   leads directly into the same office scene shown after “Open my desk”. */
+.shift-briefing-heading {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 230px;
+  padding: 36px clamp(22px, 4vw, 55px);
+  border-radius: 16px;
+  background: #092744 url('/game/first-shift-approved-office.png') center 46% / cover no-repeat;
+  color: #fff;
+}
+.shift-briefing-heading::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, #051d35ed, #0b3552a8 70%, #0b355271);
+}
+.shift-briefing[dir='rtl'] .shift-briefing-heading::before {
+  background: linear-gradient(270deg, #051d35ed, #0b3552a8 70%, #0b355271);
+}
+.shift-briefing-heading > small,
+.shift-briefing-heading > small span {
+  color: #90ebee;
+}
+.shift-briefing-heading > p {
+  max-width: 590px;
+  color: #e1f0f9;
+}
 .shift-briefing-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;

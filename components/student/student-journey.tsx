@@ -267,7 +267,9 @@ function StudentJourneyBar() {
       `/${locale}/game/first-shift`,
       `/${locale}/student-profile`,
       `/${locale}/career-profile`,
-    ].includes(pathname)
+      `/${locale}/account`,
+    ].includes(pathname) ||
+    pathname.startsWith(`/${locale}/career-profile/`)
   )
     return null;
   return (

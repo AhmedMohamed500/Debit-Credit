@@ -3,6 +3,8 @@ const config: NextConfig = {
   distDir: process.env.APP_BUILD_DIR || ".next",
   reactStrictMode: true,
   agentRules: false,
+  // Keep page-data generation within the memory budget of local/CI builders.
+  experimental: { cpus: 2 },
   async headers() {
     return [
       { source: "/:locale/employer/:path*", headers: [ { key: "Cache-Control", value: "private, no-store, max-age=0" }, { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }, { key: "Referrer-Policy", value: "no-referrer" } ] },

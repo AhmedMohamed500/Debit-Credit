@@ -87,6 +87,9 @@ export function configureCloud(id: string | null, progress?: CloudProgress) {
     timers.clear();
     pending.clear();
     generation++;
+    // The status describes the active account only. A previous user's
+    // successful save or conflict must not appear on the next account.
+    notifySync("ready");
   }
   userId = id;
   revisions.clear();

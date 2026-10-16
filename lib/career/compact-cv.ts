@@ -16,7 +16,7 @@ export type CompactCv = {
 };
 const english = (value: string) => !/[\u0600-\u06ff]/u.test(value);
 const brief = (value: string, max = 240) => {
-  const clean = value.replace(/\s+/g, " ").trim();
+  const clean = value.replace(/[\p{Cc}\p{Cf}]/gu, " ").replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
   const prefix = clean.slice(0, max - 3);
   return prefix.slice(0, Math.max(prefix.lastIndexOf(" "), max - 35)) + "...";
@@ -31,14 +31,19 @@ export function compactCv(
 ): CompactCv {
   let omitted = 0,
     needsEnglish = 0;
+  const englishOrEmpty = (value: string) => {
+    if (english(value)) return value;
+    needsEnglish++;
+    return "";
+  };
   const blocks: CvBlock[] = [
     {
       id: "contact",
       header: true,
       lines: [
-        profile.fullName || "Your Name",
+        englishOrEmpty(profile.fullName),
         brief(cv.headline, 140),
-        [profile.email, profile.phone, profile.location, profile.country]
+        [profile.email, profile.phone, englishOrEmpty(profile.location), englishOrEmpty(profile.country)]
           .filter(Boolean)
           .join(" | "),
       ],
@@ -94,7 +99,7 @@ export function compactCv(
   if (cv.coreSkills.length)
     blocks.push({
       id: "skills",
-      heading: "Core Accounting Skills",
+      heading: "Relevant Skills",
       lines: [
         cv.coreSkills
           .slice(0, 8)
@@ -105,7 +110,7 @@ export function compactCv(
   if (cv.practiceSkills.length)
     blocks.push({
       id: "practice",
-      heading: "Accounting Practice",
+      heading: "Additional Accounting Practice",
       lines: [
         cv.practiceSkills
           .slice(0, 8)
@@ -134,10 +139,10 @@ export function compactCv(
   selected.forEach((line, index) =>
     blocks.push({
       id: `simulation-${index}`,
-      heading: index === 0 ? "Accounting Simulation Experience" : undefined,
+      heading: index === 0 ? "Accounting Simulation Projects" : undefined,
       lines: [
         ...(index === 0
-          ? ["Mizan Trading - Training simulation, not employment"]
+          ? ["Debit & Credit - Training simulations, not employment"]
           : []),
         "• " + brief(line, 220),
       ],
@@ -193,15 +198,28 @@ export function compactCv(
     });
   // Conservative content budget reserves space for headings/line wrapping at
   // readable print size. Excess items remain on the profile, not deleted.
-  let budget = 96;
+  const order = (block: CvBlock) => {
+    const id = block.id;
+    if (id === "contact") return 0;
+    if (id === "summary") return 1;
+    if (id.startsWith("experience-")) return 2;
+    if (id.startsWith("simulation-")) return 3;
+    if (id.startsWith("education-")) return 4;
+    if (id === "skills" || id === "practice") return 5;
+    if (id.startsWith("course-")) return 6;
+    if (id.startsWith("certificate-")) return 7;
+    if (id === "languages") return 8;
+    return 9;
+  };
+  blocks.sort((a, b) => order(a) - order(b));
+  let budget = 78;
   const kept = blocks.filter((block) => {
     const cost =
       (block.heading ? 3 : 1) +
       block.lines.reduce(
-        (sum, line) => sum + Math.max(1, Math.ceil(line.length / 64)),
+        (sum, line) => sum + Math.max(1, Math.ceil(line.length / 68)),
         0,
-      ) +
-      (block.header ? 4 : 0);
+      ) + (block.header ? 4 : 0);
     if (cost <= budget || block.header) {
       budget -= cost;
       return true;

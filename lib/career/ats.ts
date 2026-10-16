@@ -1,5 +1,6 @@
 import { roleCatalog, skillCatalog } from "./catalog";
 import type { CareerProfile, CvDocument } from "./model";
+import type { CompactCv } from "./compact-cv";
 export interface AtsFormatCheck {
   id:
     | "single-column"
@@ -128,4 +129,156 @@ export function checkAtsFormat(
       message: "Keywords come from evidence-backed skills or saved experience.",
     },
   ];
+}
+
+export type CvReadinessDimension = {
+  id:
+    | "format"
+    | "contact"
+    | "english"
+    | "summary"
+    | "education"
+    | "skills"
+    | "practical-work"
+    | "learning";
+  label: string;
+  points: number;
+  max: number;
+  detail: string;
+  fixHref?: string;
+};
+export type CvReadiness = {
+  score: number;
+  max: 100;
+  dimensions: CvReadinessDimension[];
+  formatChecksPassed: number;
+  formatChecksTotal: number;
+  missingEnglish: number;
+};
+
+/**
+ * A transparent document-completeness checklist, never an employer ATS score.
+ * The generated downloads have a fixed single-column, searchable-text layout.
+ * Paid employment is optional: accepted labeled simulations can earn all
+ * practical-work points, which avoids penalising students for being students.
+ */
+export function scoreCvReadiness(
+  profile: CareerProfile,
+  cv: CvDocument,
+  compact: CompactCv,
+): CvReadiness {
+  const hasBlock = (prefix: string) =>
+    compact.blocks.some((block) => block.id === prefix || block.id.startsWith(prefix + "-"));
+  const text = compact.plainText;
+  const formatChecks = [
+    true, // One reading column is enforced by the renderer.
+    true, // PDF and DOCX are actual selectable text, not an image.
+    hasBlock("summary"), // Standard heading in the projection.
+    new Set(compact.blocks.map((block) => block.id)).size === compact.blocks.length &&
+      !text.includes("Your Name"),
+  ];
+  const englishRequired = [
+    profile.fullName,
+    profile.headline,
+    profile.summary,
+    profile.location,
+    profile.country,
+  ].filter(Boolean);
+  const needsEnglish =
+    compact.needsEnglish +
+    englishRequired.filter((value) => /[\u0600-\u06ff]/u.test(value)).length;
+  const contactText = compact.blocks.find((block) => block.id === "contact")?.lines.join(" ") ?? "";
+  const contactPoints =
+    (profile.fullName.trim() && contactText.includes(profile.fullName.trim()) ? 5 : 0) +
+    (profile.email.trim() && contactText.includes(profile.email.trim()) ? 5 : 0) +
+    (profile.phone.trim() && contactText.includes(profile.phone.trim()) ? 5 : 0) +
+    ([profile.location, profile.country].some((value) => value.trim() && contactText.includes(value.trim())) ? 5 : 0);
+  const coreSkillsShown = hasBlock("skills") && cv.coreSkills.length > 0;
+  const practiceSkillsShown = hasBlock("practice") && cv.practiceSkills.length > 0;
+  const distinctPracticalBullets = compact.blocks.filter((block) => block.id.startsWith("simulation-")).length;
+  const experienceCount = compact.blocks.filter((block) => block.id.startsWith("experience-")).length;
+  const practicalPoints =
+    experienceCount > 0 || distinctPracticalBullets >= 2
+      ? 10
+      : distinctPracticalBullets === 1
+        ? 5
+        : 0;
+  const learningCount = compact.blocks.filter(
+    (block) => block.id.startsWith("course-") || block.id.startsWith("certificate-"),
+  ).length;
+  const dimensions: CvReadinessDimension[] = [
+    {
+      id: "format",
+      label: "Readable ATS structure",
+      points: formatChecks.filter(Boolean).length * 5,
+      max: 20,
+      detail: "Single column, selectable text, standard headings and no duplicate sections.",
+    },
+    {
+      id: "contact",
+      label: "Contact details",
+      points: contactPoints,
+      max: 20,
+      detail: "Five points each for name, email, phone and location.",
+      fixHref: "/student-profile",
+    },
+    {
+      id: "english",
+      label: "English-ready content",
+      points: needsEnglish ? 0 : englishRequired.length ? 10 : 0,
+      max: 10,
+      detail: needsEnglish
+        ? "Some saved names or titles need an English version; no translation was invented."
+        : "Selected text contains no untranslated Arabic fields.",
+      fixHref: "/student-profile",
+    },
+    {
+      id: "summary",
+      label: "Professional summary",
+      points: hasBlock("summary") && compact.blocks.some((block) => block.id === "summary" && block.lines.some((line) => line.trim())) ? 10 : 0,
+      max: 10,
+      detail: "A concise, factual summary tied to the selected accounting role.",
+      fixHref: "/career-profile/edit",
+    },
+    {
+      id: "education",
+      label: "Education",
+      points: hasBlock("education") ? 10 : 0,
+      max: 10,
+      detail: "A saved education record with English degree and institution.",
+      fixHref: "/student-profile",
+    },
+    {
+      id: "skills",
+      label: "Evidence-supported skills",
+      points: coreSkillsShown ? 15 : practiceSkillsShown ? 7 : 0,
+      max: 15,
+      detail: "Demonstrated/verified skills earn full points; practiced skills earn partial points.",
+      fixHref: "/career-profile/skills",
+    },
+    {
+      id: "practical-work",
+      label: "Factual experience or simulation",
+      points: practicalPoints,
+      max: 10,
+      detail: "Actual self-reported employment or accepted, explicitly labeled simulation work.",
+      fixHref: "/game/first-shift",
+    },
+    {
+      id: "learning",
+      label: "Saved relevant learning",
+      points: learningCount ? 5 : 0,
+      max: 5,
+      detail: "At least one saved course or certificate; self-reported items do not verify a skill.",
+      fixHref: "/career-profile#courses",
+    },
+  ];
+  return {
+    score: dimensions.reduce((sum, row) => sum + row.points, 0),
+    max: 100,
+    dimensions,
+    formatChecksPassed: formatChecks.filter(Boolean).length,
+    formatChecksTotal: formatChecks.length,
+    missingEnglish: needsEnglish,
+  };
 }

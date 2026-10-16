@@ -182,32 +182,44 @@ try {
       await page.locator('.fsh-next-task a').waitFor();
       record(label + " reviewed First Shift hands off to skills", await page.locator('.fsh-next-task a').getAttribute('href') === `/${locale}/career-profile/skills`);
       await page.locator('.fsh-next-task a').click(); await page.waitForURL(`**/${locale}/career-profile/skills`);
-      await page.locator('.student-next-action a').waitFor();
-      record(label + " skills hands off to English CV", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/career-profile/cv`);
-      await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/career-profile/cv`);
+      await page.locator('.career-skill-next a').waitFor();
+      record(label + " skills hands off to English CV", await page.locator('.career-skill-next a').getAttribute('href') === `/${locale}/career-profile/cv`);
+      await page.locator('.career-skill-next a').click(); await page.waitForURL(`**/${locale}/career-profile/cv`);
       resumeRoute = `/${locale}/career-profile/skills`;
     }
     await page.goto(`${base}/${locale}/career-profile`); await page.locator('.member-portrait img').waitFor();
     record(label + " profile photo fills entire portrait inside its decorative border", await page.locator('.member-portrait .photo-circle').evaluate(frame => { const a=frame.getBoundingClientRect(), b=frame.querySelector('img').getBoundingClientRect(); return Math.abs(a.width-b.width)<1 && Math.abs(a.height-b.height)<1; }));
+    record(label + " approved overview and account header show the uploaded owner photo", await page.locator('.approved-overview-identity .member-portrait img').getAttribute('src') === photo.data.image && await page.locator('.career-approved-account img').getAttribute('src') === photo.data.image);
     await screenshot(page, label + "-career-profile"); await checkLayout(page, label + " career profile");
-    await page.locator('.member-tabs').getByRole('button', { name: locale === 'ar' ? 'الأعمال العملية' : 'Practical Work', exact: true }).click();
+    await page.locator('.career-approved-tabs a[href$="#work"]').click();
+    await page.getByTestId('career-showcase').waitFor({ timeout: 12000 });
+    record(label + " approved Work tab opens the account showcase", new URL(page.url()).hash === '#work');
     await careerShowcaseQa({ page, context, base, locale, label, api, record, screenshot, checkLayout });
     await memberProfileQa({ page, context, base, locale, label, api, record, screenshot, checkLayout });
     await page.goto(`${base}/${locale}/career-profile/cv`); await page.locator('.professional-cv').waitFor(); await screenshot(page, label + "-cv"); await checkLayout(page, label + " CV");
     const cvText = await page.locator('.professional-cv').innerText(); record(label + " CV includes personal details and accounting outcomes", cvText.includes("Student CV Fixture") && cvText.includes("+20 100 123 4567") && cvText.includes("trial balance"));
     record(label + " CV is English LTR even on Arabic site and contains no photo", !/[\u0600-\u06ff]/u.test(cvText) && await page.locator('.professional-cv').getAttribute("lang") === "en" && await page.locator('.professional-cv').getAttribute("dir") === "ltr" && await page.locator('.professional-cv img').count() === 0);
-    const textDownloadEvent = page.waitForEvent("download"); await page.getByRole("button", { name: /Plain Text CV|سيرة نصية/ }).click(); const textDownload = await textDownloadEvent, text = await readFile(await textDownload.path(), "utf8");
-    record(label + " ATS export has standard text headings and supported keywords", text.includes("ACCOUNTING SIMULATION EXPERIENCE") && text.includes("Journal Entries") && text.includes("2028") && text.includes(email));
-    record(label + " ATS export does not invent certification or employment", !/Certified|CPA|CMA|employed at Mizan/i.test(text));
-    await page.emulateMedia({ media: "print" }); record(label + " PDF uses single column", await page.locator('.professional-cv .cv-page>header').evaluate(element => getComputedStyle(element).display === "block")); record(label + " print hides account controls", await page.locator('.cloud-account-bar').evaluate(element => getComputedStyle(element).display === "none"));
-    record(label + ' print wrapper is white without a full-height background panel',await page.locator('.new-game-shell').evaluate(element=>getComputedStyle(element).backgroundColor==='rgb(255, 255, 255)' && getComputedStyle(element).minHeight==='0px'));
-    record(label + ' measured print layout never exceeds two A4 pages',await page.locator('.cv-page').count() <= 2 && await page.locator('.cv-page').evaluateAll(pages => pages.every(page => page.getBoundingClientRect().height <= 273*96/25.4)));
-    const pdf=await page.pdf({path:path.join(output,label+'-compact-cv.pdf'),preferCSSPageSize:true,printBackground:true});
-    const pageCount=[...pdf.toString('latin1').matchAll(/\/Type\s*\/Page\b/g)].length;
-    record(label + ' real exported PDF has one or two pages',pageCount >=1 && pageCount<=2);
-    await page.emulateMedia({ media: "screen" });
+    for (const [format, buttonName, signature] of [['pdf', /Download PDF|تحميل PDF/, '%PDF-'], ['docx', /Download Word|تحميل Word/, 'PK\x03\x04']]) {
+      const downloadEvent = page.waitForEvent('download', { timeout: 20000 });
+      await page.getByRole('button', { name: buttonName }).click();
+      const file = await downloadEvent, bytes = await readFile(await file.path());
+      record(label + ` ${format.toUpperCase()} button downloads a real current-account file`, file.suggestedFilename().endsWith(`.${format}`) && bytes.length > 1000 && bytes.subarray(0, signature.length).toString('latin1') === signature);
+      await file.saveAs(path.join(output, `${label}-server-cv.${format}`));
+    }
+    if (process.env.STUDENT_CV_QA_SKIP_LEGACY_PRINT !== '1') {
+      const textDownloadEvent = page.waitForEvent("download", { timeout: 15000 }); await page.getByRole("button", { name: /Download plain text|تحميل نسخة نصية/ }).click({ timeout: 15000 }); const textDownload = await textDownloadEvent, text = await readFile(await textDownload.path(), "utf8");
+      record(label + " ATS export has standard text headings and supported keywords", text.includes("ACCOUNTING SIMULATION EXPERIENCE") && text.includes("Journal Entries") && text.includes("2028") && text.includes(email));
+      record(label + " ATS export does not invent certification or employment", !/Certified|CPA|CMA|employed at Mizan/i.test(text));
+      await page.emulateMedia({ media: "print" }); record(label + " PDF uses single column", await page.locator('.professional-cv .cv-page>header').evaluate(element => getComputedStyle(element).display === "block")); record(label + " print hides account controls", await page.locator('.cloud-account-bar').count() === 0 || await page.locator('.cloud-account-bar').evaluate(element => getComputedStyle(element).display === "none"));
+      record(label + ' print wrapper is white without a full-height background panel',await page.locator('.career-approved').evaluate(element=>getComputedStyle(element).backgroundColor==='rgb(255, 255, 255)' && getComputedStyle(element).minHeight==='0px'));
+      record(label + ' measured print layout never exceeds two A4 pages',await page.locator('.cv-page').count() <= 2 && await page.locator('.cv-page').evaluateAll(pages => pages.every(page => page.getBoundingClientRect().height <= 273*96/25.4)));
+      const pdf=await page.pdf({path:path.join(output,label+'-compact-cv.pdf'),preferCSSPageSize:true,printBackground:true});
+      const pageCount=[...pdf.toString('latin1').matchAll(/\/Type\s*\/Page\b/g)].length;
+      record(label + ' real exported PDF has one or two pages',pageCount >=1 && pageCount<=2);
+      await page.emulateMedia({ media: "screen" });
+    } else console.log('SKIP', label + ' legacy TXT/print-browser checks; authenticated PDF and DOCX button exports tested above');
     await page.reload(); await page.locator('.professional-cv').waitFor(); record(label + " CV restored after reload", (await page.locator('.professional-cv').innerText()).includes("Student CV Fixture"));
-    if(locale==='en' && viewport.width===1440) await compactCvStressQa({page,base,locale,label,record,screenshot,output});
+    if(locale==='en' && viewport.width===1440 && process.env.STUDENT_CV_QA_SKIP_LEGACY_PRINT !== '1') await compactCvStressQa({page,base,locale,label,record,screenshot,output});
     await page.goto(`${base}/${locale}/profile`); await page.locator('.photo-editor img').waitFor();
     record(label + " uploaded photo restored in game profile", await page.locator('.photo-editor img').getAttribute("src") === photo.data.image);
     await page.getByRole("button", { name: /Remove photo|إزالة الصورة/ }).click(); await page.locator('.photo-editor img').waitFor({ state: "detached" });
@@ -229,6 +241,6 @@ try {
   console.log(`Student onboarding/CV QA: ${results.length} checks passed. Only isolated localhost fixtures used.`);
 } finally {
   if (browser) await browser.close();
-  if (app && app.exitCode === null) { if (process.platform === "win32") await done(spawn("taskkill", ["/PID", String(app.pid), "/T", "/F"], { stdio: "ignore", windowsHide: true })); else app.kill(); }
+  if (app && app.exitCode === null) { if (process.platform === "win32") { try { await done(spawn("taskkill", ["/PID", String(app.pid), "/T", "/F"], { stdio: "ignore", windowsHide: true })); } catch { app.kill(); } } else app.kill(); }
   if (database) await database.stop();
 }

@@ -27,8 +27,6 @@ import {
 } from "@/lib/cloud/runtime";
 import { CloudCacheRepository } from "@/lib/cloud/cache";
 import { activitySummary } from "@/lib/career/activity-summary";
-import { firstShiftMissionProgress } from "@/lib/campaign/first-shift-hub";
-import { useGame } from "@/lib/campaign/store";
 import { stepIds, type StudentState } from "@/lib/student/unit";
 import {
   PORTFOLIO_LIMIT,
@@ -119,7 +117,6 @@ export function MemberProfile({
       ? journey.journey.nextRoute
       : `/${locale}`;
   const say = (en: string, ar: string) => (locale === "ar" ? ar : en);
-  const { state: game } = useGame();
   const [tab, setTab] = useState<Tab>("profile"),
     [refresh, setRefresh] = useState(0);
   const [saved, setSaved] = useState<{ owner: string; data: Portfolio } | null>(
@@ -156,7 +153,9 @@ export function MemberProfile({
     (personalFields.filter(Boolean).length / personalFields.length) * 100,
   );
   const latest = recentEvidence(evidence);
-  const shift = firstShiftMissionProgress(game).completedCount;
+  // Account evidence comes from the owner-scoped server CV projection. The
+  // journal/ledger stage is not inferred from a browser game cache here.
+  const shift = activitySummary(evidence, "first-day/").completed;
   const accepted =
     unit && unit.owner === owner ? unit.data.accepted.length : null;
   const demonstrated = passport.filter(
@@ -185,20 +184,26 @@ export function MemberProfile({
     }, 0);
   }
   useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (
-      [
-        "profile",
-        "skills",
-        "work",
-        "courses",
-        "progress",
-        "certifications",
-        "settings",
-        "cv",
-      ].includes(hash)
-    )
-      setTab(hash as Tab);
+    const readHash = () => {
+      const hash = window.location.hash.slice(1);
+      if (
+        [
+          "profile",
+          "skills",
+          "work",
+          "courses",
+          "progress",
+          "certifications",
+          "settings",
+          "cv",
+        ].includes(hash)
+      )
+        setTab(hash as Tab);
+      else setTab("profile");
+    };
+    readHash();
+    window.addEventListener("hashchange", readHash);
+    return () => window.removeEventListener("hashchange", readHash);
   }, []);
   useEffect(() => {
     if (!owner) return;
@@ -377,12 +382,12 @@ export function MemberProfile({
           {
             title: "Mizan Trading — First Shift",
             count: shift,
-            total: 5,
+            total: 3,
             href: `/${locale}/game/first-shift`,
             icon: BookOpen,
             note: say(
-              "Cases, journal and ledger in your simulation",
-              "حالات ودفتر يومية وأستاذ داخل المحاكاة",
+              "Accepted source-document cases; journal and ledger status are shown inside the simulation",
+              "حالات مستندات مقبولة؛ حالة اليومية والأستاذ داخل المحاكاة",
             ),
           },
         ].map((row) => (
@@ -490,13 +495,6 @@ export function MemberProfile({
       </header>
       <div className="member-layout">
         <div className="member-content">
-          <CandidateHero
-            profile={profile}
-            locale={locale}
-            showcase={showcase.data}
-            completeness={completeness}
-            open={openSharing}
-          />
           <nav
             className="member-tabs"
             aria-label={say("Profile sections", "أقسام البروفايل")}
@@ -584,6 +582,7 @@ export function MemberProfile({
                           : say("Open your learning plan", "افتح خطة التعلم"),
                     }}
                     open={selectTab}
+                    openSharing={openSharing}
                   />
                 </>
               )}
@@ -633,6 +632,13 @@ export function MemberProfile({
               )}
               {tab === "work" && (
                 <>
+                  <CandidateHero
+                    profile={profile}
+                    locale={locale}
+                    showcase={showcase.data}
+                    completeness={completeness}
+                    open={openSharing}
+                  />
                   <ShowcasePanel
                     controller={showcase}
                     locale={locale}

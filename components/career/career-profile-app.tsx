@@ -1,14 +1,18 @@
 "use client";
 import "@/app/career-profile.css";
 import "@/app/career-profile-documents.css";
+import "@/app/career-approved.css";
+import "@/app/ats-studio.css";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { ProfilePhoto } from "./profile-photo";
-import { AccountMemberProfile } from "./account-member-profile";
+import { AccountCareerData, AccountMemberProfile, type AccountCareerProjection } from "./account-member-profile";
+import { ApprovedCareerShell } from "./approved-career-shell";
 import { CvView } from "./compact-cv-view";
 import { activitySummary } from "@/lib/career/activity-summary";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { cloudUser } from "@/lib/cloud/runtime";
 import {
   BriefcaseBusiness,
   Check,
@@ -86,7 +90,7 @@ export function CareerProfileApp({
     [evidence, setEvidence] = useState<SkillEvidence[]>([]),
     [prefs, setPrefs] = useState<CvPreferences | null>(null);
   useEffect(() => {
-    if (!gameReady) return;
+    if (!gameReady || ((view === "dashboard" || view === "cv" || view === "edit" || view === "skills" || view === "skill") && (identity || cloudUser()))) return;
     const current = profileRepo.get() ?? createDefaultProfile(game.name),
       synced = evidenceRepo.merge(
         firstShiftSkillEvidence(game, current.localCandidateId),
@@ -103,7 +107,7 @@ export function CareerProfileApp({
     setProfile(current);
     setEvidence(synced);
     setPrefs(savedPrefs);
-  }, [game, gameReady, identity?.user.id]);
+  }, [game, gameReady, identity, view]);
   const save = (patch: Partial<CareerProfile>) =>
     setProfile((current) => {
       if (!current) return current;
@@ -118,29 +122,72 @@ export function CareerProfileApp({
   const passport = calculatePassport(evidence),
     readiness = roleIds.map((id) => calculateRoleReadiness(id, passport)),
     dna = accountingDna(passport, evidence);
+  if (identity && view === "edit")
+    return (
+      <ApprovedCareerShell locale={locale} section="edit">
+        <AccountCareerData owner={identity.user.id} locale={locale}>
+          {({ profile: savedProfile }) => (
+            <AccountCareerEditor
+              key={identity.user.id}
+              owner={identity.user.id}
+              locale={locale}
+              profile={savedProfile}
+            />
+          )}
+        </AccountCareerData>
+      </ApprovedCareerShell>
+    );
+  const selectedSkill = skillIds.includes(skillId as SkillId)
+    ? (skillId as SkillId)
+    : undefined;
+  if (view === "dashboard" && identity)
+    return (
+      <ApprovedCareerShell locale={locale} section="dashboard">
+        <AccountMemberProfile
+          locale={locale}
+          owner={identity.user.id}
+        />
+      </ApprovedCareerShell>
+    );
+  if (view === "cv" && identity)
+    return (
+      <ApprovedCareerShell locale={locale} section="cv">
+        <AccountCareerData owner={identity.user.id} locale={locale}>
+          {(data) => <AccountCv key={identity.user.id} owner={identity.user.id} locale={locale} data={data} />}
+        </AccountCareerData>
+      </ApprovedCareerShell>
+    );
+  if (identity && (view === "skills" || view === "skill"))
+    return (
+      <ApprovedCareerShell locale={locale} section="skills">
+        <main className="career-app career-approved-module" dir={ar ? "rtl" : "ltr"}>
+          <AccountCareerData owner={identity.user.id} locale={locale}>
+            {({ passport: accountPassport, evidence: accountEvidence }) =>
+              view === "skill" && selectedSkill ? (
+                <SkillDetail
+                  locale={locale}
+                  result={accountPassport.find((s) => s.skillId === selectedSkill)!}
+                  evidence={accountEvidence.filter((e) => e.skillId === selectedSkill)}
+                />
+              ) : (
+                <Passport locale={locale} passport={accountPassport} />
+              )
+            }
+          </AccountCareerData>
+        </main>
+      </ApprovedCareerShell>
+    );
   if (!profile || !prefs)
     return (
       <main className="career-loading">
         {say("Opening your professional profile…", "بنجهّز ملفك المهني…")}
       </main>
     );
-  const selectedSkill = skillIds.includes(skillId as SkillId)
-    ? (skillId as SkillId)
-    : undefined;
   const updatePrefs = (next: Partial<CvPreferences>) => {
     const value = { ...prefs, ...next, updatedAt: new Date().toISOString() };
     cvRepo.save(value);
     setPrefs(value);
   };
-  if (view === "dashboard" && identity)
-    return (
-      <AccountMemberProfile
-        locale={locale}
-        owner={identity.user.id}
-        passport={passport}
-        evidence={evidence}
-      />
-    );
   return (
     <main className="career-app" dir={ar ? "rtl" : "ltr"}>
       <CareerHeader locale={locale} profile={profile} />
@@ -193,6 +240,41 @@ export function CareerProfileApp({
       )}
     </main>
   );
+}
+function AccountCv({ owner, locale, data }: { owner: string; locale: Locale; data: AccountCareerProjection }) {
+  const [prefs, setPrefs] = useState<CvPreferences>(() => ({
+    version: 1,
+    targetRoleId: data.cv.targetRoleId ?? data.profile.targetRoleId,
+    accent: "navy",
+    includeScores: true,
+    updatedAt: new Date().toISOString(),
+  }));
+  const updatePrefs = (patch: Partial<CvPreferences>) => {
+    if (cloudUser() !== owner) return;
+    const next = { ...prefs, ...patch, updatedAt: new Date().toISOString() };
+    cvRepo.save(next);
+    setPrefs(next);
+  };
+  return <CvView locale={locale} profile={data.profile} passport={data.passport} evidence={data.evidence} prefs={prefs} updatePrefs={updatePrefs} />;
+}
+function AccountCareerEditor({ owner, locale, profile }: { owner: string; locale: Locale; profile: CareerProfile }) {
+  const [draft, setDraft] = useState(profile);
+  const current = useRef(profile);
+  useEffect(() => {
+    if (cloudUser() !== owner) return;
+    current.current = profile;
+    setDraft(profile);
+  }, [owner, profile]);
+  const save = (patch: Partial<CareerProfile>) => {
+    if (cloudUser() !== owner || current.current.localCandidateId !== owner) return;
+    const next = { ...current.current, ...patch, localCandidateId: owner, updatedAt: new Date().toISOString() };
+    current.current = next;
+    profileRepo.save(next);
+    setDraft(next);
+  };
+  return <main className="career-app career-approved-module" dir={locale === "ar" ? "rtl" : "ltr"}>
+    <CareerEditor locale={locale} profile={draft} save={save} />
+  </main>;
 }
 function CareerHeader({
   locale,
@@ -576,6 +658,7 @@ function Passport({
 }) {
   const ar = locale === "ar",
     say = (en: string, a: string) => (ar ? a : en);
+  const hasEvidence = passport.some((skill) => skill.status !== "unassessed");
   return (
     <div className="career-shell">
       <section className="career-page-title">
@@ -606,6 +689,28 @@ function Passport({
         {passport.map((s) => (
           <SkillRow key={s.skillId} locale={locale} result={s} />
         ))}
+      </section>
+      <section className="career-skill-next" aria-label={say("Next step", "الخطوة التالية")}>
+        <div>
+          <small>{say("NEXT STEP", "الخطوة التالية")}</small>
+          <h2>{say("See your evidence in your CV", "شاهد أدلتك في سيرتك الذاتية")}</h2>
+          <p>
+            {hasEvidence
+              ? say(
+                  "Your stored training evidence feeds your English CV. Review what is included before sharing it.",
+                  "أدلة التدريب المحفوظة تغذي سيرتك الذاتية الإنجليزية. راجع ما يظهر فيها قبل مشاركتها.",
+                )
+              : say(
+                  "Training evidence will appear in your English CV as you complete eligible work. You can preview it now.",
+                  "ستظهر أدلة التدريب في سيرتك الذاتية الإنجليزية عند إكمال الأعمال المؤهلة. يمكنك معاينتها الآن.",
+                )}
+          </p>
+        </div>
+        <Link href={`/${locale}/career-profile/cv`}>
+          <FileText aria-hidden="true" />
+          {say("Review English CV", "راجع السيرة الذاتية الإنجليزية")}
+          {ar ? <ChevronLeft aria-hidden="true" /> : <ChevronRight aria-hidden="true" />}
+        </Link>
       </section>
     </div>
   );
@@ -1054,10 +1159,9 @@ function CareerEditor({
             {say("Back", "السابق")}
           </button>
           <span>
-            {say(
-              "Saved in this browser · continue later anytime",
-              "محفوظ في هذا المتصفح · يمكنك المتابعة لاحقًا",
-            )}
+            {account
+              ? say("Changes sync to your account · personal CV fields are edited from the link above", "التغييرات تتزامن مع حسابك · حقول CV الشخصية تُعدَّل من الرابط بالأعلى")
+              : say("Saved in this browser · continue later anytime", "محفوظ في هذا المتصفح · يمكنك المتابعة لاحقًا")}
           </span>
           {step < 5 ? (
             <button className="primary" onClick={() => go(step + 1)}>

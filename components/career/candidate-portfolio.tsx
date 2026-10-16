@@ -314,6 +314,7 @@ export function ProfessionalOverview({
   showcase,
   nextAction,
   open,
+  openSharing,
 }: {
   profile: CareerProfile;
   locale: Locale;
@@ -326,6 +327,7 @@ export function ProfessionalOverview({
   open: (
     tab: "skills" | "work" | "courses" | "certifications" | "progress",
   ) => void;
+  openSharing?: () => void;
 }) {
   const ar = locale === "ar",
     supported = passport.filter((row) => row.status !== "unassessed"),
@@ -352,6 +354,29 @@ export function ProfessionalOverview({
   return (
     <div className="candidate-overview reference-overview" dir="ltr">
       <aside className="candidate-basics">
+        <section className="member-card approved-overview-identity">
+          <div className="member-portrait">
+            <ProfilePhoto locale={locale} name={profile.fullName} />
+          </div>
+          <div>
+            <h2 dir="auto">{profile.fullName}</h2>
+            <p>{roleCatalog[profile.targetRoleId].label[locale]}</p>
+            <small dir="auto">
+              {[profile.location, profile.country].filter(Boolean).join(", ") ||
+                (ar ? "لم يُضف الموقع بعد" : "Location not added")}
+            </small>
+          </div>
+          <div className="approved-overview-identity-actions">
+            <Link href={`/${locale}/career-profile/edit`}>
+              {ar ? "تعديل الملف" : "Edit profile"}
+            </Link>
+            {openSharing && (
+              <button onClick={openSharing}>
+                {ar ? "المشاركة والظهور" : "Sharing & visibility"}
+              </button>
+            )}
+          </div>
+        </section>
         <section className="member-card">
           <h2>
             <BriefcaseBusiness size={18} />

@@ -112,6 +112,19 @@ describe("Account-safe student journey guidance", () => {
       ).toBeInTheDocument();
     },
   );
+  it.each(["ar", "en"] as const)(
+    "keeps the %s career profile and CV studio free of a competing journey overlay",
+    (locale) => {
+      fixture.path = `/${locale}/career-profile/cv`;
+      const { container } = render(
+        <StudentJourneyProvider locale={locale}>
+          <main>Career CV studio</main>
+        </StudentJourneyProvider>,
+      );
+      expect(screen.getByText("Career CV studio")).toBeVisible();
+      expect(container.querySelector(".student-journey-bar")).toBeNull();
+    },
+  );
   it("shows one primary next link and puts optional activities behind a disclosure", async () => {
     render(view());
     expect(

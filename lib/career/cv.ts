@@ -154,7 +154,7 @@ export function buildCv(
               .slice(0, 3)
               .map((s) => skillCatalog[s.skillId].label.en)
               .join(", ") || "developing accounting skills"
-          }. Experience shown below is training simulation, not employment.`
+          }.${simulationBullets.length ? " Any listed projects are training simulations, not employment." : ""}`
         : `Accounting candidate targeting ${role.en}. Building foundational skills; no completed accounting simulation evidence yet.`),
     skills,
     coreSkills,

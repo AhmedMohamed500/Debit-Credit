@@ -59,6 +59,7 @@ function fillSignup() {
 }
 beforeEach(() => {
   vi.resetAllMocks();
+  sessionStorage.clear();
 });
 afterEach(() => cleanup());
 
@@ -150,10 +151,72 @@ describe("real auth UI contract", () => {
   it("offers sign-in guidance without claiming a session or exposing a password in the URL", () => {
     render(<AuthForm {...props} signup={false} registered />);
     expect(screen.getByRole("status")).toHaveTextContent(
-      "Sign in with your account details",
+      "signing up again did not reset its password",
     );
     expect(screen.getByLabelText("Password")).toHaveValue("");
     expect(auth.login).not.toHaveBeenCalled();
+  });
+  it("hands the normalized email, but never the password, to the separate sign-in form", async () => {
+    auth.signup.mockResolvedValue({ error: null, data: { token: null } });
+    render(<AuthForm {...props} />);
+    fillSignup();
+    fireEvent.change(screen.getByLabelText("Email"), {
+      target: { value: "LEARNER@EXAMPLE.TEST" },
+    });
+    fireEvent.submit(document.querySelector(".auth-email-form")!);
+    await waitFor(() => expect(auth.replace).toHaveBeenCalled());
+    expect(auth.signup).toHaveBeenCalledWith(
+      expect.objectContaining({ email: "learner@example.test" }),
+    );
+    expect(sessionStorage.getItem("app.signup-email-handoff")).toBe(
+      "learner@example.test",
+    );
+    cleanup();
+    render(<AuthForm {...props} signup={false} registered />);
+    await waitFor(() =>
+      expect(screen.getByLabelText("Email")).toHaveValue("learner@example.test"),
+    );
+    expect(screen.getByLabelText("Password")).toHaveValue("");
+    expect(sessionStorage.getItem("app.signup-email-handoff")).toBeNull();
+    expect(auth.login).not.toHaveBeenCalled();
+  });
+  it.each([
+    { locale: "en" as const, explanation: "signing up again did not change its password" },
+    { locale: "ar" as const, explanation: "إعادة التسجيل لا تغيّر كلمة مروره" },
+  ])("explains a duplicate-email signup's neutral response in $locale", async ({ locale, explanation }) => {
+    // Better Auth intentionally returns a success-shaped response for an
+    // existing email when autoSignIn is false, without replacing its password.
+    auth.signup.mockResolvedValue({
+      error: null,
+      data: { token: null, user: { email: "learner@example.test" } },
+    });
+    auth.login.mockResolvedValue({ error: { code: "INVALID_EMAIL_OR_PASSWORD" } });
+    render(<AuthForm {...props} locale={locale} next={`/${locale}`} />);
+    const signupForm = document.querySelector<HTMLFormElement>(".auth-email-form")!;
+    for (const [name, value] of Object.entries({
+      name: "Routing Learner",
+      email: "learner@example.test",
+      password: "routing-test-password",
+      confirm: "routing-test-password",
+    }))
+      fireEvent.change(signupForm.querySelector(`[name="${name}"]`)!, {
+        target: { value },
+      });
+    fireEvent.submit(document.querySelector(".auth-email-form")!);
+    await waitFor(() => expect(auth.replace).toHaveBeenCalled());
+    cleanup();
+    render(<AuthForm {...props} locale={locale} signup={false} registered />);
+    await waitFor(() =>
+      expect(document.querySelector<HTMLInputElement>('[name="email"]')).toHaveValue("learner@example.test"),
+    );
+    fireEvent.change(document.querySelector<HTMLInputElement>('[name="password"]')!, {
+      target: { value: "routing-test-password" },
+    });
+    fireEvent.submit(document.querySelector(".auth-email-form")!);
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent(explanation),
+    );
+    expect(auth.login).toHaveBeenCalledTimes(1);
   });
   it("replaces default invalid-field popups with localized inline guidance", () => {
     render(<AuthForm {...props} />);

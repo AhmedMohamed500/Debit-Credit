@@ -4,6 +4,7 @@ Start here rather than treating every past release report as today's status.
 
 ## Current entry points
 
+- [Latest complete Arabic project reference — 14 October 2026](PROJECT-COMPLETE-REFERENCE-AR-2026-10-14.md): whole product, history, curriculum, auth/backend, profile/CV, real employer discovery, latest design, verified release, testing and remaining work.
 - [Career Talent Platform — professional candidate profile, consent and protected employer discovery](CAREER-TALENT-PLATFORM.md)
 - [Complete profile changes, privacy, cards, courses and linked English CV — Arabic handoff](PROFILE-COMPLETE-HANDOFF-AR.md)
 - [Professional profile card and linked two-page English CV](PROFILE-CARD-CV-SYNC-AR.md)

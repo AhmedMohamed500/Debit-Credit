@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,6 +18,8 @@ import { AuthFormCard } from "@/components/auth/auth-form-card";
 import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { PasswordField } from "@/components/auth/password-field";
 import type { Locale } from "@/types";
+
+const SIGNUP_EMAIL_KEY = "app.signup-email-handoff";
 
 export function AuthForm({
   locale,
@@ -49,18 +51,36 @@ export function AuthForm({
     [message, setMessage] = useState(""),
     [resetOpen, setResetOpen] = useState(false);
   const busy = useRef(false),
+    emailInput = useRef<HTMLInputElement>(null),
     pending = operation !== null;
+  useEffect(() => {
+    if (signup || !registered) return;
+    try {
+      const savedEmail = sessionStorage.getItem(SIGNUP_EMAIL_KEY);
+      sessionStorage.removeItem(SIGNUP_EMAIL_KEY);
+      if (savedEmail && emailInput.current && !emailInput.current.value)
+        emailInput.current.value = savedEmail;
+    } catch {
+      // Storage may be unavailable; the sign-in form still works normally.
+    }
+  }, [signup, registered]);
   const connectionError = () =>
     say(
       "We couldn't connect. Please try again. Your account has not been confirmed.",
       "تعذّر الاتصال بالخادم. حاول مرة أخرى؛ لم يتم تأكيد العملية.",
     );
   function authError(code?: string) {
-    if (code === "INVALID_EMAIL_OR_PASSWORD" || code === "INVALID_PASSWORD")
+    if (code === "INVALID_EMAIL_OR_PASSWORD" || code === "INVALID_PASSWORD") {
+      if (registered)
+        return say(
+          "These details don't match. If this email already had an account, signing up again did not change its password. Try the original password.",
+          "البيانات غير متطابقة. إذا كان لهذا البريد حساب من قبل، فإعادة التسجيل لا تغيّر كلمة مروره. جرّب كلمة المرور الأصلية.",
+        );
       return say(
         "The email or password is incorrect. Please check your details.",
         "البريد الإلكتروني أو كلمة المرور غير صحيحة. راجع بياناتك.",
       );
+    }
     if (
       code === "USER_ALREADY_EXISTS" ||
       code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL"
@@ -99,7 +119,7 @@ export function AuthForm({
     setError("");
     try {
       const fields = {
-        email: String(data.get("email")),
+        email: String(data.get("email") ?? "").trim().toLowerCase(),
         password,
       };
       const result = signup
@@ -119,6 +139,11 @@ export function AuthForm({
       // Signup creates credentials only; the server deliberately creates no
       // session until the user submits the separate sign-in form.
       if (signup) {
+        try {
+          sessionStorage.setItem(SIGNUP_EMAIL_KEY, fields.email);
+        } catch {
+          // Never require browser storage to finish sign-up.
+        }
         router.replace(loginURL);
         return;
       }
@@ -229,8 +254,8 @@ export function AuthForm({
         {!signup && registered && (
           <p className="auth-feedback" role="status">
             {say(
-              "Sign in with your account details to start using the site.",
-              "سجّل الدخول ببيانات حسابك لتبدأ استخدام الموقع.",
+              "Sign in with this email's password. If the email was already registered, signing up again did not reset its password.",
+              "سجّل الدخول بكلمة مرور هذا البريد. إذا كان البريد مسجلًا من قبل، فإعادة التسجيل لا تعيد تعيين كلمة مروره.",
             )}
           </p>
         )}
@@ -269,6 +294,7 @@ export function AuthForm({
               <Mail className="auth-input-icon" aria-hidden="true" />
               <input
                 id="auth-email"
+                ref={emailInput}
                 name="email"
                 type="email"
                 dir="ltr"

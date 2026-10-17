@@ -1103,3 +1103,35 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Keep instructional and form copy readable across both auth layouts. */
+.auth-experience :is(.auth-eyebrow, .auth-form-subtitle, .auth-availability,
+  .auth-field small, .auth-service-notice, .auth-switch, .auth-guest-entry p,
+  .auth-feedback, .auth-text-button) {
+  font-size: 14px;
+}
+.auth-experience .auth-benefits h3 {
+  font-size: 14px;
+}
+.auth-experience .auth-google,
+.auth-experience .auth-field label {
+  font-size: 15px;
+}
+@media (max-width: 599px) {
+  .auth-experience .auth-form-card {
+    padding-inline: 18px;
+  }
+  .auth-experience .auth-form-subtitle {
+    line-height: 1.6;
+  }
+}
+@media (max-width: 360px) {
+  .auth-experience .auth-google {
+    gap: 6px;
+    padding-inline: 9px;
+    font-size: 14px;
+  }
+  .auth-experience .auth-google span {
+    white-space: nowrap;
+  }
+}

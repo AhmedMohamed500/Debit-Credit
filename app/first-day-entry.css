@@ -581,3 +581,41 @@
     font-size: 12px;
   }
 }
+
+/* The briefing is task guidance, so its labels must remain legible on phones. */
+.shift-navigation-brand small,
+.shift-breadcrumb,
+.shift-breadcrumb small,
+.shift-briefing-heading > small,
+.shift-assignment header small,
+.shift-work-method small,
+.shift-inbox-preview small,
+.shift-briefing-action > small,
+.shift-plan > small,
+.shift-plan-result > small {
+  font-size: 14px;
+}
+.shift-briefing-heading > p,
+.shift-assignment > p,
+.shift-plan > p,
+.shift-plan-result p {
+  font-size: 15px;
+}
+.shift-inbox-preview h3,
+.shift-inbox-preview b,
+.shift-inbox-preview strong,
+.shift-plan li b {
+  font-size: 14px;
+}
+.shift-language,
+.shift-career-menu summary {
+  font-size: 14px;
+}
+@media (max-width: 700px) {
+  .shift-navigation-brand small {
+    font-size: 13px;
+  }
+  .shift-work-method {
+    gap: 7px;
+  }
+}

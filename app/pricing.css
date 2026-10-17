@@ -1354,3 +1354,82 @@
     font-size: 30px;
   }
 }
+
+/* Pricing decisions and controls must not depend on micro-sized copy. */
+.pricing-nav__links > a,
+.pricing-billing__segments button,
+.pricing-billing__selection,
+.pricing-saving,
+.pricing-card__header p,
+.pricing-price small,
+.pricing-card__status,
+.pricing-card__selected {
+  font-size: 14px;
+}
+.pricing-card ul li {
+  line-height: 1.35;
+}
+.pricing-card__ribbon {
+  font-size: 13px;
+}
+.pricing-brand small,
+.pricing-nav__actions > a,
+.pricing-hero__audience-line,
+.pricing-audience button small {
+  font-size: 12px;
+}
+.pricing-benefits > div {
+  font-size: 14px;
+}
+@media (max-width: 760px) {
+  .pricing-hero__copy p {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .pricing-audience {
+    height: 82px;
+    bottom: 30px;
+  }
+  .pricing-audience button strong {
+    font-size: 14px;
+  }
+  .pricing-audience button small {
+    font-size: 12px;
+    line-height: 1.25;
+  }
+  .pricing-card ul li {
+    font-size: 15px;
+  }
+}
+@media (max-width: 360px) {
+  .pricing-hero {
+    height: 630px;
+  }
+  .pricing-hero__copy,
+  .pricing-page[dir="ltr"] .pricing-hero__copy {
+    top: 245px;
+  }
+  .pricing-nav {
+    gap: 7px;
+    padding-inline: 10px;
+  }
+  .pricing-brand {
+    gap: 5px;
+  }
+  .pricing-brand > svg {
+    width: 28px;
+    height: 28px;
+  }
+  .pricing-brand strong {
+    font-size: 14px;
+  }
+  .pricing-brand small {
+    display: none;
+  }
+  .pricing-nav__actions {
+    gap: 3px;
+  }
+  .pricing-nav__start {
+    padding-inline: 7px;
+  }
+}

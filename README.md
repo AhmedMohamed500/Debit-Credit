@@ -6,6 +6,8 @@ Bilingual accounting career simulation by Money Coder. Next.js App Router, React
 
 [Comprehensive Arabic project history and handoff](docs/PROJECT-MASTER-HANDOFF-AR.md)
 
+[Latest complete Arabic project reference — 14 October 2026](docs/PROJECT-COMPLETE-REFERENCE-AR-2026-10-14.md)
+
 ## User journey
 
 Guests can learn and play with browser-local progress. Email signup creates an account without a session, then opens localized login. Successful login opens `/ar` or `/en`, unless a safe internal destination was requested. The homepage remains the starting point for learning and work.

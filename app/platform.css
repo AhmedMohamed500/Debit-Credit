@@ -90,3 +90,10 @@
 .passport-empty{margin:12px;color:var(--text-secondary);font-size:.75rem;line-height:1.55}
 @media(max-width:850px){.hub-next-mission{grid-template-columns:1fr}.hub-next-mission aside{grid-template-columns:1fr 1fr}.hub-next-mission aside a{grid-row:auto;grid-column:1/-1}}
 @media(max-width:560px){.command-game .command-main{grid-template-rows:auto auto auto auto}.hub-next-mission{padding:14px}.hub-next-mission aside{grid-template-columns:1fr 1fr}}
+
+/* Shared public navigation and learning-path copy should read at normal text size. */
+.platform-page .platform-brand small{font-size:12px}
+.platform-page .platform-nav nav>a{font-size:14px}
+.platform-page :is(.platform-kicker,.platform-section>header>span,.academy-platform-hero>span,.phase-roadmap>header>span,.academy-foundation span){font-size:14px}
+.platform-page :is(.hero-actions>a,.platform-primary,.academy-platform-hero a){font-size:15px}
+.platform-page :is(.academy-loop small,.phase-roadmap p,.phase-roadmap article small,.marketing-hero>div>small){font-size:14px;line-height:1.5}

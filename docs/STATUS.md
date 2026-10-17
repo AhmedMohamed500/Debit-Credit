@@ -1,6 +1,16 @@
 # Current project status
 
-Reviewed: 2026-10-11. This file supersedes historical release claims in archived reports.
+Reviewed: 2026-10-17. This file supersedes historical release claims in archived reports.
+
+## Product scope and cleanup audit (2026-10-17)
+
+The product's connected core is: bilingual entry and pricing → separate email signup/login and private personal setup → guided accounting practice and server-accepted evidence → skills and career profile → factual English CV and consent-based professional sharing. Employer discovery is consent-gated; training simulations are not employment or professional certification. The detailed Arabic product map and remaining-work list are in [the complete project reference](PROJECT-COMPLETE-REFERENCE-AR-2026-10-14.md), and route ownership is in [routes](ROUTES.md).
+
+The public Pricing page describes plans but paid subscriptions are not active. Google sign-in and email-based verification/reset require configured providers. Full employer jobs/applications, further independently reviewed accounting cases, and broad cloud sync beyond supported domains are future product work, not hidden features to expose. Do not present any of these as complete or add fabricated user achievements.
+
+Disk review found the major local consumers to be generated dependencies/builds/caches and ignored browser/backend QA artifacts, not route source files. Removed the regenerable `.npm-cache-backend/` (~903 MB) and the unreferenced superseded `public/game/accounting-manual-office.png` (~1.6 MB); the active `accounting-manual-office-v2.png` remains. Kept `node_modules`, active build output, historical QA captures, test PostgreSQL data, and compatibility routes. Deleting old routes or test databases would offer little source-space benefit or risk data/progress loss. The removed image is recoverable from Git; the cache is recreated when backend tests need it.
+
+Local validation after cleanup: ESLint, TypeScript, 695 Vitest tests across 82 files, and Next.js production build passed. This is not a claim of a deployed release or a full browser journey test. The developer machine's `npm` launcher points to a missing Roaming copy; validation succeeded by invoking the installed npm CLI directly with Node.
 
 ## Production and boundaries
 

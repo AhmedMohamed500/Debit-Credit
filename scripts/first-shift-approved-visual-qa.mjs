@@ -46,7 +46,11 @@ try{
     record(label+' closing draft returns to same office',await page.locator('.fsh-shell').count()===1);
     await context.close();
   }
-  record('no browser page or unexpected console errors',errors.length===0);
+  // Chromium formats an expected guest 401 as either "401 (Unauthorized)" or
+  // "401 ()". Do not treat private-account API denial as a page defect; the
+  // separate response assertion below still rejects 401s from other routes.
+  const unexpectedErrors=errors.filter(message=>!message.includes('Failed to load resource: the server responded with a status of 401'));
+  record('no browser page or unexpected console errors',unexpectedErrors.length===0);
   record('anonymous 401 responses are private-account APIs only',guestUnauthorized.every(url=>new URL(url).pathname.startsWith('/api/v1/me')));
 }finally{
   await browser.close();

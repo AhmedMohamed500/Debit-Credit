@@ -7,13 +7,13 @@ import { cloudUser, requestJSON } from "@/lib/cloud/runtime";
 import { roleCatalog, roleIds } from "@/lib/career/catalog";
 import { buildCv } from "@/lib/career/cv";
 import { compactCv, blocksText, paginateCv, type CompactCv, type CvBlock } from "@/lib/career/compact-cv";
-import { scoreCvReadiness, type CvReadiness } from "@/lib/career/ats";
+import { evaluateAtsCv, scoreCvReadiness, type AtsCvCheck, type CvReadiness } from "@/lib/career/ats";
 import { BrowserCvVersionRepository } from "@/lib/career/cv-history";
 import { ProfilePhoto } from "./profile-photo";
 import type { CareerProfile, CvDocument, CvPreferences, RoleId, SkillEvidence, SkillResult } from "@/lib/career/model";
 import type { Locale } from "@/types";
 
-type Snapshot = { profile: CareerProfile; cv: CvDocument; compact: CompactCv; readiness: CvReadiness };
+type Snapshot = { profile: CareerProfile; cv: CvDocument; compact: CompactCv; readiness: CvReadiness; fingerprint?: string };
 type Format = "pdf" | "docx" | "txt";
 const arabicDimension: Record<CvReadiness["dimensions"][number]["id"], string> = {
   format: "تنسيق قابل للقراءة",
@@ -24,6 +24,14 @@ const arabicDimension: Record<CvReadiness["dimensions"][number]["id"], string> =
   skills: "مهارات مدعومة بأدلة",
   "practical-work": "خبرة فعلية أو محاكاة واضحة",
   learning: "تعلم محفوظ ذو صلة",
+};
+const atsLabels: Record<AtsCvCheck["id"], { en: string; ar: string; fixEn: string; fixAr: string }> = {
+  "single-column": { en: "Single reading column", ar: "هيكل أحادي العمود", fixEn: "Use the platform's standard CV export.", fixAr: "استخدم تصدير السيرة القياسي من المنصة." },
+  "no-photo": { en: "No photo in ATS document", ar: "بدون صورة في نسخة ATS", fixEn: "Use the standard PDF or Word export.", fixAr: "استخدم تصدير PDF أو Word القياسي." },
+  headings: { en: "Clear section headings", ar: "عناوين أقسام واضحة", fixEn: "Add a professional summary to the profile.", fixAr: "أضف ملخصًا مهنيًا إلى البروفايل." },
+  "readable-text": { en: "Readable English text and contact", ar: "نص إنجليزي مقروء وبيانات تواصل", fixEn: "Add an English name and email; translate saved Arabic CV fields yourself.", fixAr: "أضف اسمًا وبريدًا بالإنجليزية، واكتب بنفسك مقابلات الحقول العربية." },
+  "available-keywords": { en: "Keywords from supported skills", ar: "كلمات مفتاحية من مهارات مدعومة", fixEn: "Complete eligible practice to demonstrate relevant skills; a manually entered course is not skill evidence.", fixAr: "أكمل تدريبًا مؤهلًا لإظهار مهارات ذات صلة؛ الكورس المُدخل يدويًا ليس دليل مهارة." },
+  "simple-format": { en: "Simple system-friendly formatting", ar: "تنسيق بسيط للأنظمة", fixEn: "Remove unusual markup or duplicate sections from saved content.", fixAr: "احذف التنسيق غير المعتاد أو الأقسام المكررة من البيانات المحفوظة." },
 };
 
 export function CvBlockView({ block }: { block: CvBlock }) {
@@ -55,7 +63,7 @@ export function CvView({ locale, profile, passport, evidence, prefs, updatePrefs
   const measure = useRef<HTMLDivElement>(null);
   const previewScroll = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const local = useMemo(() => {
+  const local = useMemo<Snapshot>(() => {
     const cv = buildCv(profile, passport, evidence, prefs.targetRoleId);
     const compact = compactCv(profile, cv);
     return { profile, cv, compact, readiness: scoreCvReadiness(profile, cv, compact) };
@@ -65,6 +73,7 @@ export function CvView({ locale, profile, passport, evidence, prefs, updatePrefs
     let alive = true;
     setError(false);
     setDownloadError("");
+    setSaved(null);
     if (owner) void requestJSON<{ data: Snapshot } | null>(`me/cv?role=${encodeURIComponent(prefs.targetRoleId)}`)
       .then((result) => {
         if (!result?.data?.compact?.blocks || !result.data.readiness) throw new Error("CV_UNAVAILABLE");
@@ -82,6 +91,7 @@ export function CvView({ locale, profile, passport, evidence, prefs, updatePrefs
   }, []);
 
   const data = owner ? saved?.owner === owner && saved.role === prefs.targetRoleId ? saved.data : null : local;
+  const ats = data ? evaluateAtsCv(data.compact) : null;
   const key = JSON.stringify(data?.compact.blocks ?? []);
   useEffect(() => {
     let alive = true;
@@ -139,7 +149,7 @@ export function CvView({ locale, profile, passport, evidence, prefs, updatePrefs
         const response = await fetch(`/api/v1/me/cv/export?format=${format}&role=${encodeURIComponent(prefs.targetRoleId)}`, {
           credentials: "same-origin",
           cache: "no-store",
-          headers: { "X-Account-Context": owner },
+          headers: { "X-Account-Context": owner, ...(data?.fingerprint ? { "X-CV-Version": data.fingerprint } : {}) },
         });
         if (!response.ok || cloudUser() !== owner) throw new Error("EXPORT_FAILED");
         blob = await response.blob();
@@ -161,6 +171,17 @@ export function CvView({ locale, profile, passport, evidence, prefs, updatePrefs
       setDownloadError(say("Download failed. Refresh the saved profile and retry.", "تعذّر التنزيل. حدّث بيانات البروفايل المحفوظة وحاول ثانية."));
     } finally { setBusy(null); }
   }
+  useEffect(() => {
+    if (!owner || !exportReady || busy) return;
+    const url = new URL(window.location.href);
+    const requested = url.searchParams.get("download");
+    if (requested !== "pdf" && requested !== "docx") return;
+    url.searchParams.delete("download");
+    window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+    void download(requested);
+    // The URL parameter is consumed once; later refreshes cannot re-download.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [owner, exportReady, busy]);
   function selectPage(index: number) {
     const next = Math.min(Math.max(index, 0), pages.length - 1);
     setPageIndex(next);
@@ -211,6 +232,11 @@ export function CvView({ locale, profile, passport, evidence, prefs, updatePrefs
           <div className="ats-studio-score" role="status" style={{ "--ats-score": data.readiness.score } as React.CSSProperties}><strong>{data.readiness.score}%</strong><meter min={0} max={100} value={data.readiness.score} /></div>
           <p>{say("A deterministic checklist of document structure and factual completeness. No external ATS or employer has scored it.", "قائمة فحص ثابتة للتنسيق واكتمال المحتوى الحقيقي. لم يقيّمها نظام توظيف أو شركة خارجية.")}</p>
           <p className="ats-studio-format-status">{data.readiness.formatChecksPassed}/{data.readiness.formatChecksTotal} {say("format checks passed", "فحوص تنسيق مستوفاة")}</p>
+          {ats && <section className="ats-studio-defined-checks" aria-label={say("Defined ATS checks", "فحوص ATS المحددة")}>
+            <h3>{say("Defined ATS checks", "فحوص ATS المحددة")} · {ats.score}% ({ats.passed}/{ats.total})</h3>
+            <p>{say("Platform checks only. Not a universal ATS compatibility or hiring score.", "فحوص المنصة فقط؛ ليست درجة توافق شاملة مع ATS أو فرصة توظيف.")}</p>
+            <ul>{ats.checks.map((check) => <li key={check.id}><strong>{check.passed ? "✓" : "×"} {say(atsLabels[check.id].en, atsLabels[check.id].ar)}</strong>{!check.passed && <span>{say(atsLabels[check.id].fixEn, atsLabels[check.id].fixAr)}</span>}</li>)}</ul>
+          </section>}
           <div className="ats-studio-breakdown">{data.readiness.dimensions.map((dimension) => <div key={dimension.id}><div><b>{locale === "ar" ? arabicDimension[dimension.id] : dimension.label}</b><span>{dimension.points}/{dimension.max}</span></div><meter min={0} max={dimension.max} value={dimension.points} />{dimension.points < dimension.max && dimension.fixHref && <Link href={`/${locale}${dimension.fixHref}`}>{say("Improve this", "حسّن النقطة دي")}</Link>}</div>)}</div>
           <div className="ats-studio-download cv-controls">
             <button type="button" disabled={!owner || !exportReady || Boolean(busy)} onClick={() => void download("pdf")}><FileDown size={18} />{busy === "pdf" ? say("Preparing…", "جارٍ التجهيز…") : say("Download PDF", "تحميل PDF")}</button>

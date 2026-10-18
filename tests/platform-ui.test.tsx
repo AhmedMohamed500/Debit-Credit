@@ -23,7 +23,7 @@ describe('platform UI',()=>{
    expect(view.container.querySelectorAll('.cl4-how-step')).toHaveLength(4);
    expect(view.container.querySelectorAll('.cl4-audience-card')).toHaveLength(4);
    expect(screen.getByRole('heading',{name:'Built for every stage of your career journey'})).toBeInTheDocument();
-   ['Start as a student','Start as a graduate','Start as a working accountant','Start as an experienced accountant'].forEach(name=>expect(screen.getByRole('link',{name})).toHaveAttribute('href','/en/signup?next=%2Fen'));
+   [['Start as a student','student'],['Start as a graduate','graduate'],['Start as a working accountant','working-accountant'],['Start as an experienced accountant','experienced-accountant']].forEach(([name,persona])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',`/en/signup?next=${encodeURIComponent(`/en/onboarding?persona=${persona}`)}`));
    const studentCta=screen.getByRole('link',{name:'Start as a student'});
    studentCta.addEventListener('click',event=>event.preventDefault());
    fireEvent.click(studentCta);
@@ -36,18 +36,32 @@ describe('platform UI',()=>{
    expect(screen.getByRole('heading',{name:'من أول خطوة إلى مستقبل مهني حقيقي'})).toBeInTheDocument();
    ['اختر مستواك','ادخل شركة مناسبة','حل حالات ومهام','ابنِ CV وسجّل مهاراتك'].forEach(name=>expect(screen.getByRole('heading',{name})).toBeInTheDocument());
    expect(screen.getByRole('heading',{name:'مناسبة في كل مرحلة من رحلتك المهنية'})).toBeInTheDocument();
-   ['ابدأ كطالب','ابدأ كخريج جديد','ابدأ كمحاسب شغال','ابدأ كمحاسب بخبرة'].forEach(name=>expect(screen.getByRole('link',{name})).toHaveAttribute('href','/ar/signup?next=%2Far'));
+   [['ابدأ كطالب','student'],['ابدأ كخريج جديد','graduate'],['ابدأ كمحاسب شغال','working-accountant'],['ابدأ كمحاسب بخبرة','experienced-accountant']].forEach(([name,persona])=>expect(screen.getByRole('link',{name})).toHaveAttribute('href',`/ar/signup?next=${encodeURIComponent(`/ar/onboarding?persona=${persona}`)}`));
  });
  it('renders accessible Arabic headings and real calls to action',()=>{
    render(<MarketingLanding locale="ar"/>);
    expect(screen.getByRole('heading',{name:'منافسة محاسبية تجريبية تبني مهاراتك المهنية'})).toBeInTheDocument();
-   expect(screen.getAllByRole('link',{name:'ابدأ مجانًا'}).map(link=>link.getAttribute('href'))).toContain('/ar/signup?next=%2Far');
+   expect(screen.getAllByRole('link',{name:'ابدأ مجانًا'}).map(link=>link.getAttribute('href'))).toContain(`/ar/signup?next=${encodeURIComponent('/ar/onboarding')}`);
    expect(screen.getByRole('heading',{name:'خريطة رحلتك المهنية'})).toBeInTheDocument();
    expect(screen.getByRole('link',{name:'ميزان للتجارة'})).toHaveAttribute('href','/ar/game');
    expect(screen.getByRole('link',{name:'الإقفال الشهري'})).toHaveAttribute('href','/ar/game/month-end');
    expect(screen.getByRole('link',{name:'ابدأ المنافسة التجريبية'})).toHaveAttribute('href','/ar/leaderboard');
    expect(screen.getByRole('link',{name:'شاهد سيرتك الذاتية'})).toHaveAttribute('href','/ar/career-profile/cv');
    expect(screen.getByRole('link',{name:'تصفح المهارات'})).toHaveAttribute('href','/ar/career-profile/skills');
+ });
+ it('inserts one bilingual CV/ATS section with five sources and private export routes',()=>{
+   const view=render(<MarketingLanding locale="ar"/>);
+   expect(view.container.querySelectorAll('#cv-ats')).toHaveLength(1);
+   expect(screen.getByRole('heading',{name:'كل إنجازاتك تصنع سيرة ذاتية واحدة احترافية'})).toBeInTheDocument();
+   ['الدورات التدريبية','الشهادات المهنية','المشاريع العملية','التدريب والمحاكاة','المهارات التقنية'].forEach(name=>expect(screen.getByText(name)).toBeInTheDocument());
+   expect(screen.getByRole('link',{name:'تحميل PDF'})).toHaveAttribute('href',`/ar/signup?next=${encodeURIComponent('/ar/career-profile/cv?download=pdf')}`);
+   expect(screen.getByRole('link',{name:'تحميل Word'})).toHaveAttribute('href',`/ar/signup?next=${encodeURIComponent('/ar/career-profile/cv?download=docx')}`);
+   expect(screen.getByText('مثال توضيحي: اجتاز 6 من 6 فحوصات')).toBeInTheDocument();
+   expect(view.container.querySelector('#accounting-work')?.compareDocumentPosition(view.container.querySelector('#cv-ats')!)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+   view.rerender(<MarketingLanding locale="en"/>);
+   expect(view.container.querySelectorAll('#cv-ats')).toHaveLength(1);
+   expect(screen.getByRole('heading',{name:'Your achievements build one professional CV'})).toBeInTheDocument();
+   expect(screen.getByRole('link',{name:'Download PDF'})).toHaveAttribute('href',`/en/signup?next=${encodeURIComponent('/en/career-profile/cv?download=pdf')}`);
  });
  it('keeps practice statuses honest and removes the duplicate persona story section',()=>{
    const view=render(<MarketingLanding locale="en"/>);

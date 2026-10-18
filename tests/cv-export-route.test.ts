@@ -38,6 +38,7 @@ const cv = buildCv(profile, [], [], "junior-accountant");
 const compact = compactCv(profile, cv);
 const accountCv = {
   data: {
+    fingerprint: "saved-document-v1",
     profile,
     cv,
     compact,
@@ -86,5 +87,13 @@ describe("private account CV export route", () => {
     const untranslated = { ...accountCv.data, profile: { ...profile, fullName: "أليس" } };
     vi.mocked(automaticCvFor).mockResolvedValueOnce({ data: untranslated } as never);
     expect((await GET(request())).status).toBe(422);
+  });
+  it("rejects export when saved CV changed since the preview", async () => {
+    const stale = new Request("https://fixture.test/api/v1/me/cv/export?format=pdf", {
+      headers: { "X-Account-Context": user.id, "X-CV-Version": "outdated" },
+    });
+    const response = await GET(stale);
+    expect(response.status).toBe(409);
+    expect(await response.json()).toEqual({ error: { code: "CV_CHANGED_REFRESH_PREVIEW" } });
   });
 });

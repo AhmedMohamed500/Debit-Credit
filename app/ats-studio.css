@@ -95,6 +95,12 @@
 .career-approved .ats-studio-score meter { position: relative; width: 88px; height: 10px; }
 .career-approved .ats-studio-format-status { padding: 8px 10px; border-radius: 7px; color: #087963 !important; background: #e8f8f3; font-weight: 750; }
 .career-approved .ats-studio-breakdown { display: grid; gap: 9px; margin: 14px 0; }
+.career-approved .ats-studio-defined-checks{margin:14px 0;padding:12px;border:1px solid #bcd9ee;border-radius:10px;background:#f4faff}
+.career-approved .ats-studio-defined-checks h3{margin:0 0 6px;font-size:14px;color:#0c467e}
+.career-approved .ats-studio-defined-checks p{margin:0 0 8px;font-size:11px;line-height:1.5;color:#41627e}
+.career-approved .ats-studio-defined-checks ul{display:grid;gap:6px;list-style:none;margin:0;padding:0}
+.career-approved .ats-studio-defined-checks li{display:grid;gap:2px;font-size:11px;line-height:1.45}
+.career-approved .ats-studio-defined-checks li span{color:#9b4d23}
 .career-approved .ats-studio-breakdown > div { padding-bottom: 9px; border-bottom: 1px solid #e0ebf3; }
 .career-approved .ats-studio-breakdown > div > div { display: flex; justify-content: space-between; gap: 9px; font-size: 11px; }
 .career-approved .ats-studio-breakdown b { font-weight: 750; }

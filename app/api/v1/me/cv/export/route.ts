@@ -29,6 +29,9 @@ export async function GET(request: Request) {
       throw new HttpError(400, "INVALID_ROLE");
     const result = await automaticCvFor(user.id, role);
     if (!result) throw new HttpError(404, "CV_NOT_READY");
+    const expectedVersion = request.headers.get("X-CV-Version");
+    if (expectedVersion && expectedVersion !== result.data.fingerprint)
+      throw new HttpError(409, "CV_CHANGED_REFRESH_PREVIEW");
     const validation = validateCvExport(result.data);
     if (validation) throw new HttpError(422, validation);
     const file = await exportAccountCv(result.data, format as CvExportFormat);

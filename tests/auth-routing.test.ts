@@ -74,6 +74,12 @@ describe("auth route deployment contract", () => {
       expect(existsSync(path.resolve("app/[locale]/page.tsx"))).toBe(true);
     },
   );
+  it.each(["ar", "en"])("preserves private CV download intent but rejects external next targets in %s", (locale) => {
+    const route = `/${locale}/career-profile/cv?download=pdf`;
+    expect(safeNext(route, locale)).toBe(route);
+    expect(safeNext(`https://attacker.test/${locale}/career-profile/cv`, locale)).toBe(`/${locale}`);
+    expect(safeNext(`//attacker.test/${locale}/career-profile/cv`, locale)).toBe(`/${locale}`);
+  });
   it("creates no automatic email session after signup", () => {
     expect(
       readFileSync(path.resolve("lib/server/auth/auth.ts"), "utf8"),

@@ -99,8 +99,12 @@ export async function deriveAccountCv(
         }
       : undefined,
   );
+  const fingerprint = createHash("sha256")
+    .update(JSON.stringify({ role: cv.targetRoleId, text: compact.plainText }))
+    .digest("hex");
   return {
     templateVersion: 2,
+    fingerprint,
     profile,
     cv,
     passport,
@@ -116,9 +120,7 @@ export async function saveAutomaticCloudCv(tx: Transaction, userId: string) {
   if (!data) return;
   // Version the visible document, not mutable timestamps or private source
   // metadata. Re-saving the same facts must not create an identical CV version.
-  const fingerprint = createHash("sha256")
-    .update(JSON.stringify({ role: data.cv.targetRoleId, text: data.plainText }))
-    .digest("hex");
+  const fingerprint = data.fingerprint;
   const latest = await tx.cvVersionCloud.findFirst({
     where: { userId },
     orderBy: { createdAt: "desc" },

@@ -14,7 +14,7 @@ export function AuthCTA({ href, ...props }: ComponentProps<typeof Link>) {
       href={
         identity
           ? next
-          : `/${locale}/signup?next=${encodeURIComponent(`/${locale}`)}`
+          : `/${locale}/signup?next=${encodeURIComponent(next)}`
       }
     />
   );

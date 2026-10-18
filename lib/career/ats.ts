@@ -1,6 +1,30 @@
 import { roleCatalog, skillCatalog } from "./catalog";
 import type { CareerProfile, CvDocument } from "./model";
 import type { CompactCv } from "./compact-cv";
+
+export type AtsCvCheck = {
+  id: "single-column" | "no-photo" | "headings" | "readable-text" | "available-keywords" | "simple-format";
+  passed: boolean;
+};
+
+/** Structural checks of the fixed PDF/DOCX export template and saved CV text.
+ * This is not an employer/vendor ATS result or a job-match probability. */
+export function evaluateAtsCv(compact: CompactCv) {
+  const blocks = compact.blocks;
+  const text = compact.plainText;
+  const contact = blocks.find((block) => block.id === "contact");
+  const checks: AtsCvCheck[] = [
+    { id: "single-column", passed: blocks.length > 0 && blocks.every((block) => Array.isArray(block.lines)) },
+    // Both export renderers use text runs in sequence; neither accepts a photo.
+    { id: "no-photo", passed: true },
+    { id: "headings", passed: Boolean(blocks.find((block) => block.id === "summary" && block.heading === "Professional Summary")) },
+    { id: "readable-text", passed: Boolean(contact?.lines[0]?.trim() && contact.lines[2]?.includes("@") && text.trim() && !/[\u0600-\u06ff]/u.test(text)) },
+    { id: "available-keywords", passed: blocks.some((block) => (block.id === "skills" || block.id === "practice") && block.lines.some((line) => line.trim())) },
+    { id: "simple-format", passed: new Set(blocks.map((block) => block.id)).size === blocks.length && !/<[^>]+>|[\t\u0000-\u0008]/u.test(text) },
+  ];
+  const passed = checks.filter((check) => check.passed).length;
+  return { checks, passed, total: checks.length, score: Math.round((passed / checks.length) * 100) };
+}
 export interface AtsFormatCheck {
   id:
     | "single-column"

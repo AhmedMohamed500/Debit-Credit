@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AuthCTA } from "@/components/cloud/auth-cta";
 import { LandingCvAts } from "@/components/platform/landing-cv-ats";
+import { AccountingCycleLanding } from "@/components/platform/accounting-cycle-landing";
 import {
   ArrowLeft,
   ArrowRight,
@@ -464,6 +465,7 @@ export function CareerLandingV4({ locale }: Props) {
   return (
     <div className="cl4" dir={locale === "ar" ? "rtl" : "ltr"}>
       <CareerLeagueHero locale={locale} />
+      <AccountingCycleLanding locale={locale} />
       <HowGameWorks locale={locale} />
       <WhoPlatformFor locale={locale} />
       <CareerJourneyWorld locale={locale} />

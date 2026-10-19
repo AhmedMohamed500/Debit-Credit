@@ -53,11 +53,12 @@ describe('platform UI',()=>{
    const view=render(<MarketingLanding locale="ar"/>);
    expect(view.container.querySelectorAll('#cv-ats')).toHaveLength(1);
    expect(screen.getByRole('heading',{name:'كل إنجازاتك تصنع سيرة ذاتية واحدة احترافية'})).toBeInTheDocument();
-   ['الدورات التدريبية','الشهادات المهنية','المشاريع العملية','التدريب والمحاكاة','المهارات التقنية'].forEach(name=>expect(screen.getByText(name)).toBeInTheDocument());
+   ['الدورات التدريبية','الشهادات المهنية','المشاريع العملية','التدريب والمحاكاة','المهارات التقنية'].forEach(name=>expect(view.container.querySelector('#cv-ats')?.textContent).toContain(name));
    expect(screen.getByRole('link',{name:'تحميل PDF'})).toHaveAttribute('href',`/ar/signup?next=${encodeURIComponent('/ar/career-profile/cv?download=pdf')}`);
    expect(screen.getByRole('link',{name:'تحميل Word'})).toHaveAttribute('href',`/ar/signup?next=${encodeURIComponent('/ar/career-profile/cv?download=docx')}`);
    expect(screen.getByText('مثال توضيحي: اجتاز 6 من 6 فحوصات')).toBeInTheDocument();
    expect(view.container.querySelector('#accounting-work')?.compareDocumentPosition(view.container.querySelector('#cv-ats')!)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+   expect(view.container.querySelector('#cv-ats')?.nextElementSibling).toHaveAttribute('id','employer-discovery');
    view.rerender(<MarketingLanding locale="en"/>);
    expect(view.container.querySelectorAll('#cv-ats')).toHaveLength(1);
    expect(screen.getByRole('heading',{name:'Your achievements build one professional CV'})).toBeInTheDocument();

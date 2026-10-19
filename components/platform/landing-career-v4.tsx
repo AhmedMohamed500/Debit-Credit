@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AuthCTA } from "@/components/cloud/auth-cta";
 import { LandingCvAts } from "@/components/platform/landing-cv-ats";
+import { EmployerDiscoveryShowcase } from "@/components/platform/employer-discovery-showcase";
 import {
   ArrowLeft,
   ArrowRight,
@@ -469,6 +470,7 @@ export function CareerLandingV4({ locale }: Props) {
       <CareerJourneyWorld locale={locale} />
       <AccountingWorkSection locale={locale} />
       <LandingCvAts locale={locale} />
+      <EmployerDiscoveryShowcase locale={locale} />
       <LandingFeatureWorlds locale={locale} />
       <CareerFutureCta locale={locale} />
     </div>

@@ -17,6 +17,10 @@ describe("EmployerDiscoveryShowcase", () => {
     expect(screen.getAllByText("عرض توضيحي ببيانات خيالية").length).toBeGreaterThan(0);
     expect(screen.getByText("الظهور يتطلب موافقة صريحة")).toBeInTheDocument();
     expect(container.querySelectorAll(".ed-source")).toHaveLength(4);
+    expect(container.querySelectorAll(".ed-source-status")).toHaveLength(4);
+    expect(container.querySelectorAll(".ed-floating-badge")).toHaveLength(2);
+    expect(container.querySelectorAll(".ed-course-cards span")).toHaveLength(2);
+    expect(container.querySelector(".ed-person img")).toHaveAttribute("src", expect.stringContaining("employer-accountant-v2.png"));
     expect(container.querySelectorAll(".ed-benefit")).toHaveLength(4);
     expect(screen.getByRole("link", { name: /ابدأ رحلتك الآن/ })).toHaveAttribute("href", "/ar/onboarding");
     expect(container.textContent).not.toMatch(/KPMG|Deloitte|PwC|\b\d+%\b/);

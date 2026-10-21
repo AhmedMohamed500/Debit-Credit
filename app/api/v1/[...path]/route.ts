@@ -51,6 +51,7 @@ import { automaticCvFor } from "@/lib/server/profiles/cv";
 import { photoFor, savePhoto } from "@/lib/server/profiles/photo";
 import { photoCommand } from "@/lib/career/photo";
 import { portfolioCommand } from "@/lib/career/portfolio";
+import { excelCommand, excelLeaderboard, excelState, mutateExcel } from "@/lib/server/progress/excel-foundations";
 import { showcaseCommand } from "@/lib/career/showcase";
 import { showcaseFor, saveShowcase } from "@/lib/server/profiles/showcase";
 import { discoveryCommand, companyInput, talentQuery, shortlistCommand, contactCommand } from "@/lib/talent/model";
@@ -81,6 +82,13 @@ async function handle(
     if (method !== "GET")
       await limit(user.id, key, key === "me/progress" ? 120 : 30);
     switch (method + " " + key) {
+      case "GET me/excel-foundations": return excelState(user.id);
+      case "POST me/excel-foundations": return mutateExcel(user.id, await body(request, excelCommand));
+      case "GET competition/excel-foundations": {
+        const scope = z.enum(["overall", "stage", "weekly"]).safeParse(new URL(request.url).searchParams.get("scope") ?? "overall");
+        if (!scope.success) throw new HttpError(400, "INVALID_SCOPE");
+        return excelLeaderboard(user.id, scope.data);
+      }
       case "GET me/discovery": return discoveryFor(user.id);
       case "PUT me/discovery": return saveDiscovery(user.id, await body(request, discoveryCommand));
       case "GET me/contact-requests": return contactInbox(user.id);

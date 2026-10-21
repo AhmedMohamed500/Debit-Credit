@@ -1,0 +1,28 @@
+.xf-assessment {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin: 7px 0;
+  padding: 7px;
+  border: 1px solid #f3cf79;
+  border-radius: 7px;
+  background: #fff7e5;
+  color: #815400;
+  font-size: 10px;
+}
+.xf-assessment strong { grid-column: 1 / -1; }
+.xf-assessment.pass { border-color: #86ddb9; background: #e5f9ef; color: #086b48; }
+.xf-victory {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0;
+  padding: 9px;
+  border: 1px solid #74d5b8;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #e7f8ff, #e9fff4);
+  color: #075342;
+  font-size: 10px;
+}
+.xf-victory svg { color: #f1a008; }
+.xf-victory strong { font-size: 12px; }
+.xf-victory a { color: #075bc9; font-weight: 800; }

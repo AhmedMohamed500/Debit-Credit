@@ -20,3 +20,14 @@
 .xf-user{font-size:14px}.xf-avatar{width:42px;height:42px}
 .xf-side{top:var(--xf-header-height);z-index:20;box-shadow:4px 0 16px #031a3266}
 @media(max-width:750px){.xf-shell{--xf-header-height:64px}.xf-top{height:var(--xf-header-height);padding-inline:12px;gap:9px}.xf-brand{font-size:18px}.xf-brand-mark{width:31px;height:31px}.xf-top nav a{font-size:0;padding-inline:6px}.xf-avatar{width:36px;height:36px}.xf-side{position:relative;top:auto;box-shadow:0 3px 10px #031a3238}}
+
+/* Readable course typography across the lesson, workbook and task rail. */
+.xf-side-title,.xf-side-item,.xf-side-links a{font-size:15px}.xf-side-steps button{font-size:14px}.xf-side-foot strong{font-size:15px}.xf-side-foot span,.xf-side-foot a{font-size:13px}
+.xf-crumb{font-size:14px}.xf-hero h1{font-size:clamp(34px,3vw,46px)}.xf-hero h1 span{font-size:14px}.xf-hero h2{font-size:24px}.xf-hero p{font-size:15px;line-height:1.75}
+.xf-stagebar strong{font-size:15px}.xf-stagebar small{font-size:13px}.xf-stage-number{font-size:19px}
+.xf-tabs button{font-size:13px}.xf-lesson-content h3{font-size:21px}.xf-lesson-content p{font-size:15px;line-height:1.75}.xf-concept-box strong{font-size:15px}.xf-concept-box li{font-size:14px}
+.xf-card-heading strong{font-size:18px}.xf-card-heading button,.xf-sheet-help{font-size:13px}
+.xf-ribbon,.xf-tools,.xf-formula,.xf-sheet-tabs{font-size:13px}.xf-sheet table{font-size:13px}.xf-sheet th,.xf-sheet td{height:33px}.xf-sheet td:nth-child(5){font-size:12px}.xf-sheet td input,.xf-sheet td select{height:28px;font-size:13px}.xf-sheet td small{font-size:11px}.xf-sheet-tabs button{font-size:12px}.xf-training-note{font-size:12px}
+.xf-task-head{font-size:14px}.xf-task-head span{font-size:12px}.xf-task-card h3{font-size:18px}.xf-task-card>p,.xf-task-card li,.xf-question{font-size:13px;line-height:1.55}.xf-question select{font-size:13px;padding:8px}.xf-primary,.xf-outline{font-size:14px;padding:12px 14px}.xf-tip-card h4{font-size:14px}.xf-tip-card p{font-size:12px}.xf-message,.xf-errors{font-size:13px}
+.xf-bottom strong{font-size:14px}.xf-bottom small{font-size:11px}
+@media(max-width:750px){.xf-hero h1{font-size:29px}.xf-hero h2{font-size:19px}.xf-hero p{font-size:13px}.xf-stagebar strong{font-size:13px}.xf-stagebar small{font-size:11px}.xf-tabs button{font-size:12px}.xf-lesson-content h3{font-size:19px}.xf-lesson-content p{font-size:14px}.xf-sheet table,.xf-sheet td input,.xf-sheet td select{font-size:12px}.xf-task-card>p,.xf-task-card li,.xf-question{font-size:12px}}

@@ -8,6 +8,12 @@ export function StudentWorld({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { state } = useGame();
   if (/^\/(ar|en)\/pricing\/?$/.test(pathname)) return <>{children}</>;
+  if (
+    /^\/(ar|en)\/(bootcamp\/excel-foundations|accounting-arena)\/?$/.test(
+      pathname,
+    )
+  )
+    return <>{children}</>;
   if (/^\/(ar|en)\/portfolio\//.test(pathname))
     return <div className="professional-profile-shell">{children}</div>;
   if (/^\/(ar|en)\/(employer|employers|companies)(\/|$)/.test(pathname))

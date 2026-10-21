@@ -112,6 +112,22 @@ describe("Account-safe student journey guidance", () => {
       ).toBeInTheDocument();
     },
   );
+  it.each([
+    "/ar/bootcamp/excel-foundations",
+    "/en/bootcamp/excel-foundations",
+    "/ar/accounting-arena",
+    "/en/accounting-arena",
+  ])("does not place the signed-in journey overlay above %s", (path) => {
+    fixture.path = path;
+    const locale = path.startsWith("/ar") ? "ar" : "en";
+    const { container } = render(
+      <StudentJourneyProvider locale={locale}>
+        <main>Standalone learning workspace</main>
+      </StudentJourneyProvider>,
+    );
+    expect(screen.getByText("Standalone learning workspace")).toBeVisible();
+    expect(container.querySelector(".student-journey-bar")).toBeNull();
+  });
   it.each(["ar", "en"] as const)(
     "keeps the %s career profile and CV studio free of a competing journey overlay",
     (locale) => {

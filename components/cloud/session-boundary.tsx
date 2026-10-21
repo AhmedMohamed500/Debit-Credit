@@ -35,6 +35,10 @@ export function CloudSessionBoundary({
   const pathname = usePathname(),
     publicProfile = /^\/(ar|en)\/portfolio\//.test(pathname),
     pricingPath = /^\/(ar|en)\/pricing\/?$/.test(pathname),
+    standaloneLearningPath =
+      /^\/(ar|en)\/(bootcamp\/excel-foundations|accounting-arena)\/?$/.test(
+        pathname,
+      ),
     accountSettingsPath = pathname === `/${locale}/account`,
     careerProfilePath = pathname === `/${locale}/career-profile` || pathname.startsWith(`/${locale}/career-profile/`),
     accountHome = pathname === `/${locale}`,
@@ -173,7 +177,7 @@ export function CloudSessionBoundary({
       setBusy(false);
     }
   }
-  const bar = !publicProfile && !pricingPath && !employerPath && !accountSettingsPath && !careerProfilePath && identity && (
+  const bar = !publicProfile && !pricingPath && !standaloneLearningPath && !employerPath && !accountSettingsPath && !careerProfilePath && identity && (
     <div className="cloud-account-bar">
       <span>{identity.profile.displayName}</span>
       <Link href={`/${locale}/account`}>{say("My account", "حسابي")}</Link>

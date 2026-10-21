@@ -268,6 +268,8 @@ function StudentJourneyBar() {
       `/${locale}/student-profile`,
       `/${locale}/career-profile`,
       `/${locale}/account`,
+      `/${locale}/bootcamp/excel-foundations`,
+      `/${locale}/accounting-arena`,
     ].includes(pathname) ||
     pathname.startsWith(`/${locale}/career-profile/`)
   )

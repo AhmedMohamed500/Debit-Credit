@@ -41,6 +41,6 @@ Open `http://localhost:3000/ar` or `/en`. See [backend setup](docs/BACKEND-PHASE
 
 ## Product documentation
 
-[Curriculum](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md) · [First Shift](docs/GAMEPLAY-PHASE-B.md) · [Skill Passport](docs/PROFESSIONAL-EVIDENCE-PIPELINE.md) · [Backend](docs/BACKEND-PHASE-1.md) · [Signup → login → home](docs/SIGNUP-SIGNIN-HOME-AR.md)
+[Curriculum](docs/COMPLETE-ACCOUNTING-CAREER-CURRICULUM.md) · [Excel Foundations + Accounting Arena](docs/EXCEL_FOUNDATIONS_ACCOUNTING_ARENA_REPORT.md) · [First Shift](docs/GAMEPLAY-PHASE-B.md) · [Skill Passport](docs/PROFESSIONAL-EVIDENCE-PIPELINE.md) · [Backend](docs/BACKEND-PHASE-1.md) · [Signup → login → home](docs/SIGNUP-SIGNIN-HOME-AR.md)
 
 Production is hosted on Vercel. Render fallback configuration exists but no Render deployment is live; its account currently requires a payment method. No paid service or database reset is authorized by this organization work.

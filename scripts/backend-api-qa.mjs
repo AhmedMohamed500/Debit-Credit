@@ -220,6 +220,118 @@ check(
   "fresh client restores profile",
   (await fresh.call("/api/v1/me/profile")).value.displayName === "Ahmed Cloud",
 );
+const excelInitial = await a.call("/api/v1/me/excel-foundations");
+check(
+  "Excel Foundations starts private with no fabricated completion",
+  excelInitial.status === 200 &&
+    excelInitial.value.revision === 0 &&
+    excelInitial.value.data.completedSteps.length === 0 &&
+    excelInitial.value.data.publicOptIn === false,
+);
+check(
+  "Excel Foundations rejects client score and XP forgery",
+  (
+    await a.call("/api/v1/me/excel-foundations", "POST", {
+      commandId: crypto.randomUUID(), revision: 0, type: "submit", step: 1,
+      cells: excelInitial.value.data.draft, answers: { cell: "B2", concept: "cell" },
+      score: 100, xp: 999999,
+    })
+  ).status === 400,
+);
+check(
+  "Excel Foundations rejects stage skipping",
+  (
+    await a.call("/api/v1/me/excel-foundations", "POST", {
+      commandId: crypto.randomUUID(), revision: 0, type: "submit", step: 5,
+      cells: {}, answers: {},
+    })
+  ).status === 409,
+);
+const wrongExcelCommand = {
+  commandId: crypto.randomUUID(), revision: 0, type: "submit", step: 1,
+  cells: excelInitial.value.data.draft, answers: { cell: "A2", concept: "row" },
+};
+const wrongExcel = await a.call("/api/v1/me/excel-foundations", "POST", wrongExcelCommand);
+check(
+  "failed Excel assessment is recorded without completion",
+  wrongExcel.status === 200 && wrongExcel.value.correct === false &&
+    wrongExcel.value.data.completedSteps.length === 0 && wrongExcel.value.revision === 1,
+);
+const wrongReplay = await a.call("/api/v1/me/excel-foundations", "POST", wrongExcelCommand);
+check(
+  "replayed Excel command is idempotent",
+  wrongReplay.status === 200 && wrongReplay.value.replayed === true && wrongReplay.value.revision === 1,
+);
+let excelRevision = wrongExcel.value.revision;
+let excelResult = await a.call("/api/v1/me/excel-foundations", "POST", {
+  commandId: crypto.randomUUID(), revision: excelRevision, type: "submit", step: 1,
+  cells: excelInitial.value.data.draft, answers: { cell: "B2", concept: "cell" },
+});
+check("server validates Excel step 1", excelResult.status === 200 && excelResult.value.correct === true);
+excelRevision = excelResult.value.revision;
+excelResult = await a.call("/api/v1/me/excel-foundations", "POST", {
+  commandId: crypto.randomUUID(), revision: excelRevision, type: "submit", step: 2,
+  cells: { C8: "liability", C9: "liability", C10: "equity" },
+  answers: { loan: "liability", equation: "assets=liabilities+equity" },
+});
+check("server validates accounting classifications", excelResult.status === 200 && excelResult.value.correct === true);
+excelRevision = excelResult.value.revision;
+excelResult = await a.call("/api/v1/me/excel-foundations", "POST", {
+  commandId: crypto.randomUUID(), revision: excelRevision, type: "submit", step: 3,
+  cells: { B8: "70000", B9: "30000", B10: "100000" }, answers: {},
+});
+check("server validates source amounts", excelResult.status === 200 && excelResult.value.correct === true);
+excelRevision = excelResult.value.revision;
+excelResult = await a.call("/api/v1/me/excel-foundations", "POST", {
+  commandId: crypto.randomUUID(), revision: excelRevision, type: "submit", step: 4,
+  cells: { B6: "=SUM(B2:B5)", B11: "=SUM(B8:B10)" }, answers: {},
+});
+check("server evaluates SUM formulas", excelResult.status === 200 && excelResult.value.correct === true);
+excelRevision = excelResult.value.revision;
+const finalExcelCommand = {
+  commandId: crypto.randomUUID(), revision: excelRevision, type: "submit", step: 5,
+  cells: { C8: "liability", B6: "=SUM(B2:B5)", B11: "=SUM(B8:B10)" },
+  answers: { loan: "liability", equation: "assets=liabilities+equity", equipment: "asset-exchange", balance: "not-proof" },
+};
+excelResult = await a.call("/api/v1/me/excel-foundations", "POST", finalExcelCommand);
+check(
+  "server completes the independent variant challenge once",
+  excelResult.status === 200 && excelResult.value.correct === true &&
+    excelResult.value.data.completedSteps.join(",") === "1,2,3,4,5" &&
+    excelResult.value.data.finalScore === 100,
+);
+excelRevision = excelResult.value.revision;
+check(
+  "private completion stays out of the Arena",
+  (await a.call("/api/v1/competition/excel-foundations?scope=overall")).value.entries.length === 0,
+);
+const optedIn = await a.call("/api/v1/me/excel-foundations", "POST", {
+  commandId: crypto.randomUUID(), revision: excelRevision, type: "privacy",
+  publicOptIn: true, nickname: "Ahmed QA",
+});
+check("competition opt-in is explicit", optedIn.status === 200 && optedIn.value.data.publicOptIn === true);
+excelRevision = optedIn.value.revision;
+const excelBoard = (await a.call("/api/v1/competition/excel-foundations?scope=overall")).value;
+check(
+  "Arena uses only accepted real outcomes and hides email",
+  excelBoard.entries.length === 1 && excelBoard.entries[0].nickname === "Ahmed QA" &&
+    excelBoard.entries[0].xp === 380 && excelBoard.ownRank === 1 &&
+    !JSON.stringify(excelBoard).includes("@phase1.test"),
+);
+check(
+  "final challenge replay cannot duplicate XP or accepted outcome",
+  (await a.call("/api/v1/me/excel-foundations", "POST", finalExcelCommand)).value.replayed === true &&
+    (await pool.query("SELECT count(*)::int n FROM accepted_outcome WHERE domain='excel-foundations' AND \"userId\"=$1", [meA.user.id])).rows[0].n === 1,
+);
+const optedOut = await a.call("/api/v1/me/excel-foundations", "POST", {
+  commandId: crypto.randomUUID(), revision: excelRevision, type: "privacy",
+  publicOptIn: false, nickname: "Ahmed QA",
+});
+check(
+  "withdrawing leaderboard consent removes the participant",
+  optedOut.status === 200 &&
+    (await a.call("/api/v1/competition/excel-foundations?scope=overall")).value.entries.length === 0,
+);
 const foundation = {
   commandId: crypto.randomUUID(),
   missionId: "business-world",

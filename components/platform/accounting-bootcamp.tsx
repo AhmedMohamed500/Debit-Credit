@@ -145,6 +145,10 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
             <Home />
             {say("Home", "الرئيسية")}
           </Link>
+          <Link href={`/${locale}/bootcamp/excel-foundations`}>
+            <Star />
+            {say("Excel Foundations", "أساسيات Excel")}
+          </Link>
           <button
             aria-pressed={screen === "map"}
             onClick={() => setScreen("map")}

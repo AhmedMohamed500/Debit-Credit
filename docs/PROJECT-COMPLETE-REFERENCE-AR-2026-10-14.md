@@ -97,12 +97,12 @@
 
 آخر إصدار تطبيق مؤكد في هذه المراجعة:
 
-- طلب الدمج: [PR #26](https://github.com/AhmedMohamed500/Debit-Credit/pull/26)، حالته `MERGED`.
-- Commit التنفيذ: `d27246fb70d33adb7ccb18749dcec53eb88689f5`.
-- Commit الإنتاج بعد الدمج: `13f3a17d819f6d553598c95ff7165d9a10d02aab`.
-- Vercel Production: `dpl_BZcWGBMa55nzFHQ5rfh42aAisj62`، حالته `READY`.
-- الرابط الثابت `debit-credit-nine.vercel.app` مرتبط بهذا الإصدار.
-- تم التحقق من بيانات النشر في 14 أكتوبر 2026 دون تعديل إعداداته أو الوصول إلى بيانات الحسابات.
+- طلب الدمج: [PR #42](https://github.com/AhmedMohamed500/Debit-Credit/pull/42)، حالته `MERGED` بعد نجاح فحوص Vercel.
+- Commit الإنتاج بعد الدمج: `52dc07648a00c1119ebd1b3063776f7f5be57e13`.
+- Vercel Production: `dpl_3gJWF5q3ftN78pLA24hV5taxiRXA`، حالته `READY`.
+- رابط الإصدار: `https://debit-credit-am2jn69ko-ahmed-mohameds-projects-c51bc2cc.vercel.app`.
+- الرابط الثابت `https://debit-credit-nine.vercel.app` مرتبط بهذا الإصدار.
+- تم التحقق في 22 أكتوبر 2026 من الصفحتين العربية والإنجليزية على الإنتاج، Desktop وMobile، ومن خمس مراحل الضيف، وثبات الهيدر والسايدبار، وEnter وShift+Enter، وتنسيق الخلية، والحالة الصادقة الفارغة لساحة المحاسبة. الفحص لم ينشئ حسابًا إنتاجيًا ولم يعدّل بيانات طالب حقيقي.
 
 هذه لقطة زمنية، وليست وعدًا بأن SHA أو حالة كل خدمة خارجية لن تتغير بعد تاريخ الملف.
 

@@ -125,3 +125,9 @@ The hero uses a newly generated fictional learner, not a real user or copied per
 - Weekly ranking is derived on read; no paid realtime service or new season table was added.
 - Notes are session-local and labelled as such; assessed workbook data and answers are persisted.
 - Google OAuth and outbound email were not exercised in local QA. Existing email/password Better Auth signup and separate sign-in were exercised.
+
+## Production release
+
+- Merged through [PR #42](https://github.com/AhmedMohamed500/Debit-Credit/pull/42) at commit `52dc07648a00c1119ebd1b3063776f7f5be57e13`.
+- Vercel production deployment `dpl_3gJWF5q3ftN78pLA24hV5taxiRXA` reached `READY` and was aliased to `https://debit-credit-nine.vercel.app`.
+- The full read-only browser suite passed against the production alias for Arabic and English desktop/mobile, including all five guest stages, fixed header/sidebar geometry, keyboard navigation, cell formatting, and the honest empty Arena state.

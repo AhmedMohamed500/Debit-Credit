@@ -3,6 +3,15 @@
 Date: 2026-10-21
 Branch: `codex/excel-foundations-arena`
 
+## Usability and account-integration update — 2026-10-22
+
+- The workspace header now uses the active cloud identity, saved profile photo, display name, and current five-stage progress. Its account affordance links to account settings; guests are routed to sign-in with the Excel route preserved as `next`.
+- The desktop header is fixed at 88 px and the learning rail stays fixed directly below it. Page-level horizontal clipping prevents RTL overflow from cutting off the brand or rail. Mobile retains a compact non-trapping header and document flow.
+- Workbook keyboard interaction now supports Enter/Arrow Down to advance, Shift+Enter/Arrow Up to return, while keeping focus on editable amount cells.
+- Font family, font size, bold, italic, and underline controls are real accessible controls, not decorative labels. Formatting is intentionally session-local; assessed cell values, answers, server validation, and authenticated progress persistence are unchanged.
+- Typography was increased across the header, rail, hero, step bar, lesson, workbook, task rail, feedback, and mobile presentation.
+- Added `tests/excel-foundations-ui.test.tsx` for account linkage, keyboard focus movement, and live cell formatting. Browser QA now also asserts fixed header geometry, aligned sidebar geometry, keyboard navigation, and formatting in Arabic and English.
+
 ## Delivered scope
 
 - Added bilingual Excel Foundations lessons at `/ar/bootcamp/excel-foundations` and `/en/bootcamp/excel-foundations`.
@@ -93,7 +102,7 @@ All routes require an authenticated owner. State changes preserve same-origin pr
 
 ## Validation performed
 
-- `npm run check`: ESLint and TypeScript passed; 85 files / 711 tests passed; Next.js production build passed and included both route families.
+- `npm run check` on 22 October 2026: ESLint and TypeScript passed; 86 files / 718 tests passed; Next.js production build passed and included both route families.
 - Focused engine tests: 6 passed for formulas, error states, cycles, variants, scoring, tamper resistance, progress recovery, and shared ranks.
 - Local PostgreSQL authenticated API QA: 90 checks passed, including separate signup/sign-in, stage-skip rejection, fake score/XP rejection, all five server assessments, idempotent replay, one accepted reward, private-by-default completion, explicit opt-in, no email leakage, and withdrawal.
 - Chromium browser QA: Arabic and English at 1536×1024 and 390×844, complete five-step guest flow, honest Arena empty state, and no document-level mobile overflow.

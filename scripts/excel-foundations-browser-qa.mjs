@@ -25,8 +25,8 @@ try {
       return { headerTop: Math.round(header?.top ?? -1), headerHeight: Math.round(header?.height ?? 0), sidebarTop: Math.round(sidebar?.top ?? -1) };
     });
     assert.equal(chrome.headerTop, 0, `${locale} header must remain fixed`);
-    assert.equal(chrome.headerHeight, 88, `${locale} desktop header height`);
-    assert.equal(chrome.sidebarTop, 88, `${locale} sidebar stays aligned below the fixed header`);
+    assert.equal(chrome.headerHeight, 80, `${locale} desktop header height`);
+    assert.equal(chrome.sidebarTop, 80, `${locale} sidebar stays aligned below the fixed header`);
     await page.evaluate(() => window.scrollTo(0, 0));
     const b2 = page.getByLabel("B2", { exact: true });
     const b3 = page.getByLabel("B3", { exact: true });
@@ -41,6 +41,16 @@ try {
     await page.getByRole("button", { name: locale === "ar" ? "خط عريض" : "Bold" }).click();
     const format = await b2.evaluate((element) => ({ fontSize: element.style.fontSize, fontWeight: element.style.fontWeight }));
     assert.deepEqual(format, { fontSize: "18px", fontWeight: "800" });
+    await page.getByRole("button", { name: "File" }).click();
+    assert.equal(await page.getByRole("button", { name: locale === "ar" ? "تنزيل CSV" : "Download CSV" }).isVisible(), true);
+    await page.getByRole("button", { name: locale === "ar" ? "البيانات الأصلية" : "Source data" }).click();
+    assert.equal(await page.getByRole("heading", { name: locale === "ar" ? "بيانات المستند الأصلي" : "Original source data" }).isVisible(), true);
+    await page.getByRole("button", { name: locale === "ar" ? "النموذج" : "Model" }).click();
+    assert.equal(await page.getByRole("heading", { name: locale === "ar" ? "نموذج المعادلة المحاسبية" : "Accounting equation model" }).isVisible(), true);
+    await page.getByRole("button", { name: locale === "ar" ? "الميزانية العمومية" : "Balance sheet" }).click();
+    await page.locator(".xf-stagebar button").nth(4).click();
+    assert.equal(await page.locator(".xf-preview-note").isVisible(), true);
+    await page.locator(".xf-preview-note button").click();
     await page.screenshot({ path: path.join(output, `${locale}-desktop.png`), fullPage: true });
     const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
     mobile.on("pageerror", (error) => failures.push(`${locale}-mobile: ${error.message}`));

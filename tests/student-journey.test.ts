@@ -15,6 +15,7 @@ const start = {
   locale: "en" as const,
   pathname: "/en",
   personalComplete: true,
+  excelCompletedSteps: 5,
   accepted: [] as string[],
   shiftCompleted: 0,
 };
@@ -28,12 +29,18 @@ describe("Connected student journey", () => {
     const journey = studentJourney({ ...start, locale });
     expect(journey.steps.map((step) => step.route)).toEqual([
       `/${locale}/student-profile`,
+      `/${locale}/bootcamp/excel-foundations`,
       `/${locale}/game/student`,
       `/${locale}/game/first-shift`,
       `/${locale}/career-profile/skills`,
       `/${locale}/career-profile/cv`,
     ]);
     expect(journey.nextRoute).toBe(`/${locale}/game/student`);
+  });
+  it("requires the five server-backed Excel stages before the practical desk", () => {
+    const journey = studentJourney({ ...start, excelCompletedSteps: 4 });
+    expect(journey.next?.id).toBe("excel");
+    expect(journey.nextRoute).toBe("/en/bootcamp/excel-foundations");
   });
   it("resumes saved training without unknown or duplicate completion", () => {
     const journey = studentJourney({
@@ -81,7 +88,7 @@ describe("Connected student journey", () => {
       pathname: "/en/career-profile/skills",
     });
     expect(skills.nextRoute).toBe("/en/career-profile/cv");
-    expect(skills.steps.slice(3).every((step) => !step.done)).toBe(true);
+    expect(skills.steps.slice(4).every((step) => !step.done)).toBe(true);
     expect(
       studentJourney({
         ...options,

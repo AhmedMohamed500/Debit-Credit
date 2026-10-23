@@ -16,6 +16,7 @@ import {
   Compass,
   FileText,
   Gamepad2,
+  Trophy,
 } from "lucide-react";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { ProfilePhoto } from "@/components/career/profile-photo";
@@ -30,6 +31,10 @@ import { BrowserPlacementRepository } from "@/lib/placement/repository";
 import { BrowserSkillEvidenceRepository } from "@/lib/career/repository";
 import { calculatePassport } from "@/lib/career/evidence";
 import type { StudentState } from "@/lib/student/unit";
+import {
+  earnedExcelXp,
+  type ExcelProgress,
+} from "@/lib/excel-foundations/engine";
 import type { Locale } from "@/types";
 import "@/app/student-journey.css";
 
@@ -40,6 +45,7 @@ type JourneyContext = {
   error: boolean;
   retry: () => void;
   name: string;
+  excelProgress: ExcelProgress | null;
 };
 const Context = createContext<JourneyContext | null>(null);
 export const useStudentJourney = () => useContext(Context);
@@ -61,6 +67,8 @@ export function StudentJourneyProvider({
   const [progress, setProgress] = useState<{
       owner: string;
       accepted: string[];
+      excelCompletedSteps: number;
+      excel: ExcelProgress;
     } | null>(null),
     [errorOwner, setErrorOwner] = useState<string | null>(null),
     [advancedRoute, setAdvancedRoute] = useState("/onboarding"),
@@ -73,10 +81,18 @@ export function StudentJourneyProvider({
   useEffect(() => {
     if (!enabled || !owner || !identity?.personalComplete) return;
     let alive = true;
-    void requestJSON<{ data: StudentState }>("me/student-unit")
-      .then((row) => {
+    void Promise.all([
+      requestJSON<{ data: StudentState }>("me/student-unit"),
+      requestJSON<{ data: ExcelProgress }>("me/excel-foundations"),
+    ])
+      .then(([student, excel]) => {
         if (alive) {
-          setProgress({ owner, accepted: row.data.accepted });
+          setProgress({
+            owner,
+            accepted: student.data.accepted,
+            excelCompletedSteps: excel.data.completedSteps.length,
+            excel: excel.data,
+          });
           setErrorOwner(null);
         }
       })
@@ -99,6 +115,7 @@ export function StudentJourneyProvider({
       locale,
       pathname,
       personalComplete: identity.personalComplete === true,
+      excelCompletedSteps: loaded ? (progress?.excelCompletedSteps ?? 0) : 0,
       accepted: loaded ? (progress?.accepted ?? []) : [],
       shiftCompleted: ready
         ? firstShiftMissionProgress(state).completedCount
@@ -115,6 +132,7 @@ export function StudentJourneyProvider({
         error: errorOwner === owner,
         retry,
         name: identity.profile.displayName,
+        excelProgress: loaded ? (progress?.excel ?? null) : null,
       }}
     >
       <div data-student-guided="true">
@@ -202,6 +220,11 @@ export function JourneyNextAction({ compact = false }: { compact?: boolean }) {
             "Continue the training desk: source documents, entries, ledger, trial balance and the office computer. Finish this file before moving to the first shift.",
             "كمّل ملف تدريب الأساس: المستندات، القيود، الأستاذ، الميزان وكمبيوتر المكتب. بعد الملف ده ننتقل لأول وردية.",
           )
+        : journey.next?.id === "excel"
+          ? say(
+              "Build spreadsheet and accounting-equation foundations first. Your five server-checked stages unlock the practical desk.",
+              "ابدأ بأساسيات الجداول والمعادلة المحاسبية. المراحل الخمس المتحققة على الخادم تفتح لك مكتب التدريب العملي.",
+            )
         : journey.next?.id === "shift"
           ? say(
               "Your foundations file is complete. Apply it in the first shift, then review the journal and ledger. The two training companies keep separate books.",
@@ -269,7 +292,6 @@ function StudentJourneyBar() {
       `/${locale}/career-profile`,
       `/${locale}/account`,
       `/${locale}/bootcamp/excel-foundations`,
-      `/${locale}/accounting-arena`,
     ].includes(pathname) ||
     pathname.startsWith(`/${locale}/career-profile/`)
   )
@@ -336,7 +358,14 @@ export function StudentJourneyHome({ locale }: { locale: Locale }) {
         </nav>
       </header>
       <JourneySteps />
+      <section className="student-journey-overview" aria-label={say("Learning progress summary", "ملخص التقدم التعليمي")}>
+        <article><small>{say("Current stage", "المرحلة الحالية")}</small><strong>{context.journey.next?.title[locale] ?? say("Career track", "المسار المهني")}</strong></article>
+        <article><small>{say("Completed core stages", "المراحل الأساسية المكتملة")}</small><strong>{context.journey.steps.filter((step) => step.done).length}/{context.journey.steps.length - 2}</strong></article>
+        <article><small>{say("Latest successful milestone", "آخر إنجاز ناجح")}</small><strong>{[...context.journey.steps].reverse().find((step) => step.done)?.title[locale] ?? say("No completed stage yet", "لا توجد مرحلة مكتملة بعد")}</strong></article>
+        <article><small>{say("True progress", "التقدم الحقيقي")}</small><strong>{Math.round(context.journey.steps.filter((step) => step.done).length / (context.journey.steps.length - 2) * 100)}%</strong></article>
+      </section>
       <JourneyNextAction />
+      <LearningCompetitionSummary locale={locale} />
       <section className="student-journey-results">
         <h2>{say("What your work builds", "شغلك بيبني إيه؟")}</h2>
         <p>
@@ -380,7 +409,7 @@ export function StudentJourneyHome({ locale }: { locale: Locale }) {
               "التسوية البنكية",
             ],
             ["/academy", "Academy", "الأكاديمية"],
-            ["/career-league/map", "Career map", "الخريطة المهنية"],
+            ["/career", "Career development", "التطوير المهني"],
             ["/competition", "Online competition", "المنافسة"],
             ["/account", "Account settings", "إعدادات الحساب"],
           ].map(([route, en, arabic]) => (
@@ -391,5 +420,56 @@ export function StudentJourneyHome({ locale }: { locale: Locale }) {
         </nav>
       </details>
     </main>
+  );
+}
+
+function LearningCompetitionSummary({ locale }: { locale: Locale }) {
+  const ar = locale === "ar";
+  const say = (en: string, arabic: string) => (ar ? arabic : en);
+  const context = useStudentJourney();
+  const state = context?.excelProgress ?? null;
+  const [rank, setRank] = useState<number | null>(null);
+  useEffect(() => {
+    if (!state?.publicOptIn || !state.completedSteps.includes(5)) {
+      setRank(null);
+      return;
+    }
+    let active = true;
+    void requestJSON<{ ownRank: number | null }>(
+      "competition/excel-foundations?scope=overall",
+    )
+      .then((board) => {
+        if (active) setRank(board.ownRank);
+      })
+      .catch(() => {
+        if (active) setRank(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [state]);
+  if (!state) return null;
+  const completed = state.completedSteps.length;
+  return (
+    <section className="student-learning-competition" aria-label={say("Learning progress competition", "منافسة التقدم التعليمي")}>
+      <Trophy aria-hidden="true" />
+      <div>
+        <small>{say("LEARNING PROGRESS", "تقدم التعلم")}</small>
+        <h2>{completed}/5 {say("verified Excel stages", "مراحل Excel متحققة")}</h2>
+        <p>
+          {state.completedSteps.includes(5)
+            ? `${say("Mastery score", "درجة الإتقان")}: ${state.finalScore ?? 0}% · ${earnedExcelXp(state)} XP`
+            : say("Only server-approved completions affect this progress.", "المراحل المقبولة من الخادم فقط تؤثر في هذا التقدم.")}
+        </p>
+      </div>
+      <div className="student-learning-rank">
+        {state.publicOptIn ? (
+          <><small>{say("Your opt-in rank", "ترتيبك الاختياري")}</small><strong>{rank ? `#${rank}` : "—"}</strong></>
+        ) : (
+          <small>{say("Public ranking is off", "الترتيب العام غير مفعّل")}</small>
+        )}
+        <Link href={`/${locale}/account#learning-competition`}>{say("Participation settings", "إعدادات المشاركة")}</Link>
+      </div>
+    </section>
   );
 }

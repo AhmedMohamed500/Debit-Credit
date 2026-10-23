@@ -28,12 +28,13 @@ describe('beginner career world',()=>{
   expect(screen.getByRole('button',{name:/Journal Entries/})).toHaveClass('locked');
   expect(screen.getByRole('button',{name:/Certification Preparation Tracks/})).toHaveClass('planned');
   expect(screen.getAllByText('Unassessed')).toHaveLength(5);
-  expect(screen.getByText('DEMO LEAGUE')).toBeInTheDocument();
+  expect(screen.queryByText('DEMO LEAGUE')).toBeNull();
+  expect(screen.getAllByRole('link',{name:'Professional Challenges'}).some(link=>link.getAttribute('href')==='/en/competition')).toBe(true);
   expect(screen.getByText(/Kareem · Finance Manager/)).toBeInTheDocument();
   view.unmount();
   await show('ar');
   expect(document.querySelector('.beginner-world')).toHaveAttribute('dir','rtl');
-  expect(screen.getByText('دوري تجريبي')).toBeInTheDocument();
+  expect(screen.queryByText('دوري تجريبي')).toBeNull();
  });
  it('uses current company and accounting routes, and previews locked requirements',async()=>{
   await show();

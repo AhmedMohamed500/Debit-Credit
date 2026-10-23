@@ -4,12 +4,12 @@ import { AuthCTA } from "@/components/cloud/auth-cta";
 import {
   BriefcaseBusiness,
   CircleUserRound,
-  FileText,
   Gamepad2,
   Home,
   Menu,
   CreditCard,
   Route,
+  Settings,
   ShieldCheck,
   Trophy,
   Workflow,
@@ -37,24 +37,18 @@ export function PlatformNav({
     ? [
         ["", Home, "رحلتي", "My journey"],
         ["/game/student", Gamepad2, "مكتب التدريب", "Training desk"],
+        ["/competition", Trophy, "المنافسة", "Competition"],
         ["/career-profile/skills", ShieldCheck, "مهاراتي", "My skills"],
-        ["/career-profile/cv", FileText, "الـCV الإنجليزي", "English CV"],
-        ["/career-profile", CircleUserRound, "ملفي", "My profile"],
+        ["/career-profile", CircleUserRound, "ملفي المهني", "Career profile"],
+        ["/account", Settings, "الحساب", "Account"],
       ]
     : [
-        ["", Home, "الرئيسية", "Home"],
-        [
-          "/game/student",
-          Gamepad2,
-          "مكتب تدريب الطالب",
-          "Student training desk",
-        ],
-        ["/career-league/map", Route, "مساري المهني", "My Career"],
-        ["/game", Gamepad2, "العب", "Play"],
-        ["/career-profile/skills", ShieldCheck, "المهارات", "Skills"],
-        ["/leaderboard", Trophy, "المنافسة", "Competition"],
-        ["/career-profile/cv", FileText, "السيرة الذاتية", "CV"],
-        ["/profile", CircleUserRound, "الملف", "Profile"],
+        ["", Home, "رحلتي", "My journey"],
+        ["/game", Gamepad2, "التدريب العملي", "Practical training"],
+        ["/competition", Trophy, "المنافسة", "Competition"],
+        ["/career-profile/skills", ShieldCheck, "مهاراتي", "My skills"],
+        ["/career-profile", CircleUserRound, "ملفي المهني", "Career profile"],
+        ["/account", Settings, "الحساب", "Account"],
       ];
   const items: [string, LucideIcon, string, string][] = marketing
     ? [

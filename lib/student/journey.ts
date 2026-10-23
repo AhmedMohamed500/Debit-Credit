@@ -5,6 +5,7 @@ export function studentJourney({
   locale,
   pathname,
   personalComplete,
+  excelCompletedSteps = 0,
   accepted,
   shiftCompleted,
   advancedRoute = "/onboarding",
@@ -12,6 +13,7 @@ export function studentJourney({
   locale: Locale;
   pathname: string;
   personalComplete: boolean;
+  excelCompletedSteps?: number;
   accepted: string[];
   shiftCompleted: number;
   advancedRoute?: string;
@@ -25,6 +27,13 @@ export function studentJourney({
       title: { ar: "بياناتي", en: "My details" },
       done: personalComplete,
       detail: personalComplete ? "✓" : "",
+    },
+    {
+      id: "excel",
+      route: path("/bootcamp/excel-foundations"),
+      title: { ar: "أساسيات Excel", en: "Excel Foundations" },
+      done: excelCompletedSteps >= 5,
+      detail: `${Math.min(5, excelCompletedSteps)}/5`,
     },
     {
       id: "training",
@@ -59,24 +68,27 @@ export function studentJourney({
     steps.find(
       (step) =>
         pathname === step.route || pathname.startsWith(`${step.route}/`),
-    ) ?? (pathname === path("/student") ? steps[1] : undefined);
+    ) ?? (pathname === path("/student") ? steps[2] : undefined);
   const next = !personalComplete
     ? steps[0]
-    : count < stepIds.length
+    : excelCompletedSteps < 5
       ? steps[1]
-      : shiftCompleted < 5
+      : count < stepIds.length
         ? steps[2]
-        : current?.id === "skills"
-          ? steps[4]
-          : current?.id === "cv"
-            ? null
-            : steps[3];
+        : shiftCompleted < 5
+          ? steps[3]
+          : current?.id === "skills"
+            ? steps[5]
+            : current?.id === "cv"
+              ? null
+              : steps[4];
   return {
     steps,
     current,
     next,
     nextRoute: next?.route ?? path(advancedRoute),
     count,
+    excelCompletedSteps,
     inCurrentTask: Boolean(next && current?.id === next.id),
     foundationsDone: count === stepIds.length,
     shiftDone: shiftCompleted >= 5,

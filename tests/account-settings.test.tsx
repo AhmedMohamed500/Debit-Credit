@@ -11,6 +11,7 @@ import { CloudFailure, type CloudIdentity } from "@/lib/cloud/runtime";
 import { CloudAccount } from "@/components/cloud/account";
 import { ThemeProvider } from "@/components/platform/theme-provider";
 import { THEME_KEY } from "@/lib/platform";
+import { createExcelProgress } from "@/lib/excel-foundations/engine";
 
 const fixture = vi.hoisted(() => ({
   identity: null as CloudIdentity | null,
@@ -123,7 +124,13 @@ beforeEach(() => {
   fixture.identity = identity();
   fixture.request.mockReset();
   fixture.request.mockImplementation((route: string) =>
-    Promise.resolve(route === "me/personal" ? personal : identity().profile),
+    Promise.resolve(
+      route === "me/personal"
+        ? personal
+        : route === "me/excel-foundations"
+          ? { revision: 0, data: createExcelProgress() }
+          : identity().profile,
+    ),
   );
   fixture.verify.mockReset();
   fixture.verify.mockResolvedValue({ error: null });
@@ -175,13 +182,14 @@ describe("approved account settings contract", () => {
 
   it("saves supported account fields with the existing revision and only confirms after the server responds", async () => {
     let finish!: (value: CloudIdentity["profile"]) => void;
-    fixture.request.mockImplementation((route: string) =>
-      route === "me/personal"
-        ? Promise.resolve(personal)
-        : new Promise((resolve) => {
-            finish = resolve;
-          }),
-    );
+    fixture.request.mockImplementation((route: string) => {
+      if (route === "me/personal") return Promise.resolve(personal);
+      if (route === "me/excel-foundations")
+        return Promise.resolve({ revision: 0, data: createExcelProgress() });
+      return new Promise((resolve) => {
+        finish = resolve;
+      });
+    });
     view();
     editName("Noura Saleh Updated");
     fireEvent.change(screen.getByLabelText(/Public handle|المعرّف العام/), {
@@ -223,16 +231,17 @@ describe("approved account settings contract", () => {
   it.each([409, 503])(
     "keeps user edits after a failed account save (HTTP %i)",
     async (status) => {
-      fixture.request.mockImplementation((route: string) =>
-        route === "me/personal"
-          ? Promise.resolve(personal)
-          : Promise.reject(
-              new CloudFailure(
-                status,
-                status === 409 ? "CONFLICT" : "UNAVAILABLE",
-              ),
-            ),
-      );
+      fixture.request.mockImplementation((route: string) => {
+        if (route === "me/personal") return Promise.resolve(personal);
+        if (route === "me/excel-foundations")
+          return Promise.resolve({ revision: 0, data: createExcelProgress() });
+        return Promise.reject(
+          new CloudFailure(
+            status,
+            status === 409 ? "CONFLICT" : "UNAVAILABLE",
+          ),
+        );
+      });
       view();
       editName("Noura Unsent Edit");
       fireEvent.click(saveButton());
@@ -362,12 +371,66 @@ describe("approved account settings contract", () => {
         "/career-profile",
         "/career-profile/skills",
         "/career-profile/cv",
-        "/career-league/map",
+        "/career",
       ])
         expect(hrefs).toContain(`/${locale}${route}`);
       expect(hrefs.every((href) => href && !href.includes("#"))).toBe(true);
     },
   );
+
+  it("saves learning-ranking consent without changing accepted Excel progress", async () => {
+    const completed = {
+      ...createExcelProgress(),
+      completedSteps: [1, 2, 3, 4, 5] as const,
+      completedAt: "2026-10-22T09:00:00.000Z",
+      finalScore: 94,
+    };
+    fixture.request.mockImplementation(
+      (route: string, method?: string, body?: Record<string, unknown>) => {
+        if (route === "me/personal") return Promise.resolve(personal);
+        if (route === "me/excel-foundations" && method === "POST")
+          return Promise.resolve({
+            revision: 8,
+            data: {
+              ...completed,
+              publicOptIn: body?.publicOptIn === true,
+              nickname: String(body?.nickname ?? ""),
+            },
+          });
+        if (route === "me/excel-foundations")
+          return Promise.resolve({ revision: 7, data: completed });
+        if (route.startsWith("competition/excel-foundations"))
+          return Promise.resolve({ ownRank: 3 });
+        return Promise.resolve(identity().profile);
+      },
+    );
+    view();
+    expect(await screen.findByText("5/5")).toBeVisible();
+    fireEvent.change(
+      screen.getByLabelText(/Competition display name|اسم الظهور/),
+      { target: { value: "Noura Accounts" } },
+    );
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: /Show my chosen name|أوافق/ }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: /Save participation|حفظ المشاركة/ }),
+    );
+    await waitFor(() =>
+      expect(fixture.request).toHaveBeenCalledWith(
+        "me/excel-foundations",
+        "POST",
+        expect.objectContaining({
+          revision: 7,
+          type: "privacy",
+          publicOptIn: true,
+          nickname: "Noura Accounts",
+        }),
+      ),
+    );
+    expect(await screen.findByText("#3")).toBeVisible();
+    expect(screen.getByText("94%")).toBeVisible();
+  });
 
   it("applies the existing dark appearance preference rather than a parallel theme state", async () => {
     view();

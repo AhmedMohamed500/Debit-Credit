@@ -4,7 +4,7 @@ Use resolved `ar` or `en` in URLs, never the filesystem placeholder `[locale]`.
 
 ## Primary journey
 
-`/{locale}` → `/{locale}/signup?next=%2F{locale}` → `/{locale}/login?next=%2F{locale}&registered=1` → `/{locale}/auth/continue` → first-time `/{locale}/student-profile` → `/{locale}` (authenticated Game Hub) → `/{locale}/game/student`.
+`/{locale}` → `/{locale}/signup?next=<safe internal destination>` → `/{locale}/login?next=<same destination>&registered=1` → `/{locale}/auth/continue` → first-time `/{locale}/student-profile` → requested destination. For students the canonical home is `/{locale}/student`, which guides personal details → Excel Foundations → the foundations desk → First Shift → skills → CV.
 
 Signup does not start a session. Login preserves a safe internal destination; otherwise it returns home. Auth traffic goes directly to `/api/auth/[...all]`, without a locale prefix. `/api/auth/callback/google` is the callback handler but Google is unavailable until credentials are configured.
 
@@ -12,8 +12,8 @@ Signup does not start a session. Login preserves a safe internal destination; ot
 
 | Path (under `/ar` or `/en`) | Responsibility |
 | --- | --- |
-| `/profile` | Game/player profile; signed-in users can manage their private account photo. |
-| `/account` | Authenticated cloud account settings. |
+| `/profile` | Legacy game/player identity retained for compatibility; it is no longer a primary navigation destination. |
+| `/account` | Authenticated cloud account, privacy and learning-ranking participation settings. |
 | `/student-profile` | Required private CV contact/education setup; session email is authoritative. |
 | `/student` | Compatibility entry to the student game city; existing saved progress is retained. |
 | `/game/student` | Student training city and accounting workbench; server-graded source documents, journal, ledger, trial balance and spreadsheet tasks. |
@@ -24,8 +24,9 @@ Signup does not start a session. Login preserves a safe internal destination; ot
 | `/portfolio/<token>` | Real owner-selected public professional profile: explicit enable/revoke, opaque token, optional name/socials/availability/accepted-work summary and up to three selected simulations. No private contacts, photos or credentials; no-store/noindex. |
 | `/employers` | Current employer demo entry. Candidates are demo data, not real applicants. |
 | `/companies` | Existing legacy employer/game view, retained for compatibility. |
-| `/leaderboard` | Guest/demo view; authenticated users redirect to `/competition`. |
+| `/leaderboard` | Legacy bookmark redirected to `/competition`; the seeded local leaderboard UI was removed. |
 | `/competition` | Authenticated server-scored competition. |
+| `/accounting-arena` | Legacy bookmark redirected to `/account#learning-competition`; no standalone arena UI remains. |
 
 These pages are not duplicates to merge without a product migration.
 
@@ -33,6 +34,6 @@ The private `GET /api/v1/me/cv?role=<role-id>` derives current account data; GET
 
 ## Legacy bookmarks
 
-Compatibility pages remain physically present: `/arena/leaderboard` → `/leaderboard`; `/learning-map`, `/journal-entry`, old `/missions/*`, `/detective/*` and `/money-flow/*` → `/campaign`; `/skills` → `/profile`; `/game/bank` → `/game/bank-reconciliation`.
+Compatibility pages remain physically present: `/arena/leaderboard` and `/leaderboard` → `/competition`; `/accounting-arena` → `/account#learning-competition`; `/learning-map`, `/journal-entry`, old `/missions/*`, `/detective/*` and `/money-flow/*` → `/campaign`; `/skills` → `/career-profile/skills`; `/missions/progress` → `/career-profile`; `/game/bank` → `/game/bank-reconciliation`.
 
 `/arena` and `/academy/account-guide` are rendered pages, not redirects. They remain unchanged. The sitemap lists canonical public destinations only, not noindex account pages or legacy redirects. Its static catalog is `lib/platform/public-routes.ts`.

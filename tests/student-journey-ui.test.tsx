@@ -119,6 +119,22 @@ describe("Account-safe student journey guidance", () => {
     },
   );
   it.each([
+    "/ar/student",
+    "/en/student",
+    "/ar/game/student",
+    "/en/game/student",
+  ])("does not place the large journey bar above the direct training desk at %s", (path) => {
+    fixture.path = path;
+    const locale = path.startsWith("/ar") ? "ar" : "en";
+    const { container } = render(
+      <StudentJourneyProvider locale={locale}>
+        <main>Direct training desk</main>
+      </StudentJourneyProvider>,
+    );
+    expect(screen.getByText("Direct training desk")).toBeVisible();
+    expect(container.querySelector(".student-journey-bar")).toBeNull();
+  });
+  it.each([
     "/ar/bootcamp/excel-foundations",
     "/en/bootcamp/excel-foundations",
   ])("does not place the signed-in journey overlay above %s", (path) => {

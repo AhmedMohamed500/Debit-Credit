@@ -1,9 +1,8 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { X, Check } from "lucide-react";
-import { StudentCity, studentStops } from "./student-city";
+import { useEffect, useState } from "react";
+import { Check } from "lucide-react";
 import { StudentSourceFile } from "./student-source-file";
 import { StudentWorksheet } from "./student-worksheet";
 import { requestJSON, CloudFailure } from "@/lib/cloud/runtime";
@@ -11,6 +10,7 @@ import { BrowserSkillEvidenceRepository } from "@/lib/career/repository";
 import type { SkillEvidence } from "@/lib/career/model";
 import {
   stepIds,
+  studentTaskGroups,
   transactions,
   studentAccounts,
   studentLedger,
@@ -18,6 +18,7 @@ import {
   type StudentCommand,
 } from "@/lib/student/unit";
 import "@/app/student.css";
+import "@/app/student-game.css";
 type Progress = { data: StudentState; revision: number };
 export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
   const ar = locale === "ar",
@@ -25,45 +26,7 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
   const [progress, setProgress] = useState<Progress | null>(null),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
-    [busy, setBusy] = useState(false),
-    [workspaceOpen, setWorkspaceOpen] = useState(false);
-  const dialog = useRef<HTMLElement>(null);
-  useEffect(() => {
-    if (!workspaceOpen) return;
-    const previous = document.activeElement as HTMLElement | null;
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    dialog.current?.querySelector<HTMLElement>("button")?.focus();
-    const key = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !busy) setWorkspaceOpen(false);
-      if (event.key !== "Tab") return;
-      const controls = Array.from(
-        dialog.current?.querySelectorAll<HTMLElement>(
-          "a,button,input,select",
-        ) ?? [],
-      ).filter(
-        (element) =>
-          !element.hasAttribute("disabled") &&
-          element.getClientRects().length > 0,
-      );
-      const first = controls[0],
-        last = controls.at(-1);
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last?.focus();
-      }
-      if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first?.focus();
-      }
-    };
-    document.addEventListener("keydown", key);
-    return () => {
-      document.removeEventListener("keydown", key);
-      document.body.style.overflow = overflow;
-      previous?.focus();
-    };
-  }, [workspaceOpen, busy]);
+    [busy, setBusy] = useState(false);
   async function load() {
     try {
       setProgress(await requestJSON<Progress>("me/student-unit"));
@@ -121,20 +84,11 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
   }
   return (
     <div
-      className="student-game shift-scene fsh-active"
+      className="student-game student-training-page"
       dir={ar ? "rtl" : "ltr"}
     >
-      <StudentCity
-        locale={locale}
-        completed={accepted.length}
-        inactive={workspaceOpen}
-        ready={Boolean(progress)}
-        onOpen={() => {
-          if (progress) setWorkspaceOpen(true);
-        }}
-      />
       {!progress && (
-        <p role={error ? "alert" : "status"}>
+        <p className="student-training-load" role={error ? "alert" : "status"}>
           {error ||
             say(
               "Preparing your saved training desk…",
@@ -147,14 +101,8 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
           )}
         </p>
       )}
-      {
         <section
-          ref={dialog}
-          hidden={!workspaceOpen}
-          inert={!workspaceOpen}
           className={`student-workbench ${step === "worksheet" ? "student-computer-desk" : ""}`}
-          role="dialog"
-          aria-modal="true"
           aria-label={say(
             "Mizan student accounting workbench",
             "مكتب تدريب الطالب في ميزان",
@@ -179,22 +127,16 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
                 {say("Account guide", "دليل الحسابات")}
               </Link>
               <Link href={`/${locale}/career-profile/cv`}>English CV</Link>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => setWorkspaceOpen(false)}
-                aria-label={say("Close training desk", "إغلاق مكتب التدريب")}
-              >
-                <X size={20} />
-                {say("Return to city", "ارجع للمدينة")}
-              </button>
+              <Link href={`/${locale}`}>
+                {say("Back to my journey", "العودة إلى رحلتي")}
+              </Link>
             </nav>
           </header>
           <div className="student-workbench-body">
             <aside className="student-work-inbox">
               <h2>{say("Work inbox", "صندوق العمل")}</h2>
               <ol>
-                {studentStops.map((stop, index) => (
+                {studentTaskGroups.map((stop, index) => (
                   <li
                     key={stop.start}
                     data-state={
@@ -269,7 +211,7 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
                       {say("Skill evidence", "أدلة المهارات")}
                     </Link>
                   </div>
-                  {error && (
+                  {error && progress && (
                     <p role="alert">
                       {error}{" "}
                       <button onClick={() => void load()}>
@@ -687,7 +629,6 @@ export function StudentUnit({ locale }: { locale: "ar" | "en" }) {
             </div>
           </div>
         </section>
-      }
     </div>
   );
 }

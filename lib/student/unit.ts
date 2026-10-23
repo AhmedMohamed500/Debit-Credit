@@ -104,6 +104,13 @@ export const stepIds = [
   "classification-error",
   "worksheet",
 ];
+export const studentTaskGroups = [
+  { start: 0, end: 1, title: { ar: "مراجعة المستندات", en: "Source control" } },
+  { start: 1, end: 7, title: { ar: "مكتب القيود", en: "Journal desk" } },
+  { start: 7, end: 8, title: { ar: "دفتر الأستاذ", en: "Cash ledger" } },
+  { start: 8, end: 10, title: { ar: "ميزان ومراجعة", en: "Trial balance" } },
+  { start: 10, end: 11, title: { ar: "كمبيوتر المكتب", en: "Office computer" } },
+] as const;
 export const studentCommand = z
   .object({
     revision: z.number().int().nonnegative(),

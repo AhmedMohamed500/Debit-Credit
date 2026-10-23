@@ -8,7 +8,7 @@ This is the implementation record for the requested product cleanup. Historical 
 | --- | --- |
 | Starting Git SHA | `0b00455abf2b59a5be91459c41cb52aee5ad96d4` |
 | Working branch | `codex/debit-credit-product-cleanup` |
-| Final Git SHA | Pending final commit |
+| Implementation commit | `6410ba8` |
 | Pull request | Pending push |
 | Production deployment | Pending successful checks and merge |
 

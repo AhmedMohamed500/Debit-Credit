@@ -1,66 +1,68 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { StudentCity } from "@/components/student/student-city";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { StudentUnit } from "@/components/student/student-unit";
-import { emptyStudentState } from "@/lib/student/unit";
+import { emptyStudentState, stepIds } from "@/lib/student/unit";
 import * as runtime from "@/lib/cloud/runtime";
+
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
 });
-describe("Student training inside the existing game", () => {
-  it("keeps the mission button disabled while saved progress is loading", () => {
-    const open = vi.fn(); render(<StudentCity locale="en" completed={0} inactive={false} ready={false} onOpen={open}/>);
-    const button = screen.getByRole("button", { name: /Open next mission/ });
-    expect(button).toBeDisabled(); fireEvent.click(button); expect(open).not.toHaveBeenCalled();
-  });
-  it("uses the city portals and locks later work until the preceding tasks are accepted", () => {
-    const open = vi.fn(),
-      { container } = render(
-        <StudentCity
-          locale="ar"
-          completed={0}
-          inactive={false}
-          onOpen={open}
-        />,
-      );
-    expect(container.querySelector(".fsh-artwork")).toBeInTheDocument();
-    expect(container.querySelectorAll(".fsh-portal:disabled")).toHaveLength(4);
-    expect(
-      container.querySelectorAll('.fsh-portal[aria-current="step"]'),
-    ).toHaveLength(1);
-    fireEvent.click(
-      screen.getByRole("button", { name: /افتح المهمة التالية/ }),
-    );
-    expect(open).toHaveBeenCalledOnce();
-    expect(screen.getByRole("link", { name: "مركز اللعب" })).toHaveAttribute(
-      "href",
-      "/ar/game",
-    );
-  });
-  it("opens a source-file workbench from the city and retains an unsent choice on close/reopen", async () => {
+
+describe("Student training opens directly in the existing workbench", () => {
+  it("renders the saved training desk without a city, journey bar, or modal", async () => {
     vi.spyOn(runtime, "requestJSON").mockResolvedValue({
       data: emptyStudentState(),
       revision: 0,
     });
-    render(<StudentUnit locale="en" />);
-    await screen.findByText("Your accounting desk");
-    await waitFor(() => expect(screen.getByRole("button", { name: /Open next mission/ })).toBeEnabled());
+    const { container } = render(<StudentUnit locale="en" />);
+    await screen.findByRole("heading", {
+      name: "Unit 1: Source documents to books",
+    });
+    expect(container.querySelector(".student-city")).toBeNull();
+    expect(container.querySelector(".student-journey-bar")).toBeNull();
     expect(screen.queryByRole("dialog")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: /Open next mission/ }));
-    await screen.findByRole("dialog");
+    expect(
+      screen.getByLabelText("Mizan student accounting workbench"),
+    ).toBeVisible();
     expect(
       screen.getByRole("navigation", { name: "Source documents" }),
-    ).toBeInTheDocument();
-    const option = screen.getByRole("radio", { name: /Hold duplicate/ });
-    fireEvent.click(option);
-    expect(option).toBeChecked();
-    fireEvent.click(
-      screen.getByRole("button", { name: "Close training desk" }),
-    );
-    expect(screen.queryByRole("dialog")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: /Open next mission/ }));
-    expect(screen.getByRole("radio", { name: /Hold duplicate/ })).toBeChecked();
+    ).toBeVisible();
+    expect(screen.getByRole("radio", { name: /Hold duplicate/ })).toBeVisible();
     expect(runtime.requestJSON).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens the exact next mission from saved server progress", async () => {
+    vi.spyOn(runtime, "requestJSON").mockResolvedValue({
+      data: {
+        ...emptyStudentState(),
+        accepted: stepIds.slice(0, 7),
+      },
+      revision: 7,
+    });
+    render(<StudentUnit locale="en" />);
+    expect(await screen.findByText("Post the cash ledger")).toBeVisible();
+    expect(screen.getByText("7 / 11 accepted tasks")).toBeVisible();
+    expect(screen.getByRole("link", { name: "Back to my journey" })).toHaveAttribute(
+      "href",
+      "/en",
+    );
+  });
+
+  it("keeps the workbench visible while a retry reloads saved progress", async () => {
+    const request = vi
+      .spyOn(runtime, "requestJSON")
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValueOnce({ data: emptyStudentState(), revision: 0 });
+    const { container } = render(<StudentUnit locale="ar" />);
+    await screen.findByRole("alert");
+    expect(container.querySelector(".student-workbench")).toBeVisible();
+    screen.getByRole("button", { name: "حاول ثانية" }).click();
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(2));
+    expect(
+      await screen.findByRole("heading", {
+        name: "الوحدة الأولى: من المستند إلى الدفاتر",
+      }),
+    ).toBeVisible();
   });
 });

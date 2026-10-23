@@ -1,50 +1,11 @@
 .student-game {
   min-height: 100dvh;
-  background: #04182e;
-  color: #edf8ff;
+  background: #eaf2fb;
+  color: #142d4d;
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
 }
 .student-game * {
   box-sizing: border-box;
-}
-.student-city .fsh-header-tools .photo-circle {
-  width: 32px;
-  height: 32px;
-  border: 0;
-}
-.student-city-status {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin: 24px auto;
-  padding: 24px;
-  max-width: 1120px;
-  border: 1px solid #5896c157;
-  border-radius: 16px;
-  background: #092744;
-}
-.student-city-status > div {
-  flex: 1;
-}
-.student-city-status h2 {
-  font-size: 25px;
-  margin: 8px 0;
-}
-.student-city-status p {
-  color: #afd1e9;
-}
-.student-city-meter {
-  height: 8px;
-  background: #26466c;
-  border-radius: 20px;
-  overflow: hidden;
-  margin: 14px 0;
-}
-.student-city-meter i {
-  display: block;
-  height: 100%;
-  background: #30d5b3;
 }
 .student-start-mission {
   display: flex;
@@ -58,37 +19,18 @@
   font-weight: 800;
   min-height: 48px;
 }
-.student-city-footer {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-  max-width: 1120px;
+.student-training-load {
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 20px;
-  color: #b5d5e9;
-  font-size: 13px;
-}
-.student-city-footer span {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-.student-city-footer svg {
-  width: 20px;
-  flex: none;
-}
-.student-city-footer a {
-  color: #74dbff;
+  padding: 18px 22px 0;
+  color: #31516d;
 }
 .student-workbench {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
+  position: relative;
+  min-height: 100dvh;
   background: #eaf2fb;
   color: #142d4d;
-  overflow: auto;
+  overflow: visible;
   padding: 0;
   font-family: inherit;
 }
@@ -120,16 +62,14 @@
 .student-workbench-header a {
   color: #aee6ff;
 }
-.student-workbench-header button {
-  background: transparent;
-  color: #fff;
+.student-workbench-header nav a {
+  display: inline-flex;
+  align-items: center;
   border: 1px solid #93b5d1;
   border-radius: 7px;
   padding: 8px 12px;
   min-height: 44px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  text-decoration: none;
 }
 .student-workbench-body {
   display: grid;
@@ -296,9 +236,6 @@
   outline: 3px solid #fac551;
   outline-offset: 3px;
 }
-.student-workbench[hidden] {
-  display: none !important;
-}
 .student-source-file {
   margin: 20px 0;
 }
@@ -395,6 +332,7 @@
 .student-source-paper {
   border: 1px solid #d7d1bb;
   background: #fffdf6;
+  color: #102d43;
   padding: 24px;
   box-shadow: 0 6px 18px #23435c15;
   line-height: 1.7;
@@ -476,18 +414,6 @@
   }
 }
 @media (max-width: 700px) {
-  .student-city-status {
-    margin: 16px 12px;
-    padding: 18px;
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .student-city-footer {
-    padding: 16px;
-  }
-  .student-city-footer span {
-    flex-basis: 100%;
-  }
   .student-workbench-header {
     padding: 10px 12px;
   }
@@ -528,4 +454,33 @@
     width: 100%;
     justify-content: center;
   }
+}
+
+html[data-theme="dark"] .student-game,
+html[data-theme="dark"] .student-workbench {
+  background: #0c1c2b;
+  color: #e6f4ff;
+}
+html[data-theme="dark"] .student-workbench .student-card,
+html[data-theme="dark"] .student-work-inbox {
+  background: #142b43;
+  border-color: #30516a;
+  color: #e6f4ff;
+}
+html[data-theme="dark"] .student-workbench .student-page,
+html[data-theme="dark"] .student-workbench .student-page h1,
+html[data-theme="dark"] .student-workbench .student-page h2 {
+  color: #e6f4ff;
+}
+html[data-theme="dark"] .student-workbench .student-page input,
+html[data-theme="dark"] .student-workbench .student-page select,
+html[data-theme="dark"] .student-decision-cards label,
+html[data-theme="dark"] .student-active-file > .student-fields {
+  background: #1b3853;
+  border-color: #3a5d78;
+  color: #eef8ff;
+}
+html[data-theme="dark"] .student-training-load,
+html[data-theme="dark"] .student-work-inbox p {
+  color: #bfd5e5;
 }

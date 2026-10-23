@@ -288,6 +288,8 @@ function StudentJourneyBar() {
       `/${locale}`,
       `/${locale}/game`,
       `/${locale}/game/first-shift`,
+      `/${locale}/game/student`,
+      `/${locale}/student`,
       `/${locale}/student-profile`,
       `/${locale}/career-profile`,
       `/${locale}/account`,

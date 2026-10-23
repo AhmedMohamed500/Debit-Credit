@@ -55,9 +55,11 @@
 
 - Implementation commit: `607be50`
 - Pull Request: https://github.com/AhmedMohamed500/Debit-Credit/pull/47
-- Merge commit: سيتم تسجيله بعد اكتمال فحوصات GitHub والدمج.
-- Vercel deployment: سيتم تسجيله بعد الدمج والتحقق من الإنتاج.
+- Merge commit: `f3b66ee7e3b937f54f45956ee3e48f03a1fe848a`
+- Vercel deployment: https://vercel.com/ahmed-mohameds-projects-c51bc2cc/debit-credit/ELWDtRdvxiBwcKKbGwX6Bo2pfPU2
 - Production: https://debit-credit-nine.vercel.app/ar
+
+أكد GitHub/Vercel نجاح نشر الـmerge commit، ثم تم التحقق من أن المسارات `/ar/game/student` و`/en/game/student` و`/ar/student` و`/en/student` على نطاق الإنتاج تعيد HTTP 200. لم تُنفّذ كتابة بحساب حقيقي أو قاعدة بيانات الإنتاج؛ تدفق الحفظ الكامل اختُبر محليًا بقاعدة معزولة.
 
 ## ملاحظة أمنية
 

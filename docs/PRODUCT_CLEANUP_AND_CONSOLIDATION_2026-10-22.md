@@ -9,8 +9,9 @@ This is the implementation record for the requested product cleanup. Historical 
 | Starting Git SHA | `0b00455abf2b59a5be91459c41cb52aee5ad96d4` |
 | Working branch | `codex/debit-credit-product-cleanup` |
 | Implementation commit | `6410ba8` |
-| Pull request | Pending push |
-| Production deployment | Pending successful checks and merge |
+| Pull request | [#45](https://github.com/AhmedMohamed500/Debit-Credit/pull/45), merged |
+| Merge commit | `12bd09c3c2818fd38aa36d6e47aa6bdf4c6a6bfc` |
+| Production deployment | [debit-credit-nine.vercel.app](https://debit-credit-nine.vercel.app) |
 
 ## Audit classification
 
@@ -140,7 +141,7 @@ Legacy `/leaderboard` and `/arena/leaderboard` redirect to `/competition`. Legac
 | Browser QA AR/EN at 1536/1024/390 | Passed: desktop, tablet and mobile without horizontal overflow |
 | Excel interaction QA | Passed: tabs, worksheet selection/input, Enter/Shift+Enter navigation, font size, bold, five-stage flow and legacy redirect |
 | Theme QA | Passed: stored dark preference applied in Arabic and English browser runs; approved Excel visual remains intact |
-| Production read-only verification | Pending deployment |
+| Production read-only verification | Passed on the deployed merge: Arabic/English, 1536/1024/390, dark preference, Excel interaction and legacy redirect |
 
 ## Before / after
 
@@ -164,4 +165,4 @@ Browser evidence is stored locally in `artifacts/excel-foundations-qa/` for Arab
 - Academy still contains a roadmap for future curriculum. Locked/planned definitions remain but are not promoted as completed product capabilities.
 - Professional cloud matches and learning progression intentionally use separate scoring; they are not combined into one misleading score.
 - Full authenticated production writes are not part of read-only production QA.
-- Final commit, PR, deployment SHA and production verification will be filled after checks and release.
+- Production verification is intentionally guest/read-only; it does not create or mutate real user records.

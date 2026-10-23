@@ -61,6 +61,24 @@ try {
     assert.equal(overflow.scroll <= overflow.width + 2, true, `${locale} mobile horizontal overflow`);
     await mobile.screenshot({ path: path.join(output, `${locale}-mobile.png`), fullPage: true });
     await mobile.close();
+    const tablet = await browser.newPage({ viewport: { width: 1024, height: 768 }, deviceScaleFactor: 1 });
+    tablet.on("pageerror", (error) => failures.push(`${locale}-tablet: ${error.message}`));
+    await tablet.goto(`${base}/${locale}/bootcamp/excel-foundations`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await tablet.getByRole("heading", { name: /Excel Foundations/i }).waitFor();
+    const tabletLayout = await tablet.evaluate(() => ({ width: window.innerWidth, scroll: document.documentElement.scrollWidth, headerHeight: Math.round(document.querySelector(".xf-top")?.getBoundingClientRect().height ?? 0) }));
+    assert.equal(tabletLayout.scroll <= tabletLayout.width + 2, true, `${locale} tablet horizontal overflow`);
+    assert.equal(tabletLayout.headerHeight > 0, true, `${locale} tablet header is visible`);
+    await tablet.screenshot({ path: path.join(output, `${locale}-tablet.png`), fullPage: true });
+    await tablet.close();
+    const dark = await browser.newPage({ viewport: { width: 1536, height: 1024 }, deviceScaleFactor: 1 });
+    dark.on("pageerror", (error) => failures.push(`${locale}-dark: ${error.message}`));
+    await dark.addInitScript(() => localStorage.setItem("debit-credit-theme-v1", "dark"));
+    await dark.goto(`${base}/${locale}/bootcamp/excel-foundations`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await dark.getByRole("heading", { name: /Excel Foundations/i }).waitFor();
+    await dark.waitForFunction(() => document.documentElement.dataset.theme === "dark");
+    assert.equal(await dark.evaluate(() => document.documentElement.dataset.theme), "dark", `${locale} dark preference is applied`);
+    await dark.screenshot({ path: path.join(output, `${locale}-dark.png`) });
+    await dark.close();
     if (locale === "ar") {
       await page.getByLabel("B2", { exact: true }).focus();
       await page.getByLabel("concept", { exact: true }).selectOption("cell");
@@ -90,12 +108,12 @@ try {
     }
     await page.close();
   }
-  const arena = await browser.newPage();
-  const result = await arena.goto(`${base}/ar/accounting-arena`, { waitUntil: "domcontentloaded", timeout: 60000 });
-  assert.equal(result?.status(), 200);
-  assert.equal(await arena.getByText("لا يوجد مشاركون مؤهلون بعد").isVisible(), true);
-  await arena.close();
+  const retiredArena = await browser.newPage();
+  await retiredArena.goto(`${base}/ar/accounting-arena`, { waitUntil: "domcontentloaded", timeout: 60000 });
+  await retiredArena.waitForURL(/\/ar\/(account|login)/);
+  assert.equal(new URL(retiredArena.url()).pathname === "/ar/accounting-arena", false, "retired arena route must redirect");
+  await retiredArena.close();
   assert.deepEqual(failures, []);
-  console.log("PASS Excel Foundations Arabic/English desktop/mobile, five-step guest flow, responsive layout, empty honest arena");
+  console.log("PASS Excel Foundations Arabic/English desktop/tablet/mobile and dark preference, five-step guest flow, responsive layout, retired arena redirect");
   console.log(`Screenshots: ${output}`);
 } finally { await browser.close(); }

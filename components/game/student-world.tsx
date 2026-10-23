@@ -9,7 +9,7 @@ export function StudentWorld({ children }: { children: ReactNode }) {
   const { state } = useGame();
   if (/^\/(ar|en)\/pricing\/?$/.test(pathname)) return <>{children}</>;
   if (
-    /^\/(ar|en)\/(bootcamp\/excel-foundations|accounting-arena)\/?$/.test(
+    /^\/(ar|en)\/bootcamp\/excel-foundations\/?$/.test(
       pathname,
     )
   )

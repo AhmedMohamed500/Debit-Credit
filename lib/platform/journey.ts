@@ -19,5 +19,5 @@ export function gameHubNextMission(career: CareerLeagueState, passport: SkillRes
   const completedSteps = nodes.filter(node => node.status === 'practiced' || node.status === 'demonstrated').length;
   const next = nextCareerActivity(nodes);
   if (next?.status === 'available' && next.route) return {kind: 'skill', route: next.route, skillId: next.skillId, completedSteps, totalSteps: nodes.length};
-  return {kind: 'review', route: '/career-league/map', skillId: next?.skillId ?? null, completedSteps, totalSteps: nodes.length};
+  return {kind: 'review', route: '/career', skillId: next?.skillId ?? null, completedSteps, totalSteps: nodes.length};
 }

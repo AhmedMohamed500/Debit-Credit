@@ -63,7 +63,7 @@ const labels = {
     bootcamp: "المحاسب Bootcamp",
     progress: "التقدم",
     upcoming: "المهام القادمة",
-    arena: "ساحة المحاسبة",
+    arena: "التحديات المهنية",
     support: "المجتمع والدعم",
     sub: "الخلايا والعمليات الأساسية والمعادلة المحاسبية",
     description:
@@ -121,7 +121,7 @@ const labels = {
     bootcamp: "Accounting Bootcamp",
     progress: "Progress",
     upcoming: "Upcoming missions",
-    arena: "Accounting Arena",
+    arena: "Professional challenges",
     support: "Community & support",
     sub: "Cells, basic operations and the accounting equation",
     description:
@@ -306,6 +306,7 @@ export function ExcelFoundations({ locale }: { locale: Locale }) {
     typeof assessStep
   > | null>(null);
   const [notes, setNotes] = useState("");
+  const [learningRank, setLearningRank] = useState<number | null>(null);
   const current = Math.min(5, progress.completedSteps.length + 1) as ExcelStep;
   const isCurrent = step === current && !progress.completedSteps.includes(5);
   const canPractice = !busy;
@@ -353,6 +354,27 @@ export function ExcelFoundations({ locale }: { locale: Locale }) {
   useEffect(() => {
     void load();
   }, [load]);
+  useEffect(() => {
+    if (!signedIn || !progress.publicOptIn || !progress.completedSteps.includes(5)) {
+      setLearningRank(null);
+      return;
+    }
+    let active = true;
+    void fetch("/api/v1/competition/excel-foundations?scope=overall", {
+      credentials: "same-origin",
+      cache: "no-store",
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((board: { ownRank?: number | null } | null) => {
+        if (active) setLearningRank(board?.ownRank ?? null);
+      })
+      .catch(() => {
+        if (active) setLearningRank(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [progress.completedSteps, progress.publicOptIn, signedIn]);
 
   const updateCell = (address: string, value: string) => {
     if (!canPractice) return;
@@ -615,7 +637,7 @@ export function ExcelFoundations({ locale }: { locale: Locale }) {
             <BriefcaseBusiness size={18} />
             {t.projects}
           </Link>
-          <Link href={`/${locale}/accounting-arena`}>
+          <Link href={`/${locale}/competition`}>
             <Trophy size={18} />
             {t.arena}
           </Link>
@@ -681,7 +703,7 @@ export function ExcelFoundations({ locale }: { locale: Locale }) {
           ))}
         </div>
         <div className="xf-side-links">
-          <Link href={`/${locale}/accounting-arena`}>
+          <Link href={`/${locale}/competition`}>
             <Trophy size={19} />
             {t.arena}
           </Link>
@@ -706,7 +728,9 @@ export function ExcelFoundations({ locale }: { locale: Locale }) {
               style={{ width: `${progress.completedSteps.length * 20}%` }}
             />
           </div>
-          <Link href={`/${locale}/accounting-arena`}>{t.arena}</Link>
+          <Link href={`/${locale}/account#learning-competition`}>
+            {locale === "ar" ? "إعدادات المشاركة" : "Participation settings"}
+          </Link>
         </div>
       </aside>
       <main className="xf-main">
@@ -1329,11 +1353,27 @@ export function ExcelFoundations({ locale }: { locale: Locale }) {
                       : "Excel Foundations training complete"}
                   </strong>
                   <span>{progress.finalScore}% · 380 XP</span>
-                  <small>{t.training}</small>
-                  <Link href={`/${locale}/bootcamp`}>
+                  <span>
                     {locale === "ar"
-                      ? "العودة إلى مسار المحاسب"
-                      : "Continue the accounting path"}
+                      ? "المهارات: إدخال البيانات · التصنيف المحاسبي · صيغ SUM"
+                      : "Skills: data entry · account classification · SUM formulas"}
+                  </span>
+                  <span>
+                    {progress.publicOptIn
+                      ? learningRank
+                        ? `${locale === "ar" ? "ترتيب التعلم" : "Learning rank"}: #${learningRank}`
+                        : locale === "ar"
+                          ? "سيظهر ترتيبك عند توفر نتيجة عامة مؤهلة."
+                          : "Your rank appears when an eligible public result is available."
+                      : locale === "ar"
+                        ? "المشاركة في الترتيب غير مفعلة."
+                        : "Public ranking participation is off."}
+                  </span>
+                  <small>{t.training}</small>
+                  <Link href={`/${locale}/game/student`}>
+                    {locale === "ar"
+                      ? "ابدأ التدريب العملي التالي"
+                      : "Start the next practical stage"}
                   </Link>
                 </div>
               )}

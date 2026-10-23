@@ -37,7 +37,7 @@
 }
 .student-journey-steps {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
   list-style: none;
   padding: 0;
@@ -93,6 +93,40 @@
   background: linear-gradient(120deg, #092f50, #075477);
   color: #fff;
 }
+.student-journey-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+}
+.student-journey-overview article {
+  display: grid;
+  gap: 7px;
+  min-height: 88px;
+  padding: 15px;
+  border: 1px solid var(--border, #cbdbe7);
+  border-radius: 12px;
+  background: var(--surface, #fff);
+}
+.student-journey-overview small { color: var(--text-secondary, #587083); font-size: 11px; }
+.student-journey-overview strong { font-size: 15px; line-height: 1.45; }
+.student-learning-competition {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 18px 22px;
+  border: 1px solid #b7d9ef;
+  border-radius: 14px;
+  background: var(--surface, #fff);
+}
+.student-learning-competition > svg { width: 32px; height: 32px; color: #d68b00; }
+.student-learning-competition h2 { margin: 3px 0; font-size: 18px; }
+.student-learning-competition p { margin: 0; color: var(--text-secondary, #587083); font-size: 12px; }
+.student-learning-rank { display: grid; justify-items: end; gap: 5px; }
+.student-learning-rank strong { color: #08765c; font-size: 23px; }
+.student-learning-rank a { color: #086bc1; font-size: 12px; font-weight: 750; }
 .student-next-action h2 {
   font-size: 26px;
   margin: 6px 0;
@@ -260,7 +294,7 @@
     padding: 12px;
   }
   .student-journey-bar .student-journey-steps {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 4px;
   }
   .student-journey-bar .student-journey-steps li a {
@@ -288,6 +322,9 @@
   .student-journey-explore {
     padding: 18px;
   }
+  .student-journey-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .student-learning-competition { grid-template-columns: auto 1fr; }
+  .student-learning-rank { grid-column: 1/-1; justify-items: start; }
 }
 .student-home-tools {
   display: flex;

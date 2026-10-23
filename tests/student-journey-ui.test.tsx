@@ -60,7 +60,13 @@ beforeEach(() => {
   fixture.ready = true;
   fixture.identity = identity();
   fixture.request.mockReset();
-  fixture.request.mockResolvedValue({ data: { accepted: [] } });
+  fixture.request.mockImplementation((route: string) =>
+    Promise.resolve(
+      route === "me/excel-foundations"
+        ? { data: { completedSteps: [1, 2, 3, 4, 5] } }
+        : { data: { accepted: [] } },
+    ),
+  );
 });
 describe("Account-safe student journey guidance", () => {
   it.each(["ar", "en"] as const)(
@@ -115,8 +121,6 @@ describe("Account-safe student journey guidance", () => {
   it.each([
     "/ar/bootcamp/excel-foundations",
     "/en/bootcamp/excel-foundations",
-    "/ar/accounting-arena",
-    "/en/accounting-arena",
   ])("does not place the signed-in journey overlay above %s", (path) => {
     fixture.path = path;
     const locale = path.startsWith("/ar") ? "ar" : "en";
@@ -160,7 +164,13 @@ describe("Account-safe student journey guidance", () => {
     expect(
       screen.queryByRole("link", { name: "Continue my journey" }),
     ).toBeNull();
-    fixture.request.mockResolvedValue({ data: { accepted: [...stepIds] } });
+    fixture.request.mockImplementation((route: string) =>
+      Promise.resolve(
+        route === "me/excel-foundations"
+          ? { data: { completedSteps: [1, 2, 3, 4, 5] } }
+          : { data: { accepted: [...stepIds] } },
+      ),
+    );
     await act(async () =>
       screen.getByRole("button", { name: "Retry" }).click(),
     );
@@ -173,7 +183,13 @@ describe("Account-safe student journey guidance", () => {
   it("refreshes next-step guidance after an accepted server task", async () => {
     render(view());
     await screen.findByRole("link", { name: "Continue my journey" });
-    fixture.request.mockResolvedValue({ data: { accepted: [...stepIds] } });
+    fixture.request.mockImplementation((route: string) =>
+      Promise.resolve(
+        route === "me/excel-foundations"
+          ? { data: { completedSteps: [1, 2, 3, 4, 5] } }
+          : { data: { accepted: [...stepIds] } },
+      ),
+    );
     await act(async () =>
       window.dispatchEvent(new Event("student-progress-changed")),
     );
@@ -186,16 +202,20 @@ describe("Account-safe student journey guidance", () => {
     );
   });
   it("does not show previous student's completion during an account switch", async () => {
-    fixture.request.mockResolvedValueOnce({ data: { accepted: [...stepIds] } });
+    fixture.request
+      .mockResolvedValueOnce({ data: { accepted: [...stepIds] } })
+      .mockResolvedValueOnce({ data: { completedSteps: [1, 2, 3, 4, 5] } });
     const result = render(view());
     await screen.findByRole("link", { name: "Continue my journey" });
     let resolve: ((value: unknown) => void) | undefined;
-    fixture.request.mockImplementationOnce(
-      () =>
-        new Promise((value) => {
-          resolve = value;
-        }),
-    );
+    fixture.request
+      .mockImplementationOnce(
+        () =>
+          new Promise((value) => {
+            resolve = value;
+          }),
+      )
+      .mockResolvedValueOnce({ data: { completedSteps: [1, 2, 3, 4, 5] } });
     fixture.identity = identity("student-b");
     result.rerender(view());
     expect(

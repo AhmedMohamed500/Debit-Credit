@@ -36,7 +36,7 @@ export function CloudSessionBoundary({
     publicProfile = /^\/(ar|en)\/portfolio\//.test(pathname),
     pricingPath = /^\/(ar|en)\/pricing\/?$/.test(pathname),
     standaloneLearningPath =
-      /^\/(ar|en)\/(bootcamp\/excel-foundations|accounting-arena)\/?$/.test(
+      /^\/(ar|en)\/bootcamp\/excel-foundations\/?$/.test(
         pathname,
       ),
     accountSettingsPath = pathname === `/${locale}/account`,

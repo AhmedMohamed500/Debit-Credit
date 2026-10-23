@@ -1,6 +1,12 @@
 # Current project status
 
-Reviewed: 2026-10-17. This file supersedes historical release claims in archived reports.
+Reviewed: 2026-10-23. This file supersedes historical release claims in archived reports.
+
+## Product consolidation (2026-10-23)
+
+The signed-in student now has one primary sequence: private personal details → five server-backed Excel Foundations stages → the 11-task foundations desk → First Shift and ledger review → Skill Passport → factual English CV. The guided home derives one next action from accepted progress and shows only the learner's own concise learning-rank summary. Public learning ranking remains opt-in and its display name/consent are managed in Account Settings.
+
+The standalone Accounting Arena and seeded local leaderboard interfaces were retired. `/accounting-arena` now redirects to the preserved participation settings and `/leaderboard` plus `/arena/leaderboard` redirect to the authenticated server competition. Accepted Excel outcomes, opt-in fields, cloud matches, Prisma models and production records were not deleted. Game Hub no longer promotes duplicate employer-preview or local-league cards, and unfinished company zones are not primary navigation.
 
 ## Product scope and cleanup audit (2026-10-17)
 
@@ -38,4 +44,4 @@ The signed-in home now uses the existing Game Hub. Student training is in the ga
 
 Historical reports retain their original conclusions. [Documentation index](README.md) identifies current guides; [routes](ROUTES.md) explains separate profile/account/employer experiences.
 
-The latest student navigation uses one guided home: personal details → foundations desk → First Shift (including real ledger review) → skills → English CV. Saved account progress chooses the next step; optional tools remain available without competing start prompts. Existing guest and advanced-persona interfaces are retained. Career-profile photos now fill the entire avatar frame. See [connected journey](CONNECTED-STUDENT-JOURNEY-AR.md) and the [comprehensive Arabic project record](PROJECT-MASTER-HANDOFF-AR.md).
+The latest student navigation uses one guided home: personal details → Excel Foundations → foundations desk → First Shift (including real ledger review) → skills → English CV. Saved account progress chooses the next step; optional tools remain available without competing start prompts. Existing guest and advanced-persona interfaces are retained. Career-profile photos now fill the entire avatar frame. See [connected journey](CONNECTED-STUDENT-JOURNEY-AR.md), the [cleanup report](PRODUCT_CLEANUP_AND_CONSOLIDATION_2026-10-22.md), and the [comprehensive Arabic project record](PROJECT-MASTER-HANDOFF-AR.md).

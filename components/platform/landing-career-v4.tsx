@@ -24,9 +24,9 @@ type Props = { locale: Locale };
 
 const language = {
   ar: {
-    hero: "منافسة محاسبية تجريبية تبني مهاراتك المهنية",
+    hero: "رحلة محاسبية عملية تبني مهاراتك المهنية",
     heroDescription:
-      "تعلّم وطبّق وتنافس محليًا داخل محاكاة مهنية. المشهد الفني توضيحي، وليس عددًا فعليًا للاعبين أو شراكة مع جهات توظيف.",
+      "تعلّم وطبّق ثم ادخل التحديات المهنية المؤهلة. المشهد الفني توضيحي، وليس عددًا فعليًا للاعبين أو شراكة مع جهات توظيف.",
     start: "ابدأ مجانًا",
     explore: "اكتشف رحلتك المهنية",
     journey: "خريطة رحلتك المهنية",
@@ -49,9 +49,9 @@ const language = {
     ],
     features: "المنافسة والسيرة الذاتية والمهارات",
     featuresDescription:
-      "منافسة تجريبية محلية، وسيرة ذاتية مرتبطة بإنجازاتك، وخريطة مهارات توضّح المتاح وما يزال قيد التطوير.",
+      "تحديات مهنية بحسابات حقيقية، وسيرة ذاتية مرتبطة بإنجازاتك، وخريطة مهارات توضّح المتاح وما يزال قيد التطوير.",
     featureLinks: [
-      "ابدأ المنافسة التجريبية",
+      "افتح التحديات المهنية",
       "شاهد سيرتك الذاتية",
       "تصفح المهارات",
     ],
@@ -61,7 +61,7 @@ const language = {
       "اكتسب مهارات مطلوبة",
     ],
     featureDescriptions: [
-      "تحديات محلية تجريبية لقياس تقدمك.",
+      "تحديات عملية مستقلة بنتائج خادمية موثوقة.",
       "إنجازات محاكاة مؤهلة مرتبطة بملفك المهني.",
       "تعلّم المهارات المتاحة وتابع ما هو قيد التطوير.",
     ],
@@ -217,9 +217,9 @@ const language = {
     },
   },
   en: {
-    hero: "A local accounting competition that builds career skills",
+    hero: "A practical accounting journey that builds career skills",
     heroDescription:
-      "Learn, practise and compete in a local career simulation. The artwork is illustrative, not a live player count or employer partnership.",
+      "Learn, practise, then enter eligible professional challenges. The artwork is illustrative, not a live player count or employer partnership.",
     start: "Start for free",
     explore: "Explore your career journey",
     journey: "Your career journey map",
@@ -242,15 +242,15 @@ const language = {
     ],
     features: "Competition, CV and skills",
     featuresDescription:
-      "A local demo competition, an achievement-linked CV, and a skill map showing what is available and what is still in development.",
-    featureLinks: ["Try the demo competition", "View your CV", "Browse skills"],
+      "Account-backed professional challenges, an achievement-linked CV, and a skill map showing what is available and what is still in development.",
+    featureLinks: ["Open professional challenges", "View your CV", "Browse skills"],
     featureTitles: [
       "Compete with peers",
       "A CV that grows with you",
       "Build in-demand skills",
     ],
     featureDescriptions: [
-      "A local demo challenge to track your progress.",
+      "Independent practical challenges with trusted server results.",
       "Qualified simulation achievements connected to your career profile.",
       "Practise available skills and see what remains in development.",
     ],
@@ -425,7 +425,7 @@ const stageRoutes = [
   "/career-league/promotion",
 ];
 const featureRoutes = [
-  "/leaderboard",
+  "/competition",
   "/career-profile/cv",
   "/career-profile/skills",
 ];

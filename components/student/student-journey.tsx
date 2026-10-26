@@ -13,8 +13,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
-  Compass,
-  FileText,
   Gamepad2,
   Trophy,
 } from "lucide-react";
@@ -136,7 +134,6 @@ export function StudentJourneyProvider({
       }}
     >
       <div data-student-guided="true">
-        <StudentJourneyBar />
         {children}
       </div>
     </Context.Provider>
@@ -151,7 +148,7 @@ function JourneySteps() {
       className="student-journey-steps"
       aria-label={locale === "ar" ? "ترتيب رحلتك" : "Your journey sequence"}
     >
-      {journey.steps.map((step, index) => (
+      {journey.learningStages.map((step, index) => (
         <li
           key={step.id}
           data-done={!loading && step.done}
@@ -167,12 +164,7 @@ function JourneySteps() {
               <small>
                 {loading
                   ? "…"
-                  : step.detail ||
-                    (index > 2
-                      ? locale === "ar"
-                        ? "نتيجة شغلك"
-                        : "Your work results"
-                      : "")}
+                  : step.detail}
               </small>
             </span>
           </Link>
@@ -181,7 +173,7 @@ function JourneySteps() {
     </ol>
   );
 }
-export function JourneyNextAction({ compact = false }: { compact?: boolean }) {
+export function JourneyNextAction() {
   const context = useStudentJourney();
   if (!context) return null;
   const { journey, locale, loading, error, retry } = context,
@@ -230,23 +222,18 @@ export function JourneyNextAction({ compact = false }: { compact?: boolean }) {
               "Your foundations file is complete. Apply it in the first shift, then review the journal and ledger. The two training companies keep separate books.",
               "ملف الأساس خلص. طبّقه في أول وردية، وبعدها راجع اليومية والأستاذ. دفاتر الشركتين التدريبيتين تفضل منفصلة.",
             )
-          : journey.next?.id === "skills"
+          : journey.next?.id === "results"
             ? say(
-                "Your work is complete. Review the skill evidence created by the accepted tasks, then open your English CV.",
-                "الشغل خلص. راجع أدلة المهارات اللي اتبنت من مهامك المقبولة، وبعدها افتح الـCV الإنجليزي.",
+                "Your learning stages are complete. Review the evidence, practical work, profile, CV and achievements built from your saved work.",
+                "مراحل التعلم اكتملت. راجع الأدلة والأعمال العملية والملف والـCV والإنجازات المبنية من شغلك المحفوظ.",
               )
-            : journey.next?.id === "cv"
-              ? say(
-                  "These skills already update your English CV. Review the document and export it; no extra Generate step is required.",
-                  "المهارات دي بتتضاف للـCV الإنجليزي تلقائيًا. راجع الوثيقة وصدّرها؛ مش محتاج خطوة توليد إضافية.",
-                )
-              : say(
-                  "Your introductory work and CV are ready to review. Continue the career track selected from its existing prerequisites.",
-                  "شغلك التمهيدي وسيرتك جاهزين للمراجعة. كمّل المسار المهني حسب شروطه الحالية.",
-                );
+            : say(
+                "Your introductory work and CV are ready to review. Continue the career track selected from its existing prerequisites.",
+                "شغلك التمهيدي وسيرتك جاهزين للمراجعة. كمّل المسار المهني حسب شروطه الحالية.",
+              );
   return (
     <section
-      className={`student-next-action ${compact ? "compact" : ""}`}
+      className="student-next-action"
       aria-label={say("Your next step", "خطوتك التالية")}
     >
       <div>
@@ -259,7 +246,7 @@ export function JourneyNextAction({ compact = false }: { compact?: boolean }) {
           {journey.next?.title[locale] ??
             say("Continue your career track", "كمّل المسار المهني")}
         </h2>
-        {!compact && <p>{explanation}</p>}
+        <p>{explanation}</p>
       </div>
       {journey.inCurrentTask ? (
         <span className="student-current-task">
@@ -276,42 +263,6 @@ export function JourneyNextAction({ compact = false }: { compact?: boolean }) {
         </Link>
       )}
     </section>
-  );
-}
-function StudentJourneyBar() {
-  const context = useStudentJourney(),
-    pathname = usePathname();
-  if (!context) return null;
-  const { locale } = context;
-  if (
-    [
-      `/${locale}`,
-      `/${locale}/game`,
-      `/${locale}/game/first-shift`,
-      `/${locale}/game/student`,
-      `/${locale}/student`,
-      `/${locale}/student-profile`,
-      `/${locale}/career-profile`,
-      `/${locale}/account`,
-      `/${locale}/bootcamp/excel-foundations`,
-    ].includes(pathname) ||
-    pathname.startsWith(`/${locale}/career-profile/`)
-  )
-    return null;
-  return (
-    <nav
-      className="student-journey-bar"
-      aria-label={
-        locale === "ar" ? "مكانك في الرحلة" : "Your place in the journey"
-      }
-    >
-      <Link className="student-journey-home" href={`/${locale}`}>
-        <Compass size={18} />
-        {locale === "ar" ? "رحلتي" : "My journey"}
-      </Link>
-      <JourneySteps />
-      <JourneyNextAction compact />
-    </nav>
   );
 }
 export function StudentJourneyHome({ locale }: { locale: Locale }) {
@@ -362,31 +313,39 @@ export function StudentJourneyHome({ locale }: { locale: Locale }) {
       <JourneySteps />
       <section className="student-journey-overview" aria-label={say("Learning progress summary", "ملخص التقدم التعليمي")}>
         <article><small>{say("Current stage", "المرحلة الحالية")}</small><strong>{context.journey.next?.title[locale] ?? say("Career track", "المسار المهني")}</strong></article>
-        <article><small>{say("Completed core stages", "المراحل الأساسية المكتملة")}</small><strong>{context.journey.steps.filter((step) => step.done).length}/{context.journey.steps.length - 2}</strong></article>
-        <article><small>{say("Latest successful milestone", "آخر إنجاز ناجح")}</small><strong>{[...context.journey.steps].reverse().find((step) => step.done)?.title[locale] ?? say("No completed stage yet", "لا توجد مرحلة مكتملة بعد")}</strong></article>
-        <article><small>{say("True progress", "التقدم الحقيقي")}</small><strong>{Math.round(context.journey.steps.filter((step) => step.done).length / (context.journey.steps.length - 2) * 100)}%</strong></article>
+        <article><small>{say("Completed learning stages", "مراحل التعلم المكتملة")}</small><strong>{context.journey.learningProgress.completed}/{context.journey.learningProgress.total}</strong></article>
+        <article><small>{say("Latest successful milestone", "آخر إنجاز ناجح")}</small><strong>{context.journey.latestMilestone?.title[locale] ?? say("No completed stage yet", "لا توجد مرحلة مكتملة بعد")}</strong></article>
+        <article><small>{say("True learning progress", "تقدم التعلم الحقيقي")}</small><strong>{context.journey.learningProgress.percent}%</strong></article>
       </section>
       <JourneyNextAction />
       <LearningCompetitionSummary locale={locale} />
       <section className="student-journey-results">
-        <h2>{say("What your work builds", "شغلك بيبني إيه؟")}</h2>
+        <h2>
+          {context.journey.learningComplete
+            ? say("Review your learning outcomes", "راجع نتائج تعلمك")
+            : say("What your work builds", "شغلك بيبني إيه؟")}
+        </h2>
         <p>
           {say(
             "Accepted tasks create accounting skill evidence and update the English CV automatically. These pages show your results; they are not separate courses you must start again.",
             "المهام المقبولة بتبني أدلة مهارات محاسبية وبتحدّث الـCV الإنجليزي تلقائيًا. الصفحات دي لنتائج شغلك، مش كورسات منفصلة تبدأها من جديد.",
           )}
         </p>
-        <div>
-          <Link href={`/${locale}/career-profile/skills`}>
-            {say("Review my skills", "راجع مهاراتي")}
-          </Link>
-          <Link href={`/${locale}/career-profile/cv`}>
-            <FileText size={18} />
-            English CV
-          </Link>
-          <Link href={`/${locale}/career-profile/edit`}>
-            {say("Profile & photo settings", "بياناتي وصورتي")}
-          </Link>
+        <div className="student-outcome-grid">
+          {context.journey.outcomes.map((outcome) => (
+            <Link
+              key={outcome.id}
+              href={outcome.route}
+              data-available={outcome.available}
+            >
+              <strong>{outcome.title[locale]}</strong>
+              <small>
+                {outcome.available
+                  ? say("Available from saved work", "متاح من شغلك المحفوظ")
+                  : say("Builds as you complete real work", "يتكوّن مع إتمام شغل حقيقي")}
+              </small>
+            </Link>
+          ))}
         </div>
       </section>
       <details className="student-journey-explore">

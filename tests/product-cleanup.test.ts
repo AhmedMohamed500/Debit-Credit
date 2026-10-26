@@ -48,7 +48,8 @@ describe("product cleanup compatibility contract", () => {
     );
     const journey = source("lib/student/journey.ts");
     expect(journey).toContain('/bootcamp/excel-foundations');
-    expect(journey).toContain("excelCompletedSteps < 5");
+    expect(journey).toContain("excelCompletedSteps >= 5");
+    expect(journey).toContain("excelCompletedSteps,");
     expect(source("lib/server/progress/excel-foundations.ts")).toContain(
       "rankArena",
     );

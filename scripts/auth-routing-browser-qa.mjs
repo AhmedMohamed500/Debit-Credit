@@ -33,12 +33,36 @@ const record = (name, value = true) => {
   console.log("PASS", name);
 };
 async function childDone(child) {
+  let stdout = "";
+  let stderr = "";
+  child.stdout?.on("data", (chunk) => {
+    stdout += chunk;
+  });
+  child.stderr?.on("data", (chunk) => {
+    stderr += chunk;
+  });
   await new Promise((resolve, reject) => {
     child.once("error", reject);
     child.once("exit", (code) =>
-      code === 0 ? resolve() : reject(new Error("Local child process failed")),
+      code === 0
+        ? resolve()
+        : reject(
+            new Error(
+              `Local child process failed (${code})\n${stderr || stdout}`,
+            ),
+          ),
     );
   });
+}
+function serializeError(error) {
+  return {
+    name: error?.name,
+    message: error?.message,
+    stack: error?.stack,
+    causes: Array.isArray(error?.errors)
+      ? error.errors.map(serializeError)
+      : undefined,
+  };
 }
 async function startLocal() {
   const manifest = JSON.parse(
@@ -101,7 +125,7 @@ async function startLocal() {
     spawn(
       process.execPath,
       ["node_modules/prisma/build/index.js", "migrate", "deploy"],
-      { env, windowsHide: true, stdio: "ignore" },
+      { env, windowsHide: true, stdio: "pipe" },
     ),
   );
   app = spawn(
@@ -303,14 +327,14 @@ try {
           { width: 1440, height: 900 },
           { width: 390, height: 844 },
         ]) {
-      if (
-        redesign &&
-        !production &&
-        ((locale === "en" && viewport.width === 1920) || viewport.width === 390)
-      ) {
+      const needsRateLimitWindow = redesign
+        ? (locale === "en" && viewport.width === 1920) ||
+          viewport.width === 390
+        : locale === "en" && viewport.width === 390;
+      if (!production && needsRateLimitWindow) {
         // Both locales share localhost's IP. Signup now requires an additional
-        // explicit login: let the 10/minute window expire before the fifth
-        // viewport and the next locale, without resetting/disabling protection.
+        // explicit login. Let the unchanged 10/minute window expire before a
+        // later viewport would exceed it; never reset/disable the protection.
         console.log("Waiting for the unchanged local auth rate-limit window");
         for (let part = 0; part < 3; part++)
           await new Promise((resolve) => setTimeout(resolve, 22000));
@@ -350,7 +374,8 @@ try {
       await page.waitForURL(`**/${locale}/signup?**`);
       record(
         label + " Landing CTA -> existing localized signup",
-        new URL(page.url()).searchParams.get("next") === `/${locale}`,
+        new URL(page.url()).searchParams.get("next") ===
+          `/${locale}/onboarding`,
       );
       await page.locator('[name="confirm"]').waitFor();
       await checkAuthUI(page, label + "-signup", ar, true);
@@ -372,7 +397,8 @@ try {
       await page.locator('[name="email"]').waitFor();
       record(
         label + " Signup -> Login preserves safe destination",
-        new URL(page.url()).searchParams.get("next") === `/${locale}`,
+        new URL(page.url()).searchParams.get("next") ===
+          `/${locale}/onboarding`,
       );
       await checkAuthUI(page, label + "-login", ar, false);
       await capture(
@@ -491,12 +517,12 @@ try {
           record(label + " first sign-in requires private CV personal details");
           await completeStudentDetails(page, locale);
         }
-        await page.waitForURL(`**/${locale}`);
+        await page.waitForURL(`**/${locale}/onboarding`);
         record(
           label +
             (signup
-              ? " Email signup -> sign-in -> authenticated homepage"
-              : " Login -> authenticated homepage"),
+              ? " Email signup -> sign-in -> requested onboarding"
+              : " Existing login -> requested onboarding"),
         );
         await page.goto(base + "/" + locale);
         await page
@@ -505,7 +531,8 @@ try {
         await page.locator('.student-next-action a').waitFor();
         record(
           label + " authenticated homepage opens student curriculum",
-          await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/game/student`,
+          (await page.locator('.student-next-action a').getAttribute('href')) ===
+            `/${locale}/bootcamp/excel-foundations`,
         );
         // We are already on the landing URL. waitForURL alone would resolve
         // before signOut's asynchronous full-document navigation happened.
@@ -610,7 +637,7 @@ try {
     ).catch(() => {});
   await writeFile(
     path.join(output, `${production ? "production" : "local"}-failure.json`),
-    JSON.stringify({ results, errors, error: String(error) }, null, 2),
+    JSON.stringify({ results, errors, error: serializeError(error) }, null, 2),
   );
   throw error;
 } finally {

@@ -4,7 +4,7 @@ Use resolved `ar` or `en` in URLs, never the filesystem placeholder `[locale]`.
 
 ## Primary journey
 
-`/{locale}` → `/{locale}/signup?next=<safe internal destination>` → `/{locale}/login?next=<same destination>&registered=1` → `/{locale}/auth/continue` → first-time `/{locale}/student-profile` → requested destination. For students the canonical home is `/{locale}/student`, which guides personal details → Excel Foundations → the foundations desk → First Shift → skills → CV.
+`/{locale}` → `/{locale}/signup?next=<safe internal destination>` → `/{locale}/login?next=<same destination>&registered=1` → `/{locale}/auth/continue` → first-time `/{locale}/student-profile` → requested destination. For signed-in students `/{locale}` is My Learning Journey: personal setup → Excel Foundations → Student Unit → First Shift, followed by a separate review of saved career outputs. `/student` remains a compatibility entry to the Student Unit and does not replace the learning home.
 
 Signup does not start a session. Login preserves a safe internal destination; otherwise it returns home. Auth traffic goes directly to `/api/auth/[...all]`, without a locale prefix. `/api/auth/callback/google` is the callback handler but Google is unavailable until credentials are configured.
 
@@ -15,8 +15,8 @@ Signup does not start a session. Login preserves a safe internal destination; ot
 | `/profile` | Legacy game/player identity retained for compatibility; it is no longer a primary navigation destination. |
 | `/account` | Authenticated cloud account, privacy and learning-ranking participation settings. |
 | `/student-profile` | Required private CV contact/education setup; session email is authoritative. |
-| `/student` | Compatibility entry to the student game city; existing saved progress is retained. |
-| `/game/student` | Student training city and accounting workbench; server-graded source documents, journal, ledger, trial balance and spreadsheet tasks. |
+| `/student` | Compatibility entry to the direct Student Unit workbench; existing saved progress is retained. |
+| `/game/student` | Canonical Student Unit accounting workbench; server-graded source documents, journal, ledger, trial balance and spreadsheet tasks. |
 | `/auth/continue` | Safe post-auth redirect gate: validated personal CV details before the requested destination. |
 | `/career` | Career hub and readiness. |
 | `/career-profile` | Signed-in profile for every persona: Profile, Courses, Progress and Certifications tabs; private certificate images, links to evidence and English CV; noindex. Guest view remains compatible. |

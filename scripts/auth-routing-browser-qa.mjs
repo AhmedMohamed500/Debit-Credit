@@ -528,7 +528,12 @@ try {
         await page
           .getByRole("button", { name: ar ? "خروج" : "Sign out", exact: true })
           .waitFor();
+        record(
+          label + " learning home has no global journey overlay",
+          (await page.locator(".student-journey-bar").count()) === 0,
+        );
         await page.locator('.student-next-action a').waitFor();
+        await capture(page, label + "-learning-home");
         record(
           label + " authenticated homepage opens student curriculum",
           (await page.locator('.student-next-action a').getAttribute('href')) ===

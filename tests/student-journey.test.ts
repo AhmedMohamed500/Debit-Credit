@@ -27,13 +27,18 @@ describe("Connected student journey", () => {
   });
   it.each(["ar", "en"] as const)("uses real %s routes in order", (locale) => {
     const journey = studentJourney({ ...start, locale });
-    expect(journey.steps.map((step) => step.route)).toEqual([
-      `/${locale}/student-profile`,
+    expect(journey.setup.route).toBe(`/${locale}/student-profile`);
+    expect(journey.learningStages.map((step) => step.route)).toEqual([
       `/${locale}/bootcamp/excel-foundations`,
       `/${locale}/game/student`,
       `/${locale}/game/first-shift`,
-      `/${locale}/career-profile/skills`,
-      `/${locale}/career-profile/cv`,
+    ]);
+    expect(journey.outcomes.map((outcome) => outcome.id)).toEqual([
+      "skills",
+      "practical-work",
+      "career-profile",
+      "cv",
+      "achievements",
     ]);
     expect(journey.nextRoute).toBe(`/${locale}/game/student`);
   });
@@ -78,17 +83,27 @@ describe("Connected student journey", () => {
         ...options,
         shiftCompleted: firstShiftMissionProgress(state).completedCount,
       }).next?.id,
-    ).toBe("skills");
+    ).toBe("results");
   });
-  it("shows skills then CV as work results, not fake certified completions", () => {
+  it("separates completed learning from available career outcomes", () => {
     const options = { ...start, accepted: [...stepIds], shiftCompleted: 5 };
-    expect(studentJourney(options).next?.id).toBe("skills");
+    const complete = studentJourney(options);
+    expect(complete.next?.id).toBe("results");
+    expect(complete.learningProgress).toEqual({
+      completed: 3,
+      total: 3,
+      percent: 100,
+    });
+    expect(complete.learningComplete).toBe(true);
+    expect(complete.outcomes.every((outcome) => outcome.available)).toBe(true);
     const skills = studentJourney({
       ...options,
       pathname: "/en/career-profile/skills",
+      advancedRoute: "/career-league/placement",
     });
-    expect(skills.nextRoute).toBe("/en/career-profile/cv");
-    expect(skills.steps.slice(4).every((step) => !step.done)).toBe(true);
+    expect(skills.current?.id).toBe("skills");
+    expect(skills.next).toBeNull();
+    expect(skills.nextRoute).toBe("/en/career-league/placement");
     expect(
       studentJourney({
         ...options,
@@ -96,6 +111,18 @@ describe("Connected student journey", () => {
         advancedRoute: "/career-league/placement",
       }).nextRoute,
     ).toBe("/en/career-league/placement");
+  });
+  it("does not count setup or career outputs as learning progress", () => {
+    expect(
+      studentJourney({
+        ...start,
+        personalComplete: false,
+        excelCompletedSteps: 0,
+      }).learningProgress,
+    ).toEqual({ completed: 0, total: 3, percent: 0 });
+    expect(
+      studentJourney({ ...start, accepted: [...stepIds] }).learningProgress,
+    ).toEqual({ completed: 2, total: 3, percent: 67 });
   });
   it("keeps incomplete learning as the next step even when reviewing CV early", () => {
     expect(

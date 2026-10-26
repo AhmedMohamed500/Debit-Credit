@@ -102,7 +102,7 @@ describe("project organization safeguards", () => {
       expect.arrayContaining(["artifacts", "archive"]),
     );
     expect(read("eslint.config.mjs")).toContain('"archive/**"');
-    expect(read("vitest.config.ts")).toContain('"archive/**"');
+    expect(read("vitest.config.mts")).toContain('"archive/**"');
   });
 
   it.each([

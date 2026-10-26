@@ -88,19 +88,27 @@ describe("Account-safe student journey guidance", () => {
       ).toBeNull();
     },
   );
-  it("preserves the journey overlay on a learning route", async () => {
-    fixture.path = "/en/bootcamp";
-    render(
+  it.each([
+    "/en/competition",
+    "/en/academy",
+    "/en/bootcamp",
+    "/en/career",
+    "/en/arena/missions",
+  ])("keeps account progress without adding a global journey bar above %s", async (path) => {
+    fixture.path = path;
+    const { container } = render(
       <StudentJourneyProvider locale="en">
-        <main>Learning content</main>
+        <main>Specialized application content</main>
       </StudentJourneyProvider>,
     );
-    expect(screen.getByText("Learning content")).toBeVisible();
+    expect(screen.getByText("Specialized application content")).toBeVisible();
+    await waitFor(() => expect(fixture.request).toHaveBeenCalled());
+    expect(container.querySelector(".student-journey-bar")).toBeNull();
     expect(
-      await screen.findByRole("navigation", {
+      screen.queryByRole("navigation", {
         name: "Your place in the journey",
       }),
-    ).toBeVisible();
+    ).toBeNull();
   });
   it.each(["ar", "en"] as const)(
     "does not duplicate the journey panel inside the %s first-shift workspace",
@@ -172,6 +180,20 @@ describe("Account-safe student journey guidance", () => {
       screen.getByText("Extra tools & activities (optional)").closest("details")
         ?.open,
     ).toBe(false);
+    expect(screen.getByText("Completed learning stages").nextSibling?.textContent).toBe("1/3");
+    expect(screen.getByText("True learning progress").nextSibling?.textContent).toBe("33%");
+    expect(
+      screen.getByRole("list", { name: "Your journey sequence" }),
+    ).toBeVisible();
+    expect(screen.getAllByRole("listitem")).toHaveLength(3);
+    for (const outcome of [
+      "Skill Passport",
+      "Practical Work",
+      "Career Profile",
+      "English CV",
+      "Achievements",
+    ])
+      expect(screen.getByRole("link", { name: new RegExp(outcome) })).toBeVisible();
   });
   it("waits for saved progress and does not invent a starting point on a failed request", async () => {
     fixture.request.mockRejectedValue(new Error("unavailable"));

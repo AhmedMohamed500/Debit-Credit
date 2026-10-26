@@ -42,8 +42,8 @@ export function StudentGameLink({ locale }: { locale: Locale }) {
         <h2>{ar ? "من المستند إلى الدفاتر" : "Source documents to books"}</h2>
         <p>
           {ar
-            ? "افتح مكتب التدريب في مدينة اللعب. راجع المستندات، سجّل القيود، واكتشف أثرها على الدفاتر. إنجازاتك المقبولة تبني سيرتك الإنجليزية تلقائيًا."
-            : "Open your training desk in the game city. Inspect documents, post entries and follow their impact through the books. Accepted work builds your English CV automatically."}
+            ? "افتح مكتب التدريب المحاسبي مباشرة. راجع المستندات، سجّل القيود، واكتشف أثرها على الدفاتر. إنجازاتك المقبولة تبني سيرتك الإنجليزية تلقائيًا."
+            : "Open the accounting training desk directly. Inspect documents, post entries and follow their impact through the books. Accepted work builds your English CV automatically."}
         </p>
         <small>
           {count === null

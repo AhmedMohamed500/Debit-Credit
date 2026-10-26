@@ -4,6 +4,7 @@ Start here rather than treating every past release report as today's status.
 
 ## Current entry points
 
+- [Comprehensive Arabic project report — current code, security, learning cleanup, tests, GitHub/Vercel and remaining work](COMPREHENSIVE-PROJECT-REPORT-AR-2026-10-26.md)
 - [Security dependency upgrade and verified audit](SECURITY-UPGRADE-2026-10-26.md)
 - [Learning journey UI and stage/outcome semantics cleanup](LEARNING-JOURNEY-SEMANTICS-2026-10-26.md)
 - [Latest complete Arabic project reference — updated 22 October 2026](PROJECT-COMPLETE-REFERENCE-AR-2026-10-14.md): whole product, history, curriculum, auth/backend, profile/CV, Excel Foundations, real employer discovery, latest design, verified release, testing and remaining work.

@@ -152,14 +152,17 @@ describe("platform UI", () => {
     expect(localStorage.getItem("debit-credit-skill-evidence-v1")).toBeNull();
     window.history.replaceState(null, "", "/en/");
   });
-  it("renders Arabic academy content and leaves Closing locked", () => {
+  it("renders the Arabic academy as a working-content catalog without playable placeholders", () => {
     render(<AcademyPlatform locale="ar" />);
     expect(
       screen.getByRole("heading", {
         name: "اتعلّمها. تدرّب عليها. استخدمها في الشغل.",
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/الإقفال/).closest("article")).toHaveClass("locked");
+    expect(screen.getByRole("region", { name: "مكتبة التعلم المتاحة" })).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: /أساسيات المحاسبة|تدريب القيود اليومية|طبيعة الحسابات/ })).toHaveLength(3);
+    expect(screen.queryByText(/سبع مراحل/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^الإقفال$/)).not.toBeInTheDocument();
   });
   it("exposes real challenge routes and labels the boss as locked", () => {
     render(<ChallengesPlatform locale="en" />);

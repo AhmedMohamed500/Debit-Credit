@@ -315,7 +315,7 @@ export function StudentJourneyHome({ locale }: { locale: Locale }) {
         <article><small>{say("Current stage", "المرحلة الحالية")}</small><strong>{context.journey.next?.title[locale] ?? say("Career track", "المسار المهني")}</strong></article>
         <article><small>{say("Completed learning stages", "مراحل التعلم المكتملة")}</small><strong>{context.journey.learningProgress.completed}/{context.journey.learningProgress.total}</strong></article>
         <article><small>{say("Latest successful milestone", "آخر إنجاز ناجح")}</small><strong>{context.journey.latestMilestone?.title[locale] ?? say("No completed stage yet", "لا توجد مرحلة مكتملة بعد")}</strong></article>
-        <article><small>{say("True learning progress", "تقدم التعلم الحقيقي")}</small><strong>{context.journey.learningProgress.percent}%</strong></article>
+        <article><small>{say("Current foundation track progress", "التقدم في المسار التأسيسي الحالي")}</small><strong>{context.journey.learningProgress.percent}%</strong></article>
       </section>
       <JourneyNextAction />
       <LearningCompetitionSummary locale={locale} />

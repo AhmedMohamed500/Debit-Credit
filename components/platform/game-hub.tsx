@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, BadgeCheck, BarChart3, Bell, BookMarked, BookOpen, BriefcaseBusiness, Building2, Check, ChevronRight, ClipboardCheck, FileBarChart, FileText, Gamepad2, Inbox, Landmark, Settings, ShieldCheck, Target, Truck, Users, WalletCards } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeCheck, BarChart3, BookMarked, BookOpen, BriefcaseBusiness, Building2, Check, ChevronRight, ClipboardCheck, FileBarChart, FileText, Inbox, Landmark, ShieldCheck, Target, Truck, Users, WalletCards } from "lucide-react";
 import { useGame } from "@/lib/campaign/store";
 import { firstDayCompany, firstDayDocuments, firstDayProgress } from "@/lib/campaign/first-day";
 import { projectShiftPerformance } from "@/lib/cases/performance";
-import { calculatePassport, calculateRoleReadiness, firstShiftSkillEvidence } from "@/lib/career/evidence";
+import { calculatePassport, firstShiftSkillEvidence } from "@/lib/career/evidence";
 import { roleCatalog, skillCatalog } from "@/lib/career/catalog";
 import { BrowserSkillEvidenceRepository, getOrCreateLocalCandidateId } from "@/lib/career/repository";
 import type { SkillEvidence } from "@/lib/career/model";
-import { professionalRank } from "@/lib/platform";
 import { gameHubNextMission } from "@/lib/platform/journey";
 import { destination, localizedPath, MIZAN_ZONES, type GameDestinationId, type MizanZoneId } from "@/lib/platform/navigation";
 import { usePlayer } from "@/components/game/use-player";
@@ -18,16 +17,16 @@ import type { Locale } from "@/types";
 import { PlatformNav } from "./platform-nav";
 import { BrowserCareerLeagueRepository } from "@/lib/career-league/repository";
 import { careerOpportunities, companyTiers } from "@/lib/career-league/catalog";
-import { createCareerLeagueState } from "@/lib/career-league/engine";
+import { companyUnlocked, createCareerLeagueState } from "@/lib/career-league/engine";
 import type { CareerLeagueState } from "@/lib/career-league/model";
 import { BrowserPlacementRepository } from "@/lib/placement/repository";
 import type { PlacementResult } from "@/lib/placement/model";
-import { BeginnerCareerWorld } from "./beginner-career-world";
-import { StudentGameLink } from "@/components/student/student-game-link";
 import { ProfilePhoto } from "@/components/career/profile-photo";
 import { StudentJourneyHome, useStudentJourney } from "@/components/student/student-journey";
+import { OwnerCapitalCase } from "@/components/practice/owner-capital-case";
+import { AccountingCalculator } from "@/components/practice/accounting-calculator";
 
-type IconType = typeof Gamepad2;
+type IconType = typeof Inbox;
 
 export function GameHub({ locale }: { locale: Locale }) {
   const studentJourney = useStudentJourney();
@@ -51,26 +50,20 @@ export function GameHub({ locale }: { locale: Locale }) {
     setDiagnostic(new BrowserPlacementRepository().get().result);
   }, []);
   const evidence = [...new Map([...firstShiftSkillEvidence(state, candidateId), ...savedEvidence.filter((item) => item.localCandidateId === candidateId)].map((item) => [item.evidenceId, item])).values()],
-    passport = calculatePassport(evidence),
-    readiness = calculateRoleReadiness(careerState.targetRoleId ?? "junior-accountant", passport),
-    careerRank = professionalRank(passport);
+    passport = calculatePassport(evidence);
   const target = careerOpportunities.find((item) => item.id === careerState.targetOpportunityId),
     nextCompany = companyTiers[1],
     nextMission = gameHubNextMission(careerState, passport, diagnostic);
   const nextTitle = nextMission.kind === "entry" ? say("Choose your starting point", "حدد نقطة بدايتك") : nextMission.kind === "diagnostic" ? say("Take your career diagnostic", "ابدأ التشخيص المهني") : nextMission.kind === "skill" && nextMission.skillId ? skillCatalog[nextMission.skillId].label[locale] : say("Review your career map", "راجع خريطتك المهنية");
   const handledValue = firstDayDocuments.filter((document) => progress.completed.includes(document.id)).reduce((total, document) => total + document.amount, 0);
-  const railIds: GameDestinationId[] = ["game-hub", "inbox", "missions", "journal", "ledger", "trial-balance", "financial-statements", "nature-of-accounts", "skill-passport", "career"];
-  const railIcons: Record<GameDestinationId, IconType> = {
-    "game-hub": Gamepad2,
+  const railIds: GameDestinationId[] = ["inbox", "journal", "ledger", "trial-balance", "financial-statements", "nature-of-accounts"];
+  const railIcons: Partial<Record<GameDestinationId, IconType>> = {
     inbox: Inbox,
-    missions: ClipboardCheck,
     journal: BookMarked,
     ledger: BookOpen,
     "trial-balance": BarChart3,
     "financial-statements": FileBarChart,
     "nature-of-accounts": FileText,
-    "skill-passport": ShieldCheck,
-    career: BriefcaseBusiness,
   };
   const zoneIcons: Record<MizanZoneId, IconType> = {
     suppliers: WalletCards,
@@ -79,13 +72,14 @@ export function GameHub({ locale }: { locale: Locale }) {
     logistics: Truck,
     "month-end": ClipboardCheck,
   };
-  const visibleSkills = passport.filter((item) => item.status !== "unassessed").slice(0, 4);
+  const visibleSkills = passport.filter((item) => item.status !== "unassessed").slice(0, 3);
+  const completedMissionIds = done === 3 ? ["first-shift"] : [];
+  const unlockedCompanies = companyTiers.filter((item) => companyUnlocked(item.id, passport, completedMissionIds, careerState.assessmentResults));
+  const currentCompany = unlockedCompanies.at(-1) ?? companyTiers[0];
   if (studentJourney) return <StudentJourneyHome locale={locale} />;
-  if (careerState.persona === "student" && careerState.placementRecommendation === 1) return <BeginnerCareerWorld locale={locale} careerState={careerState} gameState={state} player={player} />;
   return (
     <main className="platform-page command-game">
       <PlatformNav locale={locale} />
-      <StudentGameLink locale={locale} />
       <section className="command-shell">
         <aside className="command-rail" aria-label={say("Game navigation", "تنقل اللعبة")}>
           <div className="command-rail-company">
@@ -96,11 +90,11 @@ export function GameHub({ locale }: { locale: Locale }) {
             </span>
           </div>
           <nav>
-            {railIds.map((id, index) => {
+            {railIds.map((id) => {
               const item = destination(id),
-                Icon = railIcons[id];
+                Icon = railIcons[id]!;
               return (
-                <Link className={index === 0 ? "active" : ""} href={localizedPath(locale, item.path)} key={id}>
+                <Link href={localizedPath(locale, item.path)} key={id}>
                   <Icon />
                   <span>{item.label[locale]}</span>
                   {id === "inbox" && company.pendingDocuments > 0 ? <em>{company.pendingDocuments}</em> : null}
@@ -108,11 +102,6 @@ export function GameHub({ locale }: { locale: Locale }) {
               );
             })}
           </nav>
-          <Link className="command-rail-settings" href={`/${locale}/account`}>
-            <Settings />
-            {say("Settings", "الإعدادات")}
-          </Link>
-          <blockquote>“{say("Better accountants build brighter companies.", "محاسبون أفضل يبنون شركات أقوى.")}”</blockquote>
         </aside>
         <div className="command-main">
           <header className="command-heading">
@@ -236,10 +225,7 @@ export function GameHub({ locale }: { locale: Locale }) {
                   {say("Post three entries", "ترحيل ثلاثة قيود")}
                 </li>
               </ul>
-              <Link className="platform-primary" href={`/${locale}/game/first-shift`}>
-                {done ? say("Continue First Shift", "أكمل أول وردية") : say("Start First Shift", "ابدأ أول وردية")}
-                <Arrow />
-              </Link>
+              <p className="chapter-status">{done === 3 ? say("First Shift completed. Review it from Active work when needed.", "اكتملت أول وردية. يمكنك مراجعتها من العمل الحالي عند الحاجة.") : say("Use the recommended mission above to continue from the right step.", "استخدم المهمة المقترحة بالأعلى لتكمل من الخطوة المناسبة.")}</p>
             </article>
             <article className="company-impact">
               <header>
@@ -270,24 +256,26 @@ export function GameHub({ locale }: { locale: Locale }) {
               </dl>
             </article>
           </section>
+          <section className="phase3-practice-grid" aria-label={say("Practice and career utilities", "التدريب والأدوات المهنية")}>
+            <OwnerCapitalCase locale={locale} />
+            <AccountingCalculator locale={locale} />
+            <article className="phase3-career-entry">
+              <header><BriefcaseBusiness />{say("Company progression", "تقدم الشركات")}</header>
+              <h2>{currentCompany.name[locale]}</h2>
+              <p>{say(`${unlockedCompanies.length} of ${companyTiers.length} company levels unlocked from your real evidence and assessments.`, `تم فتح ${unlockedCompanies.length} من ${companyTiers.length} مستويات شركات بناءً على أدلتك وتقييماتك الحقيقية.`)}</p>
+              <Link href={`/${locale}/career-league/companies`}>{say("View company progression", "عرض تقدم الشركات")}<Arrow /></Link>
+            </article>
+          </section>
         </div>
         <aside className="command-dossier">
           <section className="player-dossier">
             <ProfilePhoto locale={locale} name={player.displayName} />
             <div>
               <b>{player.displayName}</b>
-              <small>{careerRank}</small>
-              <span>
-                {say("Game level", "مستوى اللعبة")} {player.level}
-              </span>
+              <small>{say("Your saved learning profile", "ملف تعلمك المحفوظ")}</small>
+              <span>{done} {say("First Shift cases completed", "حالات مكتملة في أول وردية")}</span>
             </div>
             <Link href={`/${locale}/career-profile`}>{say("Career profile", "الملف المهني")}</Link>
-            <i>
-              <b style={{ width: `${Math.min(100, player.levelProgress)}%` }} />
-            </i>
-            <small>
-              {player.xp.toLocaleString(locale)} XP · {player.coins.toLocaleString(locale)} {say("Coins", "عملة")}
-            </small>
           </section>
           <section className="passport-panel">
             <header>
@@ -315,42 +303,9 @@ export function GameHub({ locale }: { locale: Locale }) {
             ) : (
               <p className="passport-empty">{say("Complete a professional case to add evidence here.", "أكمل حالة مهنية ليظهر دليل مهاراتك هنا.")}</p>
             )}
-            <div className="passport-stats">
-              <span>
-                <ClipboardCheck />
-                <b>{done}</b>
-                <small>{say("Cases", "حالات")}</small>
-              </span>
-              <span>
-                <ShieldCheck />
-                <b>{passport.filter((item) => item.status === "demonstrated").length}</b>
-                <small>{say("Demonstrated", "مثبتة")}</small>
-              </span>
-              <span>
-                <FileText />
-                <b>{evidence.length}</b>
-                <small>{say("Evidence", "أدلة")}</small>
-              </span>
-            </div>
-          </section>
-          <section className="readiness-panel">
-            <header>
-              <BriefcaseBusiness />
-              <b>{say("Hiring readiness", "الجاهزية المهنية")}</b>
-              <span>{readiness.score === null ? say("Building evidence", "نبني الأدلة") : `${readiness.score}%`}</span>
-            </header>
-            <p>{say("Complete professional cases to build an evidence-based profile. Local gameplay never becomes Verified.", "أكمل حالات مهنية لبناء ملف قائم على الأدلة. اللعب المحلي لا يصبح «موثقًا».")}</p>
-            <Link href={`/${locale}/career`}>
-              {say("Open Career Hub", "افتح المسار المهني")}
-              <Arrow />
-            </Link>
           </section>
         </aside>
       </section>
-      <button className="command-alert" aria-label={say("Notifications", "الإشعارات")}>
-        <Bell />
-        <span>{company.pendingDocuments}</span>
-      </button>
     </main>
   );
 }

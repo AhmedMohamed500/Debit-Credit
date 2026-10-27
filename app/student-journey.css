@@ -229,9 +229,6 @@
 .student-world:has(> .student-journey-page) {
   background: var(--background, #f3f8fd);
 }
-[data-student-guided="true"] .student-game-link {
-  display: none;
-}
 .student-journey-page :focus-visible {
   outline: 3px solid #efb443;
   outline-offset: 3px;

@@ -8,7 +8,7 @@ export async function memberProfileQa({ page, context, base, locale, label, api,
   const root = page.locator('.member-profile');
   await page.locator('.career-approved-tabs').getByRole('link', {name:say('Overview','نظرة عامة'),exact:true}).click();
   record(label + " no duplicate journey navigation above the profile", await page.locator('.student-journey-bar').count() === 0);
-  record(label + " professional next step follows saved journey progress", await page.locator('.candidate-next a').first().getAttribute('href') === (label === 'en-1440' ? '/en/career-profile/skills' : `/${locale}/game/first-shift`));
+  record(label + " professional next step follows saved journey progress", await page.locator('.candidate-next a').first().getAttribute('href') === `/${locale}/bootcamp/excel-foundations`);
   record(label + " dark theme preserves readable career surfaces", await page.locator('.career-approved').evaluate(element => { document.documentElement.setAttribute('data-theme', 'dark'); const style=getComputedStyle(element); return style.backgroundColor !== 'rgb(255, 255, 255)' && style.color !== style.backgroundColor; }));
   await screenshot(page, label + '-profile-overview-dark'); await checkLayout(page, label + ' profile overview dark');
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));

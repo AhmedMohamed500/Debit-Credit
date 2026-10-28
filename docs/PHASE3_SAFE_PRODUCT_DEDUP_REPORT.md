@@ -256,3 +256,7 @@
 - الـPR سيظل Draft للمراجعة.
 - Base المقصود هو `codex/phase2-product-cleanup` حتى لا تختلط تغييرات Phase 3 مع `main` قبل مراجعة Phase 2.
 - Draft PR: [#51 — Phase 3: safely remove redundant student UX](https://github.com/AhmedMohamed500/Debit-Credit/pull/51).
+- GitHub merge state عند التسليم: `CLEAN`، والـPR مفتوح وما زال `Draft`.
+- فحص Vercel Preview: `SUCCESS / Ready`.
+- رابط المعاينة: [Phase 3 Vercel Preview](https://debit-credit-git-codex-975954-ahmed-mohameds-projects-c51bc2cc.vercel.app).
+- رابط المعاينة لا يمثل Production ولم يتم تنفيذ نشر Production يدوي.

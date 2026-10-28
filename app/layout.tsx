@@ -8,7 +8,6 @@ import "./first-day.css";
 import "./platform.css";
 import "./career-entry.css";
 import "./landing.css";
-import "./beginner-career-world.css";
 import "./bootcamp.css";
 import "./foundations.css";
 import "./cloud.css";

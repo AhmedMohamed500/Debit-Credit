@@ -70,12 +70,11 @@ journey overlay.
 ## Remaining approved-scope gaps
 
 The Phase 2 source attachment physically ends at `Known CSS:` in Phase 5.
-`BeginnerCareerWorld` is still reachable for a student whose placement result is
-level 1, so it is not dead code and was not deleted. Its requested consolidation,
-the referenced final competition design, and any later Academy/Bootcamp/Game Hub
-instructions cannot be implemented safely from the truncated source. The full
-remainder of the approved prompt is required before changing those connected
-flows.
+Phase 3 supersedes the earlier limitation above. The complete approved task was
+provided on 2026-10-27: the unique owner-capital practice and calculator moved
+into the canonical Game Hub, while the duplicate `BeginnerCareerWorld` shell was
+removed. The exact saved practice key and scoring remain compatible. See
+`docs/PHASE3_SAFE_PRODUCT_DEDUP_REPORT.md`.
 
 Production merge and deployment are also intentionally separate from this local
 product-cleanup verification. They require approval after the review branches

@@ -38,7 +38,7 @@ try {
   browser = await chromium.launch({ executablePath: process.env.CHROME_EXECUTABLE || "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true, env: { ...process.env, TEMP: temporary, TMP: temporary }, args: ["--disable-background-networking", "--no-first-run"] });
   const answers = [{ action: "hold-duplicate" }, { debit: "cash", credit: "capital", amount: "100000" }, { debit: "equipment", credit: "cash", amount: "20000" }, { debit: "inventory", credit: "payable", amount: "15000" }, { debit: "receivable", credit: "revenue", amount: "12000" }, { debit: "cash", credit: "receivable", amount: "7000" }, { debit: "rent", credit: "cash", amount: "3000" }, { amount: "84000" }, { debitTotal: "127000", creditTotal: "127000" }, { action: "reclassify-equipment" }, { formula: "=SUM(C2:C9)", differenceFormula: "=C10-D10" }];
   for (const locale of ["ar", "en"]) for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
-    let resumeRoute = `/${locale}/game/first-shift`;
+    let resumeRoute = `/${locale}/bootcamp/excel-foundations`;
     const label = locale + "-" + viewport.width, context = await browser.newContext({ viewport }), page = await context.newPage();
     page.on("pageerror", error => errors.push(error.message)); page.on("dialog", dialog => dialog.accept());
     const email = `student-${randomUUID()}@fixture.test`, password = randomBytes(18).toString("base64url");
@@ -86,13 +86,12 @@ try {
     const leaderboard = await (await api(context, "competition/leaderboard")).text();
     record(label + " leaderboard contains no private contact data", !leaderboard.includes(email) && !leaderboard.includes("+20 100 123 4567"));
     record(label + " stale personal revision rejected", (await api(context, "me/personal", "PUT", { revision: 0, details: personal.data.details })).status() === 409);
-    record(label + " one next step points to foundations", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/game/student`);
+    record(label + " one next step points to Excel foundations", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/bootcamp/excel-foundations`);
     record(label + " no competing old training start", await page.locator('.student-game-link').count() === 0);
-    await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/game/student`);
-    await page.locator('.student-start-mission').waitFor(); await screenshot(page, label + "-city"); await checkLayout(page, label + " city");
-    await page.locator('.student-start-mission').click(); await page.locator('input[name="action"]').first().waitFor();
+    await page.goto(`${base}/${locale}/game/student`);
+    await page.locator('input[name="action"]').first().waitFor(); await screenshot(page, label + "-student-desk"); await checkLayout(page, label + " student desk");
     await page.waitForLoadState("networkidle"); await page.screenshot({ path: path.join(output, label + "-source-workbench.png") });
-    record(label + " game opens student workbench instead of standalone quiz", await page.getByRole("dialog").isVisible() && await page.locator('.student-work-inbox').isVisible());
+    record(label + " game opens one inline student workbench instead of a second city or standalone quiz", await page.locator('.student-workbench').isVisible() && await page.locator('.student-work-inbox').isVisible() && await page.locator('.student-world').count() === 0);
     await page.locator('input[name="action"][value="post-both"]').check(); await page.locator('.student-card form button[type="submit"]').click(); await page.getByRole("status").filter({ hasText: locale === "ar" ? "غير مقبولة" : "Not accepted" }).waitFor();
     let cloud = await (await api(context, "me/progress")).json(); record(label + " wrong response produces no CV evidence", cloud.evidence.length === 0);
     record(label + " future step locked", (await api(context, "me/student-unit", "POST", { revision: 1, step: "worksheet", answer: { formula: "=SUM(C2:C9)", differenceFormula: "=C10-D10" } })).status() === 409);
@@ -127,7 +126,7 @@ try {
       if (index === 1) { const history = await page.evaluate(() => JSON.parse(localStorage.getItem("debit-credit-cv-history-v1") ?? "{}").items); record(label + " CV updated without opening or clicking generate", history?.at(-1)?.plainText.includes("owner capital contribution")); }
       if (index === 7) { await screenshot(page, label + "-trial-balance"); await checkLayout(page, label + " task"); }
     }
-    await page.getByRole("dialog").getByRole("heading", { name: locale === "ar" ? "أنهيت الوحدة" : "Unit completed" }).waitFor();
+    await page.getByRole("heading", { name: locale === "ar" ? "أنهيت الوحدة" : "Unit completed" }).waitFor();
     const completed = await (await api(context, "me/student-unit")).json(); record(label + " all tasks persisted", completed.data.accepted.length === 11 && !!completed.data.completedAt);
     cloud = await (await api(context, "me/progress")).json(); const count = cloud.evidence.length;
     const savedCv = await (await api(context, "me/cv")).json();
@@ -139,10 +138,10 @@ try {
     record(label + " replay adds no duplicate evidence", (await (await api(context, "me/progress")).json()).evidence.length === count);
     const downloadEvent = page.waitForEvent("download"); await page.getByRole("button", { name: /Download Excel-compatible|تحميل ورقة العمل/ }).click(); const download = await downloadEvent; const csv = await readFile(await download.path(), "utf8");
     record(label + " real workpaper export matches accepted ledger", csv.includes("Cash,Unit1,84000,0") && csv.includes("=SUM(C2:C9)") && !csv.includes(email));
-    record(label + " completed foundations hands off to First Shift", await page.locator('.student-card a[href$="/game/first-shift"]').count() === 1);
+    record(label + " completed Student Unit exposes its First Shift handoff", await page.locator('.student-card a[href$="/game/first-shift"]').count() === 1);
     await page.goto(`${base}/${locale}`); await page.locator('.student-next-action a').waitFor();
-    record(label + " home resumes real next stage", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/game/first-shift`);
-    await page.locator('.student-next-action a').click(); await page.waitForURL(`**/${locale}/game/first-shift`);
+    record(label + " home keeps incomplete Excel foundations as the canonical next stage", await page.locator('.student-next-action a').getAttribute('href') === `/${locale}/bootcamp/excel-foundations`);
+    await page.goto(`${base}/${locale}/game/first-shift`);
     await page.locator('.shift-briefing').waitFor();
     record(label + " First Shift removes oversized global journey bar", await page.locator('.student-journey-bar').count() === 0);
     record(label + " one integrated shift navigation", await page.locator('.shift-navigation').count() === 1);
@@ -185,7 +184,8 @@ try {
       await page.locator('.career-skill-next a').waitFor();
       record(label + " skills hands off to English CV", await page.locator('.career-skill-next a').getAttribute('href') === `/${locale}/career-profile/cv`);
       await page.locator('.career-skill-next a').click(); await page.waitForURL(`**/${locale}/career-profile/cv`);
-      resumeRoute = `/${locale}/career-profile/skills`;
+      // First Shift can hand off to the skills view, but the canonical saved
+      // journey must still resume the unfinished Excel Foundations stage.
     }
     await page.goto(`${base}/${locale}/career-profile`); await page.locator('.member-portrait img').waitFor();
     record(label + " profile photo fills entire portrait inside its decorative border", await page.locator('.member-portrait .photo-circle').evaluate(frame => { const a=frame.getBoundingClientRect(), b=frame.querySelector('img').getBoundingClientRect(); return Math.abs(a.width-b.width)<1 && Math.abs(a.height-b.height)<1; }));

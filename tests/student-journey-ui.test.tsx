@@ -181,7 +181,7 @@ describe("Account-safe student journey guidance", () => {
         ?.open,
     ).toBe(false);
     expect(screen.getByText("Completed learning stages").nextSibling?.textContent).toBe("1/3");
-    expect(screen.getByText("True learning progress").nextSibling?.textContent).toBe("33%");
+    expect(screen.getByText("Current foundation track progress").nextSibling?.textContent).toBe("33%");
     expect(
       screen.getByRole("list", { name: "Your journey sequence" }),
     ).toBeVisible();

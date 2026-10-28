@@ -255,4 +255,4 @@
 - الفرع مخصص لـPhase 3 فقط.
 - الـPR سيظل Draft للمراجعة.
 - Base المقصود هو `codex/phase2-product-cleanup` حتى لا تختلط تغييرات Phase 3 مع `main` قبل مراجعة Phase 2.
-- رابط الـDraft PR يُضاف هنا بعد إنشائه.
+- Draft PR: [#51 — Phase 3: safely remove redundant student UX](https://github.com/AhmedMohamed500/Debit-Credit/pull/51).

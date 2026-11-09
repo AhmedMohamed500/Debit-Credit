@@ -169,23 +169,17 @@ describe("Account-safe student journey guidance", () => {
       expect(container.querySelector(".student-journey-bar")).toBeNull();
     },
   );
-  it("shows one primary next link and puts optional activities behind a disclosure", async () => {
+  it("shows the eight-level map, one actionable current level and real outcomes", async () => {
     render(view());
     expect(
       (
-        await screen.findByRole("link", { name: "Continue my journey" })
+        await screen.findByRole("link", { name: "Continue training" })
       ).getAttribute("href"),
     ).toBe("/en/game/student");
-    expect(
-      screen.getByText("Extra tools & activities (optional)").closest("details")
-        ?.open,
-    ).toBe(false);
-    expect(screen.getByText("Completed learning stages").nextSibling?.textContent).toBe("1/3");
-    expect(screen.getByText("Current foundation track progress").nextSibling?.textContent).toBe("33%");
-    expect(
-      screen.getByRole("list", { name: "Your journey sequence" }),
-    ).toBeVisible();
-    expect(screen.getAllByRole("listitem")).toHaveLength(3);
+    expect(screen.getByLabelText("Eight-level accounting journey map")).toBeVisible();
+    expect(screen.getAllByRole("button", { name: /Level|level|Foundations|Documents|Journal|Ledger|Balance|Statements|Review|Simulation/ })).toHaveLength(8);
+    expect(screen.queryByText("Excel Foundations")).toBeNull();
+    expect(screen.getByText("In development")).toBeVisible();
     for (const outcome of [
       "Skill Passport",
       "Practical Work",
@@ -200,72 +194,56 @@ describe("Account-safe student journey guidance", () => {
     render(view());
     await screen.findByRole("alert");
     expect(
-      screen.queryByRole("link", { name: "Continue my journey" }),
+      screen.queryByRole("link", { name: "Continue training" }),
     ).toBeNull();
-    fixture.request.mockImplementation((route: string) =>
-      Promise.resolve(
-        route === "me/excel-foundations"
-          ? { data: { completedSteps: [1, 2, 3, 4, 5] } }
-          : { data: { accepted: [...stepIds] } },
-      ),
-    );
+    fixture.request.mockResolvedValue({ data: { accepted: [...stepIds] } });
     await act(async () =>
       screen.getByRole("button", { name: "Retry" }).click(),
     );
     expect(
       (
-        await screen.findByRole("link", { name: "Continue my journey" })
+        await screen.findByRole("link", { name: "Continue training" })
       ).getAttribute("href"),
     ).toBe("/en/game/first-shift");
   });
   it("refreshes next-step guidance after an accepted server task", async () => {
     render(view());
-    await screen.findByRole("link", { name: "Continue my journey" });
-    fixture.request.mockImplementation((route: string) =>
-      Promise.resolve(
-        route === "me/excel-foundations"
-          ? { data: { completedSteps: [1, 2, 3, 4, 5] } }
-          : { data: { accepted: [...stepIds] } },
-      ),
-    );
+    await screen.findByRole("link", { name: "Continue training" });
+    fixture.request.mockResolvedValue({ data: { accepted: [...stepIds] } });
     await act(async () =>
       window.dispatchEvent(new Event("student-progress-changed")),
     );
     await waitFor(() =>
       expect(
         screen
-          .getByRole("link", { name: "Continue my journey" })
+          .getByRole("link", { name: "Continue training" })
           .getAttribute("href"),
       ).toBe("/en/game/first-shift"),
     );
   });
   it("does not show previous student's completion during an account switch", async () => {
-    fixture.request
-      .mockResolvedValueOnce({ data: { accepted: [...stepIds] } })
-      .mockResolvedValueOnce({ data: { completedSteps: [1, 2, 3, 4, 5] } });
+    fixture.request.mockResolvedValueOnce({ data: { accepted: [...stepIds] } });
     const result = render(view());
-    await screen.findByRole("link", { name: "Continue my journey" });
+    await screen.findByRole("link", { name: "Continue training" });
     let resolve: ((value: unknown) => void) | undefined;
-    fixture.request
-      .mockImplementationOnce(
-        () =>
-          new Promise((value) => {
-            resolve = value;
-          }),
-      )
-      .mockResolvedValueOnce({ data: { completedSteps: [1, 2, 3, 4, 5] } });
+    fixture.request.mockImplementationOnce(
+      () =>
+        new Promise((value) => {
+          resolve = value;
+        }),
+    );
     fixture.identity = identity("student-b");
     result.rerender(view());
     expect(
-      screen.queryByRole("link", { name: "Continue my journey" }),
+      screen.queryByRole("link", { name: "Continue training" }),
     ).toBeNull();
     expect(screen.getByRole("status").textContent).toContain(
-      "Finding your saved next step",
+      "Loading your saved account progress",
     );
     await act(async () => resolve?.({ data: { accepted: [] } }));
     expect(
       screen
-        .getByRole("link", { name: "Continue my journey" })
+        .getByRole("link", { name: "Continue training" })
         .getAttribute("href"),
     ).toBe("/en/game/student");
   });

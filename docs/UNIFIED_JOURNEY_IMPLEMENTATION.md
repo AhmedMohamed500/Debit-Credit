@@ -4,9 +4,9 @@
 
 - Starting SHA: `f6e753f047f86e1b0881c7b11cfbb5c4182e0053`
 - Implementation branch: `codex/unified-accounting-journey-v1`
-- Final implementation SHA: `PENDING_COMMIT`
-- Draft pull request: `PENDING_PUSH`
-- Vercel Preview: `PENDING_DEPLOYMENT`
+- Final implementation SHA: `fc994c3db306ea101665eb43787f78d2467960ae`
+- Draft pull request: https://github.com/AhmedMohamed500/Debit-Credit/pull/52
+- Vercel Preview: https://debit-credit-git-codex-3e4f04-ahmed-mohameds-projects-c51bc2cc.vercel.app
 - Production: not merged and not changed.
 
 ## What changed
@@ -95,6 +95,8 @@ Browser QA was attempted in two independent ways:
 2. A Playwright run started an isolated PostgreSQL fixture successfully, but the fixture client stalled before the application flow could begin. The run was stopped; no production data was touched.
 
 Because neither browser harness reached the journey UI, no screenshots are claimed as verified in this report. The responsive CSS includes dedicated layouts for desktop, tablet and 390px mobile, and component tests verified the eight interactive level controls and active links, but a real-browser visual pass remains required on the Vercel Preview.
+
+The Vercel deployment itself completed successfully. Direct checks of both `/ar/journey` and `/en/journey` reached the Preview deployment and returned the expected Vercel Authentication redirect (`302`), so public unauthenticated visual inspection is blocked by the project's Preview Protection setting.
 
 ## Preserved data and systems
 

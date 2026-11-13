@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
@@ -45,6 +46,7 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
       repo.snapshot,
       () => serverState,
     );
+  const searchParams = useSearchParams();
   const [screen, setScreen] = useState<"map" | "mission" | "result">("map"),
     [feedback, setFeedback] = useState<{
       correct: boolean;
@@ -62,6 +64,18 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
   useEffect(() => {
     syncFoundationRewards(state);
   }, [state]);
+  useEffect(() => {
+    const requested = searchParams.get("mission") as BootcampMissionId | null;
+    if (
+      !requested ||
+      !getBootcampMission(requested) ||
+      !isBootcampMissionUnlocked(state, requested)
+    )
+      return;
+    if (state.currentMissionId !== requested)
+      repo.save({ ...state, currentMissionId: requested });
+    setScreen("mission");
+  }, [repo, searchParams, state]);
   const open = (id: BootcampMissionId) => {
     if (!isBootcampMissionUnlocked(state, id)) return;
     repo.save({ ...state, currentMissionId: id });
@@ -124,6 +138,7 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
     if (next === state) return;
     repo.save(next);
     syncFoundationRewards(next);
+    window.dispatchEvent(new Event("student-progress-changed"));
     setFeedback(null);
     setScreen(mission.id === "mizan-boss" ? "result" : "map");
     window.scrollTo(0, 0);
@@ -435,10 +450,15 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
           </p>
         )}
         <footer className="fdn-footer">
-          {say(
-            "Local-first foundation practice · No backend · No professional evidence",
-            "تدريب أساسيات محفوظ محليًا · بلا خادم · بلا أدلة مهنية",
-          )}
+          {cloudUser()
+            ? say(
+                "Server-graded account progress · local game rewards · no professional evidence",
+                "تقدم الحساب مصحح ومحفوظ بالخادم · مكافآت اللعبة محلية · بلا دليل مهني",
+              )
+            : say(
+                "Local foundation practice · sign in for server-graded account progress · no professional evidence",
+                "تدريب أساسيات محلي · سجّل الدخول لحفظ نتيجة مصححة بالخادم · بلا دليل مهني",
+              )}
         </footer>
       </div>
     </main>

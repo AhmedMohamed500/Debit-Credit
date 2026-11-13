@@ -1,119 +1,129 @@
-# Unified Accounting Journey V1 — Implementation Report
+# Unified Accounting Journey V1.1 — Implementation Report
 
 ## Delivery metadata
 
-- Starting SHA: `f6e753f047f86e1b0881c7b11cfbb5c4182e0053`
+- Starting SHA: `0b4ceab84104a3faf42c6d6892c9aa79b083c73e`
 - Implementation branch: `codex/unified-accounting-journey-v1`
-- Final implementation SHA: `fc994c3db306ea101665eb43787f78d2467960ae`
 - Draft pull request: https://github.com/AhmedMohamed500/Debit-Credit/pull/52
-- Vercel Preview: https://debit-credit-git-codex-3e4f04-ahmed-mohameds-projects-c51bc2cc.vercel.app
-- Production: not merged and not changed.
+- PR base: `codex/phase3-remove-redundant-ux`
+- Stack: PR #49 → PR #50 → PR #51 → PR #52
+- Final implementation SHA: recorded by the latest commit on PR #52 after this report is committed.
+- Production: not merged, promoted, or written to.
 
-## What changed
+## Executive result
 
-The signed-in student home and the canonical `/{locale}/journey` route now use one unified accounting journey. The previous three-card sequence was replaced with a responsive dark-navy/gold learning map with eight numbered levels, completed/current/locked/development states, the real account name and photo, saved game rewards, real assessed-task progress, learning badges, the current level mission list, and links to career outcomes.
+V1.1 removes the false 100% completion state and makes the eight-level student journey traceable to real work. Completion is now checked by exact mission ID, not by array position or a numeric count. The journey separates server-graded learning, local First Shift practice, and professional evidence. Level 6 remains visible but honestly reports **In development** and can never grant completion, a badge, XP, or a certificate.
 
-The implementation does not create a second dashboard. `/{locale}` and `/{locale}/journey` render the same `StudentJourneyHome` for the student persona. The thin cloud account strip is hidden on those two surfaces to avoid duplicated navigation.
+When every currently available activity is complete, the UI reports:
 
-## Existing modules reused
+- Full program: **7/8 levels, 88%**.
+- Available training: **7/7 levels, 100%**.
+- Server-accepted learning: **24/24 missions** (13 Foundations + 11 Student Unit).
+- Local First Shift practice: **5/5 checkpoints**, explicitly not server-certified.
+- Full-program completion: **false** until Level 6 has real teaching and server grading.
 
-- Better Auth session and personal-profile completion guard.
-- Server-authoritative Student Unit state from `GET /api/v1/me/student-unit`.
-- Student Unit grading order and its 11 accepted task IDs.
-- First Shift's five real milestones from `firstShiftMissionProgress`.
-- Existing cloud-backed game state for XP, coins, active days, photo and display name.
-- Existing Skill Passport, Practical Work, Career Profile, English CV and Achievements routes.
-- Existing Competition route; no rank is shown without real participation data.
-- Existing career evidence/CV projection behavior remains unchanged.
-- Existing Excel Foundations files, API, saved records and ranking engine remain unchanged as a standalone module.
+## Defects fixed
 
-## Level mapping
+| Defect | Before | V1.1 behavior |
+|---|---|---|
+| False program completion | Seven implemented levels could render as 100% for an eight-level program | Full-program progress is capped at 7/8 and 88% while Level 6 is unavailable |
+| Positional completion | Accepted work could be inferred from `accepted.length` or UI position | Every level and task checks its exact accepted mission ID |
+| Non-contiguous saved state | A later accepted ID could incorrectly imply earlier work | Only the saved IDs themselves render complete; the first missing canonical ID remains next |
+| Foundations mismatch | Level 1 pointed at a Student Unit task instead of the Foundations curriculum | Level 1 uses all 13 existing server-graded Foundations missions, including final mastery |
+| Generic level navigation | Levels opened a module without identifying the required work | Foundations uses `?mission=<id>` and Student Unit uses `?focus=<id>` |
+| First Shift count-only state | A numeric total hid which checkpoints were actually complete | Five exact First Shift IDs are derived from document, journal, and ledger state |
+| Authority ambiguity | Local simulation could look like an official credential | UI and model label server assessment, local practice, and professional evidence separately |
+| Profile redirect loop | An incomplete student already on `/student-profile` redirected to itself | The session boundary allows the profile page to render and only redirects from other private pages |
 
-| Level | Display title | Real completion inputs | Route |
+## Level mapping and deep links
+
+| Level | Title | Completion authority and exact inputs | Deep link |
 |---|---|---|---|
-| 1 | Accounting Foundations | `document-control` | `/game/student` |
-| 2 | Source Documents | `journal-capital`, `journal-equipment`, `journal-inventory` | `/game/student` |
-| 3 | Journal Entries | `journal-service`, `journal-receipt`, `journal-rent` | `/game/student` |
-| 4 | General Ledger | `ledger-cash` | `/game/student` |
-| 5 | Trial Balance | `trial-balance` | `/game/student` |
-| 6 | Financial Statements | No assessed implementation yet; shown as **In development** and grants no completion | Journey map only |
-| 7 | Review & Analysis | `classification-error`, `worksheet` | `/game/student` |
-| 8 | Final Company Simulation | Three accepted First Shift documents, posted journal, reviewed ledger | `/game/first-shift` |
+| 1 | Accounting Foundations | Server-graded; all 13 IDs from `bootcampMissionIds`, ending with `mizan-boss` | `/{locale}/bootcamp?mission=<first-missing-foundation-id>` |
+| 2 | Source Documents | Server-graded; `document-control`, `journal-capital`, `journal-equipment`, `journal-inventory` | `/{locale}/game/student?focus=<first-missing-id>` |
+| 3 | Journal Entries | Server-graded; `journal-service`, `journal-receipt`, `journal-rent` | `/{locale}/game/student?focus=<first-missing-id>` |
+| 4 | General Ledger | Server-graded; `ledger-cash` | `/{locale}/game/student?focus=ledger-cash` |
+| 5 | Trial Balance | Server-graded; `trial-balance` | `/{locale}/game/student?focus=trial-balance` |
+| 6 | Financial Statements | No complete assessment; development only | `/{locale}/journey` |
+| 7 | Review & Analysis | Server-graded; `classification-error`, `worksheet` | `/{locale}/game/student?focus=<first-missing-id>` |
+| 8 | Final Company Simulation | Local practice; three document IDs, `first-shift/journal`, `first-shift/ledger` | `/{locale}/game/first-shift` |
 
-Every accepted Student Unit task is mapped exactly once. Excel is not mapped to the eight-level core journey.
+Locked and development levels remain inspectable so students can read why they are unavailable and what to do next. A completed level can still be opened for review.
 
-## Progress and rewards rules
+## Accounting Foundations learning design
 
-- Official journey progress is derived from 11 server-accepted Student Unit tasks plus 5 existing First Shift milestones: 16 assessed items total.
-- A level is completed only when all mapped real requirements are complete.
-- The next implemented level becomes current only after prior implemented levels are complete.
-- Financial Statements remains visible for roadmap continuity but cannot award completion, XP or a badge.
-- Learning badges are a derived presentation of completed journey levels and are explicitly labelled as non-professional accreditation.
-- XP and coins shown are the existing saved game-state values. This implementation does not invent or duplicate XP awards.
-- Weekly goal shows an honest unavailable state because the current accepted Student Unit state does not expose per-task completion timestamps.
-- Competition remains optional. The journey links to the existing competition product but does not display a public rank without participation data.
-- Career evidence and CV data are not inferred from map navigation or badge state; existing server/projector rules remain authoritative.
+The implementation reuses the existing 13-mission Accounting Foundations engine rather than creating a duplicate course. It provides a short explanation, guided examples and interactive practice, corrective feedback after a wrong answer, retry, and a final `mizan-boss` mastery mission. Signed-in completion is submitted through the existing cloud API and is graded and stored server-side. Guest use remains clearly local practice.
 
-## Navigation and compatibility
+Existing Foundations records are preserved. The provider reads the actual `GET /api/v1/me/progress` response shape (`foundations.data.completedMissionIds`) alongside Student Unit state and refreshes the unified map after accepted work.
 
-- Added canonical signed-in route: `/{locale}/journey`.
-- Guests are redirected to locale-correct login with `next=/{locale}/journey`.
-- Users missing required personal details are redirected to the personal-profile form with the same safe internal destination.
-- The signed-in home page renders the same journey, not a duplicate dashboard.
-- Main student navigation now links to `/{locale}/journey` and treats the signed-in home as the same active destination.
-- Excel Foundations stays available at `/{locale}/bootcamp/excel-foundations`; existing data was not deleted or reset.
+## Progress authority and evidence boundaries
 
-## Files changed
+- **Server assessment:** the 13 Foundations missions and 11 Student Unit tasks. These are the only missions included in the 24-item authoritative learning counter.
+- **Local simulation:** the five First Shift checkpoints derived from local campaign state. They receive a separate counter and do not create server-certified badges or professional claims.
+- **Professional evidence:** Skill Passport, practical work, career profile, English CV, and achievements continue to use their existing evidence/projector rules. Map visits and learning badges do not manufacture career evidence.
+- **Rewards:** the journey displays existing saved XP and coins. V1.1 does not invent new server rewards for navigation or for unavailable content.
+- **Excel Foundations:** retained without reset and intentionally outside the core eight-level unlock chain for this release.
 
-- `app/[locale]/journey/page.tsx`
+## Compatibility and data preservation
+
+- No Prisma schema or migration changes.
+- No database reset and no production data writes.
+- Existing Student Unit, Foundations, Excel, First Shift, profile, career evidence, CV, competition, and subscription data remain intact.
+- Previously saved non-contiguous accepted IDs are normalized against the canonical task list without deleting valid IDs.
+- Arabic RTL and English LTR use the same progression rules.
+- Account switching clears the displayed owner state until the new account's server progress is loaded, preventing cross-account leakage.
+
+## Automated validation
+
+- ESLint: passed with zero warnings.
+- TypeScript: passed.
+- Full Vitest suite: **729/729 passed** across **86/86 files** using one worker. A prior two-worker run had one worker-start timeout; the affected file passed independently and the clean one-worker full run is the reported result.
+- Focused regression files for V1.1: passed, including journey mapping/UI, Foundations, backend rules, First Shift, Student Unit UI, and CV behavior.
+- Production build: passed on Next.js 16.4.3; `/{locale}/journey`, `/{locale}/bootcamp`, `/{locale}/game/student`, and `/{locale}/game/first-shift` are present.
+- `git diff --check`: required before commit and recorded in the PR handoff.
+
+## Real-browser QA
+
+The reusable script `scripts/unified-journey-v11-browser-qa.mjs` ran against a local Next server and an isolated PostgreSQL database named `journey_v11_test`. It made no production writes. The result file records **38 checks**, no uncaught browser errors, and `productionWrites: false`.
+
+Verified behavior:
+
+- New student starts at the exact first Foundations mission.
+- Refresh resumes saved work.
+- A wrong answer shows corrective feedback and does not complete the mission.
+- A corrected retry is accepted through server grading.
+- Partial saved work deep-links to the exact missing Student Unit task.
+- Fully completed available work remains 7/8 and 88%, with Level 6 visibly in development.
+- Light and dark themes render.
+- Arabic RTL and English LTR render without horizontal overflow at 1920, 1440, 768, 390, and 320 px.
+- Switching between isolated accounts does not leak progress; returning to the first account restores its server state.
+- Reduced-motion and keyboard-focus checks pass.
+
+Screenshots are stored under `artifacts/unified-journey-v11/` and include new, partial, full AR/EN, responsive, light, and dark states. The machine-readable result is `artifacts/unified-journey-v11/browser-qa.json`.
+
+## Files in the V1.1 change
+
 - `app/student-journey.css`
+- `app/student.css`
 - `components/cloud/session-boundary.tsx`
-- `components/game/student-world.tsx`
-- `components/platform/game-hub.tsx`
-- `components/platform/platform-nav.tsx`
+- `components/platform/accounting-bootcamp.tsx`
 - `components/student/student-journey.tsx`
+- `components/student/student-unit.tsx`
+- `lib/campaign/first-shift-hub.ts`
 - `lib/student/journey.ts`
-- `tests/product-cleanup.test.ts`
+- `lib/student/unit.ts`
+- `scripts/unified-journey-v11-browser-qa.mjs`
+- `tests/bootcamp-ui.test.tsx`
+- `tests/first-shift-hub.test.ts`
 - `tests/student-journey-ui.test.tsx`
 - `tests/student-journey.test.ts`
 - `docs/UNIFIED_JOURNEY_IMPLEMENTATION.md`
 
-## Validation results
+## Remaining limitations and beta readiness
 
-- ESLint: passed with zero warnings.
-- TypeScript: passed.
-- Unit/integration/component tests: **725/725 passed** across 86 test files.
-- Focused unified journey tests: **35/35 passed**.
-- Production build: passed on Next.js 16.4.3; `/{locale}/journey` is present as a dynamic route.
-- The tests cover AR/EN routes, Excel exclusion from the core unlock chain, exact non-duplicated task mapping, old account progress, First Shift's five real milestones, honest development state, account switching, retry behavior and career outcome links.
+- Level 6 Financial Statements still needs a real curriculum, server grader, persistence, and regression coverage before the eight-level program can be completed or certified.
+- First Shift remains browser-local practice. Promoting it to an official assessment requires a server-owned submission model and explicit evidence rules.
+- Student Unit accepted state does not expose per-task completion timestamps, so the journey cannot calculate a trustworthy weekly goal.
+- This release does not add a new XP economy or certificate.
 
-## Browser QA and screenshots
-
-Browser QA was attempted in two independent ways:
-
-1. The Codex in-app browser automation failed during its own kernel asset initialization before a page could be controlled.
-2. A Playwright run started an isolated PostgreSQL fixture successfully, but the fixture client stalled before the application flow could begin. The run was stopped; no production data was touched.
-
-Because neither browser harness reached the journey UI, no screenshots are claimed as verified in this report. The responsive CSS includes dedicated layouts for desktop, tablet and 390px mobile, and component tests verified the eight interactive level controls and active links, but a real-browser visual pass remains required on the Vercel Preview.
-
-The Vercel deployment itself completed successfully. Direct checks of both `/ar/journey` and `/en/journey` reached the Preview deployment and returned the expected Vercel Authentication redirect (`302`), so public unauthenticated visual inspection is blocked by the project's Preview Protection setting.
-
-## Preserved data and systems
-
-- No Prisma schema or migration changes.
-- No database reset.
-- No stored Excel, Student Unit, First Shift, profile, competition, career evidence, CV or subscription data removed.
-- No production writes.
-- No paid service or new dependency added.
-
-## Remaining limitations
-
-- Level 6 Financial Statements needs new server-graded content before it can be completed.
-- The existing Student Unit begins with document control, so the first visible level uses that real foundational task rather than claiming unimplemented accounting-equation assessment.
-- Student Unit accepted state currently lacks per-task timestamps, so a trustworthy weekly mission goal cannot yet be calculated.
-- Student Unit tasks do not currently award server-owned XP; the UI therefore shows only existing saved game XP rather than manufacturing a new score.
-- A real-browser visual comparison and screenshots are pending because of the local browser/fixture failures described above.
-
-## Deployment status
-
-This branch is intended for a Draft PR and Vercel Preview. It must not be merged into `main` or promoted to Production until review and explicit approval.
+**Readiness:** ready for a controlled student beta of the currently available curriculum on the protected Vercel Preview. It is not ready to claim final eight-level graduation, certification, or production promotion. Merge to `main` and Production remain out of scope until explicit review and approval.

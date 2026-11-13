@@ -244,3 +244,8 @@
 
 .fsh-next-task > a { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid #4ccdff; border-radius: 7px; color: #fff; background: #086faa; font-size: 12px; font-weight: 700; }
 .fsh-next-task > a svg { width: 14px; height: 14px; }
+.journey-level-tasks ol { max-height: 310px; overflow: auto; padding-inline-end: 3px; }
+.journey-authority-note { margin: 10px 0 0; color: #9fb3cf; font-size: 10px; line-height: 1.6; }
+.journey-level-guidance { display: grid; gap: 7px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(151,179,225,.14); }
+.journey-level-guidance p { margin: 0; color: #aebed5; font-size: 10px; line-height: 1.55; }
+.journey-level-guidance b { display: block; margin-bottom: 2px; color: #f4cf70; font-size: 10px; }

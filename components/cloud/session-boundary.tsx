@@ -78,7 +78,11 @@ export function CloudSessionBoundary({
     try {
       const me = await requestJSON<CloudIdentity>("me");
       setIdentity(me);
-      if (privatePath && me.personalComplete === false) {
+      if (
+        privatePath &&
+        me.personalComplete === false &&
+        pathname !== `/${locale}/student-profile`
+      ) {
         window.location.replace(
           `/${locale}/student-profile?next=${encodeURIComponent(pathname)}`,
         );

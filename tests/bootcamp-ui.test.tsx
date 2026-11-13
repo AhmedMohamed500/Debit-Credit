@@ -4,7 +4,10 @@ import { AccountingBootcamp } from "@/components/platform/accounting-bootcamp";
 import { BeginnerJournalBuilder } from "@/components/foundations/journal-builder";
 import { FoundationMissionGameplay } from "@/components/foundations/mission-gameplay";
 import { getBootcampMission } from "@/lib/bootcamp/catalog";
-vi.mock("next/navigation", () => ({ usePathname: () => "/en/bootcamp" }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/en/bootcamp",
+  useSearchParams: () => ({ get: () => null }),
+}));
 beforeEach(() => {
   localStorage.clear();
   vi.spyOn(window, "scrollTo").mockImplementation(() => {});

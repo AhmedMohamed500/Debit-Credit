@@ -205,13 +205,13 @@ try {
   if (!existsSync(path.join(databaseDir, "PG_VERSION")))
     await database.initialise();
   await database.start();
-  const admin = database.getPgClient();
+  const admin = database.getPgClient("postgres", "127.0.0.1");
   await admin.connect();
   if (
     !(await admin.query("SELECT 1 FROM pg_database WHERE datname='journey_v11_test'"))
       .rowCount
   )
-    await database.createDatabase("journey_v11_test");
+    await admin.query("CREATE DATABASE journey_v11_test");
   await admin.end();
   const env = {
     ...process.env,
@@ -303,8 +303,8 @@ try {
   for (const theme of ["light", "dark"]) {
     await page.evaluate((value) => localStorage.setItem("debit-credit-theme-v1", value), theme);
     await page.reload();
-    await page.locator(".student-journey-page").waitFor();
-    record(`${theme} theme renders the journey`, await page.locator(".student-journey-page").isVisible());
+    await page.getByText("7/8", { exact: true }).waitFor();
+    record(`${theme} theme renders the journey`, await page.locator(".journey-shell").isVisible());
     await screenshot(page, `full-en-1440-${theme}`);
   }
   for (const locale of ["ar", "en"])
@@ -346,6 +346,7 @@ try {
   });
   const reducedPage = await reduced.newPage();
   await signIn(reducedPage, primaryEmail, password);
+  await reducedPage.getByText("7/8", { exact: true }).waitFor();
   record("reduced-motion browser renders without horizontal overflow", await layoutFits(reducedPage));
   await reducedPage.keyboard.press("Tab");
   record("keyboard navigation exposes a visible focus target", await reducedPage.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement !== document.body));

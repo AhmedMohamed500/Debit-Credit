@@ -76,7 +76,13 @@ export function GameHub({ locale }: { locale: Locale }) {
   const completedMissionIds = done === 3 ? ["first-shift"] : [];
   const unlockedCompanies = companyTiers.filter((item) => companyUnlocked(item.id, passport, completedMissionIds, careerState.assessmentResults));
   const currentCompany = unlockedCompanies.at(-1) ?? companyTiers[0];
-  if (studentJourney) return <StudentJourneyHome locale={locale} />;
+  if (studentJourney)
+    return (
+      <>
+        <PlatformNav locale={locale} />
+        <StudentJourneyHome locale={locale} />
+      </>
+    );
   return (
     <main className="platform-page command-game">
       <PlatformNav locale={locale} />

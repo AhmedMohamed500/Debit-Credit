@@ -24,10 +24,16 @@ type Props = { locale: Locale };
 
 const language = {
   ar: {
-    hero: "رحلة محاسبية عملية تبني مهاراتك المهنية",
+    betaLabel: "بيتا طلابية محدودة · مصر",
+    hero: "ابدأ المحاسبة بالتطبيق، خطوة بخطوة",
     heroDescription:
-      "تعلّم وطبّق ثم ادخل التحديات المهنية المؤهلة. المشهد الفني توضيحي، وليس عددًا فعليًا للاعبين أو شراكة مع جهات توظيف.",
-    start: "ابدأ مجانًا",
+      "لطلاب التجارة والخريجين الجدد: افهم العملية، جرّب إجابة صحيحة وخاطئة، واحفظ تقدمك لتكمل من نفس المكان.",
+    betaPoints: [
+      "تدريب على الأساسيات والمستندات والقيود ودفتر الأستاذ",
+      "كل المحتوى المتاح حاليًا مجاني للمشاركين المدعوين",
+      "المستوى السادس قيد التطوير ولا ندّعي اكتمال البرنامج",
+    ],
+    start: "ابدأ أول مهمة محاسبية",
     explore: "اكتشف رحلتك المهنية",
     journey: "خريطة رحلتك المهنية",
     journeyDescription:
@@ -217,10 +223,16 @@ const language = {
     },
   },
   en: {
-    hero: "A practical accounting journey that builds career skills",
+    betaLabel: "LIMITED STUDENT BETA · EGYPT",
+    hero: "Learn accounting by doing, one step at a time",
     heroDescription:
-      "Learn, practise, then enter eligible professional challenges. The artwork is illustrative, not a live player count or employer partnership.",
-    start: "Start for free",
+      "For commerce students and recent graduates: understand the transaction, try right and wrong answers, and return to your exact saved step.",
+    betaPoints: [
+      "Practise foundations, source documents, journals and ledgers",
+      "All currently available training is free for invited beta learners",
+      "Level 6 is in development; the full program is not yet complete",
+    ],
+    start: "Start your first accounting mission",
     explore: "Explore your career journey",
     journey: "Your career journey map",
     journeyDescription:
@@ -725,12 +737,19 @@ function CareerLeagueHero({ locale }: Props) {
         className="cl4-hero-image"
       />
       <div className="cl4-hero-copy">
-        <span>CAREER LEAGUE</span>
+        <span>{t.betaLabel}</span>
         <h1 id="cl4-title">{t.hero}</h1>
         <p>{t.heroDescription}</p>
+        <ul className="cl4-beta-points">
+          {t.betaPoints.map((point) => (
+            <li key={point}>
+              <CheckCircle2 aria-hidden />
+              {point}
+            </li>
+          ))}
+        </ul>
         <div className="cl4-hero-actions">
-          <AuthCTA href={href(locale, "/onboarding")}>{t.start}</AuthCTA>
-          <Link href="#journey">{t.explore}</Link>
+          <AuthCTA href={href(locale, "/journey")}>{t.start}</AuthCTA>
         </div>
       </div>
       <p className="cl4-art-disclaimer">{t.artworkNote}</p>

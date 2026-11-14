@@ -9,7 +9,18 @@ export async function progressFor(userId: string) {
         where: {
           userId,
           AND: [
-            { domain: { notIn: ["foundations", "profile-photo", "private-portfolio", "private-showcase"] } },
+            {
+              domain: {
+                notIn: [
+                  "foundations",
+                  "profile-photo",
+                  "private-portfolio",
+                  "private-showcase",
+                  "beta-release-metrics-v1",
+                  "beta-release-feedback-v1",
+                ],
+              },
+            },
             { domain: { not: { startsWith: "private-certificate/" } } },
             { domain: { not: { startsWith: "public-profile/" } } },
             { domain: { not: { startsWith: "talent/" } } },

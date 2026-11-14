@@ -109,8 +109,20 @@ export const studentTaskGroups = [
   { start: 1, end: 7, title: { ar: "مكتب القيود", en: "Journal desk" } },
   { start: 7, end: 8, title: { ar: "دفتر الأستاذ", en: "Cash ledger" } },
   { start: 8, end: 10, title: { ar: "ميزان ومراجعة", en: "Trial balance" } },
-  { start: 10, end: 11, title: { ar: "كمبيوتر المكتب", en: "Office computer" } },
+  {
+    start: 10,
+    end: 11,
+    title: { ar: "كمبيوتر المكتب", en: "Office computer" },
+  },
 ] as const;
+export const acceptedStudentStepIds = (accepted: readonly string[]) => {
+  const acceptedSet = new Set(accepted);
+  return stepIds.filter((id) => acceptedSet.has(id));
+};
+export const nextStudentStep = (accepted: readonly string[]) => {
+  const acceptedSet = new Set(accepted);
+  return stepIds.find((id) => !acceptedSet.has(id));
+};
 export const studentCommand = z
   .object({
     revision: z.number().int().nonnegative(),
@@ -173,7 +185,7 @@ export function gradeStudent(
 ) {
   if (state.accepted.includes(command.step))
     return { state, correct: true, replayed: true };
-  if (stepIds[state.accepted.length] !== command.step)
+  if (nextStudentStep(state.accepted) !== command.step)
     throw new Error("STEP_LOCKED");
   const answer = command.answer,
     transaction = transactions.find(
@@ -199,11 +211,11 @@ export function gradeStudent(
     correct = answer.action === "reclassify-equipment";
   else if (command.step === "worksheet")
     correct =
-      normalizeSheetFormula(answer.formula ?? "") ===
-        "=SUM(C2:C9)" &&
-      normalizeSheetFormula(answer.differenceFormula ?? "") ===
-        "=C10-D10";
-  const accepted = correct ? [...state.accepted, command.step] : state.accepted;
+      normalizeSheetFormula(answer.formula ?? "") === "=SUM(C2:C9)" &&
+      normalizeSheetFormula(answer.differenceFormula ?? "") === "=C10-D10";
+  const accepted = correct
+    ? acceptedStudentStepIds([...state.accepted, command.step])
+    : acceptedStudentStepIds(state.accepted);
   return {
     correct,
     replayed: false,
@@ -214,7 +226,7 @@ export function gradeStudent(
         ...state.attempts,
         [command.step]: (state.attempts[command.step] ?? 0) + 1,
       },
-      completedAt: accepted.length === stepIds.length ? now : null,
+      completedAt: stepIds.every((id) => accepted.includes(id)) ? now : null,
     },
   };
 }

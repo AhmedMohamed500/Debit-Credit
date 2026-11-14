@@ -42,14 +42,15 @@ describe("product cleanup compatibility contract", () => {
     expect(navigation).toContain("/career-profile");
   });
 
-  it("preserves server competition and accepted Excel progress while gating the journey", () => {
+  it("preserves server competition and Excel records while keeping Excel outside the core journey", () => {
     expect(source("app/api/v1/[...path]/route.ts")).toContain(
       'case "GET competition/leaderboard"',
     );
     const journey = source("lib/student/journey.ts");
-    expect(journey).toContain('/bootcamp/excel-foundations');
-    expect(journey).toContain("excelCompletedSteps >= 5");
-    expect(journey).toContain("excelCompletedSteps,");
+    expect(journey).not.toContain('route: path("/bootcamp/excel-foundations")');
+    expect(journey).not.toContain("excelCompletedSteps >= 5");
+    expect(journey).toContain("excelCompletedSteps = 0");
+    expect(existsSync(join(root, "app/[locale]/bootcamp/excel-foundations/page.tsx"))).toBe(true);
     expect(source("lib/server/progress/excel-foundations.ts")).toContain(
       "rankArena",
     );

@@ -1,6 +1,13 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
@@ -33,7 +40,11 @@ import { FoundationWorldMap } from "@/components/foundations/world-map";
 import { FoundationMissionGameplay } from "@/components/foundations/mission-gameplay";
 import { GuideCharacter } from "@/components/foundations/visuals";
 import { FoundationBooks } from "@/components/foundations/accounting-journey";
-import { cloudUser, submitCloudFoundation } from "@/lib/cloud/runtime";
+import {
+  cloudUser,
+  recordCloudBetaEvent,
+  submitCloudFoundation,
+} from "@/lib/cloud/runtime";
 const serverState = createBootcampState();
 export function AccountingBootcamp({ locale }: { locale: Locale }) {
   const ar = locale === "ar",
@@ -45,6 +56,8 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
       repo.snapshot,
       () => serverState,
     );
+  const searchParams = useSearchParams();
+  const betaStartRecorded = useRef(false);
   const [screen, setScreen] = useState<"map" | "mission" | "result">("map"),
     [feedback, setFeedback] = useState<{
       correct: boolean;
@@ -62,6 +75,29 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
   useEffect(() => {
     syncFoundationRewards(state);
   }, [state]);
+  useEffect(() => {
+    if (
+      screen !== "mission" ||
+      mission.id !== "business-world" ||
+      !cloudUser() ||
+      betaStartRecorded.current
+    )
+      return;
+    betaStartRecorded.current = true;
+    void recordCloudBetaEvent("first_mission_started").catch(() => {});
+  }, [mission.id, screen]);
+  useEffect(() => {
+    const requested = searchParams.get("mission") as BootcampMissionId | null;
+    if (
+      !requested ||
+      !getBootcampMission(requested) ||
+      !isBootcampMissionUnlocked(state, requested)
+    )
+      return;
+    if (state.currentMissionId !== requested)
+      repo.save({ ...state, currentMissionId: requested });
+    setScreen("mission");
+  }, [repo, searchParams, state]);
   const open = (id: BootcampMissionId) => {
     if (!isBootcampMissionUnlocked(state, id)) return;
     repo.save({ ...state, currentMissionId: id });
@@ -124,6 +160,9 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
     if (next === state) return;
     repo.save(next);
     syncFoundationRewards(next);
+    if (mission.id === "business-world" && cloudUser())
+      void recordCloudBetaEvent("first_mission_completed").catch(() => {});
+    window.dispatchEvent(new Event("student-progress-changed"));
     setFeedback(null);
     setScreen(mission.id === "mizan-boss" ? "result" : "map");
     window.scrollTo(0, 0);
@@ -435,10 +474,15 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
           </p>
         )}
         <footer className="fdn-footer">
-          {say(
-            "Local-first foundation practice · No backend · No professional evidence",
-            "تدريب أساسيات محفوظ محليًا · بلا خادم · بلا أدلة مهنية",
-          )}
+          {cloudUser()
+            ? say(
+                "Server-graded account progress · local game rewards · no professional evidence",
+                "تقدم الحساب مصحح ومحفوظ بالخادم · مكافآت اللعبة محلية · بلا دليل مهني",
+              )
+            : say(
+                "Local foundation practice · sign in for server-graded account progress · no professional evidence",
+                "تدريب أساسيات محلي · سجّل الدخول لحفظ نتيجة مصححة بالخادم · بلا دليل مهني",
+              )}
         </footer>
       </div>
     </main>

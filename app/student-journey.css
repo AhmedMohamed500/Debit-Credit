@@ -249,3 +249,16 @@
 .journey-level-guidance { display: grid; gap: 7px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(151,179,225,.14); }
 .journey-level-guidance p { margin: 0; color: #aebed5; font-size: 10px; line-height: 1.55; }
 .journey-level-guidance b { display: block; margin-bottom: 2px; color: #f4cf70; font-size: 10px; }
+.journey-beta-feedback { border: 1px solid rgba(85,185,255,.34); border-radius: 16px; background: rgba(9,27,56,.8); }
+.journey-beta-feedback summary { display: flex; align-items: center; gap: 9px; padding: 14px; color: #dceeff; font-weight: 800; cursor: pointer; list-style: none; }
+.journey-beta-feedback summary::-webkit-details-marker { display: none; }
+.journey-beta-feedback summary svg { width: 18px; color: #f6c552; }
+.journey-beta-feedback form { display: grid; gap: 10px; padding: 0 14px 14px; }
+.journey-beta-feedback label { display: grid; gap: 5px; color: #cfe4ff; font-size: 12px; font-weight: 700; }
+.journey-beta-feedback :is(select, textarea) { width: 100%; min-height: 42px; padding: 9px; border: 1px solid rgba(109,169,223,.34); border-radius: 9px; color: #fff; background: #071630; font: inherit; }
+.journey-beta-feedback textarea { resize: vertical; }
+.journey-beta-feedback small { color: #9db4d1; line-height: 1.45; }
+.journey-beta-feedback button { min-height: 42px; border: 0; border-radius: 10px; color: #10203b; background: #f8be38; font-weight: 900; cursor: pointer; }
+.journey-beta-feedback button:disabled { opacity: .65; cursor: wait; }
+.journey-beta-feedback p { margin: 0; color: #bff4df; font-size: 12px; }
+.journey-beta-feedback p[role="alert"] { color: #ffd2cc; }

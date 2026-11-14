@@ -14,6 +14,7 @@ import {
 import {
   completeBootcampMission,
   createBootcampState,
+  currentFoundationTask,
   submitFoundationTask,
 } from "../lib/bootcamp/engine.ts";
 import { initialState } from "../lib/campaign/director.ts";
@@ -65,34 +66,6 @@ const screenshot = async (page, label) => {
 };
 const layoutFits = (page) =>
   page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1);
-const seedPersonal = async (email) => {
-  const user = await pool.query('SELECT id FROM app_user WHERE email=$1', [email]);
-  assert.equal(user.rowCount, 1);
-  const record = {
-    details: {
-      fullName: "Journey QA Student",
-      phone: "+20 100 123 4567",
-      country: "Egypt",
-      location: "Cairo",
-      institution: "Fixture University",
-      degree: "BCom in progress",
-      field: "Accounting",
-      graduationYear: "2028",
-      experienceLevel: "student",
-      linkedIn: "",
-      portfolio: "",
-      languages: ["Arabic", "English"],
-    },
-    email,
-    savedAt: "2026-11-13T00:00:00.000Z",
-  };
-  await pool.query(
-    `INSERT INTO cloud_progress (id,"userId",domain,data,revision,provenance,"createdAt","updatedAt")
-     VALUES ($1,$2,'student-personal',$3::jsonb,1,'SERVER',now(),now())
-     ON CONFLICT ("userId",domain) DO UPDATE SET data=excluded.data,revision=cloud_progress.revision+1,"updatedAt"=now()`,
-    [randomUUID(), user.rows[0].id, JSON.stringify(record)],
-  );
-};
 const signUp = async (page, email, locale) => {
   const password = "Journey-v11-local!123";
   await page.goto(`${base}/${locale}/signup?next=/${locale}/journey`);
@@ -106,10 +79,25 @@ const signUp = async (page, email, locale) => {
   await page.locator('[name="password"]').fill(password);
   await page.locator('.auth-email-form button[type="submit"]').click();
   await page.waitForURL(`**/${locale}/student-profile?**`);
-  await seedPersonal(email);
-  await page.goto(`${base}/${locale}/journey`);
+  const profile = {
+    fullName: "Journey QA Student",
+    phone: "+20 100 123 4567",
+    country: "Egypt",
+    location: "Cairo",
+    institution: "Fixture University",
+    degree: "BCom in progress",
+    field: "Accounting",
+    graduationYear: "2028",
+    languages: "Arabic, English",
+  };
+  for (const [name, value] of Object.entries(profile))
+    await page.locator(`[name="${name}"]`).fill(value);
+  await page.locator('[name="experienceLevel"]').selectOption("student");
+  await page.getByRole("button", { name: locale === "ar" ? "احفظ وابدأ التعلم" : "Save and start learning" }).click();
+  await page.waitForURL(`**/${locale}/journey`);
   await page.locator(".journey-shell").waitFor();
   record(`${locale} student account created in isolated browser database`);
+  record(`${locale} essential student profile completed through the real form`);
   return password;
 };
 const signIn = async (page, email, password, locale = "en") => {
@@ -139,6 +127,62 @@ const solveFoundations = (count = bootcampMissions.length) => {
     state = completeBootcampMission(state, mission.id, 0);
   }
   return state;
+};
+const completeFirstMissionThroughServer = async (page) => {
+  let progress = await page.evaluate(() =>
+    fetch("/api/v1/me/progress", { credentials: "same-origin" }).then((response) =>
+      response.json(),
+    ),
+  );
+  let state = progress.foundations.data;
+  let revision = progress.foundations.revision;
+  let task = currentFoundationTask(state);
+  while (task) {
+    const response =
+      task.kind === "journal"
+        ? foundationEntries.find((entry) => entry.id === task.entryId).lines
+        : task.answer;
+    progress = await page.evaluate(
+      async ({ missionId, taskId, answer, currentRevision }) => {
+        const result = await fetch("/api/v1/me/progress", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            commandId: crypto.randomUUID(),
+            missionId,
+            taskId,
+            response: answer,
+            revision: currentRevision,
+          }),
+        });
+        if (!result.ok) throw new Error(`Foundation API ${result.status}`);
+        return result.json();
+      },
+      {
+        missionId: "business-world",
+        taskId: task.id,
+        answer: response,
+        currentRevision: revision,
+      },
+    );
+    state = progress.data;
+    revision = progress.revision;
+    task = currentFoundationTask(state);
+  }
+  await page.reload();
+  const completion = page.getByRole("button", {
+    name: "Collect reward · next mission",
+    exact: true,
+  });
+  await completion.waitFor();
+  const metric = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/v1/me/beta-event") &&
+      response.request().postData()?.includes("first_mission_completed"),
+  );
+  await completion.click();
+  await metric;
 };
 const seedServerProgress = async (
   email,
@@ -253,6 +297,22 @@ try {
   page.on("dialog", (dialog) => dialog.accept());
   const primaryEmail = "journey-primary@v11.test";
   const secondaryEmail = "journey-secondary@v11.test";
+  await page.goto(base + "/ar");
+  await page.getByRole("heading", { name: "ابدأ المحاسبة بالتطبيق، خطوة بخطوة" }).waitFor();
+  const landingCta = page.getByRole("link", { name: "ابدأ أول مهمة محاسبية" }).first();
+  record("Arabic beta landing identifies the invited beginner audience", await page.getByText(/لطلاب التجارة والخريجين الجدد/).isVisible());
+  record("beta landing explains the practical accounting work", await page.getByText("تدريب على الأساسيات والمستندات والقيود ودفتر الأستاذ", { exact: true }).isVisible());
+  record("beta landing states what is free", await page.getByText("كل المحتوى المتاح حاليًا مجاني للمشاركين المدعوين", { exact: true }).isVisible());
+  record("beta landing keeps Level 6 honest", await page.getByText("المستوى السادس قيد التطوير ولا ندّعي اكتمال البرنامج", { exact: true }).isVisible());
+  record("beta landing has one primary mission destination", (await landingCta.getAttribute("href")) === "/ar/signup?next=%2Far%2Fjourney");
+  record("Arabic beta landing fits 1440px", await layoutFits(page));
+  await screenshot(page, "beta-landing-ar-1440");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(base + "/ar");
+  await page.getByRole("heading", { name: "ابدأ المحاسبة بالتطبيق، خطوة بخطوة" }).waitFor();
+  record("Arabic beta landing fits 390px", await layoutFits(page));
+  await screenshot(page, "beta-landing-ar-390");
+  await page.setViewportSize({ width: 1440, height: 900 });
   const password = await signUp(page, primaryEmail, "en");
   await page.locator(".student-journey-page").waitFor();
   await page.waitForTimeout(1500);
@@ -278,6 +338,18 @@ try {
   await page.locator(".fdn-account-matcher .fdn-primary").click();
   await page.locator(".fdn-task-success").waitFor();
   record("retry accepts the corrected answer through server grading");
+  await completeFirstMissionThroughServer(page);
+  record("first Accounting Foundations mission completes through server grading");
+  const milestone = await pool.query(
+    `SELECT p.data FROM cloud_progress p JOIN app_user u ON u.id=p."userId"
+     WHERE u.email=$1 AND p.domain='beta-release-metrics-v1'`,
+    [primaryEmail],
+  );
+  record("privacy-conscious beta milestones record signup and first mission", Boolean(
+    milestone.rows[0]?.data?.events?.signup &&
+      milestone.rows[0]?.data?.events?.firstMissionStarted &&
+      milestone.rows[0]?.data?.events?.firstMissionCompleted,
+  ));
 
   await seedServerProgress(primaryEmail, solveFoundations(), stepIds.slice(0, 4));
   await page.goto(base + "/en/journey");
@@ -299,6 +371,57 @@ try {
   record("all available work remains 7/8 full-program levels");
   record("full program progress is 88%, never false 100%", (await page.locator(".journey-total-progress i").getAttribute("style")).includes("88%"));
   record("Level 6 remains visibly in development", await page.getByText("In development", { exact: true }).isVisible());
+  for (const [number, title, route] of [
+    [1, "Accounting Foundations", "/en/bootcamp?mission=business-world"],
+    [2, "Source Documents", "/en/game/student?focus=document-control"],
+    [3, "Journal Entries", "/en/game/student?focus=journal-service"],
+    [4, "General Ledger", "/en/game/student?focus=ledger-cash"],
+    [5, "Trial Balance", "/en/game/student?focus=trial-balance"],
+    [7, "Review & Analysis", "/en/game/student?focus=classification-error"],
+    [8, "Final Company Simulation", "/en/game/first-shift"],
+  ]) {
+    await page.getByRole("button", { name: new RegExp(`^${number}\\. ${title}`) }).click();
+    record(`Level ${number} opens its implemented content`, (await page.locator(".journey-primary-cta").getAttribute("href")) === route);
+  }
+  record(
+    "learning outcomes remain reviewable",
+    await page
+      .locator(".journey-professional-outcomes")
+      .getByRole("link", { name: "Career Profile", exact: true })
+      .isVisible(),
+  );
+  record("Excel Accounting Lab is absent from the core level map", !(await page.locator(".journey-map").innerText()).includes("Excel"));
+
+  await page.getByText("Help improve the beta", { exact: true }).click();
+  await page.getByLabel("Experience rating").selectOption("4");
+  await page.getByLabel("Topic").selectOption("navigation");
+  await page.getByLabel("Optional note").fill("The next mission was clear.");
+  const feedbackSaved = page.waitForResponse(
+    (response) => response.url().endsWith("/api/v1/me/beta-feedback") && response.ok(),
+  );
+  await page.getByRole("button", { name: "Send feedback" }).click();
+  await feedbackSaved;
+  await page.getByText("Thank you — feedback saved.").waitFor();
+  await screenshot(page, "beta-feedback-en-1440");
+  const feedback = await pool.query(
+    `SELECT p.data FROM cloud_progress p JOIN app_user u ON u.id=p."userId"
+     WHERE u.email=$1 AND p.domain='beta-release-feedback-v1'`,
+    [primaryEmail],
+  );
+  record("minimal beta feedback saves only the bounded latest response", feedback.rows[0]?.data?.rating === 4 && feedback.rows[0]?.data?.topic === "navigation" && feedback.rows[0]?.data?.comment === "The next mission was clear.");
+
+  const excelBefore = await page.evaluate(() =>
+    fetch("/api/v1/me/excel-foundations", { credentials: "same-origin" }).then((response) => response.json()),
+  );
+  await page.goto(base + "/en/bootcamp/excel-foundations");
+  await page.getByRole("heading", { name: /Excel Foundations/ }).waitFor();
+  record("Excel Accounting Lab remains a separate route");
+  await page.goto(base + "/en/journey");
+  await page.getByText("7/8", { exact: true }).waitFor();
+  const excelAfter = await page.evaluate(() =>
+    fetch("/api/v1/me/excel-foundations", { credentials: "same-origin" }).then((response) => response.json()),
+  );
+  record("journey use preserves the Excel Accounting Lab record", JSON.stringify(excelBefore) === JSON.stringify(excelAfter));
 
   for (const theme of ["light", "dark"]) {
     await page.evaluate((value) => localStorage.setItem("debit-credit-theme-v1", value), theme);
@@ -335,9 +458,22 @@ try {
   await page.getByLabel("Account menu", { exact: true }).click();
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await page.waitForURL("**/en");
+  await pool.query(
+    `UPDATE cloud_progress p SET data=jsonb_set(p.data,'{lastSeenAt}',$2::jsonb)
+     FROM app_user u WHERE u.id=p."userId" AND u.email=$1
+     AND p.domain='beta-release-metrics-v1'`,
+    [primaryEmail, JSON.stringify(new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString())],
+  );
   await signIn(page, primaryEmail, password);
   await page.getByText("7/8", { exact: true }).waitFor();
   record("returning student restores server progress after account switching");
+  await page.waitForTimeout(250);
+  const returning = await pool.query(
+    `SELECT p.data FROM cloud_progress p JOIN app_user u ON u.id=p."userId"
+     WHERE u.email=$1 AND p.domain='beta-release-metrics-v1'`,
+    [primaryEmail],
+  );
+  record("returning learner milestone is derived after a meaningful gap", Boolean(returning.rows[0]?.data?.events?.returningLearner));
   assert.ok(secondaryPassword);
 
   const reduced = await browser.newContext({

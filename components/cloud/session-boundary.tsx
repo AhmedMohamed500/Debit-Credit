@@ -20,6 +20,10 @@ import {
   type CloudProgress,
 } from "@/lib/cloud/runtime";
 import { authClient } from "@/lib/auth/client";
+import {
+  clearBetaSession,
+  recordBetaSession,
+} from "@/lib/beta/client-session";
 import type { Locale } from "@/types";
 const Context = createContext<CloudIdentity | null>(null);
 export const useCloudIdentity = () => useContext(Context);
@@ -78,6 +82,7 @@ export function CloudSessionBoundary({
     try {
       const me = await requestJSON<CloudIdentity>("me");
       setIdentity(me);
+      recordBetaSession(me.user.id);
       if (
         privatePath &&
         me.personalComplete === false &&
@@ -228,6 +233,7 @@ export function CloudSessionBoundary({
             );
             return;
           }
+          clearBetaSession(identity.user.id);
           configureCloud(null);
           new CloudCacheRepository().restoreGuest();
           window.location.assign(

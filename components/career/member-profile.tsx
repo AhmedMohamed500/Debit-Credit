@@ -55,6 +55,7 @@ import {
 import { DiscoverySettings } from "./discovery-settings";
 import { ThemeToggle } from "@/components/platform/theme-provider";
 import { authClient } from "@/lib/auth/client";
+import { clearBetaSession } from "@/lib/beta/client-session";
 import { useStudentJourney } from "@/components/student/student-journey";
 import "@/app/member-profile.css";
 import "@/app/reference-implementation.css";
@@ -477,6 +478,7 @@ export function MemberProfile({
                   return;
                 const result = await authClient.signOut();
                 if (!result.error) {
+                  if (identity) clearBetaSession(identity.user.id);
                   configureCloud(null);
                   new CloudCacheRepository().restoreGuest();
                   window.location.assign(

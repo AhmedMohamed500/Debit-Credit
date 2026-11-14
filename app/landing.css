@@ -182,3 +182,7 @@
 @media(max-width:700px){.cl4-audience-grid{grid-template-columns:minmax(0,1fr)}.cl4-audience-card{min-height:0}.cl4-audience-photo{flex-basis:235px;height:235px;min-height:235px}.cl4-audience-copy{padding:17px}.cl4-work{padding:52px 14px}.cl4-work-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:430px){.cl4-work-grid{grid-template-columns:minmax(0,1fr)}.cl4-work-grid article{min-height:130px}}
 
+/* Student beta welcome additions live after the retained v4 snapshot. */
+.cl4-beta-points{display:grid;gap:7px;width:min(650px,100%);margin:0;padding:0;list-style:none;text-align:start}.cl4-beta-points li{display:flex;align-items:flex-start;gap:8px;padding:7px 11px;border:1px solid #9cdfff4d;border-radius:10px;color:#f7fbff;background:#061e37b8;font-weight:700;line-height:1.45}.cl4-beta-points svg{flex:0 0 18px;width:18px;color:#5ce0b3}
+@media(max-width:600px){.cl4-hero{height:730px}.cl4-hero-copy{gap:10px;padding-top:32px}.cl4-hero-copy p{line-height:1.55}.cl4-beta-points{gap:5px}.cl4-beta-points li{padding:6px 9px;font-size:.9rem}.cl4-hero-actions a{min-height:48px}}
+

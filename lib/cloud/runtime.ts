@@ -5,6 +5,7 @@ import type {
   BootcampState,
 } from "@/lib/bootcamp/model";
 import type { CareerLeagueState } from "@/lib/career-league/model";
+import type { BetaEvent } from "@/lib/beta/release";
 import { readDrafts, writeDrafts, type PendingDraft } from "./outbox";
 export type CloudIdentity = {
   personalComplete?: boolean;
@@ -73,6 +74,8 @@ const revisions = new Map<string, number>();
 let syncStatus = "ready";
 export const cloudUser = () => userId;
 export const currentSyncStatus = () => syncStatus;
+export const recordCloudBetaEvent = (event: BetaEvent) =>
+  requestJSON("me/beta-event", "POST", { event });
 export function notifySync(status: string) {
   if (status === "saved" && pending.size) status = "saving";
   syncStatus = status;

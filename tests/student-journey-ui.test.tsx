@@ -1,5 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import type { CloudIdentity } from "@/lib/cloud/runtime";
 import { initialState } from "@/lib/campaign/director";
 import { bootcampMissionIds } from "@/lib/bootcamp/catalog";
@@ -326,6 +333,28 @@ describe("Account-safe student journey guidance", () => {
       screen.getByText(/5\/5 local First Shift checkpoints/),
     ).toBeVisible();
     expect(screen.getByText("In development")).toBeVisible();
+  });
+  it("submits bounded beta feedback without asking for contact details", async () => {
+    render(view());
+    await screen.findByText("Help improve the beta");
+    fireEvent.click(screen.getByText("Help improve the beta"));
+    fireEvent.change(screen.getByLabelText("Experience rating"), {
+      target: { value: "4" },
+    });
+    fireEvent.change(screen.getByLabelText("Topic"), {
+      target: { value: "navigation" },
+    });
+    fireEvent.change(screen.getByLabelText("Optional note"), {
+      target: { value: "The next step was clear." },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Send feedback" }));
+    await screen.findByText("Thank you — feedback saved.");
+    expect(fixture.request).toHaveBeenCalledWith("me/beta-feedback", "POST", {
+      rating: 4,
+      topic: "navigation",
+      comment: "The next step was clear.",
+    });
+    expect(screen.queryByLabelText(/email|phone/i)).toBeNull();
   });
   it.each([null, "graduate", "working-accountant"] as const)(
     "preserves non-student navigation for %s",

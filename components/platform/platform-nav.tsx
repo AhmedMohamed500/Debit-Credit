@@ -93,8 +93,10 @@ export function PlatformNav({
             <Link className="marketing-login" href={`/${locale}/login`}>
               {ar ? "دخول" : "Sign in"}
             </Link>
-            <AuthCTA className="marketing-start" href={`/${locale}/onboarding`}>
-              {ar ? "ابدأ مجانًا" : "Start free"}
+            <AuthCTA className="marketing-start" href={`/${locale}/journey`}>
+              {ar
+                ? "ابدأ أول مهمة محاسبية"
+                : "Start your first accounting mission"}
             </AuthCTA>
           </>
         ) : null}

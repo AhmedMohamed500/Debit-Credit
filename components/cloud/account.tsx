@@ -8,6 +8,7 @@ import { useCloudIdentity } from "./session-boundary";
 import { requestJSON, CloudFailure, configureCloud, currentSyncStatus, pendingBackups, retryBackups, type CloudIdentity } from "@/lib/cloud/runtime";
 import { CloudCacheRepository } from "@/lib/cloud/cache";
 import { authClient } from "@/lib/auth/client";
+import { clearBetaSession } from "@/lib/beta/client-session";
 import { ProfilePhoto } from "@/components/career/profile-photo";
 import { useThemePreference } from "@/components/platform/theme-provider";
 import type { PersonalRecord } from "@/lib/career/personal";
@@ -165,6 +166,7 @@ function AccountSettings({ locale, identity }: { locale: Locale; identity: Cloud
     try {
       const result = await authClient.signOut();
       if (result.error) throw new Error("SIGN_OUT_FAILED");
+      clearBetaSession(identity.user.id);
       configureCloud(null);
       new CloudCacheRepository().restoreGuest();
       window.location.assign(new URL("/" + locale, window.location.origin).href);

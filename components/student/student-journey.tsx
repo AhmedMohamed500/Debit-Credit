@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { ProfilePhoto } from "@/components/career/profile-photo";
+import { StudentBetaFeedback } from "@/components/student/student-beta-feedback";
 import { requestJSON } from "@/lib/cloud/runtime";
 import { useGame } from "@/lib/campaign/store";
 import { completedFirstShiftMissionIds } from "@/lib/campaign/first-shift-hub";
@@ -703,6 +704,7 @@ export function StudentJourneyHome({ locale }: { locale: Locale }) {
               </Link>
             </div>
           </section>
+          <StudentBetaFeedback locale={locale} />
         </aside>
       </section>
     </main>

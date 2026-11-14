@@ -1,6 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
@@ -34,7 +40,11 @@ import { FoundationWorldMap } from "@/components/foundations/world-map";
 import { FoundationMissionGameplay } from "@/components/foundations/mission-gameplay";
 import { GuideCharacter } from "@/components/foundations/visuals";
 import { FoundationBooks } from "@/components/foundations/accounting-journey";
-import { cloudUser, submitCloudFoundation } from "@/lib/cloud/runtime";
+import {
+  cloudUser,
+  recordCloudBetaEvent,
+  submitCloudFoundation,
+} from "@/lib/cloud/runtime";
 const serverState = createBootcampState();
 export function AccountingBootcamp({ locale }: { locale: Locale }) {
   const ar = locale === "ar",
@@ -47,6 +57,7 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
       () => serverState,
     );
   const searchParams = useSearchParams();
+  const betaStartRecorded = useRef(false);
   const [screen, setScreen] = useState<"map" | "mission" | "result">("map"),
     [feedback, setFeedback] = useState<{
       correct: boolean;
@@ -64,6 +75,17 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
   useEffect(() => {
     syncFoundationRewards(state);
   }, [state]);
+  useEffect(() => {
+    if (
+      screen !== "mission" ||
+      mission.id !== "business-world" ||
+      !cloudUser() ||
+      betaStartRecorded.current
+    )
+      return;
+    betaStartRecorded.current = true;
+    void recordCloudBetaEvent("first_mission_started").catch(() => {});
+  }, [mission.id, screen]);
   useEffect(() => {
     const requested = searchParams.get("mission") as BootcampMissionId | null;
     if (
@@ -138,6 +160,8 @@ export function AccountingBootcamp({ locale }: { locale: Locale }) {
     if (next === state) return;
     repo.save(next);
     syncFoundationRewards(next);
+    if (mission.id === "business-world" && cloudUser())
+      void recordCloudBetaEvent("first_mission_completed").catch(() => {});
     window.dispatchEvent(new Event("student-progress-changed"));
     setFeedback(null);
     setScreen(mission.id === "mizan-boss" ? "result" : "map");

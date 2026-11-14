@@ -61,6 +61,11 @@ import {
   savePortfolio,
   certificateFor,
 } from "@/lib/server/profiles/portfolio";
+import { betaEventSchema, betaFeedbackSchema } from "@/lib/beta/release";
+import {
+  recordBetaEvent,
+  saveBetaFeedback,
+} from "@/lib/server/beta/service";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 async function handle(
@@ -167,6 +172,13 @@ async function handle(
       case "POST me/activity":
         await body(request, z.object({}).strict());
         return heartbeat(user.id);
+      case "POST me/beta-event":
+        return recordBetaEvent(user.id, await body(request, betaEventSchema));
+      case "POST me/beta-feedback":
+        return saveBetaFeedback(
+          user.id,
+          await body(request, betaFeedbackSchema),
+        );
       case "POST migration/legacy":
         return importLegacy(user.id, await body(request, importSchema, 524288));
       case "GET competition/lobby":

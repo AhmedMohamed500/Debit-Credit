@@ -23,7 +23,7 @@ describe("platform UI", () => {
     const { container } = render(<MarketingLanding locale="en" />);
     expect(
       screen.getByRole("heading", {
-        name: "A practical accounting journey that builds career skills",
+        name: "Learn accounting by doing, one step at a time",
       }),
     ).toBeInTheDocument();
     expect(container.querySelector(".cl4-hero-image")).toHaveAttribute("src", expect.stringContaining("career-league-hero-v2.png"));
@@ -97,10 +97,16 @@ describe("platform UI", () => {
     render(<MarketingLanding locale="ar" />);
     expect(
       screen.getByRole("heading", {
-        name: "رحلة محاسبية عملية تبني مهاراتك المهنية",
+        name: "ابدأ المحاسبة بالتطبيق، خطوة بخطوة",
       }),
     ).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "ابدأ مجانًا" }).map((link) => link.getAttribute("href"))).toContain(`/ar/signup?next=${encodeURIComponent("/ar/onboarding")}`);
+    expect(
+      screen
+        .getAllByRole("link", { name: "ابدأ أول مهمة محاسبية" })
+        .map((link) => link.getAttribute("href")),
+    ).toContain(`/ar/signup?next=${encodeURIComponent("/ar/journey")}`);
+    expect(screen.getByText("كل المحتوى المتاح حاليًا مجاني للمشاركين المدعوين")).toBeVisible();
+    expect(screen.getByText("المستوى السادس قيد التطوير ولا ندّعي اكتمال البرنامج")).toBeVisible();
     expect(screen.getByRole("heading", { name: "خريطة رحلتك المهنية" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "ميزان للتجارة" })).toHaveAttribute("href", "/ar/game");
     expect(screen.getByRole("link", { name: "الإقفال الشهري" })).toHaveAttribute("href", "/ar/game/month-end");

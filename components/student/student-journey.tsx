@@ -1,38 +1,59 @@
 "use client";
+
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  ArrowLeft,
-  ArrowRight,
+  Award,
+  BarChart3,
+  BookOpen,
+  BriefcaseBusiness,
+  Building2,
+  CalendarDays,
   Check,
+  ChevronLeft,
+  ChevronRight,
+  CircleDollarSign,
+  FileBadge2,
+  FileCheck2,
+  Flame,
   Gamepad2,
+  Landmark,
+  LockKeyhole,
+  Medal,
+  Play,
+  Scale,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Target,
   Trophy,
 } from "lucide-react";
 import { useCloudIdentity } from "@/components/cloud/session-boundary";
 import { ProfilePhoto } from "@/components/career/profile-photo";
-import { ThemeToggle } from "@/components/platform/theme-provider";
 import { requestJSON } from "@/lib/cloud/runtime";
 import { useGame } from "@/lib/campaign/store";
-import { firstShiftMissionProgress } from "@/lib/campaign/first-shift-hub";
-import { studentJourney } from "@/lib/student/journey";
+import { completedFirstShiftMissionIds } from "@/lib/campaign/first-shift-hub";
+import {
+  studentJourney,
+  type UnifiedJourneyLevel,
+} from "@/lib/student/journey";
 import { gameHubNextMission } from "@/lib/platform/journey";
 import { BrowserCareerLeagueRepository } from "@/lib/career-league/repository";
 import { BrowserPlacementRepository } from "@/lib/placement/repository";
 import { BrowserSkillEvidenceRepository } from "@/lib/career/repository";
 import { calculatePassport } from "@/lib/career/evidence";
+import { bootcampMissions } from "@/lib/bootcamp/catalog";
 import type { StudentState } from "@/lib/student/unit";
-import {
-  earnedExcelXp,
-  type ExcelProgress,
-} from "@/lib/excel-foundations/engine";
+import type { BootcampState } from "@/lib/bootcamp/model";
 import type { Locale } from "@/types";
 import "@/app/student-journey.css";
 
@@ -43,10 +64,14 @@ type JourneyContext = {
   error: boolean;
   retry: () => void;
   name: string;
-  excelProgress: ExcelProgress | null;
+  xp: number;
+  coins: number;
+  activeDays: string[];
 };
+
 const Context = createContext<JourneyContext | null>(null);
 export const useStudentJourney = () => useContext(Context);
+
 export function StudentJourneyProvider({
   locale,
   children,
@@ -54,72 +79,71 @@ export function StudentJourneyProvider({
   locale: Locale;
   children: ReactNode;
 }) {
-  const identity = useCloudIdentity(),
-    owner = identity?.user.id,
-    pathname = usePathname();
+  const identity = useCloudIdentity();
+  const owner = identity?.user.id;
+  const pathname = usePathname();
   const { state, ready } = useGame();
   const enabled = Boolean(
     identity &&
     (!identity.profile.persona || identity.profile.persona === "student"),
   );
   const [progress, setProgress] = useState<{
-      owner: string;
-      accepted: string[];
-      excelCompletedSteps: number;
-      excel: ExcelProgress;
-    } | null>(null),
-    [errorOwner, setErrorOwner] = useState<string | null>(null),
-    [advancedRoute, setAdvancedRoute] = useState("/onboarding"),
-    [refresh, setRefresh] = useState(0);
+    owner: string;
+    accepted: string[];
+    foundationCompleted: string[];
+  } | null>(null);
+  const [errorOwner, setErrorOwner] = useState<string | null>(null);
+  const [advancedRoute, setAdvancedRoute] = useState("/onboarding");
+  const [refresh, setRefresh] = useState(0);
   const retry = useCallback(() => setRefresh((value) => value + 1), []);
+
   useEffect(() => {
     window.addEventListener("student-progress-changed", retry);
     return () => window.removeEventListener("student-progress-changed", retry);
   }, [retry]);
+
   useEffect(() => {
     if (!enabled || !owner || !identity?.personalComplete) return;
     let alive = true;
     void Promise.all([
       requestJSON<{ data: StudentState }>("me/student-unit"),
-      requestJSON<{ data: ExcelProgress }>("me/excel-foundations"),
+      requestJSON<{ foundations: { data: BootcampState } }>("me/progress"),
     ])
-      .then(([student, excel]) => {
-        if (alive) {
-          setProgress({
-            owner,
-            accepted: student.data.accepted,
-            excelCompletedSteps: excel.data.completedSteps.length,
-            excel: excel.data,
-          });
-          setErrorOwner(null);
-        }
+      .then(([student, foundations]) => {
+        if (!alive) return;
+        setProgress({
+          owner,
+          accepted: student.data.accepted,
+          foundationCompleted: foundations.foundations.data.completedMissionIds,
+        });
+        setErrorOwner(null);
       })
       .catch(() => {
         if (alive) setErrorOwner(owner);
       });
-    const career = new BrowserCareerLeagueRepository().get(),
-      diagnostic = new BrowserPlacementRepository().get().result,
-      passport = calculatePassport(
-        new BrowserSkillEvidenceRepository().getAll(),
-      );
+    const career = new BrowserCareerLeagueRepository().get();
+    const diagnostic = new BrowserPlacementRepository().get().result;
+    const passport = calculatePassport(
+      new BrowserSkillEvidenceRepository().getAll(),
+    );
     setAdvancedRoute(gameHubNextMission(career, passport, diagnostic).route);
     return () => {
       alive = false;
     };
   }, [enabled, owner, identity?.personalComplete, pathname, refresh]);
+
   if (!enabled || !identity) return children;
-  const loaded = progress?.owner === owner,
-    journey = studentJourney({
-      locale,
-      pathname,
-      personalComplete: identity.personalComplete === true,
-      excelCompletedSteps: loaded ? (progress?.excelCompletedSteps ?? 0) : 0,
-      accepted: loaded ? (progress?.accepted ?? []) : [],
-      shiftCompleted: ready
-        ? firstShiftMissionProgress(state).completedCount
-        : 0,
-      advancedRoute,
-    });
+  const loaded = progress?.owner === owner;
+  const shiftMissionIds = ready ? completedFirstShiftMissionIds(state) : [];
+  const journey = studentJourney({
+    locale,
+    pathname,
+    personalComplete: identity.personalComplete === true,
+    accepted: loaded ? (progress?.accepted ?? []) : [],
+    foundationCompleted: loaded ? (progress?.foundationCompleted ?? []) : [],
+    shiftMissionIds,
+    advancedRoute,
+  });
   const loading = identity.personalComplete === true && (!loaded || !ready);
   return (
     <Context.Provider
@@ -130,307 +154,557 @@ export function StudentJourneyProvider({
         error: errorOwner === owner,
         retry,
         name: identity.profile.displayName,
-        excelProgress: loaded ? (progress?.excel ?? null) : null,
+        xp: state.xp,
+        coins: state.coins,
+        activeDays: state.activeDays,
       }}
     >
-      <div data-student-guided="true">
-        {children}
-      </div>
+      <div data-student-guided="true">{children}</div>
     </Context.Provider>
   );
 }
-function JourneySteps() {
-  const context = useStudentJourney();
-  if (!context) return null;
-  const { journey, locale, loading } = context;
-  return (
-    <ol
-      className="student-journey-steps"
-      aria-label={locale === "ar" ? "ترتيب رحلتك" : "Your journey sequence"}
-    >
-      {journey.learningStages.map((step, index) => (
-        <li
-          key={step.id}
-          data-done={!loading && step.done}
-          data-current={step.id === journey.current?.id}
-        >
-          <Link
-            href={step.route}
-            aria-current={step.id === journey.current?.id ? "step" : undefined}
-          >
-            <i>{!loading && step.done ? <Check size={14} /> : index + 1}</i>
-            <span>
-              {step.title[locale]}
-              <small>
-                {loading
-                  ? "…"
-                  : step.detail}
-              </small>
-            </span>
-          </Link>
-        </li>
-      ))}
-    </ol>
-  );
+
+const levelIcons = [
+  BookOpen,
+  FileCheck2,
+  FileBadge2,
+  Landmark,
+  Scale,
+  BarChart3,
+  ShieldCheck,
+  Building2,
+];
+const taskLabels: Record<string, Record<Locale, string>> = {
+  "equation-builder": {
+    ar: "تطبيق المعادلة المحاسبية",
+    en: "Apply the accounting equation",
+  },
+  "account-city": {
+    ar: "تصنيف الأصول والالتزامات وحقوق الملكية",
+    en: "Classify assets, liabilities and equity",
+  },
+  "debit-credit": {
+    ar: "تحديد المدين والدائن",
+    en: "Apply debit and credit rules",
+  },
+  "document-control": {
+    ar: "فحص المستند ومنع التكرار",
+    en: "Control the source document",
+  },
+  "journal-capital": {
+    ar: "تحليل مستند رأس المال",
+    en: "Analyse the capital document",
+  },
+  "journal-equipment": {
+    ar: "تحليل شراء المعدات",
+    en: "Analyse the equipment purchase",
+  },
+  "journal-inventory": {
+    ar: "تحليل شراء المخزون",
+    en: "Analyse the inventory purchase",
+  },
+  "journal-service": { ar: "قيد إيراد الخدمة", en: "Post the service entry" },
+  "journal-receipt": {
+    ar: "قيد تحصيل العميل",
+    en: "Post the customer receipt",
+  },
+  "journal-rent": { ar: "قيد مصروف الإيجار", en: "Post the rent expense" },
+  "ledger-cash": { ar: "ترحيل رصيد النقدية", en: "Post the cash ledger" },
+  "trial-balance": {
+    ar: "إعداد ميزان المراجعة",
+    en: "Prepare the trial balance",
+  },
+  "classification-error": {
+    ar: "اكتشاف خطأ التصنيف",
+    en: "Find the classification error",
+  },
+  worksheet: { ar: "إكمال ورقة المراجعة", en: "Complete the review worksheet" },
+  "first-shift/supplier-invoice": {
+    ar: "معالجة فاتورة المورد",
+    en: "Process the supplier invoice",
+  },
+  "first-shift/customer-receipt": {
+    ar: "معالجة تحصيل العميل",
+    en: "Process the customer receipt",
+  },
+  "first-shift/office-expense": {
+    ar: "معالجة مصروف المكتب",
+    en: "Process the office expense",
+  },
+  "first-shift/journal": {
+    ar: "مراجعة القيود المرحلة",
+    en: "Review posted entries",
+  },
+  "first-shift/ledger": { ar: "مراجعة دفتر الأستاذ", en: "Review the ledger" },
+};
+
+function currentStreak(days: string[]) {
+  const values = new Set(days);
+  let count = 0;
+  const cursor = new Date();
+  cursor.setUTCHours(0, 0, 0, 0);
+  while (values.has(cursor.toISOString().slice(0, 10))) {
+    count += 1;
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
+  }
+  return count;
 }
+
 export function JourneyNextAction() {
   const context = useStudentJourney();
   if (!context) return null;
-  const { journey, locale, loading, error, retry } = context,
-    ar = locale === "ar",
-    Arrow = ar ? ArrowLeft : ArrowRight;
-  const say = (en: string, arabic: string) => (ar ? arabic : en);
+  const { journey, locale, loading, error, retry } = context;
+  const ar = locale === "ar";
   if (error)
     return (
       <div className="student-next-action" role="alert">
         <p>
-          {say(
-            "Saved progress could not be refreshed. No stage has been marked complete.",
-            "تعذّر تحديث تقدمك المحفوظ. لم نعتبر أي مرحلة مكتملة.",
-          )}
+          {ar
+            ? "تعذّر تحديث تقدمك المحفوظ. لم نحسب أي إنجاز جديد."
+            : "Saved progress could not be refreshed. No new completion was counted."}
         </p>
-        <button onClick={retry}>{say("Retry", "حاول ثانية")}</button>
+        <button onClick={retry}>{ar ? "حاول ثانية" : "Retry"}</button>
       </div>
     );
   if (loading)
     return (
       <div className="student-next-action" role="status">
-        {say(
-          "Finding your saved next step…",
-          "بنحدد خطوتك التالية من تقدمك المحفوظ…",
-        )}
+        {ar
+          ? "بنحمّل تقدم حسابك المحفوظ…"
+          : "Loading your saved account progress…"}
       </div>
     );
-  const explanation =
-    journey.next?.id === "personal"
-      ? say(
-          "Add your personal and education details once. Your accepted accounting work will build the CV automatically.",
-          "اكتب بياناتك الشخصية والتعليم مرة واحدة. الشغل المحاسبي المقبول هيبني الـCV تلقائيًا.",
-        )
-      : journey.next?.id === "training"
-        ? say(
-            "Continue the training desk: source documents, entries, ledger, trial balance and the office computer. Finish this file before moving to the first shift.",
-            "كمّل ملف تدريب الأساس: المستندات، القيود، الأستاذ، الميزان وكمبيوتر المكتب. بعد الملف ده ننتقل لأول وردية.",
-          )
-        : journey.next?.id === "excel"
-          ? say(
-              "Build spreadsheet and accounting-equation foundations first. Your five server-checked stages unlock the practical desk.",
-              "ابدأ بأساسيات الجداول والمعادلة المحاسبية. المراحل الخمس المتحققة على الخادم تفتح لك مكتب التدريب العملي.",
-            )
-        : journey.next?.id === "shift"
-          ? say(
-              "Your foundations file is complete. Apply it in the first shift, then review the journal and ledger. The two training companies keep separate books.",
-              "ملف الأساس خلص. طبّقه في أول وردية، وبعدها راجع اليومية والأستاذ. دفاتر الشركتين التدريبيتين تفضل منفصلة.",
-            )
-          : journey.next?.id === "results"
-            ? say(
-                "Your learning stages are complete. Review the evidence, practical work, profile, CV and achievements built from your saved work.",
-                "مراحل التعلم اكتملت. راجع الأدلة والأعمال العملية والملف والـCV والإنجازات المبنية من شغلك المحفوظ.",
-              )
-            : say(
-                "Your introductory work and CV are ready to review. Continue the career track selected from its existing prerequisites.",
-                "شغلك التمهيدي وسيرتك جاهزين للمراجعة. كمّل المسار المهني حسب شروطه الحالية.",
-              );
   return (
-    <section
-      className="student-next-action"
-      aria-label={say("Your next step", "خطوتك التالية")}
-    >
+    <section className="student-next-action">
       <div>
-        <small>
-          {journey.inCurrentTask
-            ? say("YOU ARE HERE", "أنت هنا")
-            : say("ONE NEXT STEP", "خطوة واحدة تالية")}
-        </small>
+        <small>{ar ? "المهمة التالية" : "NEXT MISSION"}</small>
         <h2>
           {journey.next?.title[locale] ??
-            say("Continue your career track", "كمّل المسار المهني")}
+            (ar ? "راجع نتائجك" : "Review your results")}
         </h2>
-        <p>{explanation}</p>
+        <p>
+          {ar
+            ? "المسار يفتح من النتائج المقبولة فقط، ويمكنك الرجوع لأي مستوى مكتمل للمراجعة."
+            : "The route unlocks only from accepted results. Completed levels remain available for review."}
+        </p>
       </div>
-      {journey.inCurrentTask ? (
-        <span className="student-current-task">
-          {say(
-            "Continue using the mission controls below",
-            "كمّل من أزرار المهمة اللي تحت",
-          )}
-          <Gamepad2 size={18} />
-        </span>
-      ) : (
-        <Link href={journey.nextRoute}>
-          {say("Continue my journey", "كمّل رحلتي")}
-          <Arrow size={20} />
-        </Link>
-      )}
+      <Link href={journey.nextRoute}>
+        {ar ? "متابعة التدريب" : "Continue training"}
+        <Play size={18} />
+      </Link>
     </section>
-  );
-}
-export function StudentJourneyHome({ locale }: { locale: Locale }) {
-  const context = useStudentJourney();
-  if (!context) return null;
-  const ar = locale === "ar",
-    say = (en: string, arabic: string) => (ar ? arabic : en);
-  return (
-    <main className="student-journey-page" dir={ar ? "rtl" : "ltr"}>
-      <header className="student-journey-heading">
-        <div>
-          <small>DEBIT &amp; CREDIT</small>
-          <h1>{say("Your accounting journey", "رحلتك المحاسبية")}</h1>
-          <p>
-            {say(
-              "One starting point. Your next step follows your saved work.",
-              "بداية واحدة. كل خطوة تسلّمك للخطوة اللي بعدها حسب شغلك المحفوظ.",
-            )}
-          </p>
-        </div>
-        <nav
-          className="student-home-tools"
-          aria-label={say(
-            "Profile, language and theme",
-            "الملف واللغة والمظهر",
-          )}
-        >
-          <Link
-            className="student-home-profile"
-            href={`/${locale}/career-profile`}
-          >
-            <ProfilePhoto locale={locale} name={context.name} />
-            <span>
-              {context.name}
-              <small>{say("My profile", "ملفي")}</small>
-            </span>
-          </Link>
-          <Link
-            className="student-home-language"
-            href={`/${ar ? "en" : "ar"}`}
-            aria-label={say("Switch to Arabic", "التبديل للإنجليزية")}
-          >
-            {ar ? "EN" : "ع"}
-          </Link>
-          <ThemeToggle compact />
-        </nav>
-      </header>
-      <JourneySteps />
-      <section className="student-journey-overview" aria-label={say("Learning progress summary", "ملخص التقدم التعليمي")}>
-        <article><small>{say("Current stage", "المرحلة الحالية")}</small><strong>{context.journey.next?.title[locale] ?? say("Career track", "المسار المهني")}</strong></article>
-        <article><small>{say("Completed learning stages", "مراحل التعلم المكتملة")}</small><strong>{context.journey.learningProgress.completed}/{context.journey.learningProgress.total}</strong></article>
-        <article><small>{say("Latest successful milestone", "آخر إنجاز ناجح")}</small><strong>{context.journey.latestMilestone?.title[locale] ?? say("No completed stage yet", "لا توجد مرحلة مكتملة بعد")}</strong></article>
-        <article><small>{say("Current foundation track progress", "التقدم في المسار التأسيسي الحالي")}</small><strong>{context.journey.learningProgress.percent}%</strong></article>
-      </section>
-      <JourneyNextAction />
-      <LearningCompetitionSummary locale={locale} />
-      <section className="student-journey-results">
-        <h2>
-          {context.journey.learningComplete
-            ? say("Review your learning outcomes", "راجع نتائج تعلمك")
-            : say("What your work builds", "شغلك بيبني إيه؟")}
-        </h2>
-        <p>
-          {say(
-            "Accepted tasks create accounting skill evidence and update the English CV automatically. These pages show your results; they are not separate courses you must start again.",
-            "المهام المقبولة بتبني أدلة مهارات محاسبية وبتحدّث الـCV الإنجليزي تلقائيًا. الصفحات دي لنتائج شغلك، مش كورسات منفصلة تبدأها من جديد.",
-          )}
-        </p>
-        <div className="student-outcome-grid">
-          {context.journey.outcomes.map((outcome) => (
-            <Link
-              key={outcome.id}
-              href={outcome.route}
-              data-available={outcome.available}
-            >
-              <strong>{outcome.title[locale]}</strong>
-              <small>
-                {outcome.available
-                  ? say("Available from saved work", "متاح من شغلك المحفوظ")
-                  : say("Builds as you complete real work", "يتكوّن مع إتمام شغل حقيقي")}
-              </small>
-            </Link>
-          ))}
-        </div>
-      </section>
-      <details className="student-journey-explore">
-        <summary>
-          {say(
-            "Extra tools & activities (optional)",
-            "أدوات وأنشطة إضافية — اختياري",
-          )}
-        </summary>
-        <p>
-          {say(
-            "These do not replace the next step above. You can explore and return to My journey at any time.",
-            "دي مش بديل لخطوتك الحالية اللي فوق. تقدر تستكشف وترجع لرحلتي في أي وقت.",
-          )}
-        </p>
-        <nav>
-          {[
-            ["/account-guide", "Account guide", "دليل الحسابات"],
-            [
-              "/game/bank-reconciliation",
-              "Bank reconciliation",
-              "التسوية البنكية",
-            ],
-            ["/academy", "Academy", "الأكاديمية"],
-            ["/career", "Career development", "التطوير المهني"],
-            ["/competition", "Online competition", "المنافسة"],
-            ["/account", "Account settings", "إعدادات الحساب"],
-          ].map(([route, en, arabic]) => (
-            <Link key={route} href={`/${locale}${route}`}>
-              {say(en, arabic)}
-            </Link>
-          ))}
-        </nav>
-      </details>
-    </main>
   );
 }
 
-function LearningCompetitionSummary({ locale }: { locale: Locale }) {
+function LevelNode({
+  level,
+  selected,
+  onSelect,
+  locale,
+}: {
+  level: UnifiedJourneyLevel;
+  selected: boolean;
+  onSelect: () => void;
+  locale: Locale;
+}) {
+  const Icon = levelIcons[level.number - 1];
+  return (
+    <li
+      className={`journey-level-node level-${level.number}`}
+      data-status={level.status}
+      data-selected={selected}
+    >
+      <button
+        onClick={onSelect}
+        aria-current={level.status === "current" ? "step" : undefined}
+        aria-label={`${level.number}. ${level.title[locale]} — ${level.detail}`}
+      >
+        <i>
+          {level.status === "done" ? (
+            <Check />
+          ) : level.status === "locked" ? (
+            <LockKeyhole />
+          ) : level.status === "development" ? (
+            <Sparkles />
+          ) : (
+            <Icon />
+          )}
+        </i>
+        <span>
+          <small>
+            {locale === "ar"
+              ? `المستوى ${level.number}`
+              : `Level ${level.number}`}
+          </small>
+          <b>{level.title[locale]}</b>
+          <em>
+            {level.status === "done"
+              ? locale === "ar"
+                ? "مكتمل"
+                : "Complete"
+              : level.detail}
+          </em>
+        </span>
+      </button>
+    </li>
+  );
+}
+
+export function StudentJourneyHome({ locale }: { locale: Locale }) {
+  const context = useStudentJourney();
   const ar = locale === "ar";
   const say = (en: string, arabic: string) => (ar ? arabic : en);
-  const context = useStudentJourney();
-  const state = context?.excelProgress ?? null;
-  const [rank, setRank] = useState<number | null>(null);
-  useEffect(() => {
-    if (!state?.publicOptIn || !state.completedSteps.includes(5)) {
-      setRank(null);
-      return;
-    }
-    let active = true;
-    void requestJSON<{ ownRank: number | null }>(
-      "competition/excel-foundations?scope=overall",
-    )
-      .then((board) => {
-        if (active) setRank(board.ownRank);
-      })
-      .catch(() => {
-        if (active) setRank(null);
-      });
-    return () => {
-      active = false;
-    };
-  }, [state]);
-  if (!state) return null;
-  const completed = state.completedSteps.length;
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected = useMemo(() => {
+    if (!context) return null;
+    return (
+      context.journey.learningStages.find((level) => level.id === selectedId) ??
+      context.journey.currentLevel ??
+      context.journey.learningStages[0]
+    );
+  }, [context, selectedId]);
+  if (!context || !selected) return null;
+  if (context.error || context.loading)
+    return (
+      <main className="student-journey-page">
+        <JourneyNextAction />
+      </main>
+    );
+  const { journey } = context;
+  const progress = journey.fullProgramProgress.percent;
+  const streak = currentStreak(context.activeDays);
+  const selectedTasks = selected.missionIds.map((id) => ({
+    id,
+    label:
+      taskLabels[id]?.[locale] ??
+      bootcampMissions.find((mission) => mission.id === id)?.title[locale] ??
+      id,
+    done: selected.completedMissionIds.includes(id),
+  }));
+  const Arrow = ar ? ChevronLeft : ChevronRight;
   return (
-    <section className="student-learning-competition" aria-label={say("Learning progress competition", "منافسة التقدم التعليمي")}>
-      <Trophy aria-hidden="true" />
-      <div>
-        <small>{say("LEARNING PROGRESS", "تقدم التعلم")}</small>
-        <h2>{completed}/5 {say("verified Excel stages", "مراحل Excel متحققة")}</h2>
-        <p>
-          {state.completedSteps.includes(5)
-            ? `${say("Mastery score", "درجة الإتقان")}: ${state.finalScore ?? 0}% · ${earnedExcelXp(state)} XP`
-            : say("Only server-approved completions affect this progress.", "المراحل المقبولة من الخادم فقط تؤثر في هذا التقدم.")}
-        </p>
-      </div>
-      <div className="student-learning-rank">
-        {state.publicOptIn ? (
-          <><small>{say("Your opt-in rank", "ترتيبك الاختياري")}</small><strong>{rank ? `#${rank}` : "—"}</strong></>
-        ) : (
-          <small>{say("Public ranking is off", "الترتيب العام غير مفعّل")}</small>
-        )}
-        <Link href={`/${locale}/account#learning-competition`}>{say("Participation settings", "إعدادات المشاركة")}</Link>
-      </div>
-    </section>
+    <main className="student-journey-page" dir={ar ? "rtl" : "ltr"}>
+      <section className="journey-shell">
+        <aside className="journey-profile-panel">
+          <div className="journey-profile-card">
+            <div className="journey-avatar">
+              <ProfilePhoto locale={locale} name={context.name} />
+              <i>
+                <Star />
+              </i>
+            </div>
+            <h2>{context.name}</h2>
+            <p>{say("Accounting trainee", "متدرب محاسبة")}</p>
+            <Link href={`/${locale}/career-profile`}>
+              {say("View career profile", "عرض الملف المهني")}
+            </Link>
+          </div>
+          <div className="journey-xp">
+            <span>
+              <b>XP {context.xp.toLocaleString(locale)}</b>
+              <small>
+                {say(
+                  "Local game progress · not server-certified",
+                  "تقدم لعبة محلي · غير معتمد من الخادم",
+                )}
+              </small>
+            </span>
+            <div>
+              <i
+                style={{ width: `${Math.min(100, (context.xp % 1000) / 10)}%` }}
+              />
+            </div>
+          </div>
+          <div className="journey-mini-stats">
+            <article>
+              <Flame />
+              <b>{streak}</b>
+              <small>{say("day streak", "يوم متتالٍ")}</small>
+            </article>
+            <article>
+              <Medal />
+              <b>{journey.completedBadges.length}</b>
+              <small>{say("learning badges", "شارات تعلم")}</small>
+            </article>
+            <article>
+              <CircleDollarSign />
+              <b>{context.coins}</b>
+              <small>{say("local game coins", "عملات لعبة محلية")}</small>
+            </article>
+          </div>
+          <section className="journey-total-progress">
+            <header>
+              <b>
+                {say(
+                  "Full eight-level program",
+                  "البرنامج الكامل من 8 مستويات",
+                )}
+              </b>
+              <strong>{journey.fullProgramProgress.completed}/8</strong>
+            </header>
+            <div>
+              <i style={{ width: `${progress}%` }} />
+            </div>
+            <p>
+              {say(
+                `Available training: ${journey.availableTrainingProgress.completed}/${journey.availableTrainingProgress.total} levels. Level 6 remains in development.`,
+                `التدريب المتاح: ${journey.availableTrainingProgress.completed}/${journey.availableTrainingProgress.total} مستويات. المستوى 6 ما زال قيد التطوير.`,
+              )}
+            </p>
+            <small>
+              {say(
+                `${journey.authoritativeMissionProgress.earned}/${journey.authoritativeMissionProgress.total} server-accepted tasks · ${journey.localPracticeProgress.earned}/${journey.localPracticeProgress.total} local First Shift checkpoints`,
+                `${journey.authoritativeMissionProgress.earned}/${journey.authoritativeMissionProgress.total} مهمة مقبولة بالخادم · ${journey.localPracticeProgress.earned}/${journey.localPracticeProgress.total} نقاط First Shift محلية`,
+              )}
+            </small>
+          </section>
+          <section className="journey-badges">
+            <h3>{say("Earned learning badges", "شارات التعلم المكتسبة")}</h3>
+            {journey.completedBadges.length ? (
+              <div>
+                {journey.completedBadges.slice(-3).map((level) => (
+                  <span key={level.id}>
+                    <Award />
+                    {level.title[locale]}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p>
+                {say(
+                  "Complete the first assessed level to earn a learning badge.",
+                  "أكمل أول مستوى مقيّم لتحصل على شارة تعلم.",
+                )}
+              </p>
+            )}
+            <small>
+              {say(
+                "Learning badges are not professional accreditation.",
+                "شارات التعلم ليست اعتمادًا مهنيًا.",
+              )}
+            </small>
+          </section>
+          <section className="journey-week">
+            <CalendarDays />
+            <div>
+              <b>{say("Weekly goal", "هدف الأسبوع")}</b>
+              <p>
+                {say(
+                  "Not available until dated mission history is enabled.",
+                  "غير متاح حتى تفعيل سجل زمني للمهام.",
+                )}
+              </p>
+            </div>
+          </section>
+        </aside>
+
+        <section className="journey-map-panel">
+          <header className="journey-map-heading">
+            <span>✦</span>
+            <div>
+              <h1>
+                {say(
+                  "Your journey to become a professional accountant",
+                  "رحلتك لتصبح محاسبًا محترفًا",
+                )}
+              </h1>
+              <p>
+                {say(
+                  "Eight connected levels built from your real assessed work",
+                  "ثمانية مستويات مترابطة مبنية على عملك المقيّم فعليًا",
+                )}
+              </p>
+            </div>
+            <span>✦</span>
+          </header>
+          <div
+            className="journey-map"
+            aria-label={say(
+              "Eight-level accounting journey map",
+              "خريطة رحلة المحاسبة من ثمانية مستويات",
+            )}
+          >
+            <svg
+              className="journey-path"
+              viewBox="0 0 1000 650"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M120 175 C260 80 350 215 465 170 S690 85 850 165 C930 220 880 315 745 340 S470 280 350 345 S110 410 160 500 C245 620 400 525 520 520 S745 635 865 515" />
+            </svg>
+            <ol>
+              {journey.learningStages.map((level) => (
+                <LevelNode
+                  key={level.id}
+                  level={level}
+                  locale={locale}
+                  selected={selected.id === level.id}
+                  onSelect={() => setSelectedId(level.id)}
+                />
+              ))}
+            </ol>
+          </div>
+          <section className="journey-benefits">
+            <h2>
+              <Star />
+              {say("Program outcomes", "مخرجات البرنامج")}
+            </h2>
+            <div>
+              {[
+                [
+                  BriefcaseBusiness,
+                  say("Career profile", "ملف مهني قوي"),
+                  "/career-profile",
+                ],
+                [
+                  Award,
+                  say("Completion evidence", "أدلة إتمام حقيقية"),
+                  "/career-profile#work",
+                ],
+                [
+                  Gamepad2,
+                  say("Interactive practice", "تدريب تفاعلي"),
+                  "/game/student",
+                ],
+                [
+                  Trophy,
+                  say("Optional competition", "منافسة اختيارية"),
+                  "/competition",
+                ],
+              ].map(([Icon, label, route]) => (
+                <Link key={String(route)} href={`/${locale}${route}`}>
+                  <Icon />
+                  <span>{String(label)}</span>
+                  <Arrow />
+                </Link>
+              ))}
+            </div>
+          </section>
+        </section>
+
+        <aside className="journey-current-panel">
+          <header>
+            <small>{say("SELECTED LEVEL", "المستوى المحدد")}</small>
+            <span>{selected.number}</span>
+            <h2>{selected.title[locale]}</h2>
+            <p>{selected.description[locale]}</p>
+          </header>
+          <div className="journey-level-meter">
+            <span>
+              <b>{say("Level progress", "تقدم المستوى")}</b>
+              <strong>
+                {selected.total
+                  ? Math.round((selected.earned / selected.total) * 100)
+                  : 0}
+                %
+              </strong>
+            </span>
+            <div>
+              <i
+                style={{
+                  width: `${selected.total ? (selected.earned / selected.total) * 100 : 0}%`,
+                }}
+              />
+            </div>
+          </div>
+          <section className="journey-level-tasks">
+            <h3>
+              {selected.authority === "local-practice"
+                ? say("Local practice checkpoints", "نقاط ممارسة محلية")
+                : say("Assessed missions", "مهام المستوى")}
+            </h3>
+            {selected.implemented ? (
+              <>
+                <ol>
+                  {selectedTasks.map((task, index) => (
+                    <li key={task.id} data-done={task.done}>
+                      <i>{task.done ? <Check /> : index + 1}</i>
+                      <span>{task.label}</span>
+                    </li>
+                  ))}
+                </ol>
+                {selected.authority === "local-practice" && (
+                  <p className="journey-authority-note">
+                    {say(
+                      "First Shift is saved simulation progress. It is not a server-certified professional achievement and does not complete the full program.",
+                      "First Shift هو تقدم محاكاة محفوظ، وليس إنجازًا مهنيًا معتمدًا من الخادم ولا يُكمل البرنامج الكامل.",
+                    )}
+                  </p>
+                )}
+              </>
+            ) : (
+              <div className="journey-development">
+                <Sparkles />
+                <p>
+                  {say(
+                    "This level is visible for roadmap continuity, but no completion, certificate or reward is granted until real teaching and server grading are ready.",
+                    "المستوى ظاهر لاستمرار الخريطة، لكن لا يُمنح إتمام أو شهادة أو مكافأة قبل جاهزية التدريس والتقييم الفعلي على الخادم.",
+                  )}
+                </p>
+              </div>
+            )}
+            <div className="journey-level-guidance">
+              <p>
+                <b>{say("Why this status", "سبب الحالة")}</b>
+                {selected.statusReason[locale]}
+              </p>
+              <p>
+                <b>{say("Next step", "الخطوة التالية")}</b>
+                {selected.nextStep[locale]}
+              </p>
+            </div>
+          </section>
+          {selected.status === "current" || selected.status === "done" ? (
+            <Link className="journey-primary-cta" href={selected.route}>
+              <Play />
+              {selected.status === "done"
+                ? say("Review level", "مراجعة المستوى")
+                : say("Continue training", "متابعة التدريب")}
+            </Link>
+          ) : (
+            <span className="journey-disabled-cta">
+              <LockKeyhole />
+              {selected.status === "development"
+                ? say("In development", "قيد التطوير")
+                : say(
+                    "Complete previous levels first",
+                    "أكمل المستويات السابقة أولًا",
+                  )}
+            </span>
+          )}
+          <section className="journey-professional-outcomes">
+            <h3>
+              <Target />
+              {say("Your work builds", "شغلك يبني")}
+            </h3>
+            {journey.outcomes.map((outcome) => (
+              <Link
+                key={outcome.id}
+                href={outcome.route}
+                data-available={outcome.available}
+              >
+                <span>{outcome.title[locale]}</span>
+                <Arrow />
+              </Link>
+            ))}
+          </section>
+          <section className="journey-competition">
+            <Trophy />
+            <div>
+              <b>{say("Optional competition", "المنافسة اختيارية")}</b>
+              <p>
+                {say(
+                  "No public rank is shown here without participation data.",
+                  "لا نعرض ترتيبًا عامًا هنا بدون بيانات مشاركة.",
+                )}
+              </p>
+              <Link href={`/${locale}/competition`}>
+                {say("Open competition", "فتح المنافسة")}
+              </Link>
+            </div>
+          </section>
+        </aside>
+      </section>
+    </main>
   );
 }

@@ -42,9 +42,10 @@ export function CloudSessionBoundary({
     accountSettingsPath = pathname === `/${locale}/account`,
     careerProfilePath = pathname === `/${locale}/career-profile` || pathname.startsWith(`/${locale}/career-profile/`),
     accountHome = pathname === `/${locale}`,
+    journeyPath = pathname === `/${locale}/journey`,
     employerPath = /^\/(ar|en)\/employer(\/|$)/.test(pathname),
     privatePath =
-      /^\/(ar|en)\/(student|onboarding|bootcamp|game|career-profile|career-league|career|profile|leaderboard|competition|account)(\/|$)/.test(
+      /^\/(ar|en)\/(student|student-profile|journey|onboarding|bootcamp|game|career-profile|career-league|career|profile|leaderboard|competition|account)(\/|$)/.test(
         pathname,
       );
   const ar = locale === "ar",
@@ -77,7 +78,11 @@ export function CloudSessionBoundary({
     try {
       const me = await requestJSON<CloudIdentity>("me");
       setIdentity(me);
-      if (privatePath && me.personalComplete === false) {
+      if (
+        privatePath &&
+        me.personalComplete === false &&
+        pathname !== `/${locale}/student-profile`
+      ) {
         window.location.replace(
           `/${locale}/student-profile?next=${encodeURIComponent(pathname)}`,
         );
@@ -177,7 +182,7 @@ export function CloudSessionBoundary({
       setBusy(false);
     }
   }
-  const bar = !publicProfile && !pricingPath && !standaloneLearningPath && !employerPath && !accountSettingsPath && !careerProfilePath && identity && (
+  const bar = !publicProfile && !pricingPath && !standaloneLearningPath && !employerPath && !accountSettingsPath && !careerProfilePath && !accountHome && !journeyPath && identity && (
     <div className="cloud-account-bar">
       <span>{identity.profile.displayName}</span>
       <Link href={`/${locale}/account`}>{say("My account", "حسابي")}</Link>

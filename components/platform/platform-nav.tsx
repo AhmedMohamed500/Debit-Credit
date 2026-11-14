@@ -35,7 +35,7 @@ export function PlatformNav({
   const guided = Boolean(useStudentJourney());
   const main: [string, LucideIcon, string, string][] = guided
     ? [
-        ["", Home, "رحلتي", "My journey"],
+        ["/journey", Home, "رحلة التدريب", "Training journey"],
         ["/game/student", Gamepad2, "مكتب التدريب", "Training desk"],
         ["/competition", Trophy, "المنافسة", "Competition"],
         ["/career-profile/skills", ShieldCheck, "مهاراتي", "My skills"],
@@ -73,7 +73,7 @@ export function PlatformNav({
         {items.map(([href, Icon, a, e]) => (
           <Link
             key={`${String(href)}-${e}`}
-            className={path === href ? "active" : ""}
+            className={path === href || (guided && href === `/${locale}/journey` && path === `/${locale}`) ? "active" : ""}
             href={String(href)}
             onClick={() => setOpen(false)}
           >

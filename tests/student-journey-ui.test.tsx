@@ -2,6 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import type { CloudIdentity } from "@/lib/cloud/runtime";
 import { initialState } from "@/lib/campaign/director";
+import { bootcampMissionIds } from "@/lib/bootcamp/catalog";
+import {
+  firstDayDocuments,
+  submitFirstDayDocument,
+} from "@/lib/campaign/first-day";
+import { markFirstShiftLedgerReviewed } from "@/lib/campaign/first-shift-hub";
 import { stepIds } from "@/lib/student/unit";
 import {
   StudentJourneyHome,
@@ -13,6 +19,7 @@ const fixture = vi.hoisted(() => ({
   path: "/en",
   request: vi.fn(),
   ready: true,
+  gameState: null as ReturnType<typeof initialState> | null,
 }));
 vi.mock("next/navigation", () => ({ usePathname: () => fixture.path }));
 vi.mock("@/components/cloud/session-boundary", () => ({
@@ -25,7 +32,10 @@ vi.mock("@/lib/cloud/runtime", () => ({
   requestJSON: (...args: unknown[]) => fixture.request(...args),
 }));
 vi.mock("@/lib/campaign/store", () => ({
-  useGame: () => ({ state: initialState(), ready: fixture.ready }),
+  useGame: () => ({
+    state: fixture.gameState ?? initialState(),
+    ready: fixture.ready,
+  }),
 }));
 
 const identity = (owner = "student-a"): CloudIdentity => ({
@@ -53,20 +63,36 @@ const view = () => (
     <StudentJourneyHome locale="en" />
   </StudentJourneyProvider>
 );
+const setSavedProgress = (
+  accepted: string[] = [],
+  completedMissionIds: string[] = [],
+) =>
+  fixture.request.mockImplementation((route: string) =>
+    Promise.resolve(
+      route === "me/progress"
+        ? {
+            foundations: {
+              data: {
+                completedMissionIds,
+                currentMissionId:
+                  bootcampMissionIds.find(
+                    (id) => !completedMissionIds.includes(id),
+                  ) ?? "mizan-boss",
+              },
+            },
+          }
+        : { data: { accepted } },
+    ),
+  );
 afterEach(cleanup);
 beforeEach(() => {
   localStorage.clear();
   fixture.path = "/en";
   fixture.ready = true;
+  fixture.gameState = initialState();
   fixture.identity = identity();
   fixture.request.mockReset();
-  fixture.request.mockImplementation((route: string) =>
-    Promise.resolve(
-      route === "me/excel-foundations"
-        ? { data: { completedSteps: [1, 2, 3, 4, 5] } }
-        : { data: { accepted: [] } },
-    ),
-  );
+  setSavedProgress();
 });
 describe("Account-safe student journey guidance", () => {
   it.each(["ar", "en"] as const)(
@@ -94,22 +120,25 @@ describe("Account-safe student journey guidance", () => {
     "/en/bootcamp",
     "/en/career",
     "/en/arena/missions",
-  ])("keeps account progress without adding a global journey bar above %s", async (path) => {
-    fixture.path = path;
-    const { container } = render(
-      <StudentJourneyProvider locale="en">
-        <main>Specialized application content</main>
-      </StudentJourneyProvider>,
-    );
-    expect(screen.getByText("Specialized application content")).toBeVisible();
-    await waitFor(() => expect(fixture.request).toHaveBeenCalled());
-    expect(container.querySelector(".student-journey-bar")).toBeNull();
-    expect(
-      screen.queryByRole("navigation", {
-        name: "Your place in the journey",
-      }),
-    ).toBeNull();
-  });
+  ])(
+    "keeps account progress without adding a global journey bar above %s",
+    async (path) => {
+      fixture.path = path;
+      const { container } = render(
+        <StudentJourneyProvider locale="en">
+          <main>Specialized application content</main>
+        </StudentJourneyProvider>,
+      );
+      expect(screen.getByText("Specialized application content")).toBeVisible();
+      await waitFor(() => expect(fixture.request).toHaveBeenCalled());
+      expect(container.querySelector(".student-journey-bar")).toBeNull();
+      expect(
+        screen.queryByRole("navigation", {
+          name: "Your place in the journey",
+        }),
+      ).toBeNull();
+    },
+  );
   it.each(["ar", "en"] as const)(
     "does not duplicate the journey panel inside the %s first-shift workspace",
     async (locale) => {
@@ -131,31 +160,34 @@ describe("Account-safe student journey guidance", () => {
     "/en/student",
     "/ar/game/student",
     "/en/game/student",
-  ])("does not place the large journey bar above the direct training desk at %s", (path) => {
-    fixture.path = path;
-    const locale = path.startsWith("/ar") ? "ar" : "en";
-    const { container } = render(
-      <StudentJourneyProvider locale={locale}>
-        <main>Direct training desk</main>
-      </StudentJourneyProvider>,
-    );
-    expect(screen.getByText("Direct training desk")).toBeVisible();
-    expect(container.querySelector(".student-journey-bar")).toBeNull();
-  });
-  it.each([
-    "/ar/bootcamp/excel-foundations",
-    "/en/bootcamp/excel-foundations",
-  ])("does not place the signed-in journey overlay above %s", (path) => {
-    fixture.path = path;
-    const locale = path.startsWith("/ar") ? "ar" : "en";
-    const { container } = render(
-      <StudentJourneyProvider locale={locale}>
-        <main>Standalone learning workspace</main>
-      </StudentJourneyProvider>,
-    );
-    expect(screen.getByText("Standalone learning workspace")).toBeVisible();
-    expect(container.querySelector(".student-journey-bar")).toBeNull();
-  });
+  ])(
+    "does not place the large journey bar above the direct training desk at %s",
+    (path) => {
+      fixture.path = path;
+      const locale = path.startsWith("/ar") ? "ar" : "en";
+      const { container } = render(
+        <StudentJourneyProvider locale={locale}>
+          <main>Direct training desk</main>
+        </StudentJourneyProvider>,
+      );
+      expect(screen.getByText("Direct training desk")).toBeVisible();
+      expect(container.querySelector(".student-journey-bar")).toBeNull();
+    },
+  );
+  it.each(["/ar/bootcamp/excel-foundations", "/en/bootcamp/excel-foundations"])(
+    "does not place the signed-in journey overlay above %s",
+    (path) => {
+      fixture.path = path;
+      const locale = path.startsWith("/ar") ? "ar" : "en";
+      const { container } = render(
+        <StudentJourneyProvider locale={locale}>
+          <main>Standalone learning workspace</main>
+        </StudentJourneyProvider>,
+      );
+      expect(screen.getByText("Standalone learning workspace")).toBeVisible();
+      expect(container.querySelector(".student-journey-bar")).toBeNull();
+    },
+  );
   it.each(["ar", "en"] as const)(
     "keeps the %s career profile and CV studio free of a competing journey overlay",
     (locale) => {
@@ -169,23 +201,23 @@ describe("Account-safe student journey guidance", () => {
       expect(container.querySelector(".student-journey-bar")).toBeNull();
     },
   );
-  it("shows one primary next link and puts optional activities behind a disclosure", async () => {
+  it("shows the eight-level map, one actionable current level and real outcomes", async () => {
     render(view());
     expect(
       (
-        await screen.findByRole("link", { name: "Continue my journey" })
+        await screen.findByRole("link", { name: "Continue training" })
       ).getAttribute("href"),
-    ).toBe("/en/game/student");
+    ).toBe("/en/bootcamp?mission=business-world");
     expect(
-      screen.getByText("Extra tools & activities (optional)").closest("details")
-        ?.open,
-    ).toBe(false);
-    expect(screen.getByText("Completed learning stages").nextSibling?.textContent).toBe("1/3");
-    expect(screen.getByText("Current foundation track progress").nextSibling?.textContent).toBe("33%");
-    expect(
-      screen.getByRole("list", { name: "Your journey sequence" }),
+      screen.getByLabelText("Eight-level accounting journey map"),
     ).toBeVisible();
-    expect(screen.getAllByRole("listitem")).toHaveLength(3);
+    expect(
+      screen.getAllByRole("button", {
+        name: /Level|level|Foundations|Documents|Journal|Ledger|Balance|Statements|Review|Simulation/,
+      }),
+    ).toHaveLength(8);
+    expect(screen.queryByText("Excel Foundations")).toBeNull();
+    expect(screen.getByText("In development")).toBeVisible();
     for (const outcome of [
       "Skill Passport",
       "Practical Work",
@@ -193,81 +225,107 @@ describe("Account-safe student journey guidance", () => {
       "English CV",
       "Achievements",
     ])
-      expect(screen.getByRole("link", { name: new RegExp(outcome) })).toBeVisible();
+      expect(
+        screen.getByRole("link", { name: new RegExp(outcome) }),
+      ).toBeVisible();
   });
   it("waits for saved progress and does not invent a starting point on a failed request", async () => {
     fixture.request.mockRejectedValue(new Error("unavailable"));
     render(view());
     await screen.findByRole("alert");
     expect(
-      screen.queryByRole("link", { name: "Continue my journey" }),
+      screen.queryByRole("link", { name: "Continue training" }),
     ).toBeNull();
-    fixture.request.mockImplementation((route: string) =>
-      Promise.resolve(
-        route === "me/excel-foundations"
-          ? { data: { completedSteps: [1, 2, 3, 4, 5] } }
-          : { data: { accepted: [...stepIds] } },
-      ),
-    );
+    setSavedProgress([...stepIds], [...bootcampMissionIds]);
     await act(async () =>
       screen.getByRole("button", { name: "Retry" }).click(),
     );
     expect(
       (
-        await screen.findByRole("link", { name: "Continue my journey" })
+        await screen.findByRole("link", { name: "Continue training" })
       ).getAttribute("href"),
     ).toBe("/en/game/first-shift");
   });
   it("refreshes next-step guidance after an accepted server task", async () => {
     render(view());
-    await screen.findByRole("link", { name: "Continue my journey" });
-    fixture.request.mockImplementation((route: string) =>
-      Promise.resolve(
-        route === "me/excel-foundations"
-          ? { data: { completedSteps: [1, 2, 3, 4, 5] } }
-          : { data: { accepted: [...stepIds] } },
-      ),
-    );
+    await screen.findByRole("link", { name: "Continue training" });
+    setSavedProgress([...stepIds], [...bootcampMissionIds]);
     await act(async () =>
       window.dispatchEvent(new Event("student-progress-changed")),
     );
     await waitFor(() =>
       expect(
         screen
-          .getByRole("link", { name: "Continue my journey" })
+          .getByRole("link", { name: "Continue training" })
           .getAttribute("href"),
       ).toBe("/en/game/first-shift"),
     );
   });
   it("does not show previous student's completion during an account switch", async () => {
-    fixture.request
-      .mockResolvedValueOnce({ data: { accepted: [...stepIds] } })
-      .mockResolvedValueOnce({ data: { completedSteps: [1, 2, 3, 4, 5] } });
+    setSavedProgress([...stepIds], [...bootcampMissionIds]);
     const result = render(view());
-    await screen.findByRole("link", { name: "Continue my journey" });
-    let resolve: ((value: unknown) => void) | undefined;
-    fixture.request
-      .mockImplementationOnce(
-        () =>
-          new Promise((value) => {
-            resolve = value;
-          }),
-      )
-      .mockResolvedValueOnce({ data: { completedSteps: [1, 2, 3, 4, 5] } });
+    await screen.findByRole("link", { name: "Continue training" });
+    const resolves: Array<(value: unknown) => void> = [];
+    fixture.request.mockImplementation(
+      () => new Promise((resolve) => resolves.push(resolve)),
+    );
     fixture.identity = identity("student-b");
     result.rerender(view());
     expect(
-      screen.queryByRole("link", { name: "Continue my journey" }),
+      screen.queryByRole("link", { name: "Continue training" }),
     ).toBeNull();
     expect(screen.getByRole("status").textContent).toContain(
-      "Finding your saved next step",
+      "Loading your saved account progress",
     );
-    await act(async () => resolve?.({ data: { accepted: [] } }));
+    await act(async () => {
+      resolves[0]?.({ data: { accepted: [] } });
+      resolves[1]?.({
+        foundations: {
+          data: {
+            completedMissionIds: [],
+            currentMissionId: "business-world",
+          },
+        },
+      });
+    });
     expect(
       screen
-        .getByRole("link", { name: "Continue my journey" })
+        .getByRole("link", { name: "Continue training" })
         .getAttribute("href"),
-    ).toBe("/en/game/student");
+    ).toBe("/en/bootcamp?mission=business-world");
+  });
+  it("marks only the mission IDs actually accepted by the server", async () => {
+    setSavedProgress(
+      ["journal-equipment", "trial-balance"],
+      [...bootcampMissionIds],
+    );
+    render(view());
+    await screen.findAllByText("Source Documents");
+    expect(
+      screen.getByText("Analyse the equipment purchase").closest("li"),
+    ).toHaveAttribute("data-done", "true");
+    expect(
+      screen.getByText("Control the source document").closest("li"),
+    ).toHaveAttribute("data-done", "false");
+  });
+  it("shows 7/8 rather than false full completion when all available work is done", async () => {
+    let game = initialState();
+    for (const document of firstDayDocuments)
+      game = submitFirstDayDocument(
+        game,
+        document.id,
+        JSON.stringify(document.expected),
+        1000,
+      ).state;
+    fixture.gameState = markFirstShiftLedgerReviewed(game);
+    setSavedProgress([...stepIds], [...bootcampMissionIds]);
+    render(view());
+    await screen.findByText("7/8");
+    expect(screen.getByText(/24\/24 server-accepted tasks/)).toBeVisible();
+    expect(
+      screen.getByText(/5\/5 local First Shift checkpoints/),
+    ).toBeVisible();
+    expect(screen.getByText("In development")).toBeVisible();
   });
   it.each([null, "graduate", "working-accountant"] as const)(
     "preserves non-student navigation for %s",
